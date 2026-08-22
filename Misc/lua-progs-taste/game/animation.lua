@@ -5,35 +5,33 @@ local quake = require("quake")
 
 local M = {}
 
----Creates callbacks equivalent to QuakeC's `=[frame, next] { action }` states.
----@param spec table
----@return table sequence
-function M.sequence(spec)
-    assert(#spec.frames > 0, "an animation needs at least one frame")
-
-    local sequence = {}
-
-    for index, frame in ipairs(spec.frames) do
-        sequence[index] = function(self)
-            self.frame = frame
-            self.nextthink = quake.time() + (spec.interval or 0.1)
-
-            if index < #spec.frames then
-                self.think = sequence[index + 1]
-            else
-                self.think = assert(spec.next(), "animation has no next state")
-            end
-
-            local action = spec.actions and spec.actions[index]
-            if action then
-                action(self)
-            elseif spec.each then
-                spec.each(self, index)
-            end
-        end
+---Expands one QuakeC-style `[frame, nexttime, nextthink] { code }` state.
+---When nexttime is omitted, it defaults to 0.1 seconds.
+---@overload fun(frame: string|integer, nextthink: function, code?: function): function
+---@param frame string|integer
+---@param nexttime number
+---@param nextthink function
+---@param code? function
+---@return function frame_function
+function M.frame(frame, nexttime, nextthink, code)
+    if type(nexttime) ~= "number" then
+        code = nextthink
+        nextthink = nexttime
+        nexttime = 0.1
     end
 
-    return sequence
+    assert(frame ~= nil, "an animation frame needs a frame number")
+    assert(type(nextthink) == "function", "an animation frame needs a next-think resolver")
+
+    return function(self)
+        self.frame = frame
+        self.nextthink = quake.time() + nexttime
+        self.think = assert(nextthink(), "animation frame resolved to no next think")
+
+        if code then
+            code(self)
+        end
+    end
 end
 
 return M
