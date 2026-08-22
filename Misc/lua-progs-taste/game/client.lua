@@ -394,9 +394,9 @@ function M.put_client_in_server(self)
     require("game.player").player_stand1(self)
     if g.deathmatch ~= 0 or g.coop ~= 0 then
         local vectors = quake.make_vectors(self.angles)
-        require("game.misc").spawn_tfog(self.origin + vectors.forward * 20)
+        require("game.triggers").spawn_tfog(self.origin + vectors.forward * 20)
     end
-    require("game.misc").spawn_tdeath(self.origin, self)
+    require("game.triggers").spawn_tdeath(self.origin, self)
 end
 
 --[[

@@ -62,10 +62,10 @@ player_stand1 = animation.frame("axstnd1", function() return player_stand1 end, 
     end
     if self.weapon == IT_AXE then
         if self.walkframe >= 12 then self.walkframe = 0 end
-        self.frame = "axstnd" .. self.walkframe + 1
+        self.frame = ("axstnd%d"):format(self.walkframe + 1)
     else
         if self.walkframe >= 5 then self.walkframe = 0 end
-        self.frame = "stand" .. self.walkframe + 1
+        self.frame = ("stand%d"):format(self.walkframe + 1)
     end
     self.walkframe = self.walkframe + 1
 end)
@@ -79,7 +79,7 @@ player_run = animation.frame("rockrun1", function() return player_run end, funct
     end
     if self.weapon == IT_AXE then
         if self.walkframe == 6 then self.walkframe = 0 end
-        self.frame = "axrun" .. self.walkframe + 1
+        self.frame = ("axrun%d"):format(self.walkframe + 1)
     else
         if self.walkframe == 6 then self.walkframe = 0 end
         self.frame = self.frame + self.walkframe

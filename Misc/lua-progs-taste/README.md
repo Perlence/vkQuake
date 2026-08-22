@@ -2,7 +2,7 @@
 
 This directory sketches what a Lua replacement for QuakeC could look like. It ports the complete `progs.src` from [CleanFixedQuakeC](https://github.com/Jason2Brownlee/CleanFixedQuakeC) at `dacc69ef13d2c961776b708f33ad2be8e87da224`.
 
-vkQuake activates the Lua game when the selected game directory is named `id1lua`. The engine embeds these modules in `vkquake.pak`, exposes the `quake` C module, registers Lua map-spawn functions, and dispatches entity and lifecycle callbacks to Lua.
+vkQuake activates the Lua game when the selected game directory is named `id1lua`. The engine loads modules from `id1lua/lua/`, exposes the `quake` C module, registers Lua map-spawn functions, and dispatches entity and lifecycle callbacks to Lua.
 
 The first integration retains the original `progs.dat` as an ABI schema for QuakeC globals and entity fields. Gameplay spawn functions and callbacks execute in Lua; the bytecode VM remains available for compatibility and schema-backed operations.
 
@@ -46,14 +46,16 @@ luacheck game --codes --no-max-line-length --globals require
 
 `luac` checks syntax. `luacheck` additionally catches undefined Lua symbols; warnings for intentionally preserved QuakeC locals and externally referenced frame functions are expected.
 
-Build and run the Lua game with:
+From the repository root, symlink the prototype into the game directory, then build and run it:
 
 ```sh
+mkdir -p ~/Games/Quake/id1lua
+ln -s "$(pwd)/Misc/lua-progs-taste/game" ~/Games/Quake/id1lua/lua
 ninja -C build
 build/vkquake -basedir ~/Games/Quake -game id1lua
 ```
 
-The `id1lua` directory may contain configuration and replacement assets. It does not need its own copy of the Lua modules.
+The `id1lua` directory may also contain configuration and replacement assets.
 
 ## Source and license
 

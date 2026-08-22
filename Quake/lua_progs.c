@@ -25,10 +25,18 @@ typedef struct
 	int number;
 } lp_entity_t;
 
-static lua_State *lp_state;
-static int		  lp_spawns_ref = LUA_NOREF;
-static int		  lp_entity_values_ref = LUA_NOREF;
-static qboolean	  lp_active;
+typedef struct
+{
+	char (*names)[16];
+	int		 count;
+	qboolean loaded;
+} lp_frame_names_t;
+
+static lua_State	   *lp_state;
+static int				lp_spawns_ref = LUA_NOREF;
+static int				lp_entity_values_ref = LUA_NOREF;
+static lp_frame_names_t lp_frame_names[MAX_MODELS];
+static qboolean			lp_active;
 
 static int	LP_EntityIndex (lua_State *L);
 static int	LP_EntityNewIndex (lua_State *L);
@@ -375,9 +383,85 @@ static int LP_EntityIndex (lua_State *L)
 	return 1;
 }
 
+static void LP_LoadFrameNames (int modelindex, qmodel_t *model)
+{
+	lp_frame_names_t *cache = &lp_frame_names[modelindex];
+	byte			 *data, *cursor;
+	mdl_t			 *header;
+	int				  numskins, skinwidth, skinheight, numverts, numtris, numframes;
+	int				  i;
+
+	cache->loaded = true;
+	data = COM_LoadFile (model->name, NULL);
+	if (!data)
+		return;
+	header = (mdl_t *)data;
+	if (LittleLong (header->ident) != IDPOLYHEADER || LittleLong (header->version) != ALIAS_VERSION)
+	{
+		Mem_Free (data);
+		return;
+	}
+
+	numskins = LittleLong (header->numskins);
+	skinwidth = LittleLong (header->skinwidth);
+	skinheight = LittleLong (header->skinheight);
+	numverts = LittleLong (header->numverts);
+	numtris = LittleLong (header->numtris);
+	numframes = LittleLong (header->numframes);
+	if (numskins < 0 || skinwidth < 1 || skinheight < 1 || numverts < 1 || numtris < 0 || numframes < 1 || numframes > MAXALIASFRAMES)
+	{
+		Mem_Free (data);
+		return;
+	}
+
+	cursor = data + sizeof (*header);
+	for (i = 0; i < numskins; ++i)
+	{
+		const int type = LittleLong (((daliasskintype_t *)cursor)->type);
+		cursor += sizeof (daliasskintype_t);
+		if (type == ALIAS_SKIN_SINGLE)
+			cursor += skinwidth * skinheight;
+		else
+		{
+			const int count = LittleLong (((daliasskingroup_t *)cursor)->numskins);
+			cursor += sizeof (daliasskingroup_t) + count * sizeof (daliasskininterval_t) + count * skinwidth * skinheight;
+		}
+	}
+	cursor += numverts * sizeof (stvert_t) + numtris * sizeof (dtriangle_t);
+
+	cache->names = Mem_Alloc (numframes * sizeof (*cache->names));
+	cache->count = numframes;
+	for (i = 0; i < numframes; ++i)
+	{
+		const int type = LittleLong (((daliasframetype_t *)cursor)->type);
+		cursor += sizeof (daliasframetype_t);
+		if (type == ALIAS_SINGLE)
+		{
+			daliasframe_t *frame = (daliasframe_t *)cursor;
+			memcpy (cache->names[i], frame->name, sizeof (cache->names[i]));
+			cache->names[i][sizeof (cache->names[i]) - 1] = '\0';
+			cursor = (byte *)(frame + 1) + numverts * sizeof (trivertx_t);
+		}
+		else
+		{
+			daliasgroup_t *group = (daliasgroup_t *)cursor;
+			const int	   count = LittleLong (group->numframes);
+			daliasframe_t *frame = (daliasframe_t *)((byte *)(group + 1) + count * sizeof (daliasinterval_t));
+			int			   j;
+			memcpy (cache->names[i], frame->name, sizeof (cache->names[i]));
+			cache->names[i][sizeof (cache->names[i]) - 1] = '\0';
+			for (j = 0; j < count; ++j)
+				frame = (daliasframe_t *)((byte *)(frame + 1) + numverts * sizeof (trivertx_t));
+			cursor = (byte *)frame;
+		}
+	}
+	Mem_Free (data);
+}
+
 static int LP_FrameForName (edict_t *entity, const char *name)
 {
-	qmodel_t   *model = qcvm->GetModel (entity->v.modelindex);
+	const int	modelindex = entity->v.modelindex;
+	qmodel_t   *model = qcvm->GetModel (modelindex);
 	aliashdr_t *alias;
 	int			i;
 
@@ -386,6 +470,17 @@ static int LP_FrameForName (edict_t *entity, const char *name)
 	for (i = 0; i < alias->numframes; ++i)
 		if (!strcmp (alias->frames[i].name, name))
 			return i;
+
+	/* Replacement MD5 animations have frame numbers but no MDL frame names. */
+	if (modelindex > 0 && modelindex < MAX_MODELS)
+	{
+		lp_frame_names_t *cache = &lp_frame_names[modelindex];
+		if (!cache->loaded)
+			LP_LoadFrameNames (modelindex, model);
+		for (i = 0; i < cache->count; ++i)
+			if (!strcmp (cache->names[i], name))
+				return i;
+	}
 	return -1;
 }
 
@@ -942,19 +1037,22 @@ static int LP_ModuleSearcher (lua_State *L)
 	const char *module = luaL_checkstring (L, 1);
 	char		path[MAX_OSPATH];
 	byte	   *source;
-	size_t		i;
+	int			status;
+	size_t		i, prefix = !strncmp (module, "game.", 5) ? 5 : 0;
 
-	q_snprintf (path, sizeof (path), "lua/%s.lua", module);
+	q_snprintf (path, sizeof (path), "lua/%s.lua", module + prefix);
 	for (i = 4; i < strlen (path) - 4; ++i)
 		if (path[i] == '.')
 			path[i] = '/';
 	source = COM_LoadFile (path, NULL);
 	if (!source)
 	{
-		lua_pushfstring (L, "\n\tno embedded module '%s'", path);
+		lua_pushfstring (L, "\n\tno game module '%s'", path);
 		return 1;
 	}
-	if (luaL_loadbuffer (L, (const char *)source, com_filesize, path) != LUA_OK)
+	status = luaL_loadbuffer (L, (const char *)source, com_filesize, path);
+	Mem_Free (source);
+	if (status != LUA_OK)
 		return lua_error (L);
 	return 1;
 }
@@ -1059,8 +1157,15 @@ qboolean LP_Init (void)
 
 void LP_Shutdown (void)
 {
+	int i;
 	if (lp_state)
 		lua_close (lp_state);
+	for (i = 0; i < MAX_MODELS; ++i)
+	{
+		if (lp_frame_names[i].names)
+			Mem_Free (lp_frame_names[i].names);
+		memset (&lp_frame_names[i], 0, sizeof (lp_frame_names[i]));
+	}
 	lp_state = NULL;
 	lp_spawns_ref = LUA_NOREF;
 	lp_entity_values_ref = LUA_NOREF;
@@ -1073,7 +1178,7 @@ qboolean LP_ExecuteProgram (func_t function)
 		return false;
 	lua_rawgeti (lp_state, LUA_REGISTRYINDEX, -(int)function);
 	LP_PushEntity (lp_state, PROG_TO_EDICT (pr_global_struct->self), true);
-	LP_PushEntity (lp_state, PROG_TO_EDICT (pr_global_struct->other), false);
+	LP_PushEntity (lp_state, PROG_TO_EDICT (pr_global_struct->other), true);
 	if (lua_pcall (lp_state, 2, 0, 0) != LUA_OK)
 		LP_Error ("executing callback");
 	return true;

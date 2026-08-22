@@ -264,7 +264,7 @@ local function play_teleport(self)
     quake.remove(self)
 end
 
-local function spawn_tfog(org)
+function M.spawn_tfog(org)
     local s = quake.spawn()
     s.origin = org
     s.nextthink = quake.time() + 0.2
@@ -292,7 +292,7 @@ local function tdeath_touch(self, other)
     if other.health ~= 0 then combat.damage(other, self, self, 50000) end
 end
 
-local function spawn_tdeath(org, death_owner)
+function M.spawn_tdeath(org, death_owner)
     local death = quake.spawn()
     death.classname = "teledeath"
     death.movetype = MOVETYPE_NONE
@@ -322,7 +322,7 @@ local function teleport_touch(self, other)
     subs.use_targets(self, other)
 
     -- put a tfog where the player was
-    spawn_tfog(other.origin)
+    M.spawn_tfog(other.origin)
 
     t = quake.find(quake.world, "targetname", self.target)
     if not t then quake.object_error(self, "couldn't find target") end
@@ -330,8 +330,8 @@ local function teleport_touch(self, other)
     -- spawn a tfog flash in front of the destination
     local vectors = quake.make_vectors(t.mangle)
     org = t.origin + vectors.forward * 32
-    spawn_tfog(org)
-    spawn_tdeath(t.origin, other)
+    M.spawn_tfog(org)
+    M.spawn_tdeath(t.origin, other)
 
     -- move the player and lock him down for a little while
     if other.health == 0 then
