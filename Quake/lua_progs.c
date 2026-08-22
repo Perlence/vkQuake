@@ -576,9 +576,8 @@ static void LP_LoadFrameNames (int modelindex, qmodel_t *model)
 	Mem_Free (data);
 }
 
-static int LP_FrameForName (edict_t *entity, const char *name)
+static int LP_FrameForModel (int modelindex, const char *name)
 {
-	const int	modelindex = entity->v.modelindex;
 	qmodel_t   *model = qcvm->GetModel (modelindex);
 	aliashdr_t *alias;
 	int			i;
@@ -600,6 +599,20 @@ static int LP_FrameForName (edict_t *entity, const char *name)
 				return i;
 	}
 	return -1;
+}
+
+static int LP_FrameForName (edict_t *entity, const char *name)
+{
+	int number = LP_FrameForModel (entity->v.modelindex, name);
+
+	/* Player animations continue while eyes.mdl or no model is displayed. */
+	if (number < 0 && !strcmp (PR_GetString (entity->v.classname), "player"))
+	{
+		ddef_t *modelindex_player = ED_FindGlobal ("modelindex_player");
+		if (modelindex_player)
+			number = LP_FrameForModel (qcvm->globals[modelindex_player->ofs], name);
+	}
+	return number;
 }
 
 static int LP_EntityNewIndex (lua_State *L)
