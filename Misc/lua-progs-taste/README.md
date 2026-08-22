@@ -5,9 +5,10 @@ This directory sketches what a Lua replacement for QuakeC could look like. It po
 The code is intentionally not wired into vkQuake. The current engine does not provide the required Lua game API. Instead, the prototype assumes that the engine supplies a `quake` module with:
 
 - Mutable entity userdata with ordinary fields and Lua callback fields
+- Null entity references represented by `nil`, preserving QuakeC-style truth tests
 - Vector userdata with arithmetic, `length()`, and `normalized()`
 - `quake.time()`, `quake.cvar(name)`, `quake.globals`, and `quake.world`
-- Entity functions such as `spawn()`, `remove()`, `exists()`, `find()`, and `check_client()`
+- Entity functions such as `spawn()`, `remove()`, `find()`, and `check_client()`
 - Model, size, sound, movement, trace, precache, and network-message builtins
 - `quake.register_entity(classname, spawn_function)` for map entity dispatch
 

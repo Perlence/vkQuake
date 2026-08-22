@@ -62,7 +62,7 @@ function M.find_target(self)
         end
     else
         client = quake.check_client()
-        if not quake.exists(client) then
+        if not client then
             return false
         end
     end
@@ -89,7 +89,7 @@ function M.find_target(self)
     self.enemy = client
     if self.enemy.classname ~= "player" then
         self.enemy = self.enemy.enemy
-        if not quake.exists(self.enemy) or self.enemy.classname ~= "player" then
+        if not self.enemy or self.enemy.classname ~= "player" then
             self.enemy = quake.world
             return false
         end
@@ -120,14 +120,14 @@ end
 
 function M.run(self, distance)
     local enemy = self.enemy
-    if not quake.exists(enemy) or enemy.health <= 0 then
+    if not enemy or enemy.health <= 0 then
         self.enemy = quake.world
 
-        if quake.exists(self.oldenemy) and self.oldenemy.health > 0 then
+        if self.oldenemy and self.oldenemy.health > 0 then
             self.enemy = self.oldenemy
             M.hunt_target(self)
         else
-            local idle = quake.exists(self.movetarget) and self.th_walk or self.th_stand
+            local idle = self.movetarget and self.th_walk or self.th_stand
             idle(self)
             return
         end

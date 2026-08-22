@@ -77,7 +77,7 @@ f_run8 = animation.frame("swim15", function() return f_run9 end, function(self) 
 f_run9 = animation.frame("swim17", function() return f_run1 end, function(self) ai.run(self, 12) end)
 
 local function fish_melee(self)
-    if not quake.exists(self.enemy) then
+    if not self.enemy then
         return
     end
     if (self.enemy.origin - self.origin):length() > 60 then

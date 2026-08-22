@@ -32,7 +32,7 @@ function velocity_for_damage(self, damage)
     local inflictor = quake.globals.damage_inflictor
     local velocity
 
-    if quake.exists(inflictor) and inflictor.velocity:length() > 0 then
+    if inflictor and inflictor.velocity:length() > 0 then
         velocity = inflictor.velocity * 0.5
             + (self.origin - inflictor.origin):normalized() * 25
         velocity = quake.vec3(

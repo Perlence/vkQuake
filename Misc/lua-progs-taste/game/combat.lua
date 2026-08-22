@@ -92,7 +92,7 @@ function M.damage(target, inflictor, attacker, damage)
     if (target.flags & C.FL_MONSTER) ~= 0 and attacker ~= quake.world then
         if target ~= attacker and attacker ~= target.enemy then
             if target.classname ~= attacker.classname or target.classname == "monster_army" then
-                if quake.exists(target.enemy) and target.enemy.classname == "player" then
+                if target.enemy and target.enemy.classname == "player" then
                     target.oldenemy = target.enemy
                 end
                 target.enemy = attacker
