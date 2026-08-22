@@ -24,6 +24,7 @@ local quake = require("quake")
 local animation = require("game.animation")
 local combat = require("game.combat")
 local subs = require("game.subs")
+local player = require("game.player")
 
 local M = {}
 
@@ -761,7 +762,9 @@ PLAYER WEAPON USE
 
 function M.set_current_ammo(self)
     -- get out of any weapon firing states
-    quake.globals.player_run(self)
+    if self.model ~= "" then
+        player.player_run(self)
+    end
 
     self.items = self.items - (self.items & (IT_SHELLS | IT_NAILS | IT_ROCKETS | IT_CELLS))
 
@@ -871,37 +874,37 @@ function M.attack(self)
         quake.sound(self, CHAN_WEAPON, "weapons/ax1.wav", 1, ATTN_NORM)
         r = quake.random()
         if r < 0.25 then
-            quake.globals.player_axe1(self)
+            player.player_axe1(self)
         elseif r < 0.5 then
-            quake.globals.player_axeb1(self)
+            player.player_axeb1(self)
         elseif r < 0.75 then
-            quake.globals.player_axec1(self)
+            player.player_axec1(self)
         else
-            quake.globals.player_axed1(self)
+            player.player_axed1(self)
         end
         self.attack_finished = quake.time() + 0.5
     elseif self.weapon == IT_SHOTGUN then
-        quake.globals.player_shot1(self)
+        player.player_shot1(self)
         M.fire_shotgun(self)
         self.attack_finished = quake.time() + 0.5
     elseif self.weapon == IT_SUPER_SHOTGUN then
-        quake.globals.player_shot1(self)
+        player.player_shot1(self)
         M.fire_super_shotgun(self)
         self.attack_finished = quake.time() + 0.7
     elseif self.weapon == IT_NAILGUN then
-        quake.globals.player_nail1(self)
+        player.player_nail1(self)
     elseif self.weapon == IT_SUPER_NAILGUN then
-        quake.globals.player_nail1(self)
+        player.player_nail1(self)
     elseif self.weapon == IT_GRENADE_LAUNCHER then
-        quake.globals.player_rocket1(self)
+        player.player_rocket1(self)
         M.fire_grenade(self)
         self.attack_finished = quake.time() + 0.6
     elseif self.weapon == IT_ROCKET_LAUNCHER then
-        quake.globals.player_rocket1(self)
+        player.player_rocket1(self)
         M.fire_rocket(self)
         self.attack_finished = quake.time() + 0.8
     elseif self.weapon == IT_LIGHTNING then
-        quake.globals.player_light1(self)
+        player.player_light1(self)
         self.attack_finished = quake.time() + 0.1
         quake.sound(self, CHAN_AUTO, "weapons/lstart.wav", 1, ATTN_NORM)
     end
