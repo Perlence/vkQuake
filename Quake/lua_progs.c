@@ -690,8 +690,11 @@ static int LP_TraceLine (lua_State *L)
 
 static int LP_Find (lua_State *L)
 {
-	ddef_t *field;
-	LP_SetParmEntity (0, lua_isnil (L, 1) ? qcvm->edicts : LP_CheckEntity (L, 1));
+	ddef_t	*field;
+	edict_t *cursor = lua_isnil (L, 1) ? qcvm->edicts : LP_CheckEntity (L, 1);
+
+	/* QuakeC permits find() to continue from an entity removed in the loop body. */
+	G_INT (OFS_PARM0) = (int)((byte *)cursor - (byte *)qcvm->edicts);
 	field = ED_FindField (luaL_checkstring (L, 2));
 	if (!field)
 		return luaL_error (L, "unknown find field");
