@@ -141,6 +141,9 @@ ATTACKS
 =============================================================================
 ]]
 
+---@param self entity
+---@param other entity
+---@return nil
 local function zombie_grenade_touch(self, other)
     if other == self.owner then return end -- don't explode on owner
     if other.takedamage ~= 0 then
@@ -156,11 +159,9 @@ local function zombie_grenade_touch(self, other)
     self.touch = subs.remove
 end
 
---[[
-================
-ZombieFireGrenade
-================
-]]
+---@param self entity
+---@param st vec3
+---@return nil
 local function zombie_fire_grenade(self, st)
     quake.sound(self, C.CHAN_WEAPON, "zombie/z_shot1.wav", 1, C.ATTN_NORM)
     local missile = quake.spawn()
@@ -248,6 +249,8 @@ zombie_attc12 = animation.frame("attc12", function() return zombie_run1 end, fun
 
 end
 
+---@param self entity
+---@return nil
 local function zombie_missile(self)
     local r = quake.random()
     if r < 0.3 then zombie_atta1(self)
@@ -443,6 +446,8 @@ zombie_paine30 = animation.frame("paine30", function() return zombie_run1 end)
 
 end
 
+---@param self entity
+---@return nil
 local function zombie_die(self)
     quake.sound(self, C.CHAN_VOICE, "zombie/z_gib.wav", 1, C.ATTN_NORM)
     gibs.throw_head(self, "progs/h_zombie.mdl", self.health)
@@ -451,25 +456,23 @@ local function zombie_die(self)
     gibs.throw(self, "progs/gib3.mdl", self.health)
 end
 
---[[
-=================
-zombie_pain
-
-Zombies can only be killed (gibbed) by doing 60 hit points of damage
-in a single frame (rockets, grenades, quad shotgun, quad nailgun).
-
-A hit of 25 points or more (super shotgun, quad nailgun) will always put it
-down to the ground.
-
-A hit of from 10 to 40 points in one frame will cause it to go down if it
-has been twice in two seconds, otherwise it goes into one of the four
-fast pain frames.
-
-A hit of less than 10 points of damage (winged by a shotgun) will be ignored.
-
-FIXME: don't use pain_finished because of nightmare hack
-=================
-]]
+---Zombies can only be killed (gibbed) by doing 60 hit points of damage
+---in a single frame (rockets, grenades, quad shotgun, quad nailgun).
+---
+---A hit of 25 points or more (super shotgun, quad nailgun) will always put it
+---down to the ground.
+---
+---A hit of from 10 to 40 points in one frame will cause it to go down if it
+---has been twice in two seconds, otherwise it goes into one of the four
+---fast pain frames.
+---
+---A hit of less than 10 points of damage (winged by a shotgun) will be ignored.
+---
+---FIXME: don't use pain_finished because of nightmare hack
+---@param self entity
+---@param _attacker entity
+---@param take number
+---@return nil
 local function zombie_pain(self, _attacker, take)
     -- always reset health
     self.health = 60
@@ -500,10 +503,11 @@ end
 
 --============================================================================
 
---[[QUAKED monster_zombie (1 0 0) (-16 -16 -24) (16 16 32) Crucified ambush
-
-If crucified, stick the bounding box 12 pixels back into a wall to look right.
-]]
+---QUAKED monster_zombie (1 0 0) (-16 -16 -24) (16 16 32) Crucified ambush
+---
+---If crucified, stick the bounding box 12 pixels back into a wall to look right.
+---@param self entity
+---@return nil
 function M.spawn(self)
     if quake.cvar("deathmatch") ~= 0 then quake.remove(self); return end
     quake.precache_model("progs/zombie.mdl")

@@ -42,12 +42,8 @@ DOG (Rottweiler)
 local dog_leap1, dog_run1
 local dog_jump_touch
 
---[[
-================
-dog_bite
-
-================
-]]
+---@param self entity
+---@return nil
 local function dog_bite(self)
     local delta
     local ldmg
@@ -72,6 +68,9 @@ local function dog_bite(self)
     combat.damage(self.enemy, self, self, ldmg)
 end
 
+---@param self entity
+---@param other entity
+---@return nil
 function dog_jump_touch(self, other)
     local ldmg
 
@@ -217,6 +216,10 @@ dog_painb14 = animation.frame("painb14", function() return dog_painb15 end)
 dog_painb15 = animation.frame("painb15", function() return dog_painb16 end)
 dog_painb16 = animation.frame("painb16", function() return dog_run1 end)
 
+---@param self entity
+---@param _attacker entity
+---@param _damage number
+---@return nil
 local function dog_pain(self, _attacker, _damage)
     quake.sound(self, C.CHAN_VOICE, "dog/dpain1.wav", 1, C.ATTN_NORM)
 
@@ -251,6 +254,8 @@ dog_dieb7 = animation.frame("deathb7", function() return dog_dieb8 end)
 dog_dieb8 = animation.frame("deathb8", function() return dog_dieb9 end)
 dog_dieb9 = animation.frame("deathb9", function() return dog_dieb9 end)
 
+---@param self entity
+---@return nil
 local function dog_die(self)
     -- check for gib
     if self.health < -35 then
@@ -275,13 +280,9 @@ end
 
 --============================================================================
 
---[[
-==============
-CheckDogMelee
-
-Returns TRUE if a melee attack would hit right now
-==============
-]]
+---Returns TRUE if a melee attack would hit right now
+---@param self entity
+---@return boolean
 local function check_dog_melee(self)
     if quake.globals.enemy_range == C.RANGE_MELEE then
         -- FIXME: check canreach
@@ -291,12 +292,8 @@ local function check_dog_melee(self)
     return false
 end
 
---[[
-==============
-CheckDogJump
-
-==============
-]]
+---@param self entity
+---@return boolean
 local function check_dog_jump(self)
     local dist
     local d
@@ -325,6 +322,8 @@ local function check_dog_jump(self)
     return true
 end
 
+---@param self entity
+---@return boolean
 function M.check_attack(self)
     -- if close enough for slashing, go for it
     if check_dog_melee(self) then
@@ -342,8 +341,9 @@ end
 
 --===========================================================================
 
---[[QUAKED monster_dog (1 0 0) (-32 -32 -24) (32 32 40) Ambush
-]]
+---QUAKED monster_dog (1 0 0) (-32 -32 -24) (32 32 40) Ambush
+---@param self entity
+---@return nil
 function M.spawn(self)
     if quake.cvar("deathmatch") ~= 0 then
         quake.remove(self)

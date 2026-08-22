@@ -56,6 +56,9 @@ THINK FUNCTIONS
 
 local door_go_down, door_go_up
 
+---@param self entity
+---@param other entity
+---@return nil
 local function door_blocked(self, other)
     combat.damage(other, self, self, self.dmg)
 
@@ -66,6 +69,8 @@ local function door_blocked(self, other)
     end
 end
 
+---@param self entity
+---@return nil
 local function door_hit_top(self)
     quake.sound(self, CHAN_VOICE, self.noise1, 1, ATTN_NORM)
     self.state = STATE_TOP
@@ -76,11 +81,15 @@ local function door_hit_top(self)
     self.nextthink = self.ltime + self.wait
 end
 
+---@param self entity
+---@return nil
 local function door_hit_bottom(self)
     quake.sound(self, CHAN_VOICE, self.noise1, 1, ATTN_NORM)
     self.state = STATE_BOTTOM
 end
 
+---@param self entity
+---@return nil
 door_go_down = function(self)
     quake.sound(self, CHAN_VOICE, self.noise2, 1, ATTN_NORM)
     if self.max_health ~= 0 then
@@ -91,6 +100,8 @@ door_go_down = function(self)
     subs.calc_move(self, self.pos1, self.speed, door_hit_bottom)
 end
 
+---@param self entity
+---@return nil
 function door_go_up(self)
     if self.state == STATE_UP then
         -- allready going up
@@ -115,6 +126,9 @@ ACTIVATION FUNCTIONS
 =============================================================================
 ]]
 
+---@param self entity
+---@param activator entity
+---@return nil
 local function door_fire(self, activator)
     if self.owner ~= self then quake.object_error(self, "door_fire: self.owner != self") end
 
@@ -140,6 +154,9 @@ local function door_fire(self, activator)
     until self == starte or self == quake.world
 end
 
+---@param self entity
+---@param activator entity
+---@return nil
 local function door_use(self, activator)
     -- door message are for touch only
     self.message = ""
@@ -148,6 +165,9 @@ local function door_use(self, activator)
     door_fire(self.owner, activator)
 end
 
+---@param self entity
+---@param other entity
+---@return nil
 local function door_trigger_touch(self, other)
     if other.health <= 0 then return end
     if quake.time() < self.attack_finished then return end
@@ -155,6 +175,8 @@ local function door_trigger_touch(self, other)
     door_use(self.owner, other)
 end
 
+---@param self entity
+---@return nil
 local function door_killed(self)
     local owner = self.owner
     owner.health = owner.max_health
@@ -163,13 +185,10 @@ local function door_killed(self)
     door_use(owner, quake.globals.damage_attacker)
 end
 
---[[
-================
-door_touch
-
-Prints messages and opens key doors
-================
-]]
+---Prints messages and opens key doors
+---@param self entity
+---@param other entity
+---@return nil
 local function door_touch(self, other)
     if other.classname ~= "player" then return end
     if self.owner.attack_finished > quake.time() then return end
@@ -228,6 +247,10 @@ SPAWNING FUNCTIONS
 =============================================================================
 ]]
 
+---@param self entity
+---@param fmins vec3
+---@param fmaxs vec3
+---@return entity
 local function spawn_field(self, fmins, fmaxs)
     local trigger = quake.spawn()
     trigger.movetype = MOVETYPE_NONE
@@ -241,6 +264,9 @@ local function spawn_field(self, fmins, fmaxs)
     return trigger
 end
 
+---@param e1 entity
+---@param e2 entity
+---@return boolean
 local function entities_touching(e1, e2)
     if e1.mins.x > e2.maxs.x then return false end
     if e1.mins.y > e2.maxs.y then return false end
@@ -251,13 +277,8 @@ local function entities_touching(e1, e2)
     return true
 end
 
---[[
-=============
-LinkDoors
-
-
-=============
-]]
+---@param self entity
+---@return nil
 local function link_doors(self)
     if self.enemy then return end -- already linked by another door
     if (self.spawnflags & DOOR_DONT_LINK) ~= 0 then
@@ -301,30 +322,31 @@ local function link_doors(self)
     end
 end
 
---[[QUAKED func_door (0 .5 .8) ? START_OPEN x DOOR_DONT_LINK GOLD_KEY SILVER_KEY TOGGLE
-if two doors touch, they are assumed to be connected and operate as a unit.
-
-TOGGLE causes the door to wait in both the start and end states for a trigger event.
-
-START_OPEN causes the door to move to its destination when spawned, and operate in reverse. It is used to temporarily or permanently close off an area when triggered (not usefull for touch or takedamage doors).
-
-Key doors are always wait -1.
-
-"message" is printed when the door is touched if it is a trigger door and it hasn't been fired yet
-"angle" determines the opening direction
-"targetname" if set, no touch field will be spawned and a remote button or trigger field activates the door.
-"health" if set, door must be shot open
-"speed" movement speed (100 default)
-"wait" wait before returning (3 default, -1 = never return)
-"lip" lip remaining at end of move (8 default)
-"dmg" damage to inflict when blocked (2 default)
-"sounds"
-0) no sound
-1) stone
-2) base
-3) stone chain
-4) screechy metal
-]]
+---QUAKED func_door (0 .5 .8) ? START_OPEN x DOOR_DONT_LINK GOLD_KEY SILVER_KEY TOGGLE
+---if two doors touch, they are assumed to be connected and operate as a unit.
+---
+---TOGGLE causes the door to wait in both the start and end states for a trigger event.
+---
+---START_OPEN causes the door to move to its destination when spawned, and operate in reverse. It is used to temporarily or permanently close off an area when triggered (not usefull for touch or takedamage doors).
+---
+---Key doors are always wait -1.
+---
+---"message" is printed when the door is touched if it is a trigger door and it hasn't been fired yet
+---"angle" determines the opening direction
+---"targetname" if set, no touch field will be spawned and a remote button or trigger field activates the door.
+---"health" if set, door must be shot open
+---"speed" movement speed (100 default)
+---"wait" wait before returning (3 default, -1 = never return)
+---"lip" lip remaining at end of move (8 default)
+---"dmg" damage to inflict when blocked (2 default)
+---"sounds"
+---0) no sound
+---1) stone
+---2) base
+---3) stone chain
+---4) screechy metal
+---@param self entity
+---@return nil
 function M.func_door(self)
     if quake.world.worldtype == 0 then
         quake.precache_sound("doors/medtry.wav"); quake.precache_sound("doors/meduse.wav")
@@ -430,9 +452,16 @@ local fd_secret_move1, fd_secret_move2, fd_secret_move3, fd_secret_move4
 local fd_secret_move5, fd_secret_move6, fd_secret_done
 
 -- empty pain function
+---@param _self entity
+---@param _attacker entity
+---@param _damage number
+---@return nil
 local function pain_empty(_self, _attacker, _damage)
 end
 
+---@param self entity
+---@param _activator entity
+---@return nil
 local function fd_secret_use(self, _activator)
     self.health = 10000
 
@@ -479,11 +508,17 @@ local function fd_secret_use(self, _activator)
 end
 
 -- wrapper function for fd_secret_use for use with th_pain
+---@param self entity
+---@param _attacker entity
+---@param _damage number
+---@return nil
 local function fd_secret_pain(self, _attacker, _damage)
     fd_secret_use(self, quake.globals.activator)
 end
 
 -- Wait after first movement...
+---@param self entity
+---@return nil
 fd_secret_move1 = function(self)
     self.nextthink = self.ltime + 1
     self.think = fd_secret_move2
@@ -491,12 +526,16 @@ fd_secret_move1 = function(self)
 end
 
 -- Start moving sideways w/sound...
+---@param self entity
+---@return nil
 fd_secret_move2 = function(self)
     quake.sound(self, CHAN_VOICE, self.noise2, 1, ATTN_NORM)
     subs.calc_move(self, self.dest2, self.speed, fd_secret_move3)
 end
 
 -- Wait here until time to go back...
+---@param self entity
+---@return nil
 fd_secret_move3 = function(self)
     quake.sound(self, CHAN_VOICE, self.noise3, 1, ATTN_NORM)
     if (self.spawnflags & SECRET_OPEN_ONCE) == 0 then
@@ -506,23 +545,31 @@ fd_secret_move3 = function(self)
 end
 
 -- Move backward...
+---@param self entity
+---@return nil
 fd_secret_move4 = function(self)
     quake.sound(self, CHAN_VOICE, self.noise2, 1, ATTN_NORM)
     subs.calc_move(self, self.dest1, self.speed, fd_secret_move5)
 end
 
 -- Wait 1 second...
+---@param self entity
+---@return nil
 fd_secret_move5 = function(self)
     self.nextthink = self.ltime + 1
     self.think = fd_secret_move6
     quake.sound(self, CHAN_VOICE, self.noise3, 1, ATTN_NORM)
 end
 
+---@param self entity
+---@return nil
 fd_secret_move6 = function(self)
     quake.sound(self, CHAN_VOICE, self.noise2, 1, ATTN_NORM)
     subs.calc_move(self, self.oldorigin, self.speed, fd_secret_done)
 end
 
+---@param self entity
+---@return nil
 fd_secret_done = function(self)
     if self.targetname == "" or (self.spawnflags & SECRET_YES_SHOOT) ~= 0 then
         self.health = 10000
@@ -533,19 +580,19 @@ fd_secret_done = function(self)
     quake.sound(self, CHAN_VOICE, self.noise3, 1, ATTN_NORM)
 end
 
+---@param self entity
+---@param other entity
+---@return nil
 local function secret_blocked(self, other)
     if quake.time() < self.attack_finished then return end
     self.attack_finished = quake.time() + 0.5
     combat.damage(other, self, self, self.dmg)
 end
 
---[[
-================
-secret_touch
-
-Prints messages
-================
-]]
+---Prints messages
+---@param self entity
+---@param other entity
+---@return nil
 local function secret_touch(self, other)
     if other.classname ~= "player" then return end
     if self.attack_finished > quake.time() then return end
@@ -556,22 +603,23 @@ local function secret_touch(self, other)
     end
 end
 
---[[QUAKED func_door_secret (0 .5 .8) ? open_once 1st_left 1st_down no_shoot always_shoot
-Basic secret door. Slides back, then to the side. Angle determines direction.
-wait = # of seconds before coming back
-1st_left = 1st move is left of arrow
-1st_down = 1st move is down from arrow
-always_shoot = even if targeted, keep shootable
-t_width = override WIDTH to move back (or height if going down)
-t_length = override LENGTH to move sideways
-"dmg" damage to inflict when blocked (2 default)
-
-If a secret door has a targetname, it will only be opened by it's botton or trigger, not by damage.
-"sounds"
-1) medieval
-2) metal
-3) base
-]]
+---QUAKED func_door_secret (0 .5 .8) ? open_once 1st_left 1st_down no_shoot always_shoot
+---Basic secret door. Slides back, then to the side. Angle determines direction.
+---wait = # of seconds before coming back
+---1st_left = 1st move is left of arrow
+---1st_down = 1st move is down from arrow
+---always_shoot = even if targeted, keep shootable
+---t_width = override WIDTH to move back (or height if going down)
+---t_length = override LENGTH to move sideways
+---"dmg" damage to inflict when blocked (2 default)
+---
+---If a secret door has a targetname, it will only be opened by it's botton or trigger, not by damage.
+---"sounds"
+---1) medieval
+---2) metal
+---3) base
+---@param self entity
+---@return nil
 function M.func_door_secret(self)
     if self.sounds == 0 then self.sounds = 3 end
     if self.sounds == 1 then

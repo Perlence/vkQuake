@@ -45,6 +45,9 @@ local hknight_char_a1
 local hknight_run1
 local hk_idle_sound
 
+---@param self entity
+---@param offset number
+---@return nil
 local function hknight_shot(self, offset)
     local offang = quake.vector_to_angles(self.enemy.origin - self.origin)
     offang = quake.vec3(offang.x, offang.y + offset * 6, offang.z)
@@ -66,6 +69,8 @@ local function hknight_shot(self, offset)
     quake.sound(self, CHAN_WEAPON, "hknight/attack1.wav", 1, C.ATTN_NORM)
 end
 
+---@param self entity
+---@return nil
 local function check_for_charge(self)
     -- check for mad charge
     if not quake.globals.enemy_vis then
@@ -88,6 +93,8 @@ local function check_for_charge(self)
     hknight_char_a1(self)
 end
 
+---@param self entity
+---@return nil
 local function check_continue_charge(self)
     if quake.time() > self.attack_finished then
         subs.attack_finished(self, 3)
@@ -209,6 +216,8 @@ hknight_dieb7 = animation.frame("deathb7", function() return hknight_dieb8 end)
 hknight_dieb8 = animation.frame("deathb8", function() return hknight_dieb9 end)
 hknight_dieb9 = animation.frame("deathb9", function() return hknight_dieb9 end)
 
+---@param self entity
+---@return nil
 local function hknight_die(self)
     -- check for gib
     if self.health < -40 then
@@ -390,12 +399,18 @@ hknight_watk22 = animation.frame("w_attack22", function() return hknight_run1 en
 
 --============================================================================
 
+---@param self entity
+---@return nil
 function hk_idle_sound(self)
     if quake.random() < 0.2 then
         quake.sound(self, C.CHAN_VOICE, "hknight/idle.wav", 1, C.ATTN_NORM)
     end
 end
 
+---@param self entity
+---@param _attacker entity
+---@param damage number
+---@return nil
 local function hknight_pain(self, _attacker, damage)
     if self.pain_finished > quake.time() then
         return
@@ -419,6 +434,8 @@ local function hknight_pain(self, _attacker, damage)
     hknight_pain1(self)
 end
 
+---@param self entity
+---@return nil
 local function hknight_melee(self)
     quake.globals.hknight_type = quake.globals.hknight_type + 1
 
@@ -433,8 +450,9 @@ local function hknight_melee(self)
     end
 end
 
---[[QUAKED monster_hell_knight (1 0 0) (-16 -16 -24) (16 16 40) Ambush
-]]
+---QUAKED monster_hell_knight (1 0 0) (-16 -16 -24) (16 16 40) Ambush
+---@param self entity
+---@return nil
 function M.spawn(self)
     if quake.cvar("deathmatch") ~= 0 then
         quake.remove(self)

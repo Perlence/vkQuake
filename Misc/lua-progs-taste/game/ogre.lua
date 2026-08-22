@@ -43,6 +43,8 @@ OGRE
 
 --=============================================================================
 
+---@param self entity
+---@return nil
 local function ogre_grenade_explode(self)
     combat.radius_damage(self, self.owner, 40, quake.world)
     quake.sound(self, C.CHAN_VOICE, "weapons/r_exp3.wav", 1, C.ATTN_NORM)
@@ -58,6 +60,9 @@ local function ogre_grenade_explode(self)
     weapons.explode(self)
 end
 
+---@param self entity
+---@param other entity
+---@return nil
 local function ogre_grenade_touch(self, other)
     if other == self.owner then return end -- don't explode on owner
     if other.takedamage == C.DAMAGE_AIM then ogre_grenade_explode(self); return end
@@ -66,11 +71,8 @@ local function ogre_grenade_touch(self, other)
     if self.velocity == quake.vec3(0, 0, 0) then self.avelocity = quake.vec3(0, 0, 0) end
 end
 
---[[
-================
-OgreFireGrenade
-================
-]]
+---@param self entity
+---@return nil
 local function ogre_fire_grenade(self)
     self.effects = self.effects | C.EF_MUZZLEFLASH
     quake.sound(self, C.CHAN_WEAPON, "weapons/grenade.wav", 1, C.ATTN_NORM)
@@ -96,13 +98,10 @@ end
 
 --=============================================================================
 
---[[
-================
-chainsaw
-
-FIXME
-================
-]]
+---FIXME
+---@param self entity
+---@param side number
+---@return nil
 local function chainsaw(self, side)
     if not self.enemy then return end
     if not combat.can_damage(self.enemy, self) then return end
@@ -265,6 +264,10 @@ ogre_paine13 = animation.frame("paine13", function() return ogre_paine14 end)
 ogre_paine14 = animation.frame("paine14", function() return ogre_paine15 end)
 ogre_paine15 = animation.frame("paine15", function() return ogre_run1 end)
 
+---@param self entity
+---@param _attacker entity
+---@param _damage number
+---@return nil
 local function ogre_pain_callback(self, _attacker, _damage)
     -- don't make multiple pain sounds right after each other
     if self.pain_finished > quake.time() then return end
@@ -307,6 +310,8 @@ ogre_bdie8 = animation.frame("bdeath8", function() return ogre_bdie9 end)
 ogre_bdie9 = animation.frame("bdeath9", function() return ogre_bdie10 end)
 ogre_bdie10 = animation.frame("bdeath10", function() return ogre_bdie10 end)
 
+---@param self entity
+---@return nil
 local function ogre_die_callback(self)
     -- check for gib
     if self.health < -80 then
@@ -321,12 +326,15 @@ local function ogre_die_callback(self)
     if quake.random() < 0.5 then ogre_die1(self) else ogre_bdie1(self) end
 end
 
+---@param self entity
+---@return nil
 local function ogre_melee(self)
     if quake.random() > 0.5 then ogre_smash1(self) else ogre_swing1(self) end
 end
 
---[[QUAKED monster_ogre (1 0 0) (-32 -32 -24) (32 32 64) Ambush
-]]
+---QUAKED monster_ogre (1 0 0) (-32 -32 -24) (32 32 64) Ambush
+---@param self entity
+---@return nil
 function M.spawn(self)
     if quake.cvar("deathmatch") ~= 0 then quake.remove(self); return end
     quake.precache_model("progs/ogre.mdl")
@@ -354,6 +362,8 @@ function M.spawn(self)
     monsters.walk_start(self)
 end
 
+---@param self entity
+---@return nil
 function M.spawn_marksman(self) M.spawn(self) end
 
 quake.register_entity("monster_ogre", M.spawn)

@@ -127,6 +127,10 @@ knight_painb9 = animation.frame("painb9", function() return knight_painb10 end, 
 knight_painb10 = animation.frame("painb10", function() return knight_painb11 end, function(self) ai.pain_forward(self, 0) end)
 knight_painb11 = animation.frame("painb11", function() return knight_run1 end)
 
+---@param self entity
+---@param _attacker entity
+---@param _damage number
+---@return nil
 local function knight_pain(self, _attacker, _damage)
     local r
 
@@ -187,6 +191,8 @@ knight_dieb9 = animation.frame("deathb9", function() return knight_dieb10 end)
 knight_dieb10 = animation.frame("deathb10", function() return knight_dieb11 end)
 knight_dieb11 = animation.frame("deathb11", function() return knight_dieb11 end)
 
+---@param self entity
+---@return nil
 local function knight_die(self)
     -- check for gib
     if self.health < -40 then
@@ -203,8 +209,9 @@ local function knight_die(self)
     if quake.random() < 0.5 then knight_die1(self) else knight_dieb1(self) end
 end
 
---[[QUAKED monster_knight (1 0 0) (-16 -16 -24) (16 16 40) Ambush
-]]
+---QUAKED monster_knight (1 0 0) (-16 -16 -24) (16 16 40) Ambush
+---@param self entity
+---@return nil
 function M.spawn(self)
     if quake.cvar("deathmatch") ~= 0 then quake.remove(self); return end
     quake.precache_model("progs/knight.mdl")

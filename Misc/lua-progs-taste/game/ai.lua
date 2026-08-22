@@ -64,6 +64,8 @@ walkmove(angle, speed) primitive is all or nothing
 -- as the sight target the next frame so that monsters near that one
 -- will wake up even if they wouldn't have noticed the player
 --
+---@param v number
+---@return number
 function M.angle_mod(v)
     while v >= 360 do
         v = v - 360
@@ -95,6 +97,8 @@ The number of seconds to spend standing or bowing for path_stand or path_bow
 
 local t_movetarget
 
+---@param self entity
+---@return nil
 function M.movetarget_f(self)
     if self.targetname == "" then
         quake.object_error("monster_movetarget: no targetname")
@@ -105,21 +109,19 @@ function M.movetarget_f(self)
     quake.set_size(self, quake.vec3(-8, -8, -8), quake.vec3(8, 8, 8))
 end
 
---[[QUAKED path_corner (0.5 0.3 0) (-8 -8 -8) (8 8 8)
-Monsters will continue walking towards the next target corner.
-]]
+---QUAKED path_corner (0.5 0.3 0) (-8 -8 -8) (8 8 8)
+---Monsters will continue walking towards the next target corner.
+---@param self entity
+---@return nil
 function M.path_corner(self)
     M.movetarget_f(self)
 end
 
---[[
-=============
-t_movetarget
-
-Something has bumped into a movetarget.  If it is a monster
-moving towards it, change the next destination and continue.
-==============
-]]
+---Something has bumped into a movetarget.  If it is a monster
+---moving towards it, change the next destination and continue.
+---@param self entity
+---@param other entity
+---@return nil
 t_movetarget = function(self, other)
     if other.movetarget ~= self then
         return
@@ -152,17 +154,14 @@ quake.register_entity("path_corner", M.path_corner)
 
 --============================================================================
 
---[[
-=============
-range
-
-returns the range catagorization of an entity reletive to self
-0 melee range, will become hostile even if back is turned
-1 visibility and infront, or visibility and show hostile
-2 infront and show hostile
-3 only triggered by damage
-=============
-]]
+---returns the range catagorization of an entity reletive to self
+---0 melee range, will become hostile even if back is turned
+---1 visibility and infront, or visibility and show hostile
+---2 infront and show hostile
+---3 only triggered by damage
+---@param self entity
+---@param targ entity
+---@return integer
 function M.range(self, targ)
     local spot1 = self.origin + self.view_ofs
     local spot2 = targ.origin + targ.view_ofs
@@ -180,13 +179,10 @@ function M.range(self, targ)
     return C.RANGE_FAR
 end
 
---[[
-=============
-visible
-
-returns 1 if the entity is visible to self, even if not infront ()
-=============
-]]
+---returns 1 if the entity is visible to self, even if not infront ()
+---@param self entity
+---@param targ entity
+---@return boolean
 function M.visible(self, targ)
     local spot1 = self.origin + self.view_ofs
     local spot2 = targ.origin + targ.view_ofs
@@ -202,13 +198,10 @@ function M.visible(self, targ)
     return false
 end
 
---[[
-=============
-infront
-
-returns 1 if the entity is in front (in sight) of self
-=============
-]]
+---returns 1 if the entity is in front (in sight) of self
+---@param self entity
+---@param targ entity
+---@return boolean
 function M.in_front(self, targ)
     local forward = quake.make_vectors(self.angles).forward
     local vec = (targ.origin - self.origin):normalized()
@@ -222,6 +215,8 @@ end
 
 --============================================================================
 
+---@param self entity
+---@return nil
 function M.hunt_target(self)
     self.goalentity = self.enemy
     self.think = self.th_run
@@ -230,6 +225,8 @@ function M.hunt_target(self)
     subs.attack_finished(self, 1) -- wait a while before first attack
 end
 
+---@param self entity
+---@return nil
 function M.sight_sound(self)
     local rsnd
 
@@ -269,6 +266,8 @@ function M.sight_sound(self)
     end
 end
 
+---@param self entity
+---@return nil
 function M.found_target(self)
     if self.enemy.classname == "player" then
         -- let other monsters see this monster for a while
@@ -282,23 +281,19 @@ function M.found_target(self)
     M.hunt_target(self)
 end
 
---[[
-===========
-FindTarget
-
-Self is currently not attacking anything, so try to find a target
-
-Returns TRUE if an enemy was sighted
-
-When a player fires a missile, the point of impact becomes a fakeplayer so
-that monsters that see the impact will respond as if they had seen the
-player.
-
-To avoid spending too much time, only a single client (or fakeclient) is
-checked each frame.  This means multi player games will have slightly
-slower noticing monsters.
-============
-]]
+---Self is currently not attacking anything, so try to find a target
+---
+---Returns TRUE if an enemy was sighted
+---
+---When a player fires a missile, the point of impact becomes a fakeplayer so
+---that monsters that see the impact will respond as if they had seen the
+---player.
+---
+---To avoid spending too much time, only a single client (or fakeclient) is
+---checked each frame.  This means multi player games will have slightly
+---slower noticing monsters.
+---@param self entity
+---@return boolean
 function M.find_target(self)
     local client
 
@@ -369,43 +364,40 @@ end
 
 --=============================================================================
 
+---@param self entity
+---@param dist number
+---@return nil
 function M.forward(self, dist)
     quake.walk_move(self, self.angles.y, dist)
 end
 
+---@param self entity
+---@param dist number
+---@return nil
 function M.back(self, dist)
     quake.walk_move(self, self.angles.y + 180, dist)
 end
 
---[[
-=============
-ai_pain
-
-stagger back a bit
-=============
-]]
+---stagger back a bit
+---@param self entity
+---@param dist number
+---@return nil
 function M.pain(self, dist)
     M.back(self, dist)
 end
 
---[[
-=============
-ai_painforward
-
-stagger back a bit
-=============
-]]
+---stagger back a bit
+---@param self entity
+---@param dist number
+---@return nil
 function M.pain_forward(self, dist)
     quake.walk_move(self, self.ideal_yaw, dist)
 end
 
---[[
-=============
-ai_walk
-
-The monster is walking it's beat
-=============
-]]
+---The monster is walking it's beat
+---@param self entity
+---@param dist number
+---@return nil
 function M.walk(self, dist)
     quake.globals.movedist = dist
 
@@ -417,13 +409,9 @@ function M.walk(self, dist)
     quake.move_to_goal(self, dist)
 end
 
---[[
-=============
-ai_stand
-
-The monster is staying in one place for a while, with slight angle turns
-=============
-]]
+---The monster is staying in one place for a while, with slight angle turns
+---@param self entity
+---@return nil
 function M.stand(self)
     if M.find_target(self) then
         return
@@ -435,13 +423,9 @@ function M.stand(self)
     end
 end
 
---[[
-=============
-ai_turn
-
-don't move, but turn towards ideal_yaw
-=============
-]]
+---don't move, but turn towards ideal_yaw
+---@param self entity
+---@return nil
 function M.turn(self)
     if M.find_target(self) then
         return
@@ -452,11 +436,9 @@ end
 
 --=============================================================================
 
---[[
-=============
-ChooseTurn
-=============
-]]
+---@param self entity
+---@param dest3 vec3
+---@return nil
 function M.choose_turn(self, dest3)
     local dir = self.origin - dest3
     local normal = quake.globals.trace_plane_normal
@@ -471,12 +453,8 @@ function M.choose_turn(self, dest3)
     self.ideal_yaw = quake.vector_to_yaw(dir)
 end
 
---[[
-============
-FacingIdeal
-
-============
-]]
+---@param self entity
+---@return boolean
 function M.facing_ideal(self)
     local delta = M.angle_mod(self.angles.y - self.ideal_yaw)
     if delta > 45 and delta < 315 then
@@ -487,6 +465,10 @@ end
 
 --=============================================================================
 
+---@param self entity
+---@param enemy_vis boolean
+---@param enemy_range integer
+---@return boolean
 function M.check_any_attack(self, enemy_vis, enemy_range)
     if not enemy_vis then
         return false
@@ -512,13 +494,10 @@ function M.check_any_attack(self, enemy_vis, enemy_range)
     return fight.check_attack(self, enemy_range)
 end
 
---[[
-=============
-ai_run_melee
-
-Turn and close until within an angle to launch a melee attack
-=============
-]]
+---Turn and close until within an angle to launch a melee attack
+---@param self entity
+---@param enemy_yaw number
+---@return nil
 function M.run_melee(self, enemy_yaw)
     self.ideal_yaw = enemy_yaw
     quake.change_yaw(self)
@@ -529,13 +508,10 @@ function M.run_melee(self, enemy_yaw)
     end
 end
 
---[[
-=============
-ai_run_missile
-
-Turn in place until within an angle to launch a missile attack
-=============
-]]
+---Turn in place until within an angle to launch a missile attack
+---@param self entity
+---@param enemy_yaw number
+---@return nil
 function M.run_missile(self, enemy_yaw)
     self.ideal_yaw = enemy_yaw
     quake.change_yaw(self)
@@ -545,13 +521,11 @@ function M.run_missile(self, enemy_yaw)
     end
 end
 
---[[
-=============
-ai_run_slide
-
-Strafe sideways, but stay at aproximately the same range
-=============
-]]
+---Strafe sideways, but stay at aproximately the same range
+---@param self entity
+---@param enemy_yaw number
+---@param movedist number
+---@return nil
 function M.run_slide(self, enemy_yaw, movedist)
     self.ideal_yaw = enemy_yaw
     quake.change_yaw(self)
@@ -571,13 +545,10 @@ function M.run_slide(self, enemy_yaw, movedist)
     quake.walk_move(self, self.ideal_yaw - ofs, movedist)
 end
 
---[[
-=============
-ai_run
-
-The monster has an enemy it is trying to kill
-=============
-]]
+---The monster has an enemy it is trying to kill
+---@param self entity
+---@param dist number
+---@return nil
 function M.run(self, dist)
     quake.globals.movedist = dist
     -- see if the enemy is dead

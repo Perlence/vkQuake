@@ -50,15 +50,14 @@ will duck back out and catch it.
 ==============================================================================
 ]]
 
---[[
-=============
-LaunchMissile
-
-Sets the given entities velocity and angles so that it will hit self.enemy
-if self.enemy maintains it's current velocity
-0.1 is moderately accurate, 0.0 is totally accurate
-=============
-]]
+---Sets the given entities velocity and angles so that it will hit self.enemy
+---if self.enemy maintains it's current velocity
+---0.1 is moderately accurate, 0.0 is totally accurate
+---@param self entity
+---@param missile entity
+---@param mspeed number
+---@param accuracy number
+---@return nil
 local function launch_missile(self, missile, mspeed, accuracy)
     local vectors = quake.make_vectors(self.angles)
     -- set missile speed
@@ -80,11 +79,8 @@ end
 
 local wiz_run1, wiz_side1
 
---[[
-=================
-WizardCheckAttack
-=================
-]]
+---@param self entity
+---@return boolean
 function M.check_attack(self)
     local enemy_range = quake.globals.enemy_range
     if quake.time() < self.attack_finished then return false end
@@ -117,11 +113,8 @@ function M.check_attack(self)
     return false
 end
 
---[[
-=================
-WizardAttackFinished
-=================
-]]
+---@param self entity
+---@return nil
 local function wizard_attack_finished(self)
     if quake.globals.enemy_range >= C.RANGE_MID or not quake.globals.enemy_vis then
         self.attack_state = C.AS_STRAIGHT
@@ -140,6 +133,8 @@ FAST ATTACKS
 ==============================================================================
 ]]
 
+---@param self entity
+---@return nil
 local function wiz_fast_fire(self)
     if self.owner.health > 0 then
         self.owner.effects = self.owner.effects | C.EF_MUZZLEFLASH
@@ -158,6 +153,8 @@ local function wiz_fast_fire(self)
     quake.remove(self)
 end
 
+---@param self entity
+---@return nil
 local function wiz_start_fast(self)
     quake.sound(self, C.CHAN_WEAPON, "wizard/wattack.wav", 1, C.ATTN_NORM)
     self.v_angle = self.angles
@@ -182,6 +179,8 @@ local function wiz_start_fast(self)
     missile.movedir = C.VEC_ORIGIN - vectors.right
 end
 
+---@param self entity
+---@return nil
 local function wiz_idle_sound(self)
     local wr = quake.random() * 5
     if self.waitmin < quake.time() then
@@ -273,6 +272,8 @@ wiz_death6 = animation.frame("death6", function() return wiz_death7 end)
 wiz_death7 = animation.frame("death7", function() return wiz_death8 end)
 wiz_death8 = animation.frame("death8", function() return wiz_death8 end)
 
+---@param self entity
+---@return nil
 local function wiz_die(self)
     -- check for gib
     if self.health < -40 then
@@ -286,16 +287,23 @@ local function wiz_die(self)
     wiz_death1(self)
 end
 
+---@param self entity
+---@param _attacker entity
+---@param damage number
+---@return nil
 local function wiz_pain_callback(self, _attacker, damage)
     quake.sound(self, C.CHAN_VOICE, "wizard/wpain.wav", 1, C.ATTN_NORM)
     if quake.random() * 70 > damage then return end -- didn't flinch
     wiz_pain1(self)
 end
 
+---@param self entity
+---@return nil
 local function wiz_missile(self) wiz_fast1(self) end
 
---[[QUAKED monster_wizard (1 0 0) (-16 -16 -24) (16 16 40) Ambush
-]]
+---QUAKED monster_wizard (1 0 0) (-16 -16 -24) (16 16 40) Ambush
+---@param self entity
+---@return nil
 function M.spawn(self)
     if quake.cvar("deathmatch") ~= 0 then quake.remove(self); return end
     quake.precache_model("progs/wizard.mdl")

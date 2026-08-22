@@ -34,6 +34,8 @@ local MSG_BROADCAST, MSG_ALL = 0, 2
 local SVC_TEMPENTITY, SVC_FOUNDSECRET, TE_TELEPORT = 23, 28, 11
 local FL_FLY, FL_SWIM, FL_ONGROUND, FL_MONSTER = 1, 2, 512, 32
 
+---@param self entity
+---@return nil
 local function trigger_reactivate(self)
     self.solid = SOLID_TRIGGER
 end
@@ -44,6 +46,8 @@ local SPAWNFLAG_NOMESSAGE = 1
 local SPAWNFLAG_NOTOUCH = 1
 
 -- the wait time has passed, so set back up for another activation
+---@param self entity
+---@return nil
 local function multi_wait(self)
     if self.max_health ~= 0 then
         self.health = self.max_health
@@ -55,6 +59,8 @@ end
 -- the trigger was just touched/killed/used
 -- self.enemy should be set to the activator so it can be held through a delay
 -- so wait for the delay time before firing
+---@param self entity
+---@return nil
 local function multi_trigger(self)
     if self.nextthink > quake.time() then
         -- already been triggered
@@ -87,16 +93,24 @@ local function multi_trigger(self)
     end
 end
 
+---@param self entity
+---@return nil
 local function multi_killed(self)
     self.enemy = quake.globals.damage_attacker
     multi_trigger(self)
 end
 
+---@param self entity
+---@param activator entity
+---@return nil
 local function multi_use(self, activator)
     self.enemy = activator
     multi_trigger(self)
 end
 
+---@param self entity
+---@param other entity
+---@return nil
 local function multi_touch(self, other)
     if other.classname ~= "player" then return end
 
@@ -113,19 +127,20 @@ local function multi_touch(self, other)
     multi_trigger(self)
 end
 
---[[QUAKED trigger_multiple (.5 .5 .5) ? notouch
-Variable sized repeatable trigger. Must be targeted at one or more entities. If "health" is set, the trigger must be killed to activate each time.
-If "delay" is set, the trigger waits some time after activating before firing.
-"wait" : Seconds between triggerings. (.2 default)
-If notouch is set, the trigger is only fired by other entities, not by touching.
-NOTOUCH has been obsoleted by trigger_relay!
-sounds
-1) secret
-2) beep beep
-3) large switch
-4)
-set "message" to text string
-]]
+---QUAKED trigger_multiple (.5 .5 .5) ? notouch
+---Variable sized repeatable trigger. Must be targeted at one or more entities. If "health" is set, the trigger must be killed to activate each time.
+---If "delay" is set, the trigger waits some time after activating before firing.
+---"wait" : Seconds between triggerings. (.2 default)
+---If notouch is set, the trigger is only fired by other entities, not by touching.
+---NOTOUCH has been obsoleted by trigger_relay!
+---sounds
+---1) secret
+---2) beep beep
+---3) large switch
+---4)
+---set "message" to text string
+---@param self entity
+---@return nil
 function M.trigger_multiple(self)
     if self.sounds == 1 then
         quake.precache_sound("misc/secret.wav"); self.noise = "misc/secret.wav"
@@ -154,19 +169,20 @@ function M.trigger_multiple(self)
     end
 end
 
---[[QUAKED trigger_once (.5 .5 .5) ? notouch
-Variable sized trigger. Triggers once, then removes itself. You must set the key "target" to the name of another object in the level that has a matching
-"targetname". If "health" is set, the trigger must be killed to activate.
-If notouch is set, the trigger is only fired by other entities, not by touching.
-if "killtarget" is set, any objects that have a matching "target" will be removed when the trigger is fired.
-if "angle" is set, the trigger will only fire when someone is facing the direction of the angle. Use "360" for an angle of 0.
-sounds
-1) secret
-2) beep beep
-3) large switch
-4)
-set "message" to text string
-]]
+---QUAKED trigger_once (.5 .5 .5) ? notouch
+---Variable sized trigger. Triggers once, then removes itself. You must set the key "target" to the name of another object in the level that has a matching
+---"targetname". If "health" is set, the trigger must be killed to activate.
+---If notouch is set, the trigger is only fired by other entities, not by touching.
+---if "killtarget" is set, any objects that have a matching "target" will be removed when the trigger is fired.
+---if "angle" is set, the trigger will only fire when someone is facing the direction of the angle. Use "360" for an angle of 0.
+---sounds
+---1) secret
+---2) beep beep
+---3) large switch
+---4)
+---set "message" to text string
+---@param self entity
+---@return nil
 function M.trigger_once(self)
     self.wait = -1
     M.trigger_multiple(self)
@@ -174,24 +190,26 @@ end
 
 --=============================================================================
 
---[[QUAKED trigger_relay (.5 .5 .5) (-8 -8 -8) (8 8 8)
-This fixed size trigger cannot be touched, it can only be fired by other events. It can contain killtargets, targets, delays, and messages.
-]]
+---QUAKED trigger_relay (.5 .5 .5) (-8 -8 -8) (8 8 8)
+---This fixed size trigger cannot be touched, it can only be fired by other events. It can contain killtargets, targets, delays, and messages.
+---@param self entity
+---@return nil
 function M.trigger_relay(self)
     self.use = subs.use_targets
 end
 
 --=============================================================================
 
---[[QUAKED trigger_secret (.5 .5 .5) ?
-secret counter trigger
-sounds
-1) secret
-2) beep beep
-3)
-4)
-set "message" to text string
-]]
+---QUAKED trigger_secret (.5 .5 .5) ?
+---secret counter trigger
+---sounds
+---1) secret
+---2) beep beep
+---3)
+---4)
+---set "message" to text string
+---@param self entity
+---@return nil
 function M.trigger_secret(self)
     quake.globals.total_secrets = quake.globals.total_secrets + 1
     self.wait = -1
@@ -208,6 +226,9 @@ end
 
 --=============================================================================
 
+---@param self entity
+---@param activator entity
+---@return nil
 local function counter_use(self, activator)
     self.count = self.count - 1
     if self.count < 0 then return end
@@ -229,13 +250,14 @@ local function counter_use(self, activator)
     multi_trigger(self)
 end
 
---[[QUAKED trigger_counter (.5 .5 .5) ? nomessage
-Acts as an intermediary for an action that takes multiple inputs.
-
-If nomessage is not set, t will print "1 more.. " etc when triggered and "sequence complete" when finished.
-
-After the counter has been triggered "count" times (default 2), it will fire all of it's targets and remove itself.
-]]
+---QUAKED trigger_counter (.5 .5 .5) ? nomessage
+---Acts as an intermediary for an action that takes multiple inputs.
+---
+---If nomessage is not set, t will print "1 more.. " etc when triggered and "sequence complete" when finished.
+---
+---After the counter has been triggered "count" times (default 2), it will fire all of it's targets and remove itself.
+---@param self entity
+---@return nil
 function M.trigger_counter(self)
     self.wait = -1
     if self.count == 0 then self.count = 2 end
@@ -252,6 +274,8 @@ TELEPORT TRIGGERS
 
 local PLAYER_ONLY, SILENT = 1, 2
 
+---@param self entity
+---@return nil
 local function play_teleport(self)
     local v = quake.random() * 5
     local tmpstr
@@ -264,6 +288,8 @@ local function play_teleport(self)
     quake.remove(self)
 end
 
+---@param org vec3
+---@return nil
 function M.spawn_tfog(org)
     local s = quake.spawn()
     s.origin = org
@@ -277,6 +303,9 @@ function M.spawn_tfog(org)
     quake.write_coord(MSG_BROADCAST, org.z)
 end
 
+---@param self entity
+---@param other entity
+---@return nil
 local function tdeath_touch(self, other)
     if other == self.owner then return end
 
@@ -292,6 +321,9 @@ local function tdeath_touch(self, other)
     if other.health ~= 0 then combat.damage(other, self, self, 50000) end
 end
 
+---@param org vec3
+---@param death_owner entity
+---@return nil
 function M.spawn_tdeath(org, death_owner)
     local death = quake.spawn()
     death.classname = "teledeath"
@@ -308,6 +340,9 @@ function M.spawn_tdeath(org, death_owner)
     quake.globals.force_retouch = 2 -- make sure even still objects get hit
 end
 
+---@param self entity
+---@param other entity
+---@return nil
 local function teleport_touch(self, other)
     local t, org
 
@@ -352,9 +387,10 @@ local function teleport_touch(self, other)
     other.flags = other.flags - (other.flags & FL_ONGROUND)
 end
 
---[[QUAKED info_teleport_destination (.5 .5 .5) (-8 -8 -8) (8 8 32)
-This is the destination marker for a teleporter. It should have a "targetname" field with the same value as a teleporter's "target" field.
-]]
+---QUAKED info_teleport_destination (.5 .5 .5) (-8 -8 -8) (8 8 32)
+---This is the destination marker for a teleporter. It should have a "targetname" field with the same value as a teleporter's "target" field.
+---@param self entity
+---@return nil
 function M.info_teleport_destination(self)
     -- this does nothing, just serves as a target spot
     self.mangle = self.angles
@@ -364,17 +400,21 @@ function M.info_teleport_destination(self)
     if self.targetname == "" then quake.object_error(self, "no targetname") end
 end
 
+---@param self entity
+---@param _activator entity
+---@return nil
 local function teleport_use(self, _activator)
     self.nextthink = quake.time() + 0.2
     quake.globals.force_retouch = 2 -- make sure even still objects get hit
     self.think = subs.null
 end
 
---[[QUAKED trigger_teleport (.5 .5 .5) ? PLAYER_ONLY SILENT
-Any object touching this will be transported to the corresponding info_teleport_destination entity. You must set the "target" field, and create an object with a "targetname" field that matches.
-
-If the trigger_teleport has a targetname, it will only teleport entities when it has been fired.
-]]
+---QUAKED trigger_teleport (.5 .5 .5) ? PLAYER_ONLY SILENT
+---Any object touching this will be transported to the corresponding info_teleport_destination entity. You must set the "target" field, and create an object with a "targetname" field that matches.
+---
+---If the trigger_teleport has a targetname, it will only teleport entities when it has been fired.
+---@param self entity
+---@return nil
 function M.trigger_teleport(self)
     subs.init_trigger(self)
     self.touch = teleport_touch
@@ -397,16 +437,20 @@ trigger_setskill
 ==============================================================================
 ]]
 
+---@param self entity
+---@param other entity
+---@return nil
 local function trigger_skill_touch(self, other)
     if other.classname ~= "player" then return end
     quake.cvar_set("skill", self.message)
     quake.globals.skill = tonumber(self.message)
 end
 
---[[QUAKED trigger_setskill (.5 .5 .5) ?
-sets skill level to the value of "message".
-Only used on start map.
-]]
+---QUAKED trigger_setskill (.5 .5 .5) ?
+---sets skill level to the value of "message".
+---Only used on start map.
+---@param self entity
+---@return nil
 function M.trigger_setskill(self)
     subs.init_trigger(self)
     self.touch = trigger_skill_touch
@@ -420,6 +464,9 @@ ONLY REGISTERED TRIGGERS
 ==============================================================================
 ]]
 
+---@param self entity
+---@param other entity
+---@return nil
 local function trigger_onlyregistered_touch(self, other)
     if other.classname ~= "player" then return end
     if self.attack_finished > quake.time() then return end
@@ -435,9 +482,10 @@ local function trigger_onlyregistered_touch(self, other)
     end
 end
 
---[[QUAKED trigger_onlyregistered (.5 .5 .5) ?
-Only fires if playing the registered version, otherwise prints the message
-]]
+---QUAKED trigger_onlyregistered (.5 .5 .5) ?
+---Only fires if playing the registered version, otherwise prints the message
+---@param self entity
+---@return nil
 function M.trigger_onlyregistered(self)
     quake.precache_sound("misc/talk.wav")
     subs.init_trigger(self)
@@ -446,11 +494,16 @@ end
 
 --============================================================================
 
+---@param self entity
+---@return nil
 local function hurt_on(self)
     self.solid = SOLID_TRIGGER
     self.nextthink = -1
 end
 
+---@param self entity
+---@param other entity
+---@return nil
 local function hurt_touch(self, other)
     if other.takedamage ~= 0 then
         self.solid = SOLID_NOT
@@ -460,11 +513,12 @@ local function hurt_touch(self, other)
     end
 end
 
---[[QUAKED trigger_hurt (.5 .5 .5) ?
-Any object touching this will be hurt
-set dmg to damage amount
-defalt dmg = 5
-]]
+---QUAKED trigger_hurt (.5 .5 .5) ?
+---Any object touching this will be hurt
+---set dmg to damage amount
+---defalt dmg = 5
+---@param self entity
+---@return nil
 function M.trigger_hurt(self)
     subs.init_trigger(self)
     self.touch = hurt_touch
@@ -475,6 +529,9 @@ end
 
 local PUSH_ONCE = 1
 
+---@param self entity
+---@param other entity
+---@return nil
 local function trigger_push_touch(self, other)
     if other.classname == "grenade" then
         other.velocity = self.movedir * self.speed * 10
@@ -488,9 +545,10 @@ local function trigger_push_touch(self, other)
     if (self.spawnflags & PUSH_ONCE) ~= 0 then quake.remove(self) end
 end
 
---[[QUAKED trigger_push (.5 .5 .5) ? PUSH_ONCE
-Pushes the player
-]]
+---QUAKED trigger_push (.5 .5 .5) ? PUSH_ONCE
+---Pushes the player
+---@param self entity
+---@return nil
 function M.trigger_push(self)
     subs.init_trigger(self)
     quake.precache_sound("ambience/windfly.wav")
@@ -500,6 +558,9 @@ end
 
 --============================================================================
 
+---@param self entity
+---@param other entity
+---@return nil
 local function trigger_monsterjump_touch(self, other)
     if (other.flags & (FL_MONSTER | FL_FLY | FL_SWIM)) ~= FL_MONSTER then return end
 
@@ -510,11 +571,12 @@ local function trigger_monsterjump_touch(self, other)
     other.velocity = quake.vec3(other.velocity.x, other.velocity.y, self.height)
 end
 
---[[QUAKED trigger_monsterjump (.5 .5 .5) ?
-Walking monsters that touch this will jump in the direction of the trigger's angle
-"speed" default to 200, the speed thrown forward
-"height" default to 200, the speed thrown upwards
-]]
+---QUAKED trigger_monsterjump (.5 .5 .5) ?
+---Walking monsters that touch this will jump in the direction of the trigger's angle
+---"speed" default to 200, the speed thrown forward
+---"height" default to 200, the speed thrown upwards
+---@param self entity
+---@return nil
 function M.trigger_monsterjump(self)
     if self.speed == 0 then self.speed = 200 end
     if self.height == 0 then self.height = 200 end

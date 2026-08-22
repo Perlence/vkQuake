@@ -123,6 +123,10 @@ demon1_pain4 = animation.frame("pain4", function() return demon1_pain5 end)
 demon1_pain5 = animation.frame("pain5", function() return demon1_pain6 end)
 demon1_pain6 = animation.frame("pain6", function() return demon1_run1 end)
 
+---@param self entity
+---@param _attacker entity
+---@param damage number
+---@return nil
 local function demon1_pain(self, _attacker, damage)
     if self.touch == demon_jump_touch then return end
     if self.pain_finished > quake.time() then return end
@@ -144,6 +148,8 @@ demon1_die7 = animation.frame("death7", function() return demon1_die8 end)
 demon1_die8 = animation.frame("death8", function() return demon1_die9 end)
 demon1_die9 = animation.frame("death9", function() return demon1_die9 end)
 
+---@param self entity
+---@return nil
 local function demon_die(self)
     -- check for gib
     if self.health < -80 then
@@ -158,10 +164,13 @@ local function demon_die(self)
     demon1_die1(self)
 end
 
+---@param self entity
+---@return nil
 local function demon_melee_attack(self) demon1_atta1(self) end
 
---[[QUAKED monster_demon1 (1 0 0) (-32 -32 -24) (32 32 64) Ambush
-]]
+---QUAKED monster_demon1 (1 0 0) (-32 -32 -24) (32 32 64) Ambush
+---@param self entity
+---@return nil
 function M.spawn(self)
     if quake.cvar("deathmatch") ~= 0 then quake.remove(self); return end
     quake.precache_model("progs/demon.mdl")
@@ -196,13 +205,9 @@ DEMON
 ==============================================================================
 ]]
 
---[[
-==============
-CheckDemonMelee
-
-Returns TRUE if a melee attack would hit right now
-==============
-]]
+---Returns TRUE if a melee attack would hit right now
+---@param self entity
+---@return boolean
 local function check_demon_melee(self)
     if quake.globals.enemy_range == C.RANGE_MELEE then
         -- FIXME: check canreach
@@ -212,12 +217,8 @@ local function check_demon_melee(self)
     return false
 end
 
---[[
-==============
-CheckDemonJump
-
-==============
-]]
+---@param self entity
+---@return boolean
 local function check_demon_jump(self)
     if self.origin.z + self.mins.z > self.enemy.origin.z + self.enemy.mins.z + 0.75 * self.enemy.size.z then return false end
     if self.origin.z + self.maxs.z < self.enemy.origin.z + self.enemy.mins.z + 0.25 * self.enemy.size.z then return false end
@@ -229,6 +230,8 @@ local function check_demon_jump(self)
     return true
 end
 
+---@param self entity
+---@return boolean
 function M.check_attack(self)
     -- if close enough for slashing, go for it
     if check_demon_melee(self) then self.attack_state = C.AS_MELEE; return true end
@@ -242,6 +245,9 @@ end
 
 --===========================================================================
 
+---@param self entity
+---@param side number
+---@return nil
 function demon_melee(self, side)
     fight.face(self)
     quake.walk_move(self, self.ideal_yaw, 12) -- allow a little closing
@@ -255,6 +261,9 @@ function demon_melee(self, side)
     weapons.spawn_meat_spray(self, self.origin + vectors.forward * 16, side * vectors.right)
 end
 
+---@param self entity
+---@param other entity
+---@return nil
 function demon_jump_touch(self, other)
     if self.health <= 0 then return end
     if other.takedamage ~= 0 and self.velocity:length() > 400 then

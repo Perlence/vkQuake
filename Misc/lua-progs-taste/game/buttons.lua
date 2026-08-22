@@ -33,6 +33,8 @@ local CHAN_VOICE, ATTN_NORM = 2, 1
 
 local button_wait, button_return
 
+---@param self entity
+---@return nil
 button_wait = function(self)
     self.state = STATE_TOP
     self.nextthink = self.ltime + self.wait
@@ -42,10 +44,14 @@ button_wait = function(self)
     self.frame = 1 -- use alternate textures
 end
 
+---@param self entity
+---@return nil
 local function button_done(self)
     self.state = STATE_BOTTOM
 end
 
+---@param self entity
+---@return nil
 button_return = function(self)
     self.state = STATE_DOWN
     subs.calc_move(self, self.pos1, self.speed, button_done)
@@ -56,9 +62,14 @@ button_return = function(self)
 end
 
 -- do nothing, just don't ome all the way back out
+---@param _self entity
+---@param _other entity
+---@return nil
 local function button_blocked(_self, _other)
 end
 
+---@param self entity
+---@return nil
 local function button_fire(self)
     if self.state == STATE_UP or self.state == STATE_TOP then
         return
@@ -70,11 +81,17 @@ local function button_fire(self)
     subs.calc_move(self, self.pos2, self.speed, button_wait)
 end
 
+---@param self entity
+---@param activator entity
+---@return nil
 local function button_use(self, activator)
     self.enemy = activator
     button_fire(self)
 end
 
+---@param self entity
+---@param other entity
+---@return nil
 local function button_touch(self, other)
     if other.classname ~= "player" then
         return
@@ -83,6 +100,8 @@ local function button_touch(self, other)
     button_fire(self)
 end
 
+---@param self entity
+---@return nil
 local function button_killed(self)
     self.enemy = quake.globals.damage_attacker
     self.health = self.max_health
@@ -90,21 +109,22 @@ local function button_killed(self)
     button_fire(self)
 end
 
---[[QUAKED func_button (0 .5 .8) ?
-When a button is touched, it moves some distance in the direction of it's angle, triggers all of it's targets, waits some time, then returns to it's original position where it can be triggered again.
-
-"angle"     determines the opening direction
-"target"    all entities with a matching targetname will be used
-"speed"     override the default 40 speed
-"wait"      override the default 1 second wait (-1 = never return)
-"lip"       override the default 4 pixel lip remaining at end of move
-"health"    if set, the button must be killed instead of touched
-"sounds"
-0) steam metal
-1) wooden clunk
-2) metallic click
-3) in-out
-]]
+---QUAKED func_button (0 .5 .8) ?
+---When a button is touched, it moves some distance in the direction of it's angle, triggers all of it's targets, waits some time, then returns to it's original position where it can be triggered again.
+---
+---"angle"     determines the opening direction
+---"target"    all entities with a matching targetname will be used
+---"speed"     override the default 40 speed
+---"wait"      override the default 1 second wait (-1 = never return)
+---"lip"       override the default 4 pixel lip remaining at end of move
+---"health"    if set, the button must be killed instead of touched
+---"sounds"
+---0) steam metal
+---1) wooden clunk
+---2) metallic click
+---3) in-out
+---@param self entity
+---@return nil
 function M.func_button(self)
     if self.sounds == 0 then
         quake.precache_sound("buttons/airbut1.wav")

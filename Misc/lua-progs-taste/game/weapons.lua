@@ -68,6 +68,7 @@ local TE_WIZSPIKE = 7
 local TE_KNIGHTSPIKE = 8
 
 -- called by worldspawn
+---@return nil
 function M.precache()
     quake.precache_sound("weapons/r_exp3.wav") -- new rocket explosion
     quake.precache_sound("weapons/rocket1i.wav") -- spike gun
@@ -83,15 +84,13 @@ function M.precache()
     quake.precache_sound("weapons/shotgn2.wav") -- super shotgun
 end
 
+---@return number
 function M.crandom()
     return 2 * (quake.random() - 0.5)
 end
 
---[[
-================
-W_FireAxe
-================
-]]
+---@param self entity
+---@return nil
 function M.fire_axe(self)
     local source
     local org
@@ -122,6 +121,8 @@ end
 
 --============================================================================
 
+---@param self entity
+---@return vec3
 function M.wall_velocity(self)
     local vel
 
@@ -134,11 +135,10 @@ function M.wall_velocity(self)
     return vel
 end
 
---[[
-================
-SpawnMeatSpray
-================
-]]
+---@param self entity
+---@param org vec3
+---@param vel vec3
+---@return nil
 function M.spawn_meat_spray(self, org, vel)
     local missile
 
@@ -163,20 +163,17 @@ function M.spawn_meat_spray(self, org, vel)
     quake.set_origin(missile, org)
 end
 
---[[
-================
-SpawnBlood
-================
-]]
+---@param org vec3
+---@param vel vec3
+---@param damage number
+---@return nil
 function M.spawn_blood(org, vel, damage)
     quake.particle(org, vel * 0.1, 73, damage * 2)
 end
 
---[[
-================
-spawn_touchblood
-================
-]]
+---@param self entity
+---@param damage number
+---@return nil
 function M.spawn_touchblood(self, damage)
     local vel
 
@@ -184,11 +181,9 @@ function M.spawn_touchblood(self, damage)
     M.spawn_blood(self.origin + vel * 0.01, vel, damage)
 end
 
---[[
-================
-SpawnChunk
-================
-]]
+---@param org vec3
+---@param vel vec3
+---@return nil
 function M.spawn_chunk(org, vel)
     quake.particle(org, vel * 0.02, 0, 10)
 end
@@ -203,11 +198,14 @@ Collects multiple small damages into a single damage
 ==============================================================================
 ]]
 
+---@return nil
 function M.clear_multi_damage()
     quake.globals.multi_ent = nil
     quake.globals.multi_damage = 0
 end
 
+---@param self entity
+---@return nil
 function M.apply_multi_damage(self)
     if not quake.globals.multi_ent then
         return
@@ -215,6 +213,10 @@ function M.apply_multi_damage(self)
     combat.damage(quake.globals.multi_ent, self, self, quake.globals.multi_damage)
 end
 
+---@param self entity
+---@param hit entity
+---@param damage number
+---@return nil
 function M.add_multi_damage(self, hit, damage)
     if not hit then
         return
@@ -237,11 +239,12 @@ BULLETS
 ==============================================================================
 ]]
 
---[[
-================
-TraceAttack
-================
-]]
+---@param self entity
+---@param trace trace_result
+---@param damage number
+---@param dir vec3
+---@param vectors direction_vectors
+---@return nil
 function M.trace_attack(self, trace, damage, dir, vectors)
     local vel, org
 
@@ -263,14 +266,13 @@ function M.trace_attack(self, trace, damage, dir, vectors)
     end
 end
 
---[[
-================
-FireBullets
-
-Used by shotgun, super shotgun, and enemy soldier firing
-Go to the trouble of combining multiple pellets into a single damage call.
-================
-]]
+---Used by shotgun, super shotgun, and enemy soldier firing
+---Go to the trouble of combining multiple pellets into a single damage call.
+---@param self entity
+---@param shotcount integer
+---@param dir vec3
+---@param spread vec3
+---@return nil
 function M.fire_bullets(self, shotcount, dir, spread)
     local direction
     local src
@@ -294,11 +296,8 @@ function M.fire_bullets(self, shotcount, dir, spread)
     M.apply_multi_damage(self)
 end
 
---[[
-================
-W_FireShotgun
-================
-]]
+---@param self entity
+---@return nil
 function M.fire_shotgun(self)
     local dir
 
@@ -312,11 +311,8 @@ function M.fire_shotgun(self)
     M.fire_bullets(self, 6, dir, quake.vec3(0.04, 0.04, 0))
 end
 
---[[
-================
-W_FireSuperShotgun
-================
-]]
+---@param self entity
+---@return nil
 function M.fire_super_shotgun(self)
     local dir
 
@@ -352,6 +348,8 @@ s_explode4 = animation.frame(3, function() return s_explode5 end)
 s_explode5 = animation.frame(4, function() return s_explode6 end)
 s_explode6 = animation.frame(5, function() return subs.remove end)
 
+---@param self entity
+---@return nil
 function M.become_explosion(self)
     self.movetype = MOVETYPE_NONE
     self.velocity = quake.vec3(0, 0, 0)
@@ -361,6 +359,9 @@ function M.become_explosion(self)
     s_explode1(self)
 end
 
+---@param self entity
+---@param other entity
+---@return nil
 function M.missile_touch(self, other)
     local damage
 
@@ -399,11 +400,8 @@ function M.missile_touch(self, other)
     M.become_explosion(self)
 end
 
---[[
-================
-W_FireRocket
-================
-]]
+---@param self entity
+---@return nil
 function M.fire_rocket(self)
     local missile
 
@@ -445,11 +443,12 @@ LIGHTNING
 ===============================================================================
 ]]
 
---[[
-=================
-LightningDamage
-=================
-]]
+---@param self entity
+---@param p1 vec3
+---@param p2 vec3
+---@param from entity
+---@param damage number
+---@return nil
 function M.lightning_damage(self, p1, p2, from, damage)
     local e1, e2
     local f
@@ -490,6 +489,8 @@ function M.lightning_damage(self, p1, p2, from, damage)
     end
 end
 
+---@param self entity
+---@return nil
 function M.fire_lightning(self)
     local org
     local cells
@@ -537,6 +538,8 @@ end
 
 --=============================================================================
 
+---@param self entity
+---@return nil
 function M.grenade_explode(self)
     combat.radius_damage(self, self.owner, 120, quake.world)
 
@@ -549,6 +552,9 @@ function M.grenade_explode(self)
     M.become_explosion(self)
 end
 
+---@param self entity
+---@param other entity
+---@return nil
 function M.grenade_touch(self, other)
     if other == self.owner then
         -- don't explode on owner
@@ -565,11 +571,8 @@ function M.grenade_touch(self, other)
     end
 end
 
---[[
-================
-W_FireGrenade
-================
-]]
+---@param self entity
+---@return nil
 function M.fire_grenade(self)
     local missile
 
@@ -617,13 +620,11 @@ end
 
 local spike_touch, superspike_touch
 
---[[
-===============
-launch_spike
-
-Used for both the player and the ogre
-===============
-]]
+---Used for both the player and the ogre
+---@param self entity
+---@param org vec3
+---@param dir vec3
+---@return nil
 function M.launch_spike(self, org, dir)
     local newmis = quake.spawn()
     quake.globals.newmis = newmis
@@ -644,6 +645,8 @@ function M.launch_spike(self, org, dir)
     newmis.velocity = dir * 1000
 end
 
+---@param self entity
+---@return nil
 function M.fire_super_spikes(self)
     local dir
 
@@ -659,6 +662,9 @@ function M.fire_super_spikes(self)
     self.punchangle.x = -2
 end
 
+---@param self entity
+---@param ox number
+---@return nil
 function M.fire_spikes(self, ox)
     local dir
 
@@ -685,6 +691,9 @@ function M.fire_spikes(self, ox)
     self.punchangle.x = -2
 end
 
+---@param self entity
+---@param other entity
+---@return nil
 spike_touch = function(self, other)
     if other == self.owner then
         return
@@ -722,6 +731,9 @@ spike_touch = function(self, other)
     quake.remove(self)
 end
 
+---@param self entity
+---@param other entity
+---@return nil
 superspike_touch = function(self, other)
     if other == self.owner then
         return
@@ -760,6 +772,8 @@ PLAYER WEAPON USE
 ===============================================================================
 ]]
 
+---@param self entity
+---@return nil
 function M.set_current_ammo(self)
     -- get out of any weapon firing states
     if self.model ~= "" then
@@ -814,6 +828,8 @@ function M.set_current_ammo(self)
     end
 end
 
+---@param self entity
+---@return integer
 function M.best_weapon(self)
     local it
 
@@ -834,6 +850,8 @@ function M.best_weapon(self)
     return IT_AXE
 end
 
+---@param self entity
+---@return boolean
 function M.check_no_ammo(self)
     if self.currentammo > 0 then
         return true
@@ -851,13 +869,9 @@ function M.check_no_ammo(self)
     return false
 end
 
---[[
-============
-W_Attack
-
-An attack impulse can be triggered now
-============
-]]
+---An attack impulse can be triggered now
+---@param self entity
+---@return nil
 function M.attack(self)
     local r
 
@@ -910,12 +924,8 @@ function M.attack(self)
     end
 end
 
---[[
-============
-W_ChangeWeapon
-
-============
-]]
+---@param self entity
+---@return nil
 function M.change_weapon(self)
     local it, am, fl
 
@@ -981,11 +991,8 @@ function M.change_weapon(self)
     M.set_current_ammo(self)
 end
 
---[[
-============
-CheatCommand
-============
-]]
+---@param self entity
+---@return nil
 function M.cheat_command(self)
     if quake.cvar("deathmatch") ~= 0 or quake.cvar("coop") ~= 0 then
         return
@@ -1012,13 +1019,9 @@ function M.cheat_command(self)
     M.set_current_ammo(self)
 end
 
---[[
-============
-CycleWeaponCommand
-
-Go to the next weapon with ammo
-============
-]]
+---Go to the next weapon with ammo
+---@param self entity
+---@return nil
 function M.cycle_weapon_command(self)
     local it, am
 
@@ -1074,13 +1077,9 @@ function M.cycle_weapon_command(self)
     end
 end
 
---[[
-============
-CycleWeaponReverseCommand
-
-Go to the prev weapon with ammo
-============
-]]
+---Go to the prev weapon with ammo
+---@param self entity
+---@return nil
 function M.cycle_weapon_reverse_command(self)
     local it, am
 
@@ -1136,17 +1135,14 @@ function M.cycle_weapon_reverse_command(self)
     end
 end
 
---[[
-============
-ServerflagsCommand
-
-Just for development
-============
-]]
+---Just for development
+---@return nil
 function M.serverflags_command()
     quake.globals.serverflags = quake.globals.serverflags * 2 + 1
 end
 
+---@param self entity
+---@return nil
 function M.quad_cheat(self)
     if quake.cvar("deathmatch") ~= 0 or quake.cvar("coop") ~= 0 then
         return
@@ -1157,12 +1153,8 @@ function M.quad_cheat(self)
     quake.dprint("quad cheat\n")
 end
 
---[[
-============
-ImpulseCommands
-
-============
-]]
+---@param self entity
+---@return nil
 function M.impulse_commands(self)
     if self.impulse >= 1 and self.impulse <= 8 then
         M.change_weapon(self)
@@ -1187,13 +1179,9 @@ function M.impulse_commands(self)
     self.impulse = 0
 end
 
---[[
-============
-W_WeaponFrame
-
-Called every frame so impulse events can be handled as well as possible
-============
-]]
+---Called every frame so impulse events can be handled as well as possible
+---@param self entity
+---@return nil
 function M.weapon_frame(self)
     if quake.time() < self.attack_finished then
         return
@@ -1218,6 +1206,8 @@ Plays sound if needed
 M.superspike_touch = superspike_touch
 M.explode = s_explode1
 
+---@param self entity
+---@return nil
 function M.super_damage_sound(self)
     if self.super_damage_finished > quake.time() then
         if self.super_sound < quake.time() then

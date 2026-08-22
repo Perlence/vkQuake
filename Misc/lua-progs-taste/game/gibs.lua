@@ -8,6 +8,10 @@ local subs = require("game.subs")
 local M = {}
 local velocity_for_damage
 
+---@param self entity
+---@param model string
+---@param damage number
+---@return nil
 function M.throw(self, model, damage)
     local gib = quake.spawn()
     gib.origin = self.origin
@@ -28,6 +32,10 @@ function M.throw(self, model, damage)
     gib.flags = 0
 end
 
+---@param self entity
+---@param model string
+---@param damage number
+---@return nil
 function M.throw_head(self, model, damage)
     quake.set_model(self, model)
     self.frame = 0
@@ -43,6 +51,9 @@ function M.throw_head(self, model, damage)
     self.avelocity = quake.vec3(0, quake.crandom() * 600, 0)
 end
 
+---@param self entity
+---@param damage number
+---@return vec3
 function velocity_for_damage(self, damage)
     local inflictor = quake.globals.damage_inflictor
     local velocity

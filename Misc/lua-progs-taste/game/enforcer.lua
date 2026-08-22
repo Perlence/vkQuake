@@ -50,6 +50,9 @@ SOLDIER / PLAYER (Enforcer)
 ==============================================================================
 ]]
 
+---@param self entity
+---@param other entity
+---@return nil
 local function laser_touch(self, other)
     if other == self.owner then
         -- don't explode on owner
@@ -78,6 +81,10 @@ local function laser_touch(self, other)
     quake.remove(self)
 end
 
+---@param self entity
+---@param org vec3
+---@param vec vec3
+---@return nil
 local function launch_laser(self, org, vec)
     if self.classname == "monster_enforcer" then
         quake.sound(self, CHAN_WEAPON, "enforcer/enfire.wav", 1, C.ATTN_NORM)
@@ -105,6 +112,8 @@ local function launch_laser(self, org, vec)
     newmis.touch = laser_touch
 end
 
+---@param self entity
+---@return nil
 local function enforcer_fire(self)
     self.effects = self.effects | EF_MUZZLEFLASH
     local vectors = quake.make_vectors(self.angles)
@@ -244,6 +253,10 @@ enf_paind17 = animation.frame("paind17", function() return enf_paind18 end, func
 enf_paind18 = animation.frame("paind18", function() return enf_paind19 end)
 enf_paind19 = animation.frame("paind19", function() return enf_run1 end)
 
+---@param self entity
+---@param _attacker entity
+---@param _damage number
+---@return nil
 local function enf_pain(self, _attacker, _damage)
     local r = quake.random()
     if self.pain_finished > quake.time() then
@@ -315,6 +328,8 @@ enf_fdie9 = animation.frame("fdeath9", function() return enf_fdie10 end)
 enf_fdie10 = animation.frame("fdeath10", function() return enf_fdie11 end)
 enf_fdie11 = animation.frame("fdeath11", function() return enf_fdie11 end)
 
+---@param self entity
+---@return nil
 local function enf_die(self)
     -- check for gib
     if self.health < -35 then
@@ -335,9 +350,9 @@ local function enf_die(self)
     end
 end
 
---[[QUAKED monster_enforcer (1 0 0) (-16 -16 -24) (16 16 40) Ambush
-
-]]
+---QUAKED monster_enforcer (1 0 0) (-16 -16 -24) (16 16 40) Ambush
+---@param self entity
+---@return nil
 function M.spawn(self)
     if quake.cvar("deathmatch") ~= 0 then
         quake.remove(self)

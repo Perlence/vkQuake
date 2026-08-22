@@ -151,6 +151,10 @@ army_painc11 = animation.frame("painc11", function() return army_painc12 end, fu
 army_painc12 = animation.frame("painc12", function() return army_painc13 end, function(self) ai.pain_forward(self, 8) end)
 army_painc13 = animation.frame("painc13", function() return army_run1 end)
 
+---@param self entity
+---@param _attacker entity
+---@param _damage number
+---@return nil
 local function army_pain(self, _attacker, _damage)
     local r
     if self.pain_finished > quake.time() then return end
@@ -170,6 +174,8 @@ local function army_pain(self, _attacker, _damage)
     end
 end
 
+---@param self entity
+---@return nil
 function army_fire(self)
     local dir
     local en
@@ -209,6 +215,8 @@ army_cdie9 = animation.frame("deathc9", function() return army_cdie10 end)
 army_cdie10 = animation.frame("deathc10", function() return army_cdie11 end)
 army_cdie11 = animation.frame("deathc11", function() return army_cdie11 end)
 
+---@param self entity
+---@return nil
 local function army_die(self)
     -- check for gib
     if self.health < -35 then
@@ -224,8 +232,9 @@ local function army_die(self)
     if quake.random() < 0.5 then army_die1(self) else army_cdie1(self) end
 end
 
---[[QUAKED monster_army (1 0 0) (-16 -16 -24) (16 16 40) Ambush
-]]
+---QUAKED monster_army (1 0 0) (-16 -16 -24) (16 16 40) Ambush
+---@param self entity
+---@return nil
 function M.spawn(self)
     if quake.cvar("deathmatch") ~= 0 then quake.remove(self); return end
     quake.precache_model("progs/soldier.mdl")

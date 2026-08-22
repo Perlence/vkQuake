@@ -113,6 +113,9 @@ sham_smash12 = animation.frame("smash12", function() return sham_run1 end, funct
 
 local sham_swingr1
 
+---@param self entity
+---@param side number
+---@return nil
 local function sham_claw(self, side)
     if not self.enemy then return end
     fight.charge(self, 10)
@@ -151,6 +154,8 @@ sham_swingr7 = animation.frame("swingr7", function() return sham_swingr8 end, fu
 sham_swingr8 = animation.frame("swingr8", function() return sham_swingr9 end, function(self) fight.charge(self, 3) end)
 sham_swingr9 = animation.frame("swingr9", function() return sham_run1 end, function(self) fight.charge(self, 1); fight.charge(self, 10); if quake.random() < 0.5 then self.think = sham_swingl1 end end)
 
+---@param self entity
+---@return nil
 local function sham_melee(self)
     local chance = quake.random()
     if chance > 0.6 or self.health == 600 then sham_smash1(self)
@@ -160,6 +165,8 @@ end
 
 --============================================================================
 
+---@param self entity
+---@return nil
 local function cast_lightning(self)
     self.effects = self.effects | C.EF_MUZZLEFLASH
     fight.face(self)
@@ -213,6 +220,10 @@ sham_pain4 = animation.frame("pain4", function() return sham_pain5 end)
 sham_pain5 = animation.frame("pain5", function() return sham_pain6 end)
 sham_pain6 = animation.frame("pain6", function() return sham_run1 end)
 
+---@param self entity
+---@param _attacker entity
+---@param damage number
+---@return nil
 local function sham_pain_callback(self, _attacker, damage)
     quake.sound(self, C.CHAN_VOICE, "shambler/shurt2.wav", 1, C.ATTN_NORM)
     if self.health <= 0 then return end -- already dying, don't go into pain frame
@@ -238,6 +249,8 @@ sham_death9 = animation.frame("death9", function() return sham_death10 end)
 sham_death10 = animation.frame("death10", function() return sham_death11 end)
 sham_death11 = animation.frame("death11", function() return sham_death11 end)
 
+---@param self entity
+---@return nil
 local function sham_die(self)
     -- check for gib
     if self.health < -60 then
@@ -255,8 +268,9 @@ end
 
 --============================================================================
 
---[[QUAKED monster_shambler (1 0 0) (-32 -32 -24) (32 32 64) Ambush
-]]
+---QUAKED monster_shambler (1 0 0) (-32 -32 -24) (32 32 64) Ambush
+---@param self entity
+---@return nil
 function M.spawn(self)
     if quake.cvar("deathmatch") ~= 0 then quake.remove(self); return end
     quake.precache_model("progs/shambler.mdl")

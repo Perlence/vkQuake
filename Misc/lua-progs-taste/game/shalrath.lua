@@ -132,6 +132,10 @@ shal_death5 = animation.frame("death5", function() return shal_death6 end)
 shal_death6 = animation.frame("death6", function() return shal_death7 end)
 shal_death7 = animation.frame("death7", function() return shal_death7 end)
 
+---@param self entity
+---@param _attacker entity
+---@param _damage number
+---@return nil
 local function shalrath_pain(self, _attacker, _damage)
     if self.pain_finished > quake.time() then
         return
@@ -142,6 +146,8 @@ local function shalrath_pain(self, _attacker, _damage)
     self.pain_finished = quake.time() + 3
 end
 
+---@param self entity
+---@return nil
 local function shalrath_die(self)
     -- check for gib
     if self.health < -90 then
@@ -166,6 +172,8 @@ ShalMissile
 local shal_missile_touch
 local shal_home
 
+---@param self entity
+---@return nil
 function shal_missile(self)
     local dir = (self.enemy.origin + quake.vec3(0, 0, 10) - self.origin):normalized()
     local dist = (self.enemy.origin - self.origin):length()
@@ -195,6 +203,8 @@ function shal_missile(self)
     missile.touch = shal_missile_touch
 end
 
+---@param self entity
+---@return nil
 shal_home = function(self)
     local vtemp = self.enemy.origin + quake.vec3(0, 0, 10)
     if self.enemy.health < 1 then
@@ -211,6 +221,9 @@ shal_home = function(self)
     self.think = shal_home
 end
 
+---@param self entity
+---@param other entity
+---@return nil
 shal_missile_touch = function(self, other)
     if other == self.owner then
         -- don't explode on owner
@@ -238,8 +251,9 @@ end
 
 --=================================================================
 
---[[QUAKED monster_shalrath (1 0 0) (-32 -32 -24) (32 32 48) Ambush
-]]
+---QUAKED monster_shalrath (1 0 0) (-32 -32 -24) (32 32 48) Ambush
+---@param self entity
+---@return nil
 function M.spawn(self)
     if quake.cvar("deathmatch") ~= 0 then
         quake.remove(self)

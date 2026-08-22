@@ -48,6 +48,8 @@ BOSS-ONE (Chthon)
 
 local boss_missile
 
+---@param self entity
+---@return nil
 local function boss_face(self)
     -- go for another player if multi player
     if self.enemy.health <= 0 or quake.random() < 0.02 then
@@ -223,6 +225,9 @@ boss_death10 = animation.frame("death9", function() return boss_death10 end, fun
     quake.remove(self)
 end)
 
+---@param self entity
+---@param p vec3
+---@return nil
 boss_missile = function(self, p)
     local offang = quake.vector_to_angles(self.enemy.origin - self.origin)
     local vectors = quake.make_vectors(offang)
@@ -257,6 +262,9 @@ boss_missile = function(self, p)
     end
 end
 
+---@param self entity
+---@param activator entity
+---@return nil
 local function boss_awake(self, activator)
     self.solid = C.SOLID_SLIDEBOX
     self.movetype = C.MOVETYPE_STEP
@@ -283,8 +291,9 @@ local function boss_awake(self, activator)
     boss_rise1(self)
 end
 
---[[QUAKED monster_boss (1 0 0) (-128 -128 -24) (128 128 256)
-]]
+---QUAKED monster_boss (1 0 0) (-128 -128 -24) (128 128 256)
+---@param self entity
+---@return nil
 function M.spawn(self)
     if quake.cvar("deathmatch") ~= 0 then
         quake.remove(self)
@@ -308,6 +317,8 @@ end
 
 --===========================================================================
 
+---@param self entity
+---@return nil
 local function lightning_fire(self)
     local le1 = quake.globals.le1
     local le2 = quake.globals.le2
@@ -341,6 +352,9 @@ local function lightning_fire(self)
     quake.write_coord(C.MSG_ALL, p2.z)
 end
 
+---@param self entity
+---@param activator entity
+---@return nil
 local function lightning_use(self, activator)
     if quake.globals.lightning_end >= quake.time() + 1 then
         return
@@ -388,9 +402,10 @@ local function lightning_use(self, activator)
     end
 end
 
---[[QUAKED event_lightning (0 1 1) (-16 -16 -16) (16 16 16)
-Just for boss level.
-]]
+---QUAKED event_lightning (0 1 1) (-16 -16 -16) (16 16 16)
+---Just for boss level.
+---@param self entity
+---@return nil
 function M.spawn_lightning(self)
     self.use = lightning_use
 end

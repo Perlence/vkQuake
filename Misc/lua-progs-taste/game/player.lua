@@ -171,6 +171,8 @@ player_rocket5 = animation.frame("rockatt5", function() return player_rocket6 en
 player_rocket6 = animation.frame("rockatt6", function() return player_run end, function(self) self.weaponframe = 6 end)
 
 local death_bubbles
+---@param self entity
+---@return nil
 local function pain_sound(self)
     local rs
     if self.health < 0 then return end
@@ -227,6 +229,10 @@ player_axpain4 = animation.frame("axpain4", function() return player_axpain5 end
 player_axpain5 = animation.frame("axpain5", function() return player_axpain6 end)
 player_axpain6 = animation.frame("axpain6", function() return player_run end)
 
+---@param self entity
+---@param _attacker entity
+---@param _damage number
+---@return nil
 function M.player_pain(self, _attacker, _damage)
     if self.weaponframe ~= 0 then return end
     if self.invisible_finished > quake.time() then return end -- eyes don't have pain frames
@@ -236,6 +242,8 @@ end
 local player_diea1, player_diea2, player_diea3, player_diea4, player_diea5, player_diea6, player_diea7, player_diea8, player_diea9, player_diea10, player_diea11, player_dieb1, player_dieb2, player_dieb3, player_dieb4, player_dieb5, player_dieb6, player_dieb7, player_dieb8, player_dieb9, player_diec1, player_diec2, player_diec3, player_diec4, player_diec5, player_diec6, player_diec7, player_diec8, player_diec9, player_diec10, player_diec11, player_diec12, player_diec13, player_diec14, player_diec15, player_died1, player_died2, player_died3, player_died4, player_died5, player_died6, player_died7, player_died8, player_died9, player_diee1, player_diee2, player_diee3, player_diee4, player_diee5, player_diee6, player_diee7, player_diee8, player_diee9, player_die_ax1, player_die_ax2, player_die_ax3, player_die_ax4, player_die_ax5, player_die_ax6, player_die_ax7, player_die_ax8, player_die_ax9
 local death_bubbles_spawn
 
+---@param self entity
+---@return nil
 death_bubbles_spawn = function(self)
     local bubble
     if self.owner.waterlevel ~= 3 then return end
@@ -257,6 +265,9 @@ death_bubbles_spawn = function(self)
     if self.air_finished >= self.bubble_count then quake.remove(self) end
 end
 
+---@param self entity
+---@param num_bubbles integer
+---@return nil
 function death_bubbles(self, num_bubbles)
     local bubble_spawner = quake.spawn()
     quake.set_origin(bubble_spawner, self.origin)
@@ -269,6 +280,8 @@ function death_bubbles(self, num_bubbles)
     bubble_spawner.bubble_count = num_bubbles
 end
 
+---@param self entity
+---@return nil
 local function death_sound(self)
     local rs
     -- water death sounds
@@ -282,12 +295,17 @@ local function death_sound(self)
     quake.sound(self, CHAN_VOICE, self.noise, 1, ATTN_NONE)
 end
 
+---@param self entity
+---@return nil
 local function player_dead(self)
     self.nextthink = -1
     -- allow respawn after a certain time
     self.deadflag = DEAD_DEAD
 end
 
+---@param self entity
+---@param dm number
+---@return vec3
 local function velocity_for_damage(self, dm)
     local v
     -- check if the inflictor had velocity, e.g. like a rocket or explode box
@@ -304,6 +322,10 @@ local function velocity_for_damage(self, dm)
     return v
 end
 
+---@param self entity
+---@param gibname string
+---@param dm number
+---@return nil
 local function throw_gib(self, gibname, dm)
     local new = quake.spawn()
     new.origin = self.origin
@@ -320,6 +342,10 @@ local function throw_gib(self, gibname, dm)
     new.flags = 0
 end
 
+---@param self entity
+---@param gibname string
+---@param dm number
+---@return nil
 local function throw_head(self, gibname, dm)
     quake.set_model(self, gibname)
     self.frame = 0
@@ -335,6 +361,8 @@ local function throw_head(self, gibname, dm)
     self.avelocity = quake.vec3(0, 600, 0) * quake.crandom()
 end
 
+---@param self entity
+---@return nil
 local function gib_player(self)
     throw_head(self, "progs/h_player.mdl", self.health)
     throw_gib(self, "progs/gib1.mdl", self.health)
@@ -347,6 +375,8 @@ local function gib_player(self)
     else quake.sound(self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NONE) end
 end
 
+---@param self entity
+---@return nil
 function M.player_die(self)
     local i
     self.items = self.items - (self.items & IT_INVISIBILITY)
@@ -378,6 +408,8 @@ function M.player_die(self)
     else player_diee1(self) end
 end
 
+---@param self entity
+---@return nil
 function M.set_suicide_frame(self)
     -- used by kill command and disconnect command
     if self.model ~= "progs/player.mdl" then return end -- already gibbed

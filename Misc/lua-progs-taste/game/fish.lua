@@ -102,6 +102,8 @@ f_run7 = animation.frame("swim13", function() return f_run8 end, function(self) 
 f_run8 = animation.frame("swim15", function() return f_run9 end, function(self) ai.run(self, 12) end)
 f_run9 = animation.frame("swim17", function() return f_run1 end, function(self) ai.run(self, 12) end)
 
+---@param self entity
+---@return nil
 local function fish_melee(self)
     if not self.enemy then
         return
@@ -167,6 +169,8 @@ f_death20 = animation.frame("death20", function() return f_death21 end)
 f_death21 = animation.frame("death21", function() return f_death21 end)
 
 -- Handle fish death, either die animation or gib.
+---@param self entity
+---@return nil
 local function fish_die(self)
     -- Check for gib death.
     if self.health < -20 then
@@ -197,13 +201,18 @@ f_pain7 = animation.frame("pain7", function() return f_pain8 end, function(self)
 f_pain8 = animation.frame("pain8", function() return f_pain9 end, function(self) ai.pain(self, 6) end)
 f_pain9 = animation.frame("pain9", function() return f_run1 end, function(self) ai.pain(self, 6) end)
 
+---@param self entity
+---@param _attacker entity
+---@param _damage number
+---@return nil
 local function fish_pain(self, _attacker, _damage)
     -- Fish always do pain frames.
     f_pain1(self)
 end
 
---[[QUAKED monster_fish (1 0 0) (-16 -16 -24) (16 16 24) Ambush
-]]
+---QUAKED monster_fish (1 0 0) (-16 -16 -24) (16 16 24) Ambush
+---@param self entity
+---@return nil
 function M.spawn(self)
     if quake.cvar("deathmatch") ~= 0 then
         quake.remove(self)

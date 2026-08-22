@@ -27,6 +27,8 @@ local weapons = require("game.weapons")
 
 local M = {}
 
+---@param self entity
+---@return nil
 local function hide_item(self)
     quake.set_model(self, "")
     self.solid = C.SOLID_NOT
@@ -38,6 +40,8 @@ end
 --[[ ALL LIGHTS SHOULD BE 0 1 0 IN COLOR ALL OTHER ITEMS SHOULD
 BE .8 .3 .4 IN COLOR ]]
 
+---@param self entity
+---@return nil
 function M.regen(self)
     -- restore original model
     quake.set_model(self, self.mdl)
@@ -49,9 +53,10 @@ function M.regen(self)
     quake.set_origin(self, self.origin)
 end
 
---[[QUAKED noclass (0 0 0) (-8 -8 -8) (8 8 8)
-prints a warning message when spawned
-]]
+---QUAKED noclass (0 0 0) (-8 -8 -8) (8 8 8)
+---prints a warning message when spawned
+---@param self entity
+---@return nil
 function M.noclass(self)
     quake.dprint("noclass spawned at")
     quake.dprint(quake.vector_to_string(self.origin))
@@ -59,13 +64,9 @@ function M.noclass(self)
     quake.remove(self)
 end
 
---[[
-============
-PlaceItem
-
-plants the object on the floor
-============
-]]
+---plants the object on the floor
+---@param self entity
+---@return nil
 function M.place_item(self)
     local oldz
 
@@ -87,13 +88,9 @@ function M.place_item(self)
     end
 end
 
---[[
-============
-StartItem
-
-Sets the clipping size and plants the object on the floor
-============
-]]
+---Sets the clipping size and plants the object on the floor
+---@param self entity
+---@return nil
 function M.start_item(self)
     self.pickup_touch = self.touch
     self.nextthink = quake.time() + 0.2 -- items start after other solids
@@ -111,6 +108,10 @@ HEALTH BOX
 -- T_Heal: add health to an entity, limiting health to max_health
 -- "ignore" will ignore max_health limit
 --
+---@param entity entity
+---@param healamount number
+---@param ignore integer
+---@return integer
 function M.heal(entity, healamount, ignore)
     if entity.health <= 0 then
         return 0
@@ -144,6 +145,8 @@ local H_MEGA = 2
 
 local health_touch, item_megahealth_rot
 
+---@param self entity
+---@return nil
 function M.item_health(self)
     self.touch = health_touch
 
@@ -174,6 +177,9 @@ function M.item_health(self)
     M.start_item(self)
 end
 
+---@param self entity
+---@param other entity
+---@return nil
 health_touch = function(self, other)
     local s
 
@@ -227,6 +233,8 @@ health_touch = function(self, other)
     subs.use_targets(self, other)
 end
 
+---@param self entity
+---@return nil
 item_megahealth_rot = function(self)
     local other = self.owner
 
@@ -255,6 +263,9 @@ ARMOR
 ===============================================================================
 ]]
 
+---@param self entity
+---@param other entity
+---@return nil
 local function armor_touch(self, other)
     local type, value, bit
 
@@ -308,8 +319,9 @@ local function armor_touch(self, other)
     subs.use_targets(self, other)
 end
 
---[[QUAKED item_armor1 (0 .5 .8) (-16 -16 0) (16 16 32)
-]]
+---QUAKED item_armor1 (0 .5 .8) (-16 -16 0) (16 16 32)
+---@param self entity
+---@return nil
 function M.item_armor1(self)
     self.touch = armor_touch
     quake.precache_model("progs/armor.mdl")
@@ -319,8 +331,9 @@ function M.item_armor1(self)
     M.start_item(self)
 end
 
---[[QUAKED item_armor2 (0 .5 .8) (-16 -16 0) (16 16 32)
-]]
+---QUAKED item_armor2 (0 .5 .8) (-16 -16 0) (16 16 32)
+---@param self entity
+---@return nil
 function M.item_armor2(self)
     self.touch = armor_touch
     quake.precache_model("progs/armor.mdl")
@@ -330,8 +343,9 @@ function M.item_armor2(self)
     M.start_item(self)
 end
 
---[[QUAKED item_armorInv (0 .5 .8) (-16 -16 0) (16 16 32)
-]]
+---QUAKED item_armorInv (0 .5 .8) (-16 -16 0) (16 16 32)
+---@param self entity
+---@return nil
 function M.item_armor_inv(self)
     self.touch = armor_touch
     quake.precache_model("progs/armor.mdl")
@@ -349,6 +363,8 @@ WEAPONS
 ===============================================================================
 ]]
 
+---@param other entity
+---@return nil
 function M.bound_other_ammo(other)
     if other.ammo_shells > 100 then
         other.ammo_shells = 100
@@ -364,6 +380,8 @@ function M.bound_other_ammo(other)
     end
 end
 
+---@param w integer
+---@return integer
 function M.rank_for_weapon(w)
     if w == 64 then -- IT_LIGHTNING
         return 1
@@ -386,15 +404,13 @@ function M.rank_for_weapon(w)
     return 7
 end
 
---[[
-=============
-Deathmatch_Weapon
-
-Deathmatch weapon change rules for picking up a weapon
-
-.float		ammo_shells, ammo_nails, ammo_rockets, ammo_cells;
-=============
-]]
+---Deathmatch weapon change rules for picking up a weapon
+---
+---.float		ammo_shells, ammo_nails, ammo_rockets, ammo_cells;
+---@param self entity
+---@param old integer
+---@param new integer
+---@return nil
 function M.deathmatch_weapon(self, old, new)
     local old_rank, new_rank
 
@@ -406,11 +422,9 @@ function M.deathmatch_weapon(self, old, new)
     end
 end
 
---[[
-=============
-weapon_touch
-=============
-]]
+---@param self entity
+---@param other entity
+---@return nil
 local function weapon_touch(self, other)
     local hadammo, best, new, old
     local leave
@@ -510,8 +524,9 @@ local function weapon_touch(self, other)
     subs.use_targets(self, other) -- fire all targets / killtargets
 end
 
---[[QUAKED weapon_supershotgun (0 .5 .8) (-16 -16 0) (16 16 32)
-]]
+---QUAKED weapon_supershotgun (0 .5 .8) (-16 -16 0) (16 16 32)
+---@param self entity
+---@return nil
 function M.weapon_supershotgun(self)
     quake.precache_model("progs/g_shot.mdl")
     quake.set_model(self, "progs/g_shot.mdl")
@@ -522,8 +537,9 @@ function M.weapon_supershotgun(self)
     M.start_item(self)
 end
 
---[[QUAKED weapon_nailgun (0 .5 .8) (-16 -16 0) (16 16 32)
-]]
+---QUAKED weapon_nailgun (0 .5 .8) (-16 -16 0) (16 16 32)
+---@param self entity
+---@return nil
 function M.weapon_nailgun(self)
     quake.precache_model("progs/g_nail.mdl")
     quake.set_model(self, "progs/g_nail.mdl")
@@ -534,8 +550,9 @@ function M.weapon_nailgun(self)
     M.start_item(self)
 end
 
---[[QUAKED weapon_supernailgun (0 .5 .8) (-16 -16 0) (16 16 32)
-]]
+---QUAKED weapon_supernailgun (0 .5 .8) (-16 -16 0) (16 16 32)
+---@param self entity
+---@return nil
 function M.weapon_supernailgun(self)
     quake.precache_model("progs/g_nail2.mdl")
     quake.set_model(self, "progs/g_nail2.mdl")
@@ -546,8 +563,9 @@ function M.weapon_supernailgun(self)
     M.start_item(self)
 end
 
---[[QUAKED weapon_grenadelauncher (0 .5 .8) (-16 -16 0) (16 16 32)
-]]
+---QUAKED weapon_grenadelauncher (0 .5 .8) (-16 -16 0) (16 16 32)
+---@param self entity
+---@return nil
 function M.weapon_grenadelauncher(self)
     quake.precache_model("progs/g_rock.mdl")
     quake.set_model(self, "progs/g_rock.mdl")
@@ -558,8 +576,9 @@ function M.weapon_grenadelauncher(self)
     M.start_item(self)
 end
 
---[[QUAKED weapon_rocketlauncher (0 .5 .8) (-16 -16 0) (16 16 32)
-]]
+---QUAKED weapon_rocketlauncher (0 .5 .8) (-16 -16 0) (16 16 32)
+---@param self entity
+---@return nil
 function M.weapon_rocketlauncher(self)
     quake.precache_model("progs/g_rock2.mdl")
     quake.set_model(self, "progs/g_rock2.mdl")
@@ -570,8 +589,9 @@ function M.weapon_rocketlauncher(self)
     M.start_item(self)
 end
 
---[[QUAKED weapon_lightning (0 .5 .8) (-16 -16 0) (16 16 32)
-]]
+---QUAKED weapon_lightning (0 .5 .8) (-16 -16 0) (16 16 32)
+---@param self entity
+---@return nil
 function M.weapon_lightning(self)
     quake.precache_model("progs/g_light.mdl")
     quake.set_model(self, "progs/g_light.mdl")
@@ -590,6 +610,9 @@ AMMO
 ===============================================================================
 ]]
 
+---@param self entity
+---@param other entity
+---@return nil
 local function ammo_touch(self, other)
     local best
 
@@ -667,8 +690,9 @@ end
 
 local WEAPON_BIG2 = 1
 
---[[QUAKED item_shells (0 .5 .8) (0 0 0) (32 32 32) big
-]]
+---QUAKED item_shells (0 .5 .8) (0 0 0) (32 32 32) big
+---@param self entity
+---@return nil
 function M.item_shells(self)
     self.touch = ammo_touch
 
@@ -687,8 +711,9 @@ function M.item_shells(self)
     M.start_item(self)
 end
 
---[[QUAKED item_spikes (0 .5 .8) (0 0 0) (32 32 32) big
-]]
+---QUAKED item_spikes (0 .5 .8) (0 0 0) (32 32 32) big
+---@param self entity
+---@return nil
 function M.item_spikes(self)
     self.touch = ammo_touch
 
@@ -707,8 +732,9 @@ function M.item_spikes(self)
     M.start_item(self)
 end
 
---[[QUAKED item_rockets (0 .5 .8) (0 0 0) (32 32 32) big
-]]
+---QUAKED item_rockets (0 .5 .8) (0 0 0) (32 32 32) big
+---@param self entity
+---@return nil
 function M.item_rockets(self)
     self.touch = ammo_touch
 
@@ -727,8 +753,9 @@ function M.item_rockets(self)
     M.start_item(self)
 end
 
---[[QUAKED item_cells (0 .5 .8) (0 0 0) (32 32 32) big
-]]
+---QUAKED item_cells (0 .5 .8) (0 0 0) (32 32 32) big
+---@param self entity
+---@return nil
 function M.item_cells(self)
     self.touch = ammo_touch
 
@@ -756,6 +783,8 @@ local WEAPON_ROCKET = 2
 local WEAPON_SPIKES = 4
 local WEAPON_BIG = 8
 
+---@param self entity
+---@return nil
 function M.item_weapon(self)
     self.touch = ammo_touch
 
@@ -813,6 +842,9 @@ KEYS
 ===============================================================================
 ]]
 
+---@param self entity
+---@param other entity
+---@return nil
 local function key_touch(self, other)
     if other.classname ~= "player" then
         return
@@ -840,6 +872,8 @@ local function key_touch(self, other)
     subs.use_targets(self, other)
 end
 
+---@param self entity
+---@return nil
 local function key_setsounds(self)
     if quake.world.worldtype == 0 then
         quake.precache_sound("misc/medkey.wav")
@@ -855,16 +889,17 @@ local function key_setsounds(self)
     end
 end
 
---[[QUAKED item_key1 (0 .5 .8) (-16 -16 -24) (16 16 32)
-SILVER key
-In order for keys to work
-you MUST set your maps
-worldtype to one of the
-following:
-0: medieval
-1: metal
-2: base
-]]
+---QUAKED item_key1 (0 .5 .8) (-16 -16 -24) (16 16 32)
+---SILVER key
+---In order for keys to work
+---you MUST set your maps
+---worldtype to one of the
+---following:
+---0: medieval
+---1: metal
+---2: base
+---@param self entity
+---@return nil
 function M.item_key1(self)
     if quake.world.worldtype == 0 then
         quake.precache_model("progs/w_s_key.mdl")
@@ -886,16 +921,17 @@ function M.item_key1(self)
     M.start_item(self)
 end
 
---[[QUAKED item_key2 (0 .5 .8) (-16 -16 -24) (16 16 32)
-GOLD key
-In order for keys to work
-you MUST set your maps
-worldtype to one of the
-following:
-0: medieval
-1: metal
-2: base
-]]
+---QUAKED item_key2 (0 .5 .8) (-16 -16 -24) (16 16 32)
+---GOLD key
+---In order for keys to work
+---you MUST set your maps
+---worldtype to one of the
+---following:
+---0: medieval
+---1: metal
+---2: base
+---@param self entity
+---@return nil
 function M.item_key2(self)
     if quake.world.worldtype == 0 then
         quake.precache_model("progs/w_g_key.mdl")
@@ -927,6 +963,9 @@ END OF LEVEL RUNES
 ===============================================================================
 ]]
 
+---@param self entity
+---@param other entity
+---@return nil
 local function sigil_touch(self, other)
     if other.classname ~= "player" then
         return
@@ -948,9 +987,10 @@ local function sigil_touch(self, other)
     subs.use_targets(self, other)
 end
 
---[[QUAKED item_sigil (0 .5 .8) (-16 -16 -24) (16 16 32) E1 E2 E3 E4
-End of level sigil, pick up to end episode and return to jrstart.
-]]
+---QUAKED item_sigil (0 .5 .8) (-16 -16 -24) (16 16 32) E1 E2 E3 E4
+---End of level sigil, pick up to end episode and return to jrstart.
+---@param self entity
+---@return nil
 function M.item_sigil(self)
     if self.spawnflags == 0 then
         quake.object_error(self, "no spawnflags")
@@ -989,6 +1029,9 @@ POWERUPS
 ===============================================================================
 ]]
 
+---@param self entity
+---@param other entity
+---@return nil
 local function powerup_touch(self, other)
     if other.classname ~= "player" then
         return
@@ -1044,9 +1087,10 @@ local function powerup_touch(self, other)
     subs.use_targets(self, other)
 end
 
---[[QUAKED item_artifact_invulnerability (0 .5 .8) (-16 -16 -24) (16 16 32)
-Player is invulnerable for 30 seconds
-]]
+---QUAKED item_artifact_invulnerability (0 .5 .8) (-16 -16 -24) (16 16 32)
+---Player is invulnerable for 30 seconds
+---@param self entity
+---@return nil
 function M.item_artifact_invulnerability(self)
     self.touch = powerup_touch
 
@@ -1062,9 +1106,10 @@ function M.item_artifact_invulnerability(self)
     M.start_item(self)
 end
 
---[[QUAKED item_artifact_envirosuit (0 .5 .8) (-16 -16 -24) (16 16 32)
-Player takes no damage from water or slime for 30 seconds
-]]
+---QUAKED item_artifact_envirosuit (0 .5 .8) (-16 -16 -24) (16 16 32)
+---Player takes no damage from water or slime for 30 seconds
+---@param self entity
+---@return nil
 function M.item_artifact_envirosuit(self)
     self.touch = powerup_touch
 
@@ -1079,9 +1124,10 @@ function M.item_artifact_envirosuit(self)
     M.start_item(self)
 end
 
---[[QUAKED item_artifact_invisibility (0 .5 .8) (-16 -16 -24) (16 16 32)
-Player is invisible for 30 seconds
-]]
+---QUAKED item_artifact_invisibility (0 .5 .8) (-16 -16 -24) (16 16 32)
+---Player is invisible for 30 seconds
+---@param self entity
+---@return nil
 function M.item_artifact_invisibility(self)
     self.touch = powerup_touch
 
@@ -1097,9 +1143,10 @@ function M.item_artifact_invisibility(self)
     M.start_item(self)
 end
 
---[[QUAKED item_artifact_super_damage (0 .5 .8) (-16 -16 -24) (16 16 32)
-The next attack from the player will do 4x damage
-]]
+---QUAKED item_artifact_super_damage (0 .5 .8) (-16 -16 -24) (16 16 32)
+---The next attack from the player will do 4x damage
+---@param self entity
+---@return nil
 function M.item_artifact_super_damage(self)
     self.touch = powerup_touch
 
@@ -1123,6 +1170,9 @@ PLAYER BACKPACKS
 ===============================================================================
 ]]
 
+---@param self entity
+---@param other entity
+---@return nil
 local function backpack_touch(self, other)
     local s
     local best, old, new
@@ -1223,11 +1273,8 @@ local function backpack_touch(self, other)
     weapons.set_current_ammo(other)
 end
 
---[[
-===============
-DropBackpack
-===============
-]]
+---@param self entity
+---@return nil
 function M.drop_backpack(self)
     local item
 

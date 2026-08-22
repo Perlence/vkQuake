@@ -135,6 +135,8 @@ old_thrash20 = animation.frame("shake20", function() return old_thrash20 end, fu
 
 --============================================================================
 
+---@param self entity
+---@return nil
 finale_1 = function(self)
     quake.globals.intermission_exittime = quake.time() + 10000000 -- never allow exit
     quake.globals.intermission_running = 1
@@ -178,6 +180,8 @@ finale_1 = function(self)
     timer.think = finale_2
 end
 
+---@param self entity
+---@return nil
 finale_2 = function(self)
     -- start a teleport splash inside shub
     local shub = quake.globals.shub
@@ -194,6 +198,8 @@ finale_2 = function(self)
     self.think = finale_3
 end
 
+---@param _self entity
+---@return nil
 finale_3 = function(_self)
     -- start shub thrashing wildly
     local shub = quake.globals.shub
@@ -202,6 +208,8 @@ finale_3 = function(_self)
     quake.light_style(0, "abcdefghijklmlkjihgfedcb")
 end
 
+---@param self entity
+---@return nil
 function finale_4(self)
     -- throw tons of meat chunks
     quake.sound(self, CHAN_VOICE, "boss2/pop2.wav", 1, C.ATTN_NORM)
@@ -253,12 +261,17 @@ end
 
 --============================================================================
 
+---@param self entity
+---@param _attacker entity
+---@param _damage number
+---@return nil
 local function oldone_pain(self, _attacker, _damage)
     self.health = 40000
 end
 
---[[QUAKED monster_oldone (1 0 0) (-16 -16 -24) (16 16 32)
-]]
+---QUAKED monster_oldone (1 0 0) (-16 -16 -24) (16 16 32)
+---@param self entity
+---@return nil
 function M.spawn(self)
     if quake.cvar("deathmatch") ~= 0 then
         quake.remove(self)

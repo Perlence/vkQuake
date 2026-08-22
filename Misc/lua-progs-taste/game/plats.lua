@@ -34,6 +34,8 @@ local PLAT_LOW_TRIGGER = 1
 local plat_center_touch, plat_outside_touch, plat_trigger_use
 local plat_go_up, plat_go_down, plat_crush
 
+---@param self entity
+---@return nil
 local function plat_spawn_inside_trigger(self)
     local trigger
     local tmin, tmax
@@ -64,6 +66,8 @@ local function plat_spawn_inside_trigger(self)
     quake.set_size(trigger, tmin, tmax)
 end
 
+---@param self entity
+---@return nil
 local function plat_hit_top(self)
     quake.sound(self, CHAN_VOICE, self.noise1, 1, ATTN_NORM)
     self.state = STATE_TOP
@@ -71,23 +75,32 @@ local function plat_hit_top(self)
     self.nextthink = self.ltime + 3
 end
 
+---@param self entity
+---@return nil
 local function plat_hit_bottom(self)
     quake.sound(self, CHAN_VOICE, self.noise1, 1, ATTN_NORM)
     self.state = STATE_BOTTOM
 end
 
+---@param self entity
+---@return nil
 plat_go_down = function(self)
     quake.sound(self, CHAN_VOICE, self.noise, 1, ATTN_NORM)
     self.state = STATE_DOWN
     subs.calc_move(self, self.pos2, self.speed, plat_hit_bottom)
 end
 
+---@param self entity
+---@return nil
 plat_go_up = function(self)
     quake.sound(self, CHAN_VOICE, self.noise, 1, ATTN_NORM)
     self.state = STATE_UP
     subs.calc_move(self, self.pos1, self.speed, plat_hit_top)
 end
 
+---@param self entity
+---@param other entity
+---@return nil
 plat_center_touch = function(self, other)
     if other.classname ~= "player" then
         return
@@ -106,6 +119,9 @@ plat_center_touch = function(self, other)
     end
 end
 
+---@param self entity
+---@param other entity
+---@return nil
 plat_outside_touch = function(self, other)
     if other.classname ~= "player" then
         return
@@ -121,6 +137,9 @@ plat_outside_touch = function(self, other)
     end
 end
 
+---@param self entity
+---@param _activator entity
+---@return nil
 plat_trigger_use = function(self, _activator)
     if self.think then
         -- allready activated
@@ -129,6 +148,9 @@ plat_trigger_use = function(self, _activator)
     plat_go_down(self)
 end
 
+---@param self entity
+---@param other entity
+---@return nil
 plat_crush = function(self, other)
     combat.damage(other, self, self, 1)
 
@@ -141,6 +163,9 @@ plat_crush = function(self, other)
     end
 end
 
+---@param self entity
+---@param _activator entity
+---@return nil
 local function plat_use(self, _activator)
     self.use = subs.null
     if self.state ~= STATE_UP then
@@ -149,18 +174,19 @@ local function plat_use(self, _activator)
     plat_go_down(self)
 end
 
---[[QUAKED func_plat (0 .5 .8) ? PLAT_LOW_TRIGGER
-speed default 150
-
-Plats are always drawn in the extended position, so they will light correctly.
-
-If the plat is the target of another trigger or button, it will start out disabled in the extended position until it is trigger, when it will lower and become a normal plat.
-
-If the "height" key is set, that will determine the amount the plat moves, instead of being implicitly determined by the model's height.
-Set "sounds" to one of the following:
-1) base fast
-2) chain slow
-]]
+---QUAKED func_plat (0 .5 .8) ? PLAT_LOW_TRIGGER
+---speed default 150
+---
+---Plats are always drawn in the extended position, so they will light correctly.
+---
+---If the plat is the target of another trigger or button, it will start out disabled in the extended position until it is trigger, when it will lower and become a normal plat.
+---
+---If the "height" key is set, that will determine the amount the plat moves, instead of being implicitly determined by the model's height.
+---Set "sounds" to one of the following:
+---1) base fast
+---2) chain slow
+---@param self entity
+---@return nil
 function M.func_plat(self)
     if self.t_length == 0 then
         self.t_length = 80
@@ -230,6 +256,9 @@ end
 
 local train_next, func_train_find
 
+---@param self entity
+---@param other entity
+---@return nil
 local function train_blocked(self, other)
     if quake.time() < self.attack_finished then
         return
@@ -238,6 +267,9 @@ local function train_blocked(self, other)
     combat.damage(other, self, self, self.dmg)
 end
 
+---@param self entity
+---@param _activator entity
+---@return nil
 local function train_use(self, _activator)
     if self.think ~= func_train_find then
         -- already activated
@@ -246,6 +278,8 @@ local function train_use(self, _activator)
     train_next(self)
 end
 
+---@param self entity
+---@return nil
 local function train_wait(self)
     if self.wait ~= 0 then
         self.nextthink = self.ltime + self.wait
@@ -257,6 +291,8 @@ local function train_wait(self)
     self.think = train_next
 end
 
+---@param self entity
+---@return nil
 train_next = function(self)
     local targ
 
@@ -274,6 +310,8 @@ train_next = function(self)
     subs.calc_move(self, targ.origin - self.mins, self.speed, train_wait)
 end
 
+---@param self entity
+---@return nil
 func_train_find = function(self)
     local targ
 
@@ -287,16 +325,17 @@ func_train_find = function(self)
     end
 end
 
---[[QUAKED func_train (0 .5 .8) ?
-Trains are moving platforms that players can ride.
-The targets origin specifies the min point of the train at each corner.
-The train spawns at the first target it is pointing at.
-If the train is the target of a button or trigger, it will not begin moving until activated.
-speed default 100
-dmg default 2
-sounds
-1) ratchet metal
-]]
+---QUAKED func_train (0 .5 .8) ?
+---Trains are moving platforms that players can ride.
+---The targets origin specifies the min point of the train at each corner.
+---The train spawns at the first target it is pointing at.
+---If the train is the target of a button or trigger, it will not begin moving until activated.
+---speed default 100
+---dmg default 2
+---sounds
+---1) ratchet metal
+---@param self entity
+---@return nil
 function M.func_train(self)
     if self.speed == 0 then self.speed = 100 end
     if self.target == "" then quake.object_error(self, "func_train without a target") end
@@ -333,9 +372,10 @@ function M.func_train(self)
     self.think = func_train_find
 end
 
---[[QUAKED misc_teleporttrain (0 .5 .8) (-8 -8 -8) (8 8 8)
-This is used for the final bos
-]]
+---QUAKED misc_teleporttrain (0 .5 .8) (-8 -8 -8) (8 8 8)
+---This is used for the final bos
+---@param self entity
+---@return nil
 function M.misc_teleporttrain(self)
     if self.speed == 0 then self.speed = 100 end
     if self.target == "" then quake.object_error(self, "func_train without a target") end

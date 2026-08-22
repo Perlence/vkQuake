@@ -39,13 +39,10 @@ local M = {}
 --     <code>
 -- };
 
---[[
-================
-monster_use
-
-Using a monster makes it angry at the current activator
-================
-]]
+---Using a monster makes it angry at the current activator
+---@param self entity
+---@param activator entity
+---@return nil
 function M.use(self, activator)
     if self.enemy then
         return
@@ -70,14 +67,10 @@ function M.use(self, activator)
     self.think = ai.found_target
 end
 
---[[
-================
-monster_death_use
-
-When a mosnter dies, it fires all of its targets with the current
-enemy as activator.
-================
-]]
+---When a mosnter dies, it fires all of its targets with the current
+---enemy as activator.
+---@param self entity
+---@return nil
 function M.death_use(self)
     -- fall to ground
     if (self.flags & C.FL_FLY) ~= 0 then
@@ -96,6 +89,8 @@ end
 
 --============================================================================
 
+---@param self entity
+---@return nil
 function M.walk_start_go(self)
     -- raise off floor a bit
     self.origin = quake.vec3(self.origin.x, self.origin.y, self.origin.z + 1)
@@ -143,6 +138,8 @@ function M.walk_start_go(self)
     self.nextthink = self.nextthink + quake.random() * 0.5
 end
 
+---@param self entity
+---@return nil
 function M.walk_start(self)
     -- delay drop to floor to make sure all doors have been spawned
     -- spread think times so they don't all happen at same time
@@ -151,6 +148,8 @@ function M.walk_start(self)
     quake.globals.total_monsters = quake.globals.total_monsters + 1
 end
 
+---@param self entity
+---@return nil
 function M.fly_start_go(self)
     self.takedamage = C.DAMAGE_AIM
 
@@ -191,6 +190,8 @@ function M.fly_start_go(self)
     end
 end
 
+---@param self entity
+---@return nil
 function M.fly_start(self)
     -- spread think times so they don't all happen at same time
     self.nextthink = self.nextthink + quake.random() * 0.5
@@ -198,6 +199,8 @@ function M.fly_start(self)
     quake.globals.total_monsters = quake.globals.total_monsters + 1
 end
 
+---@param self entity
+---@return nil
 function M.swim_start_go(self)
     if quake.cvar("deathmatch") ~= 0 then
         quake.remove(self)
@@ -236,6 +239,8 @@ function M.swim_start_go(self)
     self.nextthink = self.nextthink + quake.random() * 0.5
 end
 
+---@param self entity
+---@return nil
 function M.swim_start(self)
     -- spread think times so they don't all happen at same time
     self.nextthink = self.nextthink + quake.random() * 0.5

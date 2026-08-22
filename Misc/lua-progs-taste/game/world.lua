@@ -25,6 +25,7 @@ local quake = require("quake")
 local M = {}
 local g = quake.globals
 
+---@return nil
 local function init_body_que()
     g.bodyque_head = quake.spawn()
     g.bodyque_head.classname = "bodyque"
@@ -37,6 +38,7 @@ local function init_body_que()
     g.bodyque_head.owner.owner.owner.owner = g.bodyque_head
 end
 
+---@return nil
 function M.main()
     quake.dprint("main function\n")
 
@@ -104,6 +106,8 @@ World Types:
 2: base
 ]]
 --=======================
+---@param self entity
+---@return nil
 function M.worldspawn(self)
     g.lastspawn = quake.world
     init_body_que()
@@ -197,6 +201,7 @@ function M.worldspawn(self)
     quake.light_style(63, "a") -- 63 testing
 end
 
+---@return nil
 function M.start_frame()
     g.teamplay = quake.cvar("teamplay")
     g.skill = quake.cvar("skill")
@@ -213,10 +218,14 @@ BODY QUE
 
 -- just here so spawn functions don't complain after the world
 -- creates bodyques
+---@param _self entity
+---@return nil
 function M.bodyque(_self) end
 
 -- make a body que entry for the given ent so the ent can be
 -- respawned elsewhere
+---@param ent entity
+---@return nil
 function M.copy_to_body_que(ent)
     local body = g.bodyque_head
     body.angles = ent.angles

@@ -115,6 +115,9 @@ tbaby_run25 = animation.frame("run25", function() return tbaby_run1 end, functio
 
 local tbaby_jump1
 
+---@param self entity
+---@param other entity
+---@return nil
 local function tar_jump_touch(self, other)
     local ldmg
 
@@ -202,8 +205,9 @@ end)
 
 --============================================================================
 
---[[QUAKED monster_tarbaby (1 0 0) (-16 -16 -24) (16 16 24) Ambush
-]]
+---QUAKED monster_tarbaby (1 0 0) (-16 -16 -24) (16 16 24) Ambush
+---@param self entity
+---@return nil
 function M.spawn(self)
     if quake.cvar("deathmatch") ~= 0 then
         quake.remove(self)

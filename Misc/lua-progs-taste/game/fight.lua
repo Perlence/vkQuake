@@ -33,6 +33,8 @@ enemy.
 When it decides it can't attack, it goes into hunt mode.
 ]]
 
+---@param self entity
+---@return nil
 function M.knight_attack(self)
     -- decide if now is a good swing time
     local len = (self.enemy.origin + self.enemy.view_ofs - (self.origin + self.view_ofs)):length()
@@ -47,14 +49,11 @@ end
 
 --=============================================================================
 
---[[
-===========
-CheckAttack
-
-The player is in view, so decide to move or launch an attack
-Returns FALSE if movement should continue
-============
-]]
+---The player is in view, so decide to move or launch an attack
+---Returns FALSE if movement should continue
+---@param self entity
+---@param enemy_range integer
+---@return boolean
 function M.check_attack(self, enemy_range)
     local targ = self.enemy
 
@@ -126,31 +125,26 @@ function M.check_attack(self, enemy_range)
     return false
 end
 
---[[
-=============
-ai_face
-
-Stay facing the enemy
-=============
-]]
+---Stay facing the enemy
+---@param self entity
+---@return nil
 function M.face(self)
     self.ideal_yaw = quake.vector_to_yaw(self.enemy.origin - self.origin)
     quake.change_yaw(self)
 end
 
---[[
-=============
-ai_charge
-
-The monster is in a melee attack, so get as close as possible to .enemy
-=============
-]]
+---The monster is in a melee attack, so get as close as possible to .enemy
+---@param self entity
+---@param distance number
+---@return nil
 function M.charge(self, distance)
     M.face(self)
     -- done in C code...
     quake.move_to_goal(self, distance)
 end
 
+---@param self entity
+---@return nil
 function M.charge_side(self)
     -- aim to the left of the enemy for a flyby
 
@@ -164,12 +158,8 @@ function M.charge_side(self)
     quake.walk_move(self, heading, 20)
 end
 
---[[
-=============
-ai_melee
-
-=============
-]]
+---@param self entity
+---@return nil
 function M.melee(self)
     if not self.enemy then
         -- removed before stroke
@@ -186,6 +176,8 @@ function M.melee(self)
     require("game.combat").damage(self.enemy, self, self, ldmg)
 end
 
+---@param self entity
+---@return nil
 function M.melee_side(self)
     if not self.enemy then
         return -- removed before stroke
@@ -208,14 +200,11 @@ end
 
 --=============================================================================
 
---[[
-===========
-SoldierCheckAttack
-
-The player is in view, so decide to move or launch an attack
-Returns FALSE if movement should continue
-============
-]]
+---The player is in view, so decide to move or launch an attack
+---Returns FALSE if movement should continue
+---@param self entity
+---@param enemy_range integer
+---@return boolean
 function M.soldier_check_attack(self, enemy_range)
     local targ = self.enemy
 
@@ -267,14 +256,12 @@ function M.soldier_check_attack(self, enemy_range)
 end
 --=============================================================================
 
---[[
-===========
-ShamCheckAttack
-
-The player is in view, so decide to move or launch an attack
-Returns FALSE if movement should continue
-============
-]]
+---The player is in view, so decide to move or launch an attack
+---Returns FALSE if movement should continue
+---@param self entity
+---@param enemy_range integer
+---@param enemy_vis boolean
+---@return boolean
 function M.sham_check_attack(self, enemy_range, enemy_vis)
     local combat = require("game.combat")
     if enemy_range == C.RANGE_MELEE then
@@ -324,14 +311,12 @@ end
 
 --============================================================================
 
---[[
-===========
-OgreCheckAttack
-
-The player is in view, so decide to move or launch an attack
-Returns FALSE if movement should continue
-============
-]]
+---The player is in view, so decide to move or launch an attack
+---Returns FALSE if movement should continue
+---@param self entity
+---@param enemy_range integer
+---@param enemy_vis boolean
+---@return boolean
 function M.ogre_check_attack(self, enemy_range, enemy_vis)
     local combat = require("game.combat")
     if enemy_range == C.RANGE_MELEE then

@@ -27,17 +27,21 @@ local SOLID_TRIGGER = 1
 
 local M = {}
 
+---@param _self entity
+---@return nil
 function M.null(_self)
 end
 
+---@param self entity
+---@return nil
 function M.remove(self)
     quake.remove(self)
 end
 
---[[
-QuakeEd only writes a single float for angles (bad idea), so up and down are
-just constant angles.
-]]
+---QuakeEd only writes a single float for angles (bad idea), so up and down are
+---just constant angles.
+---@param self entity
+---@return nil
 function M.set_movedir(self)
     if self.angles == quake.vec3(0, -1, 0) then
         self.movedir = quake.vec3(0, 0, 1)
@@ -50,11 +54,8 @@ function M.set_movedir(self)
     self.angles = quake.vec3(0, 0, 0)
 end
 
---[[
-================
-InitTrigger
-================
-]]
+---@param self entity
+---@return nil
 function M.init_trigger(self)
     -- trigger angles are used for one-way touches.  An angle of 0 is assumed
     -- to mean no restrictions, so use a yaw of 360 instead.
@@ -79,10 +80,20 @@ self.origin traveling at speed
 ]]
 local calc_move_done
 
+---@param ent entity
+---@param tdest vec3
+---@param tspeed number
+---@param func think_callback
+---@return nil
 function M.calc_move_ent(ent, tdest, tspeed, func)
     M.calc_move(ent, tdest, tspeed, func)
 end
 
+---@param self entity
+---@param tdest vec3
+---@param tspeed number
+---@param func think_callback
+---@return nil
 function M.calc_move(self, tdest, tspeed, func)
     if tspeed == 0 then
         quake.object_error("No speed is defined!")
@@ -121,11 +132,9 @@ function M.calc_move(self, tdest, tspeed, func)
     self.velocity = vdestdelta * (1 / traveltime)
 end
 
---[[
-============
-After moving, set origin to exact final destination
-============
-]]
+---After moving, set origin to exact final destination
+---@param self entity
+---@return nil
 calc_move_done = function(self)
     quake.set_origin(self, self.finaldest)
     self.velocity = quake.vec3(0, 0, 0)
@@ -148,10 +157,20 @@ The calling function should make sure self.think is valid
 ]]
 local calc_angle_move_done
 
+---@param ent entity
+---@param destangle vec3
+---@param tspeed number
+---@param func think_callback
+---@return nil
 function M.calc_angle_move_ent(ent, destangle, tspeed, func)
     M.calc_angle_move(ent, destangle, tspeed, func)
 end
 
+---@param self entity
+---@param destangle vec3
+---@param tspeed number
+---@param func think_callback
+---@return nil
 function M.calc_angle_move(self, destangle, tspeed, func)
     if tspeed == 0 then
         quake.object_error("No speed is defined!")
@@ -177,11 +196,9 @@ function M.calc_angle_move(self, destangle, tspeed, func)
     self.think = calc_angle_move_done
 end
 
---[[
-============
-After rotating, set angle to exact final angle
-============
-]]
+---After rotating, set angle to exact final angle
+---@param self entity
+---@return nil
 calc_angle_move_done = function(self)
     self.angles = self.finalangle
     self.avelocity = quake.vec3(0, 0, 0)
@@ -196,31 +213,29 @@ M.calc_angle_move_done = calc_angle_move_done
 
 local delay_think
 
+---@param self entity
+---@return nil
 function M.delay_think(self)
     M.use_targets(self, self.enemy)
     quake.remove(self)
 end
 delay_think = M.delay_think
 
---[[
-==============================
-SUB_UseTargets
-
-the global "activator" should be set to the entity that initiated the firing.
-
-If self.delay is set, a DelayedUse entity will be created that will actually
-do the SUB_UseTargets after that many seconds have passed.
-
-Centerprints any self.message to the activator.
-
-Removes all entities with a targetname that match self.killtarget,
-and removes them, so some events can remove other triggers.
-
-Search for (string)targetname in all entities that
-match (string)self.target and call their .use function
-
-==============================
-]]
+---the global "activator" should be set to the entity that initiated the firing.
+---
+---If self.delay is set, a DelayedUse entity will be created that will actually
+---call use_targets after that many seconds have passed.
+---
+---Centerprints any self.message to the activator.
+---
+---Removes all entities with a targetname that match self.killtarget,
+---and removes them, so some events can remove other triggers.
+---
+---Search for (string)targetname in all entities that
+---match (string)self.target and call their .use function
+---@param self entity
+---@param activator entity
+---@return nil
 function M.use_targets(self, activator)
     -- check for a delay
     if self.delay ~= 0 then
@@ -271,10 +286,11 @@ function M.use_targets(self, activator)
     end
 end
 
---[[
-in nightmare mode, all attack_finished times become 0
-some monsters refire twice automatically
-]]
+---in nightmare mode, all attack_finished times become 0
+---some monsters refire twice automatically
+---@param self entity
+---@param normal number
+---@return nil
 function M.attack_finished(self, normal)
     -- refire count for nightmare
     self.cnt = 0
@@ -283,6 +299,9 @@ function M.attack_finished(self, normal)
     end
 end
 
+---@param self entity
+---@param thinkst think_callback
+---@return nil
 function M.check_refire(self, thinkst)
     if quake.cvar("skill") ~= 3 then
         return

@@ -33,16 +33,18 @@ local DAMAGE_NO, DAMAGE_AIM = 0, 2
 local CHAN_VOICE = 2
 local ATTN_NORM, ATTN_STATIC = 1, 3
 
---[[QUAKED info_null (0 0.5 0) (-4 -4 -4) (4 4 4)
-Used as a positional target for spotlights, etc.
-]]
+---QUAKED info_null (0 0.5 0) (-4 -4 -4) (4 4 4)
+---Used as a positional target for spotlights, etc.
+---@param self entity
+---@return nil
 function M.info_null(self)
     quake.remove(self)
 end
 
---[[QUAKED info_notnull (0 0.5 0) (-4 -4 -4) (4 4 4)
-Used as a positional target for lightning.
-]]
+---QUAKED info_notnull (0 0.5 0) (-4 -4 -4) (4 4 4)
+---Used as a positional target for lightning.
+---@param _self entity
+---@return nil
 function M.info_notnull(_self)
 end
 
@@ -50,6 +52,9 @@ end
 
 local START_OFF = 1
 
+---@param self entity
+---@param _activator entity
+---@return nil
 local function light_use(self, _activator)
     if (self.spawnflags & START_OFF) ~= 0 then
         quake.light_style(self.style, "m")
@@ -60,12 +65,13 @@ local function light_use(self, _activator)
     end
 end
 
---[[QUAKED light (0 1 0) (-8 -8 -8) (8 8 8) START_OFF
-Non-displayed light.
-Default light value is 300
-Default style is 0
-If targeted, it will toggle between on or off.
-]]
+---QUAKED light (0 1 0) (-8 -8 -8) (8 8 8) START_OFF
+---Non-displayed light.
+---Default light value is 300
+---Default style is 0
+---If targeted, it will toggle between on or off.
+---@param self entity
+---@return nil
 function M.light(self)
     if self.targetname == "" then
         -- inert light
@@ -79,13 +85,14 @@ function M.light(self)
     end
 end
 
---[[QUAKED light_fluoro (0 1 0) (-8 -8 -8) (8 8 8) START_OFF
-Non-displayed light.
-Default light value is 300
-Default style is 0
-If targeted, it will toggle between on or off.
-Makes steady fluorescent humming sound
-]]
+---QUAKED light_fluoro (0 1 0) (-8 -8 -8) (8 8 8) START_OFF
+---Non-displayed light.
+---Default light value is 300
+---Default style is 0
+---If targeted, it will toggle between on or off.
+---Makes steady fluorescent humming sound
+---@param self entity
+---@return nil
 function M.light_fluoro(self)
     if self.style >= 32 then
         self.use = light_use
@@ -96,40 +103,45 @@ function M.light_fluoro(self)
     quake.ambient_sound(self.origin, "ambience/fl_hum1.wav", 0.5, ATTN_STATIC)
 end
 
---[[QUAKED light_fluorospark (0 1 0) (-8 -8 -8) (8 8 8)
-Non-displayed light.
-Default light value is 300
-Default style is 10
-Makes sparking, broken fluorescent sound
-]]
+---QUAKED light_fluorospark (0 1 0) (-8 -8 -8) (8 8 8)
+---Non-displayed light.
+---Default light value is 300
+---Default style is 10
+---Makes sparking, broken fluorescent sound
+---@param self entity
+---@return nil
 function M.light_fluorospark(self)
     if self.style == 0 then self.style = 10 end
     quake.precache_sound("ambience/buzz1.wav")
     quake.ambient_sound(self.origin, "ambience/buzz1.wav", 0.5, ATTN_STATIC)
 end
 
---[[QUAKED light_globe (0 1 0) (-8 -8 -8) (8 8 8)
-Sphere globe light.
-Default light value is 300
-Default style is 0
-]]
+---QUAKED light_globe (0 1 0) (-8 -8 -8) (8 8 8)
+---Sphere globe light.
+---Default light value is 300
+---Default style is 0
+---@param self entity
+---@return nil
 function M.light_globe(self)
     quake.precache_model("progs/s_light.spr")
     quake.set_model(self, "progs/s_light.spr")
     quake.make_static(self)
 end
 
+---@param self entity
+---@return nil
 local function fire_ambient(self)
     quake.precache_sound("ambience/fire1.wav")
     -- attenuate fast
     quake.ambient_sound(self.origin, "ambience/fire1.wav", 0.5, ATTN_STATIC)
 end
 
---[[QUAKED light_torch_small_walltorch (0 .5 0) (-10 -10 -20) (10 10 20)
-Short wall torch
-Default light value is 200
-Default style is 0
-]]
+---QUAKED light_torch_small_walltorch (0 .5 0) (-10 -10 -20) (10 10 20)
+---Short wall torch
+---Default light value is 200
+---Default style is 0
+---@param self entity
+---@return nil
 function M.light_torch_small_walltorch(self)
     quake.precache_model("progs/flame.mdl")
     quake.set_model(self, "progs/flame.mdl")
@@ -137,9 +149,10 @@ function M.light_torch_small_walltorch(self)
     quake.make_static(self)
 end
 
---[[QUAKED light_flame_large_yellow (0 1 0) (-10 -10 -12) (12 12 18)
-Large yellow flame ball
-]]
+---QUAKED light_flame_large_yellow (0 1 0) (-10 -10 -12) (12 12 18)
+---Large yellow flame ball
+---@param self entity
+---@return nil
 function M.light_flame_large_yellow(self)
     quake.precache_model("progs/flame2.mdl")
     quake.set_model(self, "progs/flame2.mdl")
@@ -148,9 +161,10 @@ function M.light_flame_large_yellow(self)
     quake.make_static(self)
 end
 
---[[QUAKED light_flame_small_yellow (0 1 0) (-8 -8 -8) (8 8 8) START_OFF
-Small yellow flame ball
-]]
+---QUAKED light_flame_small_yellow (0 1 0) (-8 -8 -8) (8 8 8) START_OFF
+---Small yellow flame ball
+---@param self entity
+---@return nil
 function M.light_flame_small_yellow(self)
     quake.precache_model("progs/flame2.mdl")
     quake.set_model(self, "progs/flame2.mdl")
@@ -158,9 +172,10 @@ function M.light_flame_small_yellow(self)
     quake.make_static(self)
 end
 
---[[QUAKED light_flame_small_white (0 1 0) (-10 -10 -40) (10 10 40) START_OFF
-Small white flame ball
-]]
+---QUAKED light_flame_small_white (0 1 0) (-10 -10 -40) (10 10 40) START_OFF
+---Small white flame ball
+---@param self entity
+---@return nil
 function M.light_flame_small_white(self)
     quake.precache_model("progs/flame2.mdl")
     quake.set_model(self, "progs/flame2.mdl")
@@ -176,6 +191,8 @@ Lava Balls
 
 local fire_fly, fire_touch
 
+---@param self entity
+---@return nil
 function M.misc_fireball(self)
     quake.precache_model("progs/lavaball.mdl")
     self.classname = "fireball"
@@ -184,6 +201,8 @@ function M.misc_fireball(self)
     if self.speed == 0 then self.speed = 1000 end
 end
 
+---@param self entity
+---@return nil
 fire_fly = function(self)
     local fireball = quake.spawn()
     fireball.solid = SOLID_TRIGGER
@@ -204,6 +223,9 @@ fire_fly = function(self)
     self.think = fire_fly
 end
 
+---@param self entity
+---@param other entity
+---@return nil
 fire_touch = function(self, other)
     combat.damage(other, self, self, 20)
     quake.remove(self)
@@ -211,6 +233,8 @@ end
 
 --============================================================================
 
+---@param self entity
+---@return nil
 local function barrel_explode(self)
     self.takedamage = DAMAGE_NO
     self.classname = "explo_box"
@@ -222,9 +246,10 @@ local function barrel_explode(self)
     weapons.become_explosion(self)
 end
 
---[[QUAKED misc_explobox (0 .5 .8) (0 0 0) (32 32 64)
-TESTING THING
-]]
+---QUAKED misc_explobox (0 .5 .8) (0 0 0) (32 32 64)
+---TESTING THING
+---@param self entity
+---@return nil
 function M.misc_explobox(self)
     self.solid = SOLID_BBOX
     self.movetype = MOVETYPE_NONE
@@ -246,9 +271,10 @@ function M.misc_explobox(self)
     end
 end
 
---[[QUAKED misc_explobox2 (0 .5 .8) (0 0 0) (32 32 64)
-Smaller exploding box, REGISTERED ONLY
-]]
+---QUAKED misc_explobox2 (0 .5 .8) (0 0 0) (32 32 64)
+---Smaller exploding box, REGISTERED ONLY
+---@param self entity
+---@return nil
 function M.misc_explobox2(self)
     self.solid = SOLID_BBOX
     self.movetype = MOVETYPE_NONE
@@ -274,6 +300,9 @@ end
 
 local SPAWNFLAG_SUPERSPIKE, SPAWNFLAG_LASER = 1, 2
 
+---@param self entity
+---@param _activator entity
+---@return nil
 local function spikeshooter_use(self, _activator)
     if (self.spawnflags & SPAWNFLAG_LASER) ~= 0 then
         quake.sound(self, CHAN_VOICE, "enforcer/enfire.wav", 1, ATTN_NORM)
@@ -288,16 +317,19 @@ local function spikeshooter_use(self, _activator)
     end
 end
 
+---@param self entity
+---@return nil
 local function shooter_think(self)
     spikeshooter_use(self)
     self.nextthink = quake.time() + self.wait
     quake.globals.newmis.velocity = self.movedir * 500
 end
 
---[[QUAKED trap_spikeshooter (0 .5 .8) (-8 -8 -8) (8 8 8) superspike laser
-When triggered, fires a spike in the direction set in QuakeEd.
-Laser is only for REGISTERED.
-]]
+---QUAKED trap_spikeshooter (0 .5 .8) (-8 -8 -8) (8 8 8) superspike laser
+---When triggered, fires a spike in the direction set in QuakeEd.
+---Laser is only for REGISTERED.
+---@param self entity
+---@return nil
 function M.trap_spikeshooter(self)
     subs.set_movedir(self)
     self.use = spikeshooter_use
@@ -310,11 +342,12 @@ function M.trap_spikeshooter(self)
     end
 end
 
---[[QUAKED trap_shooter (0 .5 .8) (-8 -8 -8) (8 8 8) superspike laser
-Continuously fires spikes.
-"wait" time between spike (1.0 default)
-"nextthink" delay before firing first spike, so multiple shooters can be stagered.
-]]
+---QUAKED trap_shooter (0 .5 .8) (-8 -8 -8) (8 8 8) superspike laser
+---Continuously fires spikes.
+---"wait" time between spike (1.0 default)
+---"nextthink" delay before firing first spike, so multiple shooters can be stagered.
+---@param self entity
+---@return nil
 function M.trap_shooter(self)
     M.trap_spikeshooter(self)
     if self.wait == 0 then self.wait = 1 end
@@ -331,10 +364,11 @@ end
 
 local make_bubbles, bubble_remove, bubble_bob
 
---[[QUAKED air_bubbles (0 .5 .8) (-8 -8 -8) (8 8 8)
-
-testing air bubbles
-]]
+---QUAKED air_bubbles (0 .5 .8) (-8 -8 -8) (8 8 8)
+---
+---testing air bubbles
+---@param self entity
+---@return nil
 function M.air_bubbles(self)
     if quake.cvar("deathmatch") ~= 0 then
         quake.remove(self)
@@ -345,6 +379,8 @@ function M.air_bubbles(self)
     self.think = make_bubbles
 end
 
+---@param self entity
+---@return nil
 make_bubbles = function(self)
     local bubble = quake.spawn()
     quake.set_model(bubble, "progs/s_bubble.spr")
@@ -363,6 +399,8 @@ make_bubbles = function(self)
     self.think = make_bubbles
 end
 
+---@param self entity
+---@return nil
 local function bubble_split(self)
     local bubble = quake.spawn()
     quake.set_model(bubble, "progs/s_bubble.spr")
@@ -382,11 +420,16 @@ local function bubble_split(self)
     if self.waterlevel ~= 3 then quake.remove(self) end
 end
 
+---@param self entity
+---@param other entity
+---@return nil
 bubble_remove = function(self, other)
     if other.classname == self.classname then return end
     quake.remove(self)
 end
 
+---@param self entity
+---@return nil
 bubble_bob = function(self)
     self.cnt = self.cnt + 1
     if self.cnt == 4 then bubble_split(self) end
@@ -408,9 +451,10 @@ bubble_bob = function(self)
     self.think = bubble_bob
 end
 
---[[QUAKED viewthing (0 .5 .8) (-8 -8 -8) (8 8 8)
-Just for the debugging level. Don't use
-]]
+---QUAKED viewthing (0 .5 .8) (-8 -8 -8) (8 8 8)
+---Just for the debugging level. Don't use
+---@param self entity
+---@return nil
 function M.viewthing(self)
     self.movetype = MOVETYPE_NONE
     self.solid = SOLID_NOT
@@ -426,14 +470,18 @@ SIMPLE BMODELS
 ==============================================================================
 ]]
 
+---@param self entity
+---@param _activator entity
+---@return nil
 local function func_wall_use(self, _activator)
     -- change to alternate textures
     self.frame = 1 - self.frame
 end
 
---[[QUAKED func_wall (0 .5 .8) ?
-This is just a solid wall if not inhibitted
-]]
+---QUAKED func_wall (0 .5 .8) ?
+---This is just a solid wall if not inhibitted
+---@param self entity
+---@return nil
 function M.func_wall(self)
     self.angles = quake.vec3(0, 0, 0)
     self.movetype = MOVETYPE_PUSH -- so it doesn't get pushed by anything
@@ -442,9 +490,10 @@ function M.func_wall(self)
     quake.set_model(self, self.model)
 end
 
---[[QUAKED func_illusionary (0 .5 .8) ?
-A simple entity that looks solid but lets you walk through it.
-]]
+---QUAKED func_illusionary (0 .5 .8) ?
+---A simple entity that looks solid but lets you walk through it.
+---@param self entity
+---@return nil
 function M.func_illusionary(self)
     self.angles = quake.vec3(0, 0, 0)
     self.movetype = MOVETYPE_NONE
@@ -453,9 +502,10 @@ function M.func_illusionary(self)
     quake.make_static(self)
 end
 
---[[QUAKED func_episodegate (0 .5 .8) ? E1 E2 E3 E4
-This bmodel will appear if the episode has allready been completed, so players can't reenter it.
-]]
+---QUAKED func_episodegate (0 .5 .8) ? E1 E2 E3 E4
+---This bmodel will appear if the episode has allready been completed, so players can't reenter it.
+---@param self entity
+---@return nil
 function M.func_episodegate(self)
     if (quake.globals.serverflags & self.spawnflags) == 0 then
         -- can still enter episode
@@ -468,9 +518,10 @@ function M.func_episodegate(self)
     quake.set_model(self, self.model)
 end
 
---[[QUAKED func_bossgate (0 .5 .8) ?
-This bmodel appears unless players have all of the episode sigils.
-]]
+---QUAKED func_bossgate (0 .5 .8) ?
+---This bmodel appears unless players have all of the episode sigils.
+---@param self entity
+---@return nil
 function M.func_bossgate(self)
     if (quake.globals.serverflags & 15) == 15 then
         -- all episodes completed
@@ -485,64 +536,73 @@ end
 
 --============================================================================
 
---[[QUAKED ambient_suck_wind (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
-]]
+---QUAKED ambient_suck_wind (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+---@param self entity
+---@return nil
 function M.ambient_suck_wind(self)
     quake.precache_sound("ambience/suck1.wav")
     quake.ambient_sound(self.origin, "ambience/suck1.wav", 1, ATTN_STATIC)
 end
 
---[[QUAKED ambient_drone (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
-]]
+---QUAKED ambient_drone (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+---@param self entity
+---@return nil
 function M.ambient_drone(self)
     quake.precache_sound("ambience/drone6.wav")
     quake.ambient_sound(self.origin, "ambience/drone6.wav", 0.5, ATTN_STATIC)
 end
 
---[[QUAKED ambient_flouro_buzz (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
-]]
+---QUAKED ambient_flouro_buzz (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+---@param self entity
+---@return nil
 function M.ambient_flouro_buzz(self)
     quake.precache_sound("ambience/buzz1.wav")
     quake.ambient_sound(self.origin, "ambience/buzz1.wav", 1, ATTN_STATIC)
 end
 
---[[QUAKED ambient_drip (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
-]]
+---QUAKED ambient_drip (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+---@param self entity
+---@return nil
 function M.ambient_drip(self)
     quake.precache_sound("ambience/drip1.wav")
     quake.ambient_sound(self.origin, "ambience/drip1.wav", 0.5, ATTN_STATIC)
 end
 
---[[QUAKED ambient_comp_hum (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
-]]
+---QUAKED ambient_comp_hum (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+---@param self entity
+---@return nil
 function M.ambient_comp_hum(self)
     quake.precache_sound("ambience/comp1.wav")
     quake.ambient_sound(self.origin, "ambience/comp1.wav", 1, ATTN_STATIC)
 end
 
---[[QUAKED ambient_thunder (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
-]]
+---QUAKED ambient_thunder (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+---@param self entity
+---@return nil
 function M.ambient_thunder(self)
     quake.precache_sound("ambience/thunder1.wav")
     quake.ambient_sound(self.origin, "ambience/thunder1.wav", 0.5, ATTN_STATIC)
 end
 
---[[QUAKED ambient_light_buzz (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
-]]
+---QUAKED ambient_light_buzz (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+---@param self entity
+---@return nil
 function M.ambient_light_buzz(self)
     quake.precache_sound("ambience/fl_hum1.wav")
     quake.ambient_sound(self.origin, "ambience/fl_hum1.wav", 0.5, ATTN_STATIC)
 end
 
---[[QUAKED ambient_swamp1 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
-]]
+---QUAKED ambient_swamp1 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+---@param self entity
+---@return nil
 function M.ambient_swamp1(self)
     quake.precache_sound("ambience/swamp1.wav")
     quake.ambient_sound(self.origin, "ambience/swamp1.wav", 0.5, ATTN_STATIC)
 end
 
---[[QUAKED ambient_swamp2 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
-]]
+---QUAKED ambient_swamp2 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
+---@param self entity
+---@return nil
 function M.ambient_swamp2(self)
     quake.precache_sound("ambience/swamp2.wav")
     quake.ambient_sound(self.origin, "ambience/swamp2.wav", 0.5, ATTN_STATIC)
@@ -550,6 +610,8 @@ end
 
 --============================================================================
 
+---@param self entity
+---@return nil
 local function noise_think(self)
     self.nextthink = quake.time() + 0.5
     quake.sound(self, 1, "enforcer/enfire.wav", 1, ATTN_NORM)
@@ -561,10 +623,11 @@ local function noise_think(self)
     quake.sound(self, 7, "enforcer/pain1.wav", 1, ATTN_NORM)
 end
 
---[[QUAKED misc_noisemaker (1 0.5 0) (-10 -10 -10) (10 10 10)
-
-For optimzation testing, starts a lot of sounds.
-]]
+---QUAKED misc_noisemaker (1 0.5 0) (-10 -10 -10) (10 10 10)
+---
+---For optimzation testing, starts a lot of sounds.
+---@param self entity
+---@return nil
 function M.misc_noisemaker(self)
     quake.precache_sound2("enforcer/enfire.wav")
     quake.precache_sound2("enforcer/enfstop.wav")

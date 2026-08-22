@@ -54,12 +54,15 @@ local SVC_CDTRACK, SVC_INTERMISSION, SVC_FINALE, SVC_SELLSCREEN = 32, 30, 31, 33
 =============================================================================
 ]]
 
---[[QUAKED info_intermission (1 0.5 0.5) (-16 -16 -16) (16 16 16)
-This is the camera point for the intermission.
-Use mangle instead of angle, so you can set pitch or roll as well as yaw.  'pitch roll yaw'
-]]
+---QUAKED info_intermission (1 0.5 0.5) (-16 -16 -16) (16 16 16)
+---This is the camera point for the intermission.
+---Use mangle instead of angle, so you can set pitch or roll as well as yaw.  'pitch roll yaw'
+---@param _self entity
+---@return nil
 function M.info_intermission(_self) end
 
+---@param self entity
+---@return nil
 function M.set_change_parms(self)
     if self.health <= 0 then M.set_new_parms(); return end
     -- remove items
@@ -78,6 +81,7 @@ function M.set_change_parms(self)
     g.parm9 = self.armortype * 100
 end
 
+---@return nil
 function M.set_new_parms()
     g.parm1 = IT_SHOTGUN | IT_AXE
     g.parm2, g.parm3, g.parm4 = 100, 0, 25
@@ -85,6 +89,8 @@ function M.set_new_parms()
     g.parm8, g.parm9 = 1, 0
 end
 
+---@param self entity
+---@return nil
 function M.decode_level_parms(self)
     if g.serverflags ~= 0 and quake.world.model == "maps/start.bsp" then
         M.set_new_parms() -- take away all stuff on starting new episode
@@ -100,13 +106,8 @@ function M.decode_level_parms(self)
     self.armortype = g.parm9 * 0.01
 end
 
---[[
-============
-FindIntermission
-
-Returns the entity to view from
-============
-]]
+---Returns the entity to view from
+---@return entity
 function M.find_intermission()
     local spot
     local cyc
@@ -133,6 +134,7 @@ function M.find_intermission()
     return quake.world
 end
 
+---@return nil
 function M.goto_next_map()
     if quake.cvar("samelevel") ~= 0 then -- if samelevel is set, stay on same level
         quake.change_level(g.mapname)
@@ -148,6 +150,7 @@ local finale_e3 = "The charred viscera of diabolic horrors\nbubble viscously as 
 local finale_e4 = "Despite the awful might of the Elder\nWorld, you have achieved the Rune of\nElder Magic, capstone of all types of\narcane wisdom. Beyond good and evil,\nbeyond life and death, the Rune\npulsates, heavy with import. Patient and\npotent, the Elder Being Shub-Niggurath\nweaves her dire plans to clear off all\nlife from the Earth, and bring her own\nfoul offspring to our world! For all the\ndwellers in these nightmare dimensions\nare her descendants! Once all Runes of\nmagic power are united, the energy\nbehind them will blast open the Gateway\nto Shub-Niggurath, and you can travel\nthere to foil the Hell-Mother's plots\nin person."
 local finale_all = "Now, you have all four Runes. You sense\ntremendous invisible forces moving to\nunseal ancient barriers. Shub-Niggurath\nhad hoped to use the Runes Herself to\nclear off the Earth, but now instead,\nyou will use them to enter her home and\nconfront her as an avatar of avenging\nEarth-life. If you defeat her, you will\nbe remembered forever as the savior of\nthe planet. If she conquers, it will be\nas if you had never been born."
 
+---@return nil
 function M.exit_intermission()
     -- skip any text in deathmatch
     if g.deathmatch ~= 0 then M.goto_next_map(); return end
@@ -181,19 +184,17 @@ function M.exit_intermission()
     M.goto_next_map()
 end
 
---[[
-============
-IntermissionThink
-
-When the player presses attack or jump, change to the next level
-============
-]]
+---When the player presses attack or jump, change to the next level
+---@param self entity
+---@return nil
 function M.intermission_think(self)
     if quake.time() < g.intermission_exittime then return end
     if self.button0 == 0 and self.button1 == 0 and self.button2 == 0 then return end
     M.exit_intermission()
 end
 
+---@param _self entity
+---@return nil
 local function execute_changelevel(_self)
     local pos
     g.intermission_running = 1
@@ -219,6 +220,9 @@ local function execute_changelevel(_self)
     quake.write_byte(MSG_ALL, SVC_INTERMISSION)
 end
 
+---@param self entity
+---@param other entity
+---@return nil
 local function changelevel_touch(self, other)
     if other.classname ~= "player" then return end
     if quake.cvar("noexit") == 1 or (quake.cvar("noexit") == 2 and g.mapname ~= "start") then
@@ -241,9 +245,10 @@ local function changelevel_touch(self, other)
     self.nextthink = quake.time() + 0.1
 end
 
---[[QUAKED trigger_changelevel (0.5 0.5 0.5) ? NO_INTERMISSION
-When the player touches this, he gets sent to the map listed in the "map" variable.  Unless the NO_INTERMISSION flag is set, the view will go to the info_intermission spot and display stats.
-]]
+---QUAKED trigger_changelevel (0.5 0.5 0.5) ? NO_INTERMISSION
+---When the player touches this, he gets sent to the map listed in the "map" variable.  Unless the NO_INTERMISSION flag is set, the view will go to the info_intermission spot and display stats.
+---@param self entity
+---@return nil
 function M.trigger_changelevel(self)
     if self.map == "" then quake.object_error("changelevel trigger doesn't have map") end
     subs.init_trigger(self)
@@ -258,6 +263,8 @@ end
 =============================================================================
 ]]
 -- called by ClientKill and DeadThink
+---@param self entity
+---@return nil
 function M.respawn(self)
     if g.coop ~= 0 then
         -- make a copy of the dead body for appearances sake
@@ -279,13 +286,9 @@ function M.respawn(self)
     end
 end
 
---[[
-============
-ClientKill
-
-Player entered the suicide command
-============
-]]
+---Player entered the suicide command
+---@param self entity
+---@return nil
 function M.client_kill(self)
     quake.bprint(self.netname); quake.bprint(" suicides\n")
     require("game.player").set_suicide_frame(self)
@@ -294,17 +297,14 @@ function M.client_kill(self)
     M.respawn(self)
 end
 
+---@param _v vec3
+---@return boolean
 function M.check_spawn_point(_v)
     return false
 end
 
---[[
-============
-SelectSpawnPoint
-
-Returns the entity to spawn at
-============
-]]
+---Returns the entity to spawn at
+---@return entity
 function M.select_spawn_point()
     local spot, thing
     local pcount
@@ -348,13 +348,9 @@ function M.select_spawn_point()
     return spot
 end
 
---[[
-===========
-PutClientInServer
-
-called each time a player is spawned
-============
-]]
+---called each time a player is spawned
+---@param self entity
+---@return nil
 function M.put_client_in_server(self)
     local spot = M.select_spawn_point()
     self.classname = "player"
@@ -407,23 +403,29 @@ end
 =============================================================================
 ]]
 
---[[QUAKED info_player_start (1 0 0) (-16 -16 -24) (16 16 24)
-The normal starting point for a level.
-]]
+---QUAKED info_player_start (1 0 0) (-16 -16 -24) (16 16 24)
+---The normal starting point for a level.
+---@param _self entity
+---@return nil
 function M.info_player_start(_self) end
---[[QUAKED info_player_start2 (1 0 0) (-16 -16 -24) (16 16 24)
-Only used on start map for the return point from an episode.
-]]
+---QUAKED info_player_start2 (1 0 0) (-16 -16 -24) (16 16 24)
+---Only used on start map for the return point from an episode.
+---@param _self entity
+---@return nil
 function M.info_player_start2(_self) end
 -- saved out by quaked in region mode
+---@param _self entity
+---@return nil
 function M.testplayerstart(_self) end
---[[QUAKED info_player_deathmatch (1 0 1) (-16 -16 -24) (16 16 24)
-potential spawning position for deathmatch games
-]]
+---QUAKED info_player_deathmatch (1 0 1) (-16 -16 -24) (16 16 24)
+---potential spawning position for deathmatch games
+---@param _self entity
+---@return nil
 function M.info_player_deathmatch(_self) end
---[[QUAKED info_player_coop (1 0 1) (-16 -16 -24) (16 16 24)
-potential spawning position for coop games
-]]
+---QUAKED info_player_coop (1 0 1) (-16 -16 -24) (16 16 24)
+---potential spawning position for coop games
+---@param _self entity
+---@return nil
 function M.info_player_coop(_self) end
 
 --[[
@@ -435,6 +437,7 @@ RULES
 ]]
 
 -- go to the next level for deathmatch
+---@return nil
 function M.next_level()
     local o
     if g.mapname == "start" then
@@ -455,13 +458,9 @@ function M.next_level()
     if o.nextthink < quake.time() then o.think = execute_changelevel; o.nextthink = quake.time() + 0.1 end
 end
 
---[[
-============
-CheckRules
-
-Exit deathmatch games upon conditions
-============
-]]
+---Exit deathmatch games upon conditions
+---@param self entity
+---@return nil
 function M.check_rules(self)
     if g.gameover ~= 0 then return end -- someone else quit the game already
     local timelimit = quake.cvar("timelimit") * 60
@@ -471,6 +470,8 @@ function M.check_rules(self)
 end
 
 --============================================================================
+---@param self entity
+---@return nil
 function M.player_death_think(self)
     local forward
     if (self.flags & FL_ONGROUND) ~= 0 then
@@ -490,6 +491,8 @@ function M.player_death_think(self)
     M.respawn(self)
 end
 
+---@param self entity
+---@return nil
 function M.player_jump(self)
     if (self.flags & FL_WATERJUMP) ~= 0 then return end
     if self.waterlevel >= 2 then
@@ -514,12 +517,8 @@ function M.player_jump(self)
     self.velocity = quake.vec3(self.velocity.x, self.velocity.y, self.velocity.z + 270)
 end
 
---[[
-===========
-WaterMove
-
-============
-]]
+---@param self entity
+---@return nil
 function M.water_move(self)
     if self.movetype == MOVETYPE_NOCLIP then return end
     if self.health < 0 then return end
@@ -570,6 +569,8 @@ function M.water_move(self)
     if (self.flags & FL_WATERJUMP) == 0 then self.velocity = self.velocity - self.velocity * (0.8 * self.waterlevel * g.frametime) end
 end
 
+---@param self entity
+---@return nil
 function M.check_water_jump(self)
     -- check for a jump-out-of-water
     local vectors = quake.make_vectors(self.angles)
@@ -594,13 +595,9 @@ function M.check_water_jump(self)
     end
 end
 
---[[
-================
-PlayerPreThink
-
-Called every frame before physics are run
-================
-]]
+---Called every frame before physics are run
+---@param self entity
+---@return nil
 function M.player_pre_think(self)
     if g.intermission_running ~= 0 then
         -- otherwise a button could be missed between the think tics
@@ -626,19 +623,19 @@ function M.player_pre_think(self)
     end
 end
 
---[[
-================
-CheckPowerups
-
-Check for turning off powerups
-================
-]]
+---@param self entity
+---@param message string
+---@param sound string
+---@return nil
 local function flash(self, message, sound)
     quake.sprint(self, message)
     quake.stuff_cmd(self, "bf\n")
     quake.sound(self, CHAN_AUTO, sound, 1, ATTN_NORM)
 end
 
+---Check for turning off powerups
+---@param self entity
+---@return nil
 function M.check_powerups(self)
     if self.health <= 0 then return end
     -- invisibility
@@ -711,13 +708,9 @@ function M.check_powerups(self)
     end
 end
 
---[[
-================
-PlayerPostThink
-
-Called every frame after physics are run
-================
-]]
+---Called every frame after physics are run
+---@param self entity
+---@return nil
 function M.player_post_think(self)
     -- intermission or finale
     if self.view_ofs == quake.vec3(0, 0, 0) then return end
@@ -738,26 +731,18 @@ function M.player_post_think(self)
     M.check_powerups(self)
 end
 
---[[
-===========
-ClientConnect
-
-called when a player connects to a server
-============
-]]
+---called when a player connects to a server
+---@param self entity
+---@return nil
 function M.client_connect(self)
     quake.bprint(self.netname); quake.bprint(" entered the game\n")
     -- a client connecting during an intermission can cause problems
     if g.intermission_running ~= 0 then M.exit_intermission() end
 end
 
---[[
-===========
-ClientDisconnect
-
-called when a player disconnects from a server
-============
-]]
+---called when a player disconnects from a server
+---@param self entity
+---@return nil
 function M.client_disconnect(self)
     if g.gameover ~= 0 then return end
     -- if the level end trigger has been activated, just return
@@ -768,13 +753,10 @@ function M.client_disconnect(self)
     require("game.player").set_suicide_frame(self)
 end
 
---[[
-===========
-ClientObituary
-
-called when a player dies
-============
-]]
+---called when a player dies
+---@param targ entity
+---@param attacker entity
+---@return nil
 function M.client_obituary(targ, attacker)
     local rnum = quake.random()
     local deathstring, deathstring2 = "", ""

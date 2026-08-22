@@ -30,14 +30,11 @@ local M = {}
 
 --============================================================================
 
---[[
-============
-CanDamage
-
-Returns true if the inflictor can directly damage the target.  Used for
-explosions and melee attacks.
-============
-]]
+---Returns true if the inflictor can directly damage the target.  Used for
+---explosions and melee attacks.
+---@param targ entity
+---@param inflictor entity
+---@return boolean
 function M.can_damage(targ, inflictor)
     -- bmodels need special checking because their origin is 0,0,0
     if targ.movetype == C.MOVETYPE_PUSH then
@@ -75,11 +72,9 @@ function M.can_damage(targ, inflictor)
     return false
 end
 
---[[
-============
-Killed
-============
-]]
+---@param targ entity
+---@param attacker entity
+---@return nil
 function M.killed(targ, attacker)
     if targ.health < -99 then
         -- don't let sbar look bad if a player
@@ -109,14 +104,13 @@ function M.killed(targ, attacker)
     targ.th_die(targ)
 end
 
---[[
-============
-T_Damage
-
-The damage is coming from inflictor, but get mad at attacker
-This should be the only function that ever reduces health.
-============
-]]
+---The damage is coming from inflictor, but get mad at attacker
+---This should be the only function that ever reduces health.
+---@param targ entity
+---@param inflictor entity
+---@param attacker entity
+---@param damage number
+---@return nil
 function M.damage(targ, inflictor, attacker, damage)
     if targ.takedamage == 0 then
         return
@@ -207,11 +201,11 @@ function M.damage(targ, inflictor, attacker, damage)
     end
 end
 
---[[
-============
-T_RadiusDamage
-============
-]]
+---@param inflictor entity
+---@param attacker entity
+---@param damage number
+---@param ignore entity?
+---@return nil
 function M.radius_damage(inflictor, attacker, damage, ignore)
     local head = quake.find_radius(inflictor.origin, damage + 40)
 
@@ -243,11 +237,9 @@ function M.radius_damage(inflictor, attacker, damage, ignore)
     end
 end
 
---[[
-============
-T_BeamDamage
-============
-]]
+---@param attacker entity
+---@param damage number
+---@return nil
 function M.beam_damage(attacker, damage)
     local head = quake.find_radius(attacker.origin, damage + 40)
 
