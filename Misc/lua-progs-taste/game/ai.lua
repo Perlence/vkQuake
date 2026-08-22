@@ -1,91 +1,358 @@
--- Derived from GPL-licensed Quake game code in CleanFixedQuakeC.
+-- Port of ai.qc from GPL-licensed CleanFixedQuakeC.
 -- SPDX-License-Identifier: GPL-2.0-or-later
+
+--[[ Copyright (C) 1996-1997 Id Software, Inc.
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+
+See file, 'COPYING', for details.
+]]
 
 local quake = require("quake")
 local C = require("game.constants")
 local fight = require("game.fight")
 local subs = require("game.subs")
 
-local M = {}
-local run_melee, run_missile, run_slide
+local ATTN_IDLE = 2
+local SOLID_TRIGGER = 1
 
-function M.range(self, target)
-    local distance = (self.origin + self.view_ofs - target.origin - target.view_ofs):length()
-    if distance < 120 then return C.RANGE_MELEE end
-    if distance < 500 then return C.RANGE_NEAR end
-    if distance < 1000 then return C.RANGE_MID end
+local M = {}
+
+--[[
+.enemy
+Will be world if not currently angry at anyone.
+
+.movetarget
+The next path spot to walk toward.  If .enemy, ignore .movetarget.
+When an enemy is killed, the monster will try to return to it's path.
+
+.hunt_time
+Set to time + something when the player is in sight, but movement straight for
+him is blocked.  This causes the monster to use wall following code for
+movement direction instead of sighting on the player.
+
+.ideal_yaw
+A yaw angle of the intended direction, which will be turned towards at up
+to 45 deg / state.  If the enemy is in view and hunt_time is not active,
+this will be the exact line towards the enemy.
+
+.pausetime
+A monster will leave it's stand state and head towards it's .movetarget when
+time > .pausetime.
+
+walkmove(angle, speed) primitive is all or nothing
+]]
+
+--
+-- globals
+--
+
+--
+-- when a monster becomes angry at a player, that monster will be used
+-- as the sight target the next frame so that monsters near that one
+-- will wake up even if they wouldn't have noticed the player
+--
+function M.angle_mod(v)
+    while v >= 360 do
+        v = v - 360
+    end
+    while v < 0 do
+        v = v + 360
+    end
+    return v
+end
+
+--[[
+==============================================================================
+
+MOVETARGET CODE
+
+The angle of the movetarget effects standing and bowing direction, but has no effect on movement, which always heads to the next target.
+
+targetname
+must be present.  The name of this movetarget.
+
+target
+the next spot to move to.  If not present, stop here for good.
+
+pausetime
+The number of seconds to spend standing or bowing for path_stand or path_bow
+
+==============================================================================
+]]
+
+local t_movetarget
+
+function M.movetarget_f(self)
+    if self.targetname == "" then
+        quake.object_error("monster_movetarget: no targetname")
+    end
+
+    self.solid = SOLID_TRIGGER
+    self.touch = t_movetarget
+    quake.set_size(self, quake.vec3(-8, -8, -8), quake.vec3(8, 8, 8))
+end
+
+--[[QUAKED path_corner (0.5 0.3 0) (-8 -8 -8) (8 8 8)
+Monsters will continue walking towards the next target corner.
+]]
+function M.path_corner(self)
+    M.movetarget_f(self)
+end
+
+--[[
+=============
+t_movetarget
+
+Something has bumped into a movetarget.  If it is a monster
+moving towards it, change the next destination and continue.
+==============
+]]
+t_movetarget = function(self, other)
+    if other.movetarget ~= self then
+        return
+    end
+
+    if other.enemy then
+        return -- fighting, not following a path
+    end
+
+    local temp = self
+    self = other
+    other = temp
+
+    if self.classname == "monster_ogre" then
+        quake.sound(self, C.CHAN_VOICE, "ogre/ogdrag.wav", 1, ATTN_IDLE) -- play chainsaw drag sound
+    end
+
+    self.goalentity = quake.find(quake.world, "targetname", other.target)
+    self.movetarget = self.goalentity
+    self.ideal_yaw = quake.vector_to_yaw(self.goalentity.origin - self.origin)
+    if not self.movetarget then
+        self.pausetime = quake.time() + 999999
+        self.th_stand(self)
+        return
+    end
+end
+M.t_movetarget = t_movetarget
+
+quake.register_entity("path_corner", M.path_corner)
+
+--============================================================================
+
+--[[
+=============
+range
+
+returns the range catagorization of an entity reletive to self
+0 melee range, will become hostile even if back is turned
+1 visibility and infront, or visibility and show hostile
+2 infront and show hostile
+3 only triggered by damage
+=============
+]]
+function M.range(self, targ)
+    local spot1 = self.origin + self.view_ofs
+    local spot2 = targ.origin + targ.view_ofs
+
+    local r = (spot1 - spot2):length()
+    if r < 120 then
+        return C.RANGE_MELEE
+    end
+    if r < 500 then
+        return C.RANGE_NEAR
+    end
+    if r < 1000 then
+        return C.RANGE_MID
+    end
     return C.RANGE_FAR
 end
 
-function M.visible(self, target)
-    local trace = quake.trace_line(
-        self.origin + self.view_ofs,
-        target.origin + target.view_ofs,
-        true,
-        self
-    )
-    return not (trace.in_open and trace.in_water) and trace.fraction == 1
+--[[
+=============
+visible
+
+returns 1 if the entity is visible to self, even if not infront ()
+=============
+]]
+function M.visible(self, targ)
+    local spot1 = self.origin + self.view_ofs
+    local spot2 = targ.origin + targ.view_ofs
+    local trace = quake.trace_line(spot1, spot2, true, self) -- see through other monsters
+
+    if trace.in_open and trace.in_water then
+        return false -- sight line crossed contents
+    end
+
+    if trace.fraction == 1 then
+        return true
+    end
+    return false
 end
 
-function M.in_front(self, target)
+--[[
+=============
+infront
+
+returns 1 if the entity is in front (in sight) of self
+=============
+]]
+function M.in_front(self, targ)
     local forward = quake.make_vectors(self.angles).forward
-    local direction = (target.origin - self.origin):normalized()
-    return direction:dot(forward) > 0.3
+    local vec = (targ.origin - self.origin):normalized()
+    local dot = vec:dot(forward)
+
+    if dot > 0.3 then
+        return true
+    end
+    return false
 end
+
+--============================================================================
 
 function M.hunt_target(self)
     self.goalentity = self.enemy
     self.think = self.th_run
     self.ideal_yaw = quake.vector_to_yaw(self.enemy.origin - self.origin)
     self.nextthink = quake.time() + 0.1
-    subs.attack_finished(self, 1)
+    subs.attack_finished(self, 1) -- wait a while before first attack
+end
+
+function M.sight_sound(self)
+    local rsnd
+
+    if self.classname == "monster_ogre" then
+        quake.sound(self, C.CHAN_VOICE, "ogre/ogwake.wav", 1, C.ATTN_NORM)
+    elseif self.classname == "monster_knight" then
+        quake.sound(self, C.CHAN_VOICE, "knight/ksight.wav", 1, C.ATTN_NORM)
+    elseif self.classname == "monster_shambler" then
+        quake.sound(self, C.CHAN_VOICE, "shambler/ssight.wav", 1, C.ATTN_NORM)
+    elseif self.classname == "monster_demon1" then
+        quake.sound(self, C.CHAN_VOICE, "demon/sight2.wav", 1, C.ATTN_NORM)
+    elseif self.classname == "monster_wizard" then
+        quake.sound(self, C.CHAN_VOICE, "wizard/wsight.wav", 1, C.ATTN_NORM)
+    elseif self.classname == "monster_zombie" then
+        quake.sound(self, C.CHAN_VOICE, "zombie/z_idle.wav", 1, C.ATTN_NORM)
+    elseif self.classname == "monster_dog" then
+        quake.sound(self, C.CHAN_VOICE, "dog/dsight.wav", 1, C.ATTN_NORM)
+    elseif self.classname == "monster_hell_knight" then
+        quake.sound(self, C.CHAN_VOICE, "hknight/sight1.wav", 1, C.ATTN_NORM)
+    elseif self.classname == "monster_tarbaby" then
+        quake.sound(self, C.CHAN_VOICE, "blob/sight1.wav", 1, C.ATTN_NORM)
+    elseif self.classname == "monster_enforcer" then
+        rsnd = math.floor(quake.random() * 3 + 0.5)
+        if rsnd == 1 then
+            quake.sound(self, C.CHAN_VOICE, "enforcer/sight1.wav", 1, C.ATTN_NORM)
+        elseif rsnd == 2 then
+            quake.sound(self, C.CHAN_VOICE, "enforcer/sight2.wav", 1, C.ATTN_NORM)
+        elseif rsnd == 0 then
+            quake.sound(self, C.CHAN_VOICE, "enforcer/sight3.wav", 1, C.ATTN_NORM)
+        else
+            quake.sound(self, C.CHAN_VOICE, "enforcer/sight4.wav", 1, C.ATTN_NORM)
+        end
+    elseif self.classname == "monster_army" then
+        quake.sound(self, C.CHAN_VOICE, "soldier/sight1.wav", 1, C.ATTN_NORM)
+    elseif self.classname == "monster_shalrath" then
+        quake.sound(self, C.CHAN_VOICE, "shalrath/sight.wav", 1, C.ATTN_NORM)
+    end
 end
 
 function M.found_target(self)
     if self.enemy.classname == "player" then
+        -- let other monsters see this monster for a while
         quake.globals.sight_entity = self
         quake.globals.sight_entity_time = quake.time()
     end
 
-    self.show_hostile = quake.time() + 1
+    self.show_hostile = quake.time() + 1 -- wake up other monsters
+
+    M.sight_sound(self)
     M.hunt_target(self)
 end
 
+--[[
+===========
+FindTarget
+
+Self is currently not attacking anything, so try to find a target
+
+Returns TRUE if an enemy was sighted
+
+When a player fires a missile, the point of impact becomes a fakeplayer so
+that monsters that see the impact will respond as if they had seen the
+player.
+
+To avoid spending too much time, only a single client (or fakeclient) is
+checked each frame.  This means multi player games will have slightly
+slower noticing monsters.
+============
+]]
 function M.find_target(self)
     local client
-    local sight_time = quake.globals.sight_entity_time or -math.huge
 
-    if sight_time >= quake.time() - 0.1 and (self.spawnflags & 3) == 0 then
+    -- if the first spawnflag bit is set, the monster will only wake up on
+    -- really seeing the player, not another monster getting angry
+
+    -- spawnflags & 3 is a big hack, because zombie crucified used the first
+    -- spawn flag prior to the ambush flag, and I forgot about it, so the second
+    -- spawn flag works as well
+    if quake.globals.sight_entity_time >= quake.time() - 0.1 and (self.spawnflags & 3) == 0 then
         client = quake.globals.sight_entity
-        if client and client.enemy == self.enemy then
+        if client.enemy == self.enemy then
             return false
         end
     else
         client = quake.check_client()
         if not client then
+            return false -- current check entity isn't in PVS
+        end
+    end
+
+    if client == self.enemy then
+        return false
+    end
+
+    if (client.flags & C.FL_NOTARGET) ~= 0 then
+        return false
+    end
+    if (client.items & C.IT_INVISIBILITY) ~= 0 then
+        return false
+    end
+
+    local r = M.range(self, client)
+    if r == C.RANGE_FAR then
+        return false
+    end
+
+    if not M.visible(self, client) then
+        return false
+    end
+
+    if r == C.RANGE_NEAR then
+        if client.show_hostile < quake.time() and not M.in_front(self, client) then
+            return false
+        end
+    elseif r == C.RANGE_MID then
+        if --[[ client.show_hostile < time || ]] not M.in_front(self, client) then
             return false
         end
     end
 
-    if client == self.enemy
-        or (client.flags & C.FL_NOTARGET) ~= 0
-        or (client.items & C.IT_INVISIBILITY) ~= 0 then
-        return false
-    end
-
-    local enemy_range = M.range(self, client)
-    if enemy_range == C.RANGE_FAR or not M.visible(self, client) then
-        return false
-    end
-    if enemy_range == C.RANGE_NEAR
-        and client.show_hostile < quake.time()
-        and not M.in_front(self, client) then
-        return false
-    end
-    if enemy_range == C.RANGE_MID and not M.in_front(self, client) then
-        return false
-    end
-
+    --
+    -- got one
+    --
     self.enemy = client
     if self.enemy.classname ~= "player" then
         self.enemy = self.enemy.enemy
@@ -96,113 +363,284 @@ function M.find_target(self)
     end
 
     M.found_target(self)
+
     return true
 end
 
-function M.pain(self, distance)
-    quake.walk_move(self, self.angles.y + 180, distance)
+--=============================================================================
+
+function M.forward(self, dist)
+    quake.walk_move(self, self.angles.y, dist)
 end
 
-function M.walk(self, distance)
-    if not M.find_target(self) then
-        quake.move_to_goal(self, distance)
+function M.back(self, dist)
+    quake.walk_move(self, self.angles.y + 180, dist)
+end
+
+--[[
+=============
+ai_pain
+
+stagger back a bit
+=============
+]]
+function M.pain(self, dist)
+    M.back(self, dist)
+end
+
+--[[
+=============
+ai_painforward
+
+stagger back a bit
+=============
+]]
+function M.pain_forward(self, dist)
+    quake.walk_move(self, self.ideal_yaw, dist)
+end
+
+--[[
+=============
+ai_walk
+
+The monster is walking it's beat
+=============
+]]
+function M.walk(self, dist)
+    quake.globals.movedist = dist
+
+    -- check for noticing a player
+    if M.find_target(self) then
+        return
     end
+
+    quake.move_to_goal(self, dist)
 end
 
+--[[
+=============
+ai_stand
+
+The monster is staying in one place for a while, with slight angle turns
+=============
+]]
 function M.stand(self)
     if M.find_target(self) then
         return
     end
+
     if quake.time() > self.pausetime then
         self.th_walk(self)
+        return
     end
 end
 
-function M.run(self, distance)
-    local enemy = self.enemy
-    if not enemy or enemy.health <= 0 then
-        self.enemy = quake.world
+--[[
+=============
+ai_turn
 
-        if self.oldenemy and self.oldenemy.health > 0 then
-            self.enemy = self.oldenemy
-            M.hunt_target(self)
-        else
-            local idle = self.movetarget and self.th_walk or self.th_stand
-            idle(self)
-            return
-        end
-    end
-
-    self.show_hostile = quake.time() + 1
-
-    local enemy_visible = M.visible(self, self.enemy)
-    if enemy_visible then
-        self.search_time = quake.time() + 5
-    end
-    if quake.cvar("coop") ~= 0 and self.search_time < quake.time() and M.find_target(self) then
-        return
-    end
-
-    local enemy_range = M.range(self, self.enemy)
-    local enemy_yaw = quake.vector_to_yaw(self.enemy.origin - self.origin)
-
-    if self.attack_state == C.AS_MISSILE then
-        run_missile(self, enemy_yaw)
-        return
-    end
-    if self.attack_state == C.AS_MELEE then
-        run_melee(self, enemy_yaw)
-        return
-    end
-    if enemy_visible and fight.check_attack(self, enemy_range) then
-        return
-    end
-    if self.attack_state == C.AS_SLIDING then
-        run_slide(self, enemy_yaw, distance)
-        return
-    end
-
-    quake.move_to_goal(self, distance)
-end
-
+don't move, but turn towards ideal_yaw
+=============
+]]
 function M.turn(self)
-    if not M.find_target(self) then
-        quake.change_yaw(self)
+    if M.find_target(self) then
+        return
     end
+
+    quake.change_yaw(self)
 end
 
-local function facing_ideal(self)
-    local delta = (self.angles.y - self.ideal_yaw) % 360
-    return delta <= 45 or delta >= 315
+--=============================================================================
+
+--[[
+=============
+ChooseTurn
+=============
+]]
+function M.choose_turn(self, dest3)
+    local dir = self.origin - dest3
+    local normal = quake.globals.trace_plane_normal
+    local newdir = quake.vec3(normal.y, 0 - normal.x, 0)
+
+    if dir:dot(newdir) > 0 then
+        dir = quake.vec3(0 - normal.y, normal.x, 0)
+    else
+        dir = quake.vec3(normal.y, 0 - normal.x, 0)
+    end
+
+    self.ideal_yaw = quake.vector_to_yaw(dir)
 end
 
-function run_melee(self, enemy_yaw)
+--[[
+============
+FacingIdeal
+
+============
+]]
+function M.facing_ideal(self)
+    local delta = M.angle_mod(self.angles.y - self.ideal_yaw)
+    if delta > 45 and delta < 315 then
+        return false
+    end
+    return true
+end
+
+--=============================================================================
+
+function M.check_any_attack(self, enemy_vis, enemy_range)
+    if not enemy_vis then
+        return false
+    end
+    if self.classname == "monster_army" then
+        return fight.soldier_check_attack(self, enemy_range)
+    end
+    if self.classname == "monster_ogre" then
+        return fight.ogre_check_attack(self, enemy_range, enemy_vis)
+    end
+    if self.classname == "monster_shambler" then
+        return fight.sham_check_attack(self, enemy_range, enemy_vis)
+    end
+    if self.classname == "monster_demon1" then
+        return self.check_attack(self)
+    end
+    if self.classname == "monster_dog" then
+        return self.check_attack(self)
+    end
+    if self.classname == "monster_wizard" then
+        return self.check_attack(self)
+    end
+    return fight.check_attack(self, enemy_range)
+end
+
+--[[
+=============
+ai_run_melee
+
+Turn and close until within an angle to launch a melee attack
+=============
+]]
+function M.run_melee(self, enemy_yaw)
     self.ideal_yaw = enemy_yaw
     quake.change_yaw(self)
-    if facing_ideal(self) then
+
+    if M.facing_ideal(self) then
         self.th_melee(self)
         self.attack_state = C.AS_STRAIGHT
     end
 end
 
-function run_missile(self, enemy_yaw)
+--[[
+=============
+ai_run_missile
+
+Turn in place until within an angle to launch a missile attack
+=============
+]]
+function M.run_missile(self, enemy_yaw)
     self.ideal_yaw = enemy_yaw
     quake.change_yaw(self)
-    if facing_ideal(self) then
+    if M.facing_ideal(self) then
         self.th_missile(self)
         self.attack_state = C.AS_STRAIGHT
     end
 end
 
-function run_slide(self, enemy_yaw, distance)
+--[[
+=============
+ai_run_slide
+
+Strafe sideways, but stay at aproximately the same range
+=============
+]]
+function M.run_slide(self, enemy_yaw, movedist)
     self.ideal_yaw = enemy_yaw
     quake.change_yaw(self)
-
-    local offset = self.lefty ~= 0 and 90 or -90
-    if not quake.walk_move(self, self.ideal_yaw + offset, distance) then
-        self.lefty = 1 - self.lefty
-        quake.walk_move(self, self.ideal_yaw - offset, distance)
+    local ofs
+    if self.lefty ~= 0 then
+        ofs = 90
+    else
+        ofs = -90
     end
+
+    if quake.walk_move(self, self.ideal_yaw + ofs, movedist) then
+        return
+    end
+
+    self.lefty = 1 - self.lefty
+
+    quake.walk_move(self, self.ideal_yaw - ofs, movedist)
+end
+
+--[[
+=============
+ai_run
+
+The monster has an enemy it is trying to kill
+=============
+]]
+function M.run(self, dist)
+    quake.globals.movedist = dist
+    -- see if the enemy is dead
+    if not self.enemy or self.enemy.health <= 0 then
+        self.enemy = quake.world
+        -- FIXME: look all around for other targets
+        if self.oldenemy and self.oldenemy.health > 0 then
+            self.enemy = self.oldenemy
+            M.hunt_target(self)
+        else
+            if self.movetarget then
+                self.th_walk(self)
+            else
+                self.th_stand(self)
+            end
+            return
+        end
+    end
+
+    -- wake up other monsters
+    self.show_hostile = quake.time() + 1
+
+    -- check knowledge of enemy
+    local enemy_vis = M.visible(self, self.enemy)
+    quake.globals.enemy_vis = enemy_vis
+    if enemy_vis then
+        self.search_time = quake.time() + 5
+    end
+
+    -- look for other coop players
+    if quake.cvar("coop") ~= 0 and self.search_time < quake.time() then
+        if M.find_target(self) then
+            return
+        end
+    end
+
+    local enemy_infront = M.in_front(self, self.enemy)
+    local enemy_range = M.range(self, self.enemy)
+    local enemy_yaw = quake.vector_to_yaw(self.enemy.origin - self.origin)
+    quake.globals.enemy_infront = enemy_infront
+    quake.globals.enemy_range = enemy_range
+    quake.globals.enemy_yaw = enemy_yaw
+
+    if self.attack_state == C.AS_MISSILE then
+        M.run_missile(self, enemy_yaw)
+        return
+    end
+    if self.attack_state == C.AS_MELEE then
+        M.run_melee(self, enemy_yaw)
+        return
+    end
+
+    if M.check_any_attack(self, enemy_vis, enemy_range) then
+        return -- beginning an attack
+    end
+
+    if self.attack_state == C.AS_SLIDING then
+        M.run_slide(self, enemy_yaw, dist)
+        return
+    end
+
+    -- head straight in
+    quake.move_to_goal(self, dist) -- done in C code...
 end
 
 return M

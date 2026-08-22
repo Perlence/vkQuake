@@ -28,6 +28,21 @@ function M.throw(self, model, damage)
     gib.flags = 0
 end
 
+function M.throw_head(self, model, damage)
+    quake.set_model(self, model)
+    self.frame = 0
+    self.nextthink = -1
+    self.movetype = C.MOVETYPE_BOUNCE
+    self.takedamage = C.DAMAGE_NO
+    self.solid = C.SOLID_NOT
+    self.view_ofs = quake.vec3(0, 0, 8)
+    quake.set_size(self, quake.vec3(-16, -16, 0), quake.vec3(16, 16, 56))
+    self.velocity = velocity_for_damage(self, damage)
+    self.origin.z = self.origin.z - 24
+    self.flags = self.flags & ~C.FL_ONGROUND
+    self.avelocity = quake.vec3(0, quake.crandom() * 600, 0)
+end
+
 function velocity_for_damage(self, damage)
     local inflictor = quake.globals.damage_inflictor
     local velocity

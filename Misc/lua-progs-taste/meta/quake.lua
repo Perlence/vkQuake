@@ -209,8 +209,120 @@ function quake.vector_to_yaw(vector) end
 ---@return boolean
 function quake.walk_move(entity, yaw, distance) end
 
+---@param entity entity
+---@param speed number
+---@return vec3
+function quake.aim(entity, speed) end
+
+---@param origin vec3
+---@param sample string
+---@param volume number
+---@param attenuation number
+function quake.ambient_sound(origin, sample, volume, attenuation) end
+
+---@param text string
+function quake.bprint(text) end
+
+---@param entity entity
+---@param text string
+function quake.center_print(entity, text) end
+
+---@param map string
+function quake.change_level(map) end
+
+---@param entity entity
+---@return boolean
+function quake.check_bottom(entity) end
+
+---@param name string
+---@param value string
+function quake.cvar_set(name, value) end
+
+---@param entity entity
+---@return boolean
+function quake.drop_to_floor(entity) end
+
+---@param origin vec3
+---@param radius number
+---@return entity?
+function quake.find_radius(origin, radius) end
+
+---@param value number
+---@return string
+function quake.float_to_string(value) end
+
+---@param style integer
+---@param value string
+function quake.light_style(style, value) end
+
+---@param command string
+function quake.local_cmd(command) end
+
+---@param entity entity
+function quake.make_static(entity) end
+
+---@param ... unknown
+function quake.object_error(...) end
+
+---@param origin vec3
+---@param direction vec3
+---@param color integer
+---@param count number
+function quake.particle(origin, direction, color, count) end
+
+---@param origin vec3
+---@return integer
+function quake.point_contents(origin) end
+
+---@param path string
+function quake.precache_file(path) end
+
+---@param path string
+function quake.precache_file2(path) end
+
+---@param path string
+function quake.precache_model2(path) end
+
+---@param path string
+function quake.precache_sound2(path) end
+
+---@param entity entity
+---@param origin vec3
+function quake.set_origin(entity, origin) end
+
+---@param entity entity
+function quake.set_spawn_parms(entity) end
+
+---@param entity entity
+---@param text string
+function quake.sprint(entity, text) end
+
+---@param entity entity
+---@param command string
+function quake.stuff_cmd(entity, command) end
+
+---@param vector vec3
+---@return vec3
+function quake.vector_to_angles(vector) end
+
+---@param vector vec3
+---@return string
+function quake.vector_to_string(vector) end
+
 ---@param destination integer
 ---@param value integer
 function quake.write_byte(destination, value) end
+
+---@param destination integer
+---@param value number
+function quake.write_coord(destination, value) end
+
+---@param destination integer
+---@param entity entity
+function quake.write_entity(destination, entity) end
+
+---@param destination integer
+---@param value string
+function quake.write_string(destination, value) end
 
 return quake

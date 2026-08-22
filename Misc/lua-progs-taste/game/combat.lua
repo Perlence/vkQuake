@@ -1,5 +1,24 @@
--- Derived from GPL-licensed Quake game code in CleanFixedQuakeC.
+-- Port of combat.qc from GPL-licensed CleanFixedQuakeC.
 -- SPDX-License-Identifier: GPL-2.0-or-later
+
+--[[ Copyright (C) 1996-1997 Id Software, Inc.
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+
+See file, 'COPYING', for details.
+]]
 
 local quake = require("quake")
 local C = require("game.constants")
@@ -9,103 +28,250 @@ local subs = require("game.subs")
 
 local M = {}
 
-function M.killed(target, attacker)
-    if target.health < -99 then
-        target.health = -99
+--============================================================================
+
+--[[
+============
+CanDamage
+
+Returns true if the inflictor can directly damage the target.  Used for
+explosions and melee attacks.
+============
+]]
+function M.can_damage(targ, inflictor)
+    -- bmodels need special checking because their origin is 0,0,0
+    if targ.movetype == C.MOVETYPE_PUSH then
+        local trace = quake.trace_line(inflictor.origin, (targ.absmin + targ.absmax) * 0.5, true, inflictor)
+        if trace.fraction == 1 then
+            return true
+        end
+        if trace.entity == targ then
+            return true
+        end
+        return false
     end
 
-    if target.movetype == C.MOVETYPE_PUSH or target.movetype == C.MOVETYPE_NONE then
-        target.th_die(target)
+    local trace = quake.trace_line(inflictor.origin, targ.origin, true, inflictor)
+    if trace.fraction == 1 then
+        return true
+    end
+    trace = quake.trace_line(inflictor.origin, targ.origin + quake.vec3(15, 15, 0), true, inflictor)
+    if trace.fraction == 1 then
+        return true
+    end
+    trace = quake.trace_line(inflictor.origin, targ.origin + quake.vec3(-15, -15, 0), true, inflictor)
+    if trace.fraction == 1 then
+        return true
+    end
+    trace = quake.trace_line(inflictor.origin, targ.origin + quake.vec3(-15, 15, 0), true, inflictor)
+    if trace.fraction == 1 then
+        return true
+    end
+    trace = quake.trace_line(inflictor.origin, targ.origin + quake.vec3(15, -15, 0), true, inflictor)
+    if trace.fraction == 1 then
+        return true
+    end
+
+    return false
+end
+
+--[[
+============
+Killed
+============
+]]
+function M.killed(targ, attacker)
+    if targ.health < -99 then
+        -- don't let sbar look bad if a player
+        targ.health = -99
+    end
+
+    if targ.movetype == C.MOVETYPE_PUSH or targ.movetype == C.MOVETYPE_NONE then
+        -- doors, triggers, etc
+        targ.th_die(targ)
         return
     end
 
-    target.enemy = attacker
-    if (target.flags & C.FL_MONSTER) ~= 0 then
-        quake.globals.killed_monsters = (quake.globals.killed_monsters or 0) + 1
+    targ.enemy = attacker
+
+    -- bump the monster counter
+    if (targ.flags & C.FL_MONSTER) ~= 0 then
+        quake.globals.killed_monsters = quake.globals.killed_monsters + 1
         quake.write_byte(C.MSG_ALL, C.SVC_KILLEDMONSTER)
     end
 
-    quake.client_obituary(target, attacker)
-    target.takedamage = C.DAMAGE_NO
-    target.touch = subs.null
+    quake.client_obituary(targ, attacker)
 
-    monsters.death_use(target)
-    target.th_die(target)
+    targ.takedamage = C.DAMAGE_NO
+    targ.touch = subs.null
+
+    monsters.death_use(targ)
+    targ.th_die(targ)
 end
 
-function M.damage(target, inflictor, attacker, damage)
-    if not target.takedamage or target.takedamage == C.DAMAGE_NO then
+--[[
+============
+T_Damage
+
+The damage is coming from inflictor, but get mad at attacker
+This should be the only function that ever reduces health.
+============
+]]
+function M.damage(targ, inflictor, attacker, damage)
+    if targ.takedamage == 0 then
         return
     end
 
+    -- used by buttons and triggers to set activator for target firing
     quake.globals.damage_attacker = attacker
+    -- keep track of the source of damage, used in gibs
     quake.globals.damage_inflictor = inflictor
 
-    if attacker.super_damage_finished and attacker.super_damage_finished > quake.time() then
+    -- check for quad damage powerup on the attacker
+    if attacker.super_damage_finished > quake.time() then
         damage = damage * 4
     end
 
-    local saved = math.ceil((target.armortype or 0) * damage)
-    if saved >= (target.armorvalue or 0) then
-        saved = target.armorvalue or 0
-        target.armortype = 0
-        target.items = target.items & ~(C.IT_ARMOR1 | C.IT_ARMOR2 | C.IT_ARMOR3)
+    -- save damage based on the target's armor level
+    local save = math.ceil(targ.armortype * damage)
+    if save >= targ.armorvalue then
+        save = targ.armorvalue
+        targ.armortype = 0 -- lost all armor
+        targ.items = targ.items - (targ.items & (C.IT_ARMOR1 | C.IT_ARMOR2 | C.IT_ARMOR3))
     end
 
-    target.armorvalue = (target.armorvalue or 0) - saved
-    local taken = math.ceil(damage - saved)
+    targ.armorvalue = targ.armorvalue - save
+    local take = math.ceil(damage - save)
 
-    if (target.flags & C.FL_CLIENT) ~= 0 then
-        target.dmg_take = (target.dmg_take or 0) + taken
-        target.dmg_save = (target.dmg_save or 0) + saved
-        target.dmg_inflictor = inflictor
+    -- add to the damage total for clients, which will be sent as a single
+    -- message at the end of the frame
+    -- FIXME: remove after combining shotgun blasts?
+    if (targ.flags & C.FL_CLIENT) ~= 0 then
+        targ.dmg_take = targ.dmg_take + take
+        targ.dmg_save = targ.dmg_save + save
+        targ.dmg_inflictor = inflictor
     end
 
-    if inflictor ~= quake.world and target.movetype == C.MOVETYPE_WALK then
-        local direction = (target.origin - (inflictor.absmin + inflictor.absmax) * 0.5):normalized()
-        target.velocity = target.velocity + direction * damage * 8
+    -- figure momentum add
+    if inflictor ~= quake.world and targ.movetype == C.MOVETYPE_WALK then
+        local dir = targ.origin - (inflictor.absmin + inflictor.absmax) * 0.5
+        dir = dir:normalized()
+        targ.velocity = targ.velocity + dir * damage * 8
     end
 
-    if (target.flags & C.FL_GODMODE) ~= 0 then
+    -- check for godmode or invincibility
+    if (targ.flags & C.FL_GODMODE) ~= 0 then
         return
     end
-    if (target.invincible_finished or 0) >= quake.time() then
-        if (target.invincible_sound or 0) < quake.time() then
-            quake.sound(target, C.CHAN_ITEM, "items/protect3.wav", 1, C.ATTN_NORM)
-            target.invincible_sound = quake.time() + 2
+    if targ.invincible_finished >= quake.time() then
+        if targ.invincible_sound < quake.time() then
+            quake.sound(targ, C.CHAN_ITEM, "items/protect3.wav", 1, C.ATTN_NORM)
+            targ.invincible_sound = quake.time() + 2
         end
         return
     end
 
-    if quake.cvar("teamplay") == 1
-        and target.team > 0
-        and target.team == attacker.team then
+    -- team play damage avoidance
+    if quake.cvar("teamplay") == 1 and targ.team > 0 and targ.team == attacker.team then
         return
     end
 
-    target.health = target.health - taken
-    if target.health <= 0 then
-        M.killed(target, attacker)
+    -- do the damage
+    targ.health = targ.health - take
+
+    if targ.health <= 0 then
+        M.killed(targ, attacker)
         return
     end
 
-    if (target.flags & C.FL_MONSTER) ~= 0 and attacker ~= quake.world then
-        if target ~= attacker and attacker ~= target.enemy then
-            if target.classname ~= attacker.classname or target.classname == "monster_army" then
-                if target.enemy and target.enemy.classname == "player" then
-                    target.oldenemy = target.enemy
+    -- react to the damage
+    if (targ.flags & C.FL_MONSTER) ~= 0 and attacker ~= quake.world then
+        -- get mad unless of the same class (except for soldiers)
+        if targ ~= attacker and attacker ~= targ.enemy then
+            if targ.classname ~= attacker.classname or targ.classname == "monster_army" then
+                if targ.enemy and targ.enemy.classname == "player" then
+                    targ.oldenemy = targ.enemy
                 end
-                target.enemy = attacker
-                ai.found_target(target)
+                targ.enemy = attacker
+                ai.found_target(targ)
             end
         end
     end
 
-    if target.th_pain then
-        target.th_pain(target, attacker, taken)
+    if targ.th_pain then
+        targ.th_pain(targ, attacker, take)
+        -- nightmare mode monsters don't go into pain frames often
         if quake.cvar("skill") == 3 then
-            target.pain_finished = quake.time() + 5
+            targ.pain_finished = quake.time() + 5
         end
+    end
+end
+
+--[[
+============
+T_RadiusDamage
+============
+]]
+function M.radius_damage(inflictor, attacker, damage, ignore)
+    local head = quake.find_radius(inflictor.origin, damage + 40)
+
+    while head do
+        if head ~= ignore then
+            if head.takedamage ~= 0 then
+                local org = head.origin + (head.mins + head.maxs) * 0.5
+                local points = 0.5 * (inflictor.origin - org):length()
+                if points < 0 then
+                    points = 0
+                end
+                points = damage - points
+                if head == attacker then
+                    points = points * 0.5
+                end
+                if points > 0 then
+                    if M.can_damage(head, inflictor) then
+                        -- shambler takes half damage from all explosions
+                        if head.classname == "monster_shambler" then
+                            M.damage(head, inflictor, attacker, points * 0.5)
+                        else
+                            M.damage(head, inflictor, attacker, points)
+                        end
+                    end
+                end
+            end
+        end
+        head = head.chain
+    end
+end
+
+--[[
+============
+T_BeamDamage
+============
+]]
+function M.beam_damage(attacker, damage)
+    local head = quake.find_radius(attacker.origin, damage + 40)
+
+    while head do
+        if head.takedamage ~= 0 then
+            local points = 0.5 * (attacker.origin - head.origin):length()
+            if points < 0 then
+                points = 0
+            end
+            points = damage - points
+            if head == attacker then
+                points = points * 0.5
+            end
+            if points > 0 then
+                if M.can_damage(head, attacker) then
+                    if head.classname == "monster_shambler" then
+                        M.damage(head, attacker, attacker, points * 0.5)
+                    else
+                        M.damage(head, attacker, attacker, points)
+                    end
+                end
+            end
+        end
+        head = head.chain
     end
 end
 

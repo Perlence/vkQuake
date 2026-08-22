@@ -1,3 +1,21 @@
+--[[ Copyright (C) 1996-1997 Id Software, Inc.
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+
+See file, 'COPYING', for details.
+]]
 -- Port of fish.qc from GPL-licensed CleanFixedQuakeC.
 -- SPDX-License-Identifier: GPL-2.0-or-later
 
@@ -12,6 +30,14 @@ local monsters = require("game.monsters")
 local subs = require("game.subs")
 
 local M = {}
+
+--[[
+==============================================================================
+
+FISH (Rotfish)
+
+==============================================================================
+]]
 
 local f_stand1, f_stand2, f_stand3, f_stand4, f_stand5, f_stand6
 local f_stand7, f_stand8, f_stand9, f_stand10, f_stand11, f_stand12
@@ -140,17 +166,22 @@ f_death19 = animation.frame("death19", function() return f_death20 end)
 f_death20 = animation.frame("death20", function() return f_death21 end)
 f_death21 = animation.frame("death21", function() return f_death21 end)
 
+-- Handle fish death, either die animation or gib.
 local function fish_die(self)
+    -- Check for gib death.
     if self.health < -20 then
         quake.sound(self, C.CHAN_VOICE, "player/udeath.wav", 1, C.ATTN_NORM)
+        -- Can't call ThrowHead so remove the entity on the next think.
         self.think = subs.remove
         self.nextthink = quake.time() + 0.1
+        -- Throw some normal gibs.
         gibs.throw(self, "progs/gib1.mdl", self.health)
         gibs.throw(self, "progs/gib2.mdl", self.health)
         gibs.throw(self, "progs/gib3.mdl", self.health)
         return
     end
 
+    -- Run normal death animation.
     f_death1(self)
 end
 
@@ -167,9 +198,12 @@ f_pain8 = animation.frame("pain8", function() return f_pain9 end, function(self)
 f_pain9 = animation.frame("pain9", function() return f_run1 end, function(self) ai.pain(self, 6) end)
 
 local function fish_pain(self, _attacker, _damage)
+    -- Fish always do pain frames.
     f_pain1(self)
 end
 
+--[[QUAKED monster_fish (1 0 0) (-16 -16 -24) (16 16 24) Ambush
+]]
 function M.spawn(self)
     if quake.cvar("deathmatch") ~= 0 then
         quake.remove(self)
