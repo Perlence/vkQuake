@@ -23,7 +23,8 @@ function M.frame(frame, nexttime, nextthink, code)
     assert(frame ~= nil, "an animation frame needs a frame number")
     assert(type(nextthink) == "function", "an animation frame needs a next-think resolver")
 
-    return function(self)
+    local caller = debug.getinfo(2, "Sl")
+    local callback = function(self)
         self.frame = frame
         self.nextthink = quake.time() + nexttime
         self.think = assert(nextthink(), "animation frame resolved to no next think")
@@ -32,6 +33,9 @@ function M.frame(frame, nexttime, nextthink, code)
             code(self)
         end
     end
+
+    quake.register_callback(callback, ("%s:%d:%s"):format(caller.source, caller.currentline, tostring(frame)))
+    return callback
 end
 
 return M

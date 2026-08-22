@@ -105,6 +105,8 @@ qboolean LP_Init (void);
 void	 LP_Shutdown (void);
 qboolean LP_ExecuteProgram (func_t function);
 qboolean LP_CallSpawn (const char *classname, edict_t *entity);
+const char *LP_GetFunctionName (func_t function);
+qboolean	LP_FindFunction (const char *name, func_t *function);
 
 // from pr_ext.c
 void   PR_InitExtensions (void);

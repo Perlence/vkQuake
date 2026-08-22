@@ -153,6 +153,10 @@ function quake.precache_sound(path) end
 ---@return number
 function quake.random() end
 
+---@param callback function
+---@param identifier string
+function quake.register_callback(callback, identifier) end
+
 ---@param classname string
 ---@param spawn_function fun(self: entity)
 function quake.register_entity(classname, spawn_function) end

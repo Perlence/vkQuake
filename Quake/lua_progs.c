@@ -36,6 +36,8 @@ static lua_State	   *lp_state;
 static int				lp_spawns_ref = LUA_NOREF;
 static int				lp_entity_values_ref = LUA_NOREF;
 static int				lp_global_values_ref = LUA_NOREF;
+static int				lp_functions_ref = LUA_NOREF;
+static int				lp_function_names_ref = LUA_NOREF;
 static lp_frame_names_t lp_frame_names[MAX_MODELS];
 static qboolean			lp_active;
 
@@ -44,6 +46,7 @@ static int	LP_EntityNewIndex (lua_State *L);
 static int	LP_CallQC (lua_State *L);
 static int	LP_GlobalsIndex (lua_State *L);
 static int	LP_GlobalsNewIndex (lua_State *L);
+static void LP_RegisterFunction (lua_State *L, int index);
 static void LP_SetParmFloat (int parm, float value);
 static void LP_SetParmString (lua_State *L, int parm, int index);
 static void LP_RunBuiltin (int number, int argc);
@@ -56,8 +59,122 @@ static void LP_Error (const char *context)
 
 static int LP_StoreFunction (lua_State *L, int index)
 {
+	LP_RegisterFunction (L, index);
 	lua_pushvalue (L, index);
 	return -luaL_ref (L, LUA_REGISTRYINDEX);
+}
+
+static qboolean LP_PushFunctionName (lua_State *L, int index)
+{
+	lua_Debug info;
+	index = lua_absindex (L, index);
+	lua_rawgeti (L, LUA_REGISTRYINDEX, lp_function_names_ref);
+	lua_pushvalue (L, index);
+	lua_gettable (L, -2);
+	if (!lua_isnil (L, -1))
+	{
+		lua_remove (L, -2);
+		return true;
+	}
+	lua_pop (L, 2);
+	lua_pushvalue (L, index);
+	if (!lua_getinfo (L, ">S", &info) || info.what[0] == 'C')
+		return false;
+	lua_pushfstring (L, "lua:%s:%d:%d", info.source, info.linedefined, info.lastlinedefined);
+	return true;
+}
+
+static void LP_RegisterFunction (lua_State *L, int index)
+{
+	index = lua_absindex (L, index);
+	if (!LP_PushFunctionName (L, index))
+		return;
+	lua_rawgeti (L, LUA_REGISTRYINDEX, lp_functions_ref);
+	lua_insert (L, -2);
+	lua_pushvalue (L, index);
+	lua_settable (L, -3);
+	lua_pop (L, 1);
+}
+
+static int LP_RegisterCallback (lua_State *L)
+{
+	const char *identifier;
+	char		name[1024];
+	luaL_checktype (L, 1, LUA_TFUNCTION);
+	identifier = luaL_checkstring (L, 2);
+	q_snprintf (name, sizeof (name), "lua:callback:%s", identifier);
+
+	lua_rawgeti (L, LUA_REGISTRYINDEX, lp_functions_ref);
+	lua_pushstring (L, name);
+	lua_pushvalue (L, 1);
+	lua_settable (L, -3);
+	lua_pop (L, 1);
+
+	lua_rawgeti (L, LUA_REGISTRYINDEX, lp_function_names_ref);
+	lua_pushvalue (L, 1);
+	lua_pushstring (L, name);
+	lua_settable (L, -3);
+	lua_pop (L, 1);
+	return 0;
+}
+
+static void LP_RegisterTableFunctions (lua_State *L, int index)
+{
+	index = lua_absindex (L, index);
+	lua_pushnil (L);
+	while (lua_next (L, index))
+	{
+		if (lua_isfunction (L, -1))
+			LP_RegisterFunction (L, -1);
+		lua_pop (L, 1);
+	}
+}
+
+static void LP_ModuleReturnHook (lua_State *L, lua_Debug *info)
+{
+	int i;
+	if (info->event != LUA_HOOKRET || !lua_getinfo (L, "S", info) || !strstr (info->source, "lua/"))
+		return;
+	for (i = 1; lua_getlocal (L, info, i); ++i)
+	{
+		if (lua_isfunction (L, -1))
+			LP_RegisterFunction (L, -1);
+		else if (lua_istable (L, -1))
+			LP_RegisterTableFunctions (L, -1);
+		lua_pop (L, 1);
+	}
+}
+
+const char *LP_GetFunctionName (func_t function)
+{
+	static char name[1024];
+	if (!lp_active || (int)function >= 0)
+		return NULL;
+	lua_rawgeti (lp_state, LUA_REGISTRYINDEX, -(int)function);
+	if (!lua_isfunction (lp_state, -1) || !LP_PushFunctionName (lp_state, -1))
+	{
+		lua_pop (lp_state, 1);
+		return NULL;
+	}
+	q_strlcpy (name, lua_tostring (lp_state, -1), sizeof (name));
+	lua_pop (lp_state, 2);
+	return name;
+}
+
+qboolean LP_FindFunction (const char *name, func_t *function)
+{
+	if (!lp_active || strncmp (name, "lua:", 4))
+		return false;
+	lua_rawgeti (lp_state, LUA_REGISTRYINDEX, lp_functions_ref);
+	lua_getfield (lp_state, -1, name);
+	if (!lua_isfunction (lp_state, -1))
+	{
+		lua_pop (lp_state, 2);
+		return false;
+	}
+	*function = LP_StoreFunction (lp_state, -1);
+	lua_pop (lp_state, 2);
+	return true;
 }
 
 static void LP_PushEntityNumber (lua_State *L, int number, qboolean allow_world)
@@ -1033,6 +1150,7 @@ static const luaL_Reg lp_quake_functions[] = {
 	{"precache_sound", LP_PrecacheSound},
 	{"precache_sound2", LP_PrecacheSound2},
 	{"random", LP_Random},
+	{"register_callback", LP_RegisterCallback},
 	{"register_entity", LP_RegisterEntity},
 	{"remove", LP_Remove},
 	{"set_model", LP_SetModel},
@@ -1178,10 +1296,16 @@ qboolean LP_Init (void)
 	lp_entity_values_ref = luaL_ref (lp_state, LUA_REGISTRYINDEX);
 	lua_newtable (lp_state);
 	lp_global_values_ref = luaL_ref (lp_state, LUA_REGISTRYINDEX);
+	lua_newtable (lp_state);
+	lp_functions_ref = luaL_ref (lp_state, LUA_REGISTRYINDEX);
+	lua_newtable (lp_state);
+	lp_function_names_ref = luaL_ref (lp_state, LUA_REGISTRYINDEX);
+	lua_sethook (lp_state, LP_ModuleReturnHook, LUA_MASKRET, 0);
 	lua_getglobal (lp_state, "require");
 	lua_pushstring (lp_state, "game.init");
 	if (lua_pcall (lp_state, 1, 1, 0) != LUA_OK)
 		LP_Error ("loading game.init");
+	lua_sethook (lp_state, NULL, 0, 0);
 
 	LP_AssignEntry (lp_state, -1, "world", "main", "main");
 	LP_AssignEntry (lp_state, -1, "world", "start_frame", "StartFrame");
@@ -1214,6 +1338,8 @@ void LP_Shutdown (void)
 	lp_spawns_ref = LUA_NOREF;
 	lp_entity_values_ref = LUA_NOREF;
 	lp_global_values_ref = LUA_NOREF;
+	lp_functions_ref = LUA_NOREF;
+	lp_function_names_ref = LUA_NOREF;
 	lp_active = false;
 }
 

@@ -568,9 +568,21 @@ const char *PR_UglyValueString (int type, eval_t *val)
 		q_snprintf (line, sizeof (line), "%i", NUM_FOR_EDICT (PROG_TO_EDICT (val->edict)));
 		break;
 	case ev_function:
-		f = qcvm->functions + val->function;
-		q_snprintf (line, sizeof (line), "%s", PR_GetString (f->s_name));
+	{
+		const char *lua_name = LP_GetFunctionName (val->function);
+		if ((int)val->function < 0)
+		{
+			if (!lua_name)
+				Host_Error ("PR_UglyValueString: unknown Lua function %d", (int)val->function);
+			q_strlcpy (line, lua_name, sizeof (line));
+		}
+		else
+		{
+			f = qcvm->functions + val->function;
+			q_snprintf (line, sizeof (line), "%s", PR_GetString (f->s_name));
+		}
 		break;
+	}
 	case ev_field:
 		def = ED_FieldAtOfs (val->_int);
 		q_snprintf (line, sizeof (line), "%s", PR_GetString (def->s_name));
@@ -1446,6 +1458,8 @@ qboolean ED_ParseEpair (void *base, ddef_t *key, const char *s, qboolean zoned)
 		break;
 
 	case ev_function:
+		if (LP_FindFunction (s, (func_t *)d))
+			break;
 		func = ED_FindFunction (s);
 		if (!func)
 		{
