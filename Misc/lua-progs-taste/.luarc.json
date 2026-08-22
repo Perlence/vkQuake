@@ -1,0 +1,6 @@
+{
+  "workspace.library": [
+    "./meta"
+  ],
+  "workspace.checkThirdParty": false
+}

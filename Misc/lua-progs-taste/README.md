@@ -25,6 +25,11 @@ The API deliberately passes `self` to callbacks rather than emulating QuakeC's m
 - `game/subs.lua` – common removal and attack-delay helpers
 - `game/animation.lua` – Lua expansion of QuakeC frame-function declarations
 - `game/constants.lua` – relevant engine and game constants
+- `meta/quake.lua` – Lua Language Server definitions for the C module
+
+## Editor support
+
+Open this directory as the Lua workspace. `.luarc.json` adds `meta/` as a Lua Language Server library, providing completion and type information for `require("quake")`. The metadata file is for tooling only and must not be added to the runtime module path.
 
 ## Running a syntax check
 
