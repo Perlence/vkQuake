@@ -654,7 +654,10 @@ static int LP_Spawn (lua_State *L)
 }
 static int LP_Remove (lua_State *L)
 {
-	LP_SetParmEntity (0, LP_CheckEntity (L, 1));
+	edict_t *entity = LP_CheckEntity (L, 1);
+	if (entity->free)
+		return 0;
+	LP_SetParmEntity (0, entity);
 	LP_RunBuiltin (15, 1);
 	return 0;
 }
