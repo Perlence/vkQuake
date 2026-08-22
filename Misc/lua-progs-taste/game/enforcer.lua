@@ -97,7 +97,7 @@ local function launch_laser(self, org, vec)
 
     quake.set_origin(newmis, org)
 
-    newmis.velocity = vec * 600
+    newmis.velocity = new_vec * 600
     newmis.angles = quake.vector_to_angles(newmis.velocity)
 
     newmis.nextthink = quake.time() + 5
