@@ -27,14 +27,23 @@ local weapons = require("game.weapons")
 
 local M = {}
 
+local function hide_item(self)
+    quake.set_model(self, "")
+    self.solid = C.SOLID_NOT
+    self.touch = subs.null
+    self.nextthink = 0
+    self.think = subs.null
+end
+
 --[[ ALL LIGHTS SHOULD BE 0 1 0 IN COLOR ALL OTHER ITEMS SHOULD
 BE .8 .3 .4 IN COLOR ]]
 
 function M.regen(self)
     -- restore original model
-    self.model = self.mdl
+    quake.set_model(self, self.mdl)
     -- allow it to be touched again
     self.solid = 1 -- SOLID_TRIGGER
+    self.touch = self.pickup_touch
     -- play respawn sound
     quake.sound(self, C.CHAN_VOICE, "items/itembk2.wav", 1, C.ATTN_NORM)
     quake.set_origin(self, self.origin)
@@ -86,6 +95,7 @@ Sets the clipping size and plants the object on the floor
 ============
 ]]
 function M.start_item(self)
+    self.pickup_touch = self.touch
     self.nextthink = quake.time() + 0.2 -- items start after other solids
     self.think = M.place_item
 end
@@ -195,8 +205,7 @@ health_touch = function(self, other)
 
     quake.stuff_cmd(other, "bf\n")
 
-    self.model = ""
-    self.solid = C.SOLID_NOT
+    hide_item(self)
 
     -- Megahealth = rot down the player's super health
     if self.healtype == 2 then
@@ -284,8 +293,7 @@ local function armor_touch(self, other)
     other.armorvalue = value
     other.items = other.items - (other.items & (C.IT_ARMOR1 | C.IT_ARMOR2 | C.IT_ARMOR3)) + bit
 
-    self.solid = C.SOLID_NOT
-    self.model = ""
+    hide_item(self)
     if quake.cvar("deathmatch") == 1 then
         self.nextthink = quake.time() + 20
     end
@@ -493,8 +501,7 @@ local function weapon_touch(self, other)
     end
 
     -- remove it in single player, or setup for respawning in deathmatch
-    self.model = ""
-    self.solid = C.SOLID_NOT
+    hide_item(self)
     if quake.cvar("deathmatch") == 1 then
         self.nextthink = quake.time() + 30
     end
@@ -647,8 +654,7 @@ local function ammo_touch(self, other)
     weapons.set_current_ammo(other)
 
     -- remove it in single player, or setup for respawning in deathmatch
-    self.model = ""
-    self.solid = C.SOLID_NOT
+    hide_item(self)
     if quake.cvar("deathmatch") == 1 then
         self.nextthink = quake.time() + 30
     end
@@ -827,8 +833,7 @@ local function key_touch(self, other)
     other.items = other.items | self.items
 
     if quake.cvar("coop") == 0 then
-        self.solid = C.SOLID_NOT
-        self.model = ""
+        hide_item(self)
     end
 
     -- fire all targets / killtargets
@@ -934,8 +939,7 @@ local function sigil_touch(self, other)
 
     quake.sound(other, C.CHAN_ITEM, self.noise, 1, C.ATTN_NORM)
     quake.stuff_cmd(other, "bf\n")
-    self.solid = C.SOLID_NOT
-    self.model = ""
+    hide_item(self)
     quake.globals.serverflags = quake.globals.serverflags | (self.spawnflags & 15)
     -- so rune doors won't find it
     self.classname = ""
@@ -1012,9 +1016,8 @@ local function powerup_touch(self, other)
 
     quake.sound(other, C.CHAN_VOICE, self.noise, 1, C.ATTN_NORM)
     quake.stuff_cmd(other, "bf\n")
-    self.solid = C.SOLID_NOT
     other.items = other.items | self.items
-    self.model = ""
+    hide_item(self)
 
     -- do the appropriate action
     if self.classname == "item_artifact_envirosuit" then
