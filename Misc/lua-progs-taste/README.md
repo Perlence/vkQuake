@@ -2,7 +2,11 @@
 
 This directory sketches what a Lua replacement for QuakeC could look like. It ports the complete `progs.src` from [CleanFixedQuakeC](https://github.com/Jason2Brownlee/CleanFixedQuakeC) at `dacc69ef13d2c961776b708f33ad2be8e87da224`.
 
-The code is intentionally not wired into vkQuake. The current engine does not provide the required Lua game API. Instead, the prototype assumes that the engine supplies a `quake` module with:
+vkQuake activates the Lua game when the selected game directory is named `id1lua`. The engine embeds these modules in `vkquake.pak`, exposes the `quake` C module, registers Lua map-spawn functions, and dispatches entity and lifecycle callbacks to Lua.
+
+The first integration retains the original `progs.dat` as an ABI schema for QuakeC globals and entity fields. Gameplay spawn functions and callbacks execute in Lua; the bytecode VM remains available for compatibility and schema-backed operations.
+
+The `quake` module provides:
 
 - Mutable entity userdata with ordinary fields and Lua callback fields
 - Null entity references represented by `nil`, preserving QuakeC-style truth tests
@@ -12,7 +16,7 @@ The code is intentionally not wired into vkQuake. The current engine does not pr
 - Entity, model, sound, movement, tracing, precache, and network-message builtins
 - `quake.register_entity(classname, spawn_function)` for map entity dispatch
 
-The API deliberately passes `self`, `other`, and `activator` to callbacks rather than emulating their mutable QuakeC globals. Other game globals remain in `quake.globals`.
+The engine passes `self` and `other` to Lua callbacks rather than emulating their mutable QuakeC globals. Game code passes `activator` explicitly to use callbacks. Other game globals remain in `quake.globals`.
 
 `animation.frame()` expands to the same assignments as QuakeC's `=[frame, nexttime, nextthink] { code }` declaration. The next-think argument is resolved lazily to support forward references and cycles, and `nexttime` defaults to 0.1 seconds when omitted. Every original frame function is represented explicitly rather than generated as a sequence.
 
@@ -40,7 +44,16 @@ luac -p game/*.lua meta/*.lua
 luacheck game --codes --no-max-line-length --globals require
 ```
 
-`luac` checks syntax. `luacheck` additionally catches undefined Lua symbols; warnings for intentionally preserved QuakeC locals and externally referenced frame functions are expected. Running the game requires the proposed engine API above.
+`luac` checks syntax. `luacheck` additionally catches undefined Lua symbols; warnings for intentionally preserved QuakeC locals and externally referenced frame functions are expected.
+
+Build and run the Lua game with:
+
+```sh
+ninja -C build
+build/vkquake -basedir ~/Games/Quake -game id1lua
+```
+
+The `id1lua` directory may contain configuration and replacement assets. It does not need its own copy of the Lua modules.
 
 ## Source and license
 

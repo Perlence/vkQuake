@@ -228,7 +228,7 @@ local function changelevel_touch(self, other)
     -- don't print the messages in singleplayer
     if g.coop ~= 0 or g.deathmatch ~= 0 then quake.bprint(other.netname); quake.bprint(" exited the level\n") end
     g.nextmap = self.map
-    quake.use_targets(self, self)
+    subs.use_targets(self, self)
     if (self.spawnflags & 1) ~= 0 and g.deathmatch == 0 then
         -- NO_INTERMISSION
         M.goto_next_map()

@@ -101,6 +101,11 @@ void	 PR_ExecuteProgram (func_t fnum);
 void	 PR_ClearProgs (qcvm_t *vm);
 qboolean PR_LoadProgs (const char *filename, qboolean fatal, unsigned int needcrc, const builtin_t *builtins, size_t numbuiltins);
 
+qboolean LP_Init (void);
+void	 LP_Shutdown (void);
+qboolean LP_ExecuteProgram (func_t function);
+qboolean LP_CallSpawn (const char *classname, edict_t *entity);
+
 // from pr_ext.c
 void   PR_InitExtensions (void);
 void   PR_EnableExtensions (ddef_t *pr_globaldefs); // adds in the extra builtins etc

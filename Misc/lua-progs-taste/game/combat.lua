@@ -100,7 +100,7 @@ function M.killed(targ, attacker)
         quake.write_byte(C.MSG_ALL, C.SVC_KILLEDMONSTER)
     end
 
-    quake.client_obituary(targ, attacker)
+    require("game.client").client_obituary(targ, attacker)
 
     targ.takedamage = C.DAMAGE_NO
     targ.touch = subs.null

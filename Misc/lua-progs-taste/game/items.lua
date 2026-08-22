@@ -215,7 +215,7 @@ health_touch = function(self, other)
     end
 
     -- fire all targets / killtargets
-    quake.use_targets(self, other)
+    subs.use_targets(self, other)
 end
 
 item_megahealth_rot = function(self)
@@ -297,7 +297,7 @@ local function armor_touch(self, other)
     quake.stuff_cmd(other, "bf\n")
 
     -- fire all targets / killtargets
-    quake.use_targets(self, other)
+    subs.use_targets(self, other)
 end
 
 --[[QUAKED item_armor1 (0 .5 .8) (-16 -16 0) (16 16 32)
@@ -500,7 +500,7 @@ local function weapon_touch(self, other)
     end
     self.think = M.regen
 
-    quake.use_targets(self, other) -- fire all targets / killtargets
+    subs.use_targets(self, other) -- fire all targets / killtargets
 end
 
 --[[QUAKED weapon_supershotgun (0 .5 .8) (-16 -16 0) (16 16 32)
@@ -656,7 +656,7 @@ local function ammo_touch(self, other)
     self.think = M.regen
 
     -- fire all targets / killtargets
-    quake.use_targets(self, other)
+    subs.use_targets(self, other)
 end
 
 local WEAPON_BIG2 = 1
@@ -832,7 +832,7 @@ local function key_touch(self, other)
     end
 
     -- fire all targets / killtargets
-    quake.use_targets(self, other)
+    subs.use_targets(self, other)
 end
 
 local function key_setsounds(self)
@@ -941,7 +941,7 @@ local function sigil_touch(self, other)
     self.classname = ""
 
     -- fire all targets / killtargets
-    quake.use_targets(self, other)
+    subs.use_targets(self, other)
 end
 
 --[[QUAKED item_sigil (0 .5 .8) (-16 -16 -24) (16 16 32) E1 E2 E3 E4
@@ -1038,7 +1038,7 @@ local function powerup_touch(self, other)
     end
 
     -- fire all targets / killtargets
-    quake.use_targets(self, other)
+    subs.use_targets(self, other)
 end
 
 --[[QUAKED item_artifact_invulnerability (0 .5 .8) (-16 -16 -24) (16 16 32)

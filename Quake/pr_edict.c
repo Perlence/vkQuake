@@ -1721,6 +1721,9 @@ void ED_LoadFromFile (const char *data)
 			continue;
 		}
 
+		if (LP_CallSpawn (classname, ent))
+			continue;
+
 		// look for the spawn function
 		//
 		func = ED_FindFunction (va ("spawnfunc_%s", classname));

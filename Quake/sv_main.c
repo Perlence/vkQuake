@@ -3298,6 +3298,8 @@ void SV_SpawnServer (const char *server)
 	int			i;
 	qcvm_t	   *vm = qcvm;
 
+	LP_Shutdown ();
+
 	// let's not have any servers with no name
 	if (hostname.string[0] == 0)
 		Cvar_Set ("hostname", "UNNAMED");
@@ -3459,6 +3461,9 @@ void SV_SpawnServer (const char *server)
 
 	// serverflags are for cross level information (sigils)
 	pr_global_struct->serverflags = svs.serverflags;
+
+	if (!strcmp (COM_SkipPath (com_gamedir), "id1lua"))
+		LP_Init ();
 
 	ED_LoadFromFile (qcvm->worldmodel->entities);
 

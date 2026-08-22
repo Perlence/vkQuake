@@ -302,6 +302,9 @@ The interpretation main loop
 
 void PR_ExecuteProgram (func_t fnum)
 {
+	if (LP_ExecuteProgram (fnum))
+		return;
+
 	eval_t		 *ptr;
 	dstatement_t *st;
 	dfunction_t	 *f, *newf;
@@ -313,7 +316,7 @@ void PR_ExecuteProgram (func_t fnum)
 	{
 		if (pr_global_struct->self)
 			ED_Print (PROG_TO_EDICT (pr_global_struct->self));
-		Host_Error ("PR_ExecuteProgram: NULL function");
+		Host_Error ("PR_ExecuteProgram: invalid function %d", fnum);
 	}
 
 	f = &qcvm->functions[fnum];

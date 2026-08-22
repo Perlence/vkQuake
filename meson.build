@@ -250,6 +250,7 @@ srcs = [
     'Quake/host_cmd.c',
     'Quake/image.c',
     'Quake/json.c',
+    'Quake/lua_progs.c',
     'Quake/in_sdl.c',
     'Quake/in_sdl2.c',
     'Quake/in_sdl3.c',
@@ -333,6 +334,7 @@ deps = [
     cc.find_library('m', required : false),
     cc.find_library('dl', required : false),
     dependency('threads'),
+    dependency('lua', version : '>=5.4'),
     sdl_dep,
 ]
 
