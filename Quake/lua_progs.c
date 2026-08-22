@@ -513,14 +513,20 @@ static int LP_EntityNewIndex (lua_State *L)
 static int LP_GlobalsIndex (lua_State *L)
 {
 	const char *name = luaL_checkstring (L, 2);
-	ddef_t	   *global = ED_FindGlobal (name);
-	if (!global)
+	ddef_t	   *global;
+
+	lua_rawgeti (L, LUA_REGISTRYINDEX, lp_global_values_ref);
+	lua_getfield (L, -1, name);
+	if (!lua_isnil (L, -1))
 	{
-		lua_rawgeti (L, LUA_REGISTRYINDEX, lp_global_values_ref);
-		lua_getfield (L, -1, name);
 		lua_remove (L, -2);
 		return 1;
 	}
+	lua_pop (L, 2);
+
+	global = ED_FindGlobal (name);
+	if (!global)
+		return 0;
 	LP_PushValue (L, global->type, (eval_t *)&qcvm->globals[global->ofs], false);
 	return 1;
 }
@@ -537,6 +543,16 @@ static int LP_GlobalsNewIndex (lua_State *L)
 		return 0;
 	}
 	LP_SetValue (L, 3, global->type, (eval_t *)&qcvm->globals[global->ofs]);
+	if ((global->type & ~DEF_SAVEGLOBAL) == ev_entity)
+	{
+		lp_entity_t *entity = luaL_testudata (L, 3, LP_ENTITY_META);
+		lua_rawgeti (L, LUA_REGISTRYINDEX, lp_global_values_ref);
+		if (entity && entity->number == 0)
+			lua_pushvalue (L, 3);
+		else
+			lua_pushnil (L);
+		lua_setfield (L, -2, name);
+	}
 	return 0;
 }
 
