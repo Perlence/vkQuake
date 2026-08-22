@@ -35,6 +35,7 @@ typedef struct
 static lua_State	   *lp_state;
 static int				lp_spawns_ref = LUA_NOREF;
 static int				lp_entity_values_ref = LUA_NOREF;
+static int				lp_global_values_ref = LUA_NOREF;
 static lp_frame_names_t lp_frame_names[MAX_MODELS];
 static qboolean			lp_active;
 
@@ -514,7 +515,12 @@ static int LP_GlobalsIndex (lua_State *L)
 	const char *name = luaL_checkstring (L, 2);
 	ddef_t	   *global = ED_FindGlobal (name);
 	if (!global)
-		return luaL_error (L, "unknown QuakeC global '%s'", name);
+	{
+		lua_rawgeti (L, LUA_REGISTRYINDEX, lp_global_values_ref);
+		lua_getfield (L, -1, name);
+		lua_remove (L, -2);
+		return 1;
+	}
 	LP_PushValue (L, global->type, (eval_t *)&qcvm->globals[global->ofs], false);
 	return 1;
 }
@@ -524,7 +530,12 @@ static int LP_GlobalsNewIndex (lua_State *L)
 	const char *name = luaL_checkstring (L, 2);
 	ddef_t	   *global = ED_FindGlobal (name);
 	if (!global)
-		return luaL_error (L, "unknown QuakeC global '%s'", name);
+	{
+		lua_rawgeti (L, LUA_REGISTRYINDEX, lp_global_values_ref);
+		lua_pushvalue (L, 3);
+		lua_setfield (L, -2, name);
+		return 0;
+	}
 	LP_SetValue (L, 3, global->type, (eval_t *)&qcvm->globals[global->ofs]);
 	return 0;
 }
@@ -1134,6 +1145,8 @@ qboolean LP_Init (void)
 	lp_spawns_ref = luaL_ref (lp_state, LUA_REGISTRYINDEX);
 	lua_newtable (lp_state);
 	lp_entity_values_ref = luaL_ref (lp_state, LUA_REGISTRYINDEX);
+	lua_newtable (lp_state);
+	lp_global_values_ref = luaL_ref (lp_state, LUA_REGISTRYINDEX);
 	lua_getglobal (lp_state, "require");
 	lua_pushstring (lp_state, "game.init");
 	if (lua_pcall (lp_state, 1, 1, 0) != LUA_OK)
@@ -1169,6 +1182,7 @@ void LP_Shutdown (void)
 	lp_state = NULL;
 	lp_spawns_ref = LUA_NOREF;
 	lp_entity_values_ref = LUA_NOREF;
+	lp_global_values_ref = LUA_NOREF;
 	lp_active = false;
 }
 
