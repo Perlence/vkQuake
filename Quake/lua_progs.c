@@ -643,7 +643,7 @@ static int LP_TraceLine (lua_State *L)
 	lua_setfield (L, -2, "in_open");
 	lua_pushboolean (L, pr_global_struct->trace_inwater);
 	lua_setfield (L, -2, "in_water");
-	LP_PushEntity (L, PROG_TO_EDICT (pr_global_struct->trace_ent), false);
+	LP_PushEntity (L, PROG_TO_EDICT (pr_global_struct->trace_ent), true);
 	lua_setfield (L, -2, "entity");
 	LP_PushVector (L, pr_global_struct->trace_endpos);
 	lua_setfield (L, -2, "endpos");
