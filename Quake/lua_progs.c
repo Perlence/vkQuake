@@ -542,12 +542,18 @@ static int LP_GlobalsNewIndex (lua_State *L)
 		lua_setfield (L, -2, name);
 		return 0;
 	}
-	LP_SetValue (L, 3, global->type, (eval_t *)&qcvm->globals[global->ofs]);
-	if ((global->type & ~DEF_SAVEGLOBAL) == ev_entity)
 	{
-		lp_entity_t *entity = luaL_testudata (L, 3, LP_ENTITY_META);
+		const int	   type = global->type & ~DEF_SAVEGLOBAL;
+		lp_entity_t	  *entity = type == ev_entity ? luaL_testudata (L, 3, LP_ENTITY_META) : NULL;
+		const qboolean shadow = (type == ev_float && lua_isboolean (L, 3)) || (entity && entity->number == 0);
+
+		if (type == ev_float && lua_isboolean (L, 3))
+			qcvm->globals[global->ofs] = lua_toboolean (L, 3);
+		else
+			LP_SetValue (L, 3, global->type, (eval_t *)&qcvm->globals[global->ofs]);
+
 		lua_rawgeti (L, LUA_REGISTRYINDEX, lp_global_values_ref);
-		if (entity && entity->number == 0)
+		if (shadow)
 			lua_pushvalue (L, 3);
 		else
 			lua_pushnil (L);
