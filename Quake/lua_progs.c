@@ -46,7 +46,7 @@ static int	LP_GlobalsIndex (lua_State *L);
 static int	LP_GlobalsNewIndex (lua_State *L);
 static void LP_SetParmFloat (int parm, float value);
 static void LP_SetParmString (lua_State *L, int parm, int index);
-static void LP_RunBuiltin (int number);
+static void LP_RunBuiltin (int number, int argc);
 
 static void LP_Error (const char *context)
 {
@@ -572,11 +572,14 @@ static void LP_SetParmVector (lua_State *L, int parm, int index)
 {
 	LP_CopyVector (L, index, G_VECTOR (OFS_PARM0 + parm * 3));
 }
-static void LP_RunBuiltin (int number)
+static void LP_RunBuiltin (int number, int argc)
 {
+	const int previous_argc = qcvm->argc;
 	if (number >= qcvm->numbuiltins || !qcvm->builtins[number])
 		Host_Error ("Lua progs: builtin #%d is unavailable", number);
+	qcvm->argc = argc;
 	qcvm->builtins[number]();
+	qcvm->argc = previous_argc;
 }
 
 static int LP_Time (lua_State *L)
@@ -586,13 +589,13 @@ static int LP_Time (lua_State *L)
 }
 static int LP_Random (lua_State *L)
 {
-	LP_RunBuiltin (7);
+	LP_RunBuiltin (7, 0);
 	lua_pushnumber (L, G_FLOAT (OFS_RETURN));
 	return 1;
 }
 static int LP_CRandom (lua_State *L)
 {
-	LP_RunBuiltin (7);
+	LP_RunBuiltin (7, 0);
 	lua_pushnumber (L, G_FLOAT (OFS_RETURN) * 2 - 1);
 	return 1;
 }
@@ -607,14 +610,14 @@ static int LP_SetOrigin (lua_State *L)
 {
 	LP_SetParmEntity (0, LP_CheckEntity (L, 1));
 	LP_SetParmVector (L, 1, 2);
-	LP_RunBuiltin (2);
+	LP_RunBuiltin (2, 2);
 	return 0;
 }
 static int LP_SetModel (lua_State *L)
 {
 	LP_SetParmEntity (0, LP_CheckEntity (L, 1));
 	LP_SetParmString (L, 1, 2);
-	LP_RunBuiltin (3);
+	LP_RunBuiltin (3, 2);
 	return 0;
 }
 static int LP_SetSize (lua_State *L)
@@ -622,7 +625,7 @@ static int LP_SetSize (lua_State *L)
 	LP_SetParmEntity (0, LP_CheckEntity (L, 1));
 	LP_SetParmVector (L, 1, 2);
 	LP_SetParmVector (L, 2, 3);
-	LP_RunBuiltin (4);
+	LP_RunBuiltin (4, 3);
 	return 0;
 }
 
@@ -633,25 +636,25 @@ static int LP_Sound (lua_State *L)
 	LP_SetParmString (L, 2, 3);
 	LP_SetParmFloat (3, luaL_checknumber (L, 4));
 	LP_SetParmFloat (4, luaL_checknumber (L, 5));
-	LP_RunBuiltin (8);
+	LP_RunBuiltin (8, 5);
 	return 0;
 }
 
 static int LP_Spawn (lua_State *L)
 {
-	LP_RunBuiltin (14);
+	LP_RunBuiltin (14, 0);
 	LP_PushEntity (L, G_EDICT (OFS_RETURN), false);
 	return 1;
 }
 static int LP_Remove (lua_State *L)
 {
 	LP_SetParmEntity (0, LP_CheckEntity (L, 1));
-	LP_RunBuiltin (15);
+	LP_RunBuiltin (15, 1);
 	return 0;
 }
 static int LP_CheckClient (lua_State *L)
 {
-	LP_RunBuiltin (17);
+	LP_RunBuiltin (17, 0);
 	LP_PushEntity (L, G_EDICT (OFS_RETURN), false);
 	return 1;
 }
@@ -662,7 +665,7 @@ static int LP_TraceLine (lua_State *L)
 	LP_SetParmVector (L, 1, 2);
 	LP_SetParmFloat (2, lua_toboolean (L, 3));
 	LP_SetParmEntity (3, LP_CheckEntity (L, 4));
-	LP_RunBuiltin (16);
+	LP_RunBuiltin (16, 4);
 	lua_createtable (L, 0, 8);
 	lua_pushnumber (L, pr_global_struct->trace_fraction);
 	lua_setfield (L, -2, "fraction");
@@ -688,7 +691,7 @@ static int LP_Find (lua_State *L)
 		return luaL_error (L, "unknown find field");
 	G_INT (OFS_PARM1) = field->ofs;
 	LP_SetParmString (L, 2, 3);
-	LP_RunBuiltin (18);
+	LP_RunBuiltin (18, 3);
 	LP_PushEntity (L, G_EDICT (OFS_RETURN), false);
 	return 1;
 }
@@ -696,7 +699,7 @@ static int LP_Find (lua_State *L)
 static int LP_StringBuiltin (lua_State *L, int number)
 {
 	LP_SetParmString (L, 0, 1);
-	LP_RunBuiltin (number);
+	LP_RunBuiltin (number, 1);
 	lua_pushstring (L, G_STRING (OFS_RETURN));
 	return 1;
 }
@@ -729,7 +732,7 @@ static int LP_EntityStringBuiltin (lua_State *L, int number)
 {
 	LP_SetParmEntity (0, LP_CheckEntity (L, 1));
 	LP_SetParmString (L, 1, 2);
-	LP_RunBuiltin (number);
+	LP_RunBuiltin (number, 2);
 	return 0;
 }
 static int LP_StuffCmd (lua_State *L)
@@ -752,7 +755,7 @@ static int LP_PrintBuiltin (lua_State *L, int number)
 	{
 		luaL_tolstring (L, i, NULL);
 		LP_SetParmString (L, 0, -1);
-		LP_RunBuiltin (number);
+		LP_RunBuiltin (number, 1);
 		lua_pop (L, 1);
 	}
 	return 0;
@@ -770,21 +773,21 @@ static int LP_FindRadius (lua_State *L)
 {
 	LP_SetParmVector (L, 0, 1);
 	LP_SetParmFloat (1, luaL_checknumber (L, 2));
-	LP_RunBuiltin (22);
+	LP_RunBuiltin (22, 2);
 	LP_PushEntity (L, G_EDICT (OFS_RETURN), false);
 	return 1;
 }
 static int LP_FloatToString (lua_State *L)
 {
 	LP_SetParmFloat (0, luaL_checknumber (L, 1));
-	LP_RunBuiltin (26);
+	LP_RunBuiltin (26, 1);
 	lua_pushstring (L, G_STRING (OFS_RETURN));
 	return 1;
 }
 static int LP_VectorToStringBuiltin (lua_State *L)
 {
 	LP_SetParmVector (L, 0, 1);
-	LP_RunBuiltin (27);
+	LP_RunBuiltin (27, 1);
 	lua_pushstring (L, G_STRING (OFS_RETURN));
 	return 1;
 }
@@ -795,7 +798,7 @@ static int LP_SelfBuiltin (lua_State *L, int number, int has_float)
 	pr_global_struct->self = EDICT_TO_PROG (LP_CheckEntity (L, 1));
 	if (has_float)
 		LP_SetParmFloat (0, luaL_checknumber (L, 2));
-	LP_RunBuiltin (number);
+	LP_RunBuiltin (number, has_float);
 	pr_global_struct->self = previous;
 	return 0;
 }
@@ -819,7 +822,7 @@ static int LP_WalkMove (lua_State *L)
 	pr_global_struct->self = EDICT_TO_PROG (LP_CheckEntity (L, 1));
 	LP_SetParmFloat (0, luaL_checknumber (L, 2));
 	LP_SetParmFloat (1, luaL_checknumber (L, 3));
-	LP_RunBuiltin (32);
+	LP_RunBuiltin (32, 2);
 	pr_global_struct->self = old;
 	lua_pushboolean (L, G_FLOAT (OFS_RETURN));
 	return 1;
@@ -828,14 +831,14 @@ static int LP_WalkMove (lua_State *L)
 static int LP_CheckBottom (lua_State *L)
 {
 	LP_SetParmEntity (0, LP_CheckEntity (L, 1));
-	LP_RunBuiltin (40);
+	LP_RunBuiltin (40, 1);
 	lua_pushboolean (L, G_FLOAT (OFS_RETURN));
 	return 1;
 }
 static int LP_PointContents (lua_State *L)
 {
 	LP_SetParmVector (L, 0, 1);
-	LP_RunBuiltin (41);
+	LP_RunBuiltin (41, 1);
 	lua_pushnumber (L, G_FLOAT (OFS_RETURN));
 	return 1;
 }
@@ -843,21 +846,21 @@ static int LP_Aim (lua_State *L)
 {
 	LP_SetParmEntity (0, LP_CheckEntity (L, 1));
 	LP_SetParmFloat (1, luaL_checknumber (L, 2));
-	LP_RunBuiltin (44);
+	LP_RunBuiltin (44, 2);
 	LP_PushOwnedVector (L, G_VECTOR (OFS_RETURN)[0], G_VECTOR (OFS_RETURN)[1], G_VECTOR (OFS_RETURN)[2]);
 	return 1;
 }
 static int LP_Cvar (lua_State *L)
 {
 	LP_SetParmString (L, 0, 1);
-	LP_RunBuiltin (45);
+	LP_RunBuiltin (45, 1);
 	lua_pushnumber (L, G_FLOAT (OFS_RETURN));
 	return 1;
 }
 static int LP_LocalCmd (lua_State *L)
 {
 	LP_SetParmString (L, 0, 1);
-	LP_RunBuiltin (46);
+	LP_RunBuiltin (46, 1);
 	return 0;
 }
 
@@ -867,20 +870,20 @@ static int LP_Particle (lua_State *L)
 	LP_SetParmVector (L, 1, 2);
 	LP_SetParmFloat (2, luaL_checknumber (L, 3));
 	LP_SetParmFloat (3, luaL_checknumber (L, 4));
-	LP_RunBuiltin (48);
+	LP_RunBuiltin (48, 4);
 	return 0;
 }
 static int LP_VectorToAngles (lua_State *L)
 {
 	LP_SetParmVector (L, 0, 1);
-	LP_RunBuiltin (51);
+	LP_RunBuiltin (51, 1);
 	LP_PushOwnedVector (L, G_VECTOR (OFS_RETURN)[0], G_VECTOR (OFS_RETURN)[1], G_VECTOR (OFS_RETURN)[2]);
 	return 1;
 }
 static int LP_VectorToYaw (lua_State *L)
 {
 	LP_SetParmVector (L, 0, 1);
-	LP_RunBuiltin (13);
+	LP_RunBuiltin (13, 1);
 	lua_pushnumber (L, G_FLOAT (OFS_RETURN));
 	return 1;
 }
@@ -889,7 +892,7 @@ static int LP_WriteFloatBuiltin (lua_State *L, int number)
 {
 	LP_SetParmFloat (0, luaL_checknumber (L, 1));
 	LP_SetParmFloat (1, luaL_checknumber (L, 2));
-	LP_RunBuiltin (number);
+	LP_RunBuiltin (number, 2);
 	return 0;
 }
 static int LP_WriteByte (lua_State *L)
@@ -904,46 +907,46 @@ static int LP_WriteString (lua_State *L)
 {
 	LP_SetParmFloat (0, luaL_checknumber (L, 1));
 	LP_SetParmString (L, 1, 2);
-	LP_RunBuiltin (58);
+	LP_RunBuiltin (58, 2);
 	return 0;
 }
 static int LP_WriteEntity (lua_State *L)
 {
 	LP_SetParmFloat (0, luaL_checknumber (L, 1));
 	LP_SetParmEntity (1, LP_CheckEntity (L, 2));
-	LP_RunBuiltin (59);
+	LP_RunBuiltin (59, 2);
 	return 0;
 }
 static int LP_MakeStatic (lua_State *L)
 {
 	LP_SetParmEntity (0, LP_CheckEntity (L, 1));
-	LP_RunBuiltin (69);
+	LP_RunBuiltin (69, 1);
 	return 0;
 }
 static int LP_ChangeLevel (lua_State *L)
 {
 	LP_SetParmString (L, 0, 1);
-	LP_RunBuiltin (70);
+	LP_RunBuiltin (70, 1);
 	return 0;
 }
 static int LP_CvarSet (lua_State *L)
 {
 	LP_SetParmString (L, 0, 1);
 	LP_SetParmString (L, 1, 2);
-	LP_RunBuiltin (72);
+	LP_RunBuiltin (72, 2);
 	return 0;
 }
 static int LP_SetSpawnParms (lua_State *L)
 {
 	LP_SetParmEntity (0, LP_CheckEntity (L, 1));
-	LP_RunBuiltin (78);
+	LP_RunBuiltin (78, 1);
 	return 0;
 }
 static int LP_LightStyle (lua_State *L)
 {
 	LP_SetParmFloat (0, luaL_checknumber (L, 1));
 	LP_SetParmString (L, 1, 2);
-	LP_RunBuiltin (35);
+	LP_RunBuiltin (35, 2);
 	return 0;
 }
 static int LP_AmbientSound (lua_State *L)
@@ -952,14 +955,14 @@ static int LP_AmbientSound (lua_State *L)
 	LP_SetParmString (L, 1, 2);
 	LP_SetParmFloat (2, luaL_checknumber (L, 3));
 	LP_SetParmFloat (3, luaL_checknumber (L, 4));
-	LP_RunBuiltin (74);
+	LP_RunBuiltin (74, 4);
 	return 0;
 }
 
 static int LP_MakeVectors (lua_State *L)
 {
 	LP_SetParmVector (L, 0, 1);
-	LP_RunBuiltin (1);
+	LP_RunBuiltin (1, 1);
 	lua_createtable (L, 0, 3);
 	LP_PushVector (L, pr_global_struct->v_forward);
 	lua_setfield (L, -2, "forward");
