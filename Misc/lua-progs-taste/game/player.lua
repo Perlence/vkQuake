@@ -202,7 +202,6 @@ local death_bubbles
 ---@param self entity
 ---@return nil
 local function pain_sound(self)
-    local rs
     if self.health < 0 then return end
     if g.damage_attacker.classname == "teledeath" then quake.sound(self, CHAN_VOICE, "player/teledth1.wav", 1, ATTN_NONE); return end
 
@@ -230,7 +229,7 @@ local function pain_sound(self)
     -- don't make multiple pain sounds right after each other
     -- ax pain sound
     if self.axhitme == 1 then self.axhitme = 0; quake.sound(self, CHAN_VOICE, "player/axhit1.wav", 1, ATTN_NORM); return end
-    rs = math.floor(quake.random() * 5 + 1 + 0.5)
+    local rs = math.floor(quake.random() * 5 + 1 + 0.5)
     self.noise = ""
     if rs == 1 then self.noise = "player/pain1.wav"
     elseif rs == 2 then self.noise = "player/pain2.wav"
@@ -268,16 +267,14 @@ function M.player_pain(self, _attacker, _damage)
 end
 
 local player_diea1, player_diea2, player_diea3, player_diea4, player_diea5, player_diea6, player_diea7, player_diea8, player_diea9, player_diea10, player_diea11, player_dieb1, player_dieb2, player_dieb3, player_dieb4, player_dieb5, player_dieb6, player_dieb7, player_dieb8, player_dieb9, player_diec1, player_diec2, player_diec3, player_diec4, player_diec5, player_diec6, player_diec7, player_diec8, player_diec9, player_diec10, player_diec11, player_diec12, player_diec13, player_diec14, player_diec15, player_died1, player_died2, player_died3, player_died4, player_died5, player_died6, player_died7, player_died8, player_died9, player_diee1, player_diee2, player_diee3, player_diee4, player_diee5, player_diee6, player_diee7, player_diee8, player_diee9, player_die_ax1, player_die_ax2, player_die_ax3, player_die_ax4, player_die_ax5, player_die_ax6, player_die_ax7, player_die_ax8, player_die_ax9
-local death_bubbles_spawn
 
 ---@param self entity
 ---@return nil
-death_bubbles_spawn = function(self)
+local function death_bubbles_spawn(self)
     local misc = require("game.misc")
 
-    local bubble
     if self.owner.waterlevel ~= 3 then return end
-    bubble = quake.spawn()
+    local bubble = quake.spawn()
     quake.set_model(bubble, "progs/s_bubble.spr")
     quake.set_origin(bubble, self.owner.origin + quake.vec3(0, 0, 24))
     bubble.movetype = MOVETYPE_NOCLIP
@@ -313,10 +310,9 @@ end
 ---@param self entity
 ---@return nil
 local function death_sound(self)
-    local rs
     -- water death sounds
     if self.waterlevel == 3 then death_bubbles(self, 20); quake.sound(self, CHAN_VOICE, "player/h2odeath.wav", 1, ATTN_NONE); return end
-    rs = math.floor(quake.random() * 4 + 1 + 0.5)
+    local rs = math.floor(quake.random() * 4 + 1 + 0.5)
     if rs == 1 then self.noise = "player/death1.wav" end
     if rs == 2 then self.noise = "player/death2.wav" end
     if rs == 3 then self.noise = "player/death3.wav" end
@@ -410,7 +406,6 @@ end
 function M.player_die(self)
     local items = require("game.items")
 
-    local i
     self.items = self.items - (self.items & IT_INVISIBILITY)
     -- don't die as eyes
     self.invisible_finished = 0
@@ -431,7 +426,7 @@ function M.player_die(self)
     death_sound(self)
     self.angles = quake.vec3(0, self.angles.y, 0)
     if self.weapon == IT_AXE then player_die_ax1(self); return end
-    i = quake.cvar("temp1")
+    local i = quake.cvar("temp1")
     if i == 0 then i = 1 + math.floor(quake.random() * 6) end
     if i == 1 then player_diea1(self)
     elseif i == 2 then player_dieb1(self)

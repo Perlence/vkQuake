@@ -31,11 +31,11 @@ local MOVETYPE_PUSH, SOLID_BSP = 7, 4
 local DAMAGE_NO, DAMAGE_YES = 0, 1
 local CHAN_VOICE, ATTN_NORM = 2, 1
 
-local button_wait, button_return
+local button_return
 
 ---@param self entity
 ---@return nil
-button_wait = function(self)
+local button_wait = function(self)
     self.state = STATE_TOP
     self.nextthink = self.ltime + self.wait
     self.think = button_return

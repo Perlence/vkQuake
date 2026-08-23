@@ -344,8 +344,6 @@ end
 ---@param other entity
 ---@return nil
 local function teleport_touch(self, other)
-    local t, org
-
     if self.targetname ~= "" then
         if self.nextthink < quake.time() then return end -- not fired yet
     end
@@ -359,12 +357,12 @@ local function teleport_touch(self, other)
     -- put a tfog where the player was
     M.spawn_tfog(other.origin)
 
-    t = quake.find(quake.world, "targetname", self.target)
+    local t = quake.find(quake.world, "targetname", self.target)
     if not t then quake.object_error(self, "couldn't find target") end
 
     -- spawn a tfog flash in front of the destination
     local vectors = quake.make_vectors(t.mangle)
-    org = t.origin + vectors.forward * 32
+    local org = t.origin + vectors.forward * 32
     M.spawn_tfog(org)
     M.spawn_tdeath(t.origin, other)
 

@@ -92,17 +92,14 @@ end
 ---@param self entity
 ---@return nil
 function M.fire_axe(self)
-    local source
-    local org
-
     local vectors = quake.make_vectors(self.v_angle)
-    source = self.origin + quake.vec3(0, 0, 16)
+    local source = self.origin + quake.vec3(0, 0, 16)
     local trace = quake.trace_line(source, source + vectors.forward * 64, false, self)
     if trace.fraction == 1.0 then
         return
     end
 
-    org = trace.endpos - vectors.forward * 4
+    local org = trace.endpos - vectors.forward * 4
 
     if trace.entity.takedamage ~= 0 then
         trace.entity.axhitme = 1
@@ -124,9 +121,7 @@ end
 ---@param self entity
 ---@return vec3
 function M.wall_velocity(self)
-    local vel
-
-    vel = self.velocity:normalized()
+    local vel = self.velocity:normalized()
     vel = (vel + quake.globals.v_up * (quake.random() - 0.5)
         + quake.globals.v_right * (quake.random() - 0.5)):normalized()
     vel = vel + quake.globals.trace_plane_normal * 2
@@ -140,9 +135,7 @@ end
 ---@param vel vec3
 ---@return nil
 function M.spawn_meat_spray(self, org, vel)
-    local missile
-
-    missile = quake.spawn()
+    local missile = quake.spawn()
     missile.owner = self
     missile.movetype = MOVETYPE_BOUNCE
     missile.solid = SOLID_NOT
@@ -175,9 +168,7 @@ end
 ---@param damage number
 ---@return nil
 function M.spawn_touchblood(self, damage)
-    local vel
-
-    vel = M.wall_velocity(self) * 0.2
+    local vel = M.wall_velocity(self) * 0.2
     M.spawn_blood(self.origin + vel * 0.01, vel, damage)
 end
 
@@ -246,13 +237,11 @@ BULLETS
 ---@param vectors direction_vectors
 ---@return nil
 function M.trace_attack(self, trace, damage, dir, vectors)
-    local vel, org
-
-    vel = (dir + vectors.up * M.crandom() + vectors.right * M.crandom()):normalized()
+    local vel = (dir + vectors.up * M.crandom() + vectors.right * M.crandom()):normalized()
     vel = vel + trace.plane_normal * 2
     vel = vel * 200
 
-    org = trace.endpos - dir * 4
+    local org = trace.endpos - dir * 4
 
     if trace.entity.takedamage ~= 0 then
         M.spawn_blood(org, vel * 0.2, damage)
@@ -274,17 +263,14 @@ end
 ---@param spread vec3
 ---@return nil
 function M.fire_bullets(self, shotcount, dir, spread)
-    local direction
-    local src
-
     local vectors = quake.make_vectors(self.v_angle)
 
-    src = self.origin + vectors.forward * 10
+    local src = self.origin + vectors.forward * 10
     src.z = self.absmin.z + self.size.z * 0.7
 
     M.clear_multi_damage()
     while shotcount > 0 do
-        direction = dir + vectors.right * (M.crandom() * spread.x) + vectors.up * (M.crandom() * spread.y)
+        local direction = dir + vectors.right * (M.crandom() * spread.x) + vectors.up * (M.crandom() * spread.y)
 
         local trace = quake.trace_line(src, src + direction * 2048, false, self)
         if trace.fraction ~= 1.0 then
@@ -299,23 +285,19 @@ end
 ---@param self entity
 ---@return nil
 function M.fire_shotgun(self)
-    local dir
-
     quake.sound(self, CHAN_WEAPON, "weapons/guncock.wav", 1, ATTN_NORM)
 
     self.punchangle.x = -2
 
     self.ammo_shells = self.ammo_shells - 1
     self.currentammo = self.ammo_shells
-    dir = quake.aim(self, 100000)
+    local dir = quake.aim(self, 100000)
     M.fire_bullets(self, 6, dir, quake.vec3(0.04, 0.04, 0))
 end
 
 ---@param self entity
 ---@return nil
 function M.fire_super_shotgun(self)
-    local dir
-
     if self.currentammo == 1 then
         M.fire_shotgun(self)
         return
@@ -327,7 +309,7 @@ function M.fire_super_shotgun(self)
 
     self.ammo_shells = self.ammo_shells - 2
     self.currentammo = self.ammo_shells
-    dir = quake.aim(self, 100000)
+    local dir = quake.aim(self, 100000)
     M.fire_bullets(self, 14, dir, quake.vec3(0.14, 0.08, 0))
 end
 
@@ -339,9 +321,9 @@ ROCKETS
 ==============================================================================
 ]]
 
-local s_explode1, s_explode2, s_explode3, s_explode4, s_explode5, s_explode6
+local s_explode2, s_explode3, s_explode4, s_explode5, s_explode6
 
-s_explode1 = animation.frame(0, function() return s_explode2 end)
+local s_explode1 = animation.frame(0, function() return s_explode2 end)
 s_explode2 = animation.frame(1, function() return s_explode3 end)
 s_explode3 = animation.frame(2, function() return s_explode4 end)
 s_explode4 = animation.frame(3, function() return s_explode5 end)
@@ -363,8 +345,6 @@ end
 ---@param other entity
 ---@return nil
 function M.missile_touch(self, other)
-    local damage
-
     if other == self.owner then
         -- don't explode on owner
         return
@@ -375,7 +355,7 @@ function M.missile_touch(self, other)
         return
     end
 
-    damage = 100 + quake.random() * 20
+    local damage = 100 + quake.random() * 20
 
     if other.health ~= 0 then
         if other.classname == "monster_shambler" then
@@ -403,8 +383,6 @@ end
 ---@param self entity
 ---@return nil
 function M.fire_rocket(self)
-    local missile
-
     self.ammo_rockets = self.ammo_rockets - 1
     self.currentammo = self.ammo_rockets
 
@@ -412,7 +390,7 @@ function M.fire_rocket(self)
 
     self.punchangle.x = -2
 
-    missile = quake.spawn()
+    local missile = quake.spawn()
     missile.owner = self
     missile.movetype = MOVETYPE_FLYMISSILE
     missile.solid = SOLID_BBOX
@@ -450,18 +428,15 @@ LIGHTNING
 ---@param damage number
 ---@return nil
 function M.lightning_damage(self, p1, p2, from, damage)
-    local e1, e2
-    local f
-
-    f = p2 - p1
+    local f = p2 - p1
     f:normalized()
     f.x = 0 - f.y
     f.y = f.x
     f.z = 0
     f = f * 16
 
-    e1 = quake.world
-    e2 = quake.world
+    local e1 = quake.world
+    local e2 = quake.world
 
     local trace = quake.trace_line(p1, p2, false, self)
     if trace.entity.takedamage ~= 0 then
@@ -492,9 +467,6 @@ end
 ---@param self entity
 ---@return nil
 function M.fire_lightning(self)
-    local org
-    local cells
-
     if self.ammo_cells < 1 then
         self.weapon = M.best_weapon(self)
         M.set_current_ammo(self)
@@ -503,7 +475,7 @@ function M.fire_lightning(self)
 
     -- explode if under water
     if self.waterlevel > 1 then
-        cells = self.ammo_cells
+        local cells = self.ammo_cells
         self.ammo_cells = 0
         M.set_current_ammo(self)
         combat.radius_damage(self, self, 35 * cells, quake.world)
@@ -519,7 +491,7 @@ function M.fire_lightning(self)
     self.ammo_cells = self.ammo_cells - 1
     self.currentammo = self.ammo_cells
 
-    org = self.origin + quake.vec3(0, 0, 16)
+    local org = self.origin + quake.vec3(0, 0, 16)
 
     local trace = quake.trace_line(org, org + quake.globals.v_forward * 600, true, self)
 
@@ -574,8 +546,6 @@ end
 ---@param self entity
 ---@return nil
 function M.fire_grenade(self)
-    local missile
-
     self.ammo_rockets = self.ammo_rockets - 1
     self.currentammo = self.ammo_rockets
 
@@ -583,7 +553,7 @@ function M.fire_grenade(self)
 
     self.punchangle.x = -2
 
-    missile = quake.spawn()
+    local missile = quake.spawn()
     missile.owner = self
     missile.movetype = MOVETYPE_BOUNCE
     missile.solid = SOLID_BBOX
@@ -648,13 +618,11 @@ end
 ---@param self entity
 ---@return nil
 function M.fire_super_spikes(self)
-    local dir
-
     quake.sound(self, CHAN_WEAPON, "weapons/spike2.wav", 1, ATTN_NORM)
     self.attack_finished = quake.time() + 0.2
     self.ammo_nails = self.ammo_nails - 2
     self.currentammo = self.ammo_nails
-    dir = quake.aim(self, 1000)
+    local dir = quake.aim(self, 1000)
     M.launch_spike(self, self.origin + quake.vec3(0, 0, 16), dir)
     quake.globals.newmis.touch = superspike_touch
     quake.set_model(quake.globals.newmis, "progs/s_spike.mdl")
@@ -666,8 +634,6 @@ end
 ---@param ox number
 ---@return nil
 function M.fire_spikes(self, ox)
-    local dir
-
     local vectors = quake.make_vectors(self.v_angle)
 
     if self.ammo_nails >= 2 and self.weapon == IT_SUPER_NAILGUN then
@@ -685,7 +651,7 @@ function M.fire_spikes(self, ox)
     self.attack_finished = quake.time() + 0.2
     self.ammo_nails = self.ammo_nails - 1
     self.currentammo = self.ammo_nails
-    dir = quake.aim(self, 1000)
+    local dir = quake.aim(self, 1000)
     M.launch_spike(self, self.origin + quake.vec3(0, 0, 16) + vectors.right * ox, dir)
 
     self.punchangle.x = -2
@@ -831,9 +797,7 @@ end
 ---@param self entity
 ---@return integer
 function M.best_weapon(self)
-    local it
-
-    it = self.items
+    local it = self.items
 
     if self.waterlevel <= 1 and self.ammo_cells >= 1 and (it & IT_LIGHTNING) ~= 0 then
         return IT_LIGHTNING
@@ -873,8 +837,6 @@ end
 ---@param self entity
 ---@return nil
 function M.attack(self)
-    local r
-
     if not M.check_no_ammo(self) then
         return
     end
@@ -886,7 +848,7 @@ function M.attack(self)
 
     if self.weapon == IT_AXE then
         quake.sound(self, CHAN_WEAPON, "weapons/ax1.wav", 1, ATTN_NORM)
-        r = quake.random()
+        local r = quake.random()
         if r < 0.25 then
             player.player_axe1(self)
         elseif r < 0.5 then
@@ -927,11 +889,9 @@ end
 ---@param self entity
 ---@return nil
 function M.change_weapon(self)
-    local it, am, fl
-
-    it = self.items
-    am = 0
-    fl = 0
+    local it = self.items
+    local am = 0
+    local fl = 0
 
     if self.impulse == 1 then
         fl = IT_AXE
@@ -1023,13 +983,11 @@ end
 ---@param self entity
 ---@return nil
 function M.cycle_weapon_command(self)
-    local it, am
-
-    it = self.items
+    local it = self.items
     self.impulse = 0
 
     while true do
-        am = 0
+        local am = 0
 
         if self.weapon == IT_LIGHTNING then
             self.weapon = IT_AXE
@@ -1081,13 +1039,11 @@ end
 ---@param self entity
 ---@return nil
 function M.cycle_weapon_reverse_command(self)
-    local it, am
-
-    it = self.items
+    local it = self.items
     self.impulse = 0
 
     while true do
-        am = 0
+        local am = 0
 
         if self.weapon == IT_LIGHTNING then
             self.weapon = IT_ROCKET_LAUNCHER

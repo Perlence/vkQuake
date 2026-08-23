@@ -68,8 +68,6 @@ end
 ---@param self entity
 ---@return nil
 function M.place_item(self)
-    local oldz
-
     -- so it can be restored on respawn
     self.mdl = self.model
     -- make extra wide
@@ -78,7 +76,7 @@ function M.place_item(self)
     self.movetype = 6 -- MOVETYPE_TOSS
     self.velocity = quake.vec3(0, 0, 0)
     self.origin.z = self.origin.z + 6
-    oldz = self.origin.z
+    local oldz = self.origin.z
     if not quake.drop_to_floor(self) then
         quake.dprint("Bonus item fell out of level at ")
         quake.dprint(quake.vector_to_string(self.origin))
@@ -181,7 +179,6 @@ end
 ---@param other entity
 ---@return nil
 health_touch = function(self, other)
-    local s
 
     if other.classname ~= "player" then
         return
@@ -202,7 +199,7 @@ health_touch = function(self, other)
     end
 
     quake.sprint(other, "You receive ")
-    s = quake.float_to_string(self.healamount)
+    local s = quake.float_to_string(self.healamount)
     quake.sprint(other, s)
     quake.sprint(other, " health\n")
 
@@ -267,12 +264,10 @@ ARMOR
 ---@param other entity
 ---@return nil
 local function armor_touch(self, other)
-    local type, value, bit
-
     -- initialize variables
-    type = 0
-    bit = 0
-    value = 0
+    local type = 0
+    local bit = 0
+    local value = 0
 
     if other.health <= 0 then
         return
@@ -412,11 +407,9 @@ end
 ---@param new integer
 ---@return nil
 function M.deathmatch_weapon(self, old, new)
-    local old_rank, new_rank
-
     -- change self.weapon if desired
-    old_rank = M.rank_for_weapon(self.weapon)
-    new_rank = M.rank_for_weapon(new)
+    local old_rank = M.rank_for_weapon(self.weapon)
+    local new_rank = M.rank_for_weapon(new)
     if new_rank < old_rank then
         self.weapon = new
     end
@@ -426,7 +419,7 @@ end
 ---@param other entity
 ---@return nil
 local function weapon_touch(self, other)
-    local hadammo, best, new, old
+    local hadammo
     local leave
 
     if (other.flags & C.FL_CLIENT) == 0 then
@@ -434,8 +427,8 @@ local function weapon_touch(self, other)
     end
 
     -- if the player was using his best weapon, change up to the new one if better
-    best = weapons.best_weapon(other)
-    new = 0
+    local best = weapons.best_weapon(other)
+    local new = 0
 
     if quake.cvar("deathmatch") == 2 or quake.cvar("coop") ~= 0 then
         leave = 1
@@ -499,7 +492,7 @@ local function weapon_touch(self, other)
     M.bound_other_ammo(other)
 
     -- change to the weapon
-    old = other.items
+    local old = other.items
     other.items = other.items | new
 
     if quake.cvar("deathmatch") == 0 then
@@ -614,8 +607,6 @@ AMMO
 ---@param other entity
 ---@return nil
 local function ammo_touch(self, other)
-    local best
-
     if other.classname ~= "player" then
         return
     end
@@ -624,7 +615,7 @@ local function ammo_touch(self, other)
     end
 
     -- if the player was using his best weapon, change up to the new one if better
-    best = weapons.best_weapon(other)
+    local best = weapons.best_weapon(other)
 
     -- shotgun
     if self.weapon == 1 then
@@ -1174,10 +1165,6 @@ PLAYER BACKPACKS
 ---@param other entity
 ---@return nil
 local function backpack_touch(self, other)
-    local s
-    local best, old, new
-    local acount
-
     if other.classname ~= "player" then
         return
     end
@@ -1185,7 +1172,7 @@ local function backpack_touch(self, other)
         return
     end
 
-    acount = 0
+    local acount = 0
     quake.sprint(other, "You get ")
 
     if self.items ~= 0 then
@@ -1197,7 +1184,7 @@ local function backpack_touch(self, other)
     end
 
     -- if the player was using his best weapon, change up to the new one if better
-    best = weapons.best_weapon(other)
+    local best = weapons.best_weapon(other)
 
     -- change weapons
     other.ammo_shells = other.ammo_shells + self.ammo_shells
@@ -1205,11 +1192,11 @@ local function backpack_touch(self, other)
     other.ammo_rockets = other.ammo_rockets + self.ammo_rockets
     other.ammo_cells = other.ammo_cells + self.ammo_cells
 
-    new = self.items
+    local new = self.items
     if new == 0 then
         new = other.weapon
     end
-    old = other.items
+    local old = other.items
     other.items = other.items | new
 
     M.bound_other_ammo(other)
@@ -1219,7 +1206,7 @@ local function backpack_touch(self, other)
             quake.sprint(other, ", ")
         end
         acount = 1
-        s = quake.float_to_string(self.ammo_shells)
+        local s = quake.float_to_string(self.ammo_shells)
         quake.sprint(other, s)
         quake.sprint(other, " shells  ")
     end
@@ -1228,7 +1215,7 @@ local function backpack_touch(self, other)
             quake.sprint(other, ", ")
         end
         acount = 1
-        s = quake.float_to_string(self.ammo_nails)
+        local s = quake.float_to_string(self.ammo_nails)
         quake.sprint(other, s)
         quake.sprint(other, " nails ")
     end
@@ -1237,7 +1224,7 @@ local function backpack_touch(self, other)
             quake.sprint(other, ", ")
         end
         acount = 1
-        s = quake.float_to_string(self.ammo_rockets)
+        local s = quake.float_to_string(self.ammo_rockets)
         quake.sprint(other, s)
         quake.sprint(other, " rockets  ")
     end
@@ -1246,7 +1233,7 @@ local function backpack_touch(self, other)
             quake.sprint(other, ", ")
         end
         acount = 1
-        s = quake.float_to_string(self.ammo_cells)
+        local s = quake.float_to_string(self.ammo_cells)
         quake.sprint(other, s)
         quake.sprint(other, " cells  ")
     end
@@ -1276,14 +1263,12 @@ end
 ---@param self entity
 ---@return nil
 function M.drop_backpack(self)
-    local item
-
     if self.ammo_shells + self.ammo_nails + self.ammo_rockets + self.ammo_cells == 0 then
         -- nothing in it
         return
     end
 
-    item = quake.spawn()
+    local item = quake.spawn()
     item.origin = self.origin - quake.vec3(0, 0, 24)
 
     item.items = self.weapon

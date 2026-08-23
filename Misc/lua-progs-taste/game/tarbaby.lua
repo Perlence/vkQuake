@@ -119,11 +119,9 @@ local tbaby_jump1
 ---@param other entity
 ---@return nil
 local function tar_jump_touch(self, other)
-    local ldmg
-
     if other.takedamage ~= 0 and other.classname ~= self.classname then
         if self.velocity:length() > 400 then
-            ldmg = 10 + 10 * quake.random()
+            local ldmg = 10 + 10 * quake.random()
             combat.damage(other, self, self, ldmg)
             quake.sound(self, 1, "blob/hit1.wav", 1, C.ATTN_NORM)
         end

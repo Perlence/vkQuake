@@ -113,13 +113,11 @@ end
 ---Returns the entity to view from
 ---@return entity
 function M.find_intermission()
-    local spot
-    local cyc
     -- look for info_intermission first
-    spot = quake.find(quake.world, "classname", "info_intermission")
+    local spot = quake.find(quake.world, "classname", "info_intermission")
     if spot then
         -- pick a random one
-        cyc = quake.random() * 4
+        local cyc = quake.random() * 4
         while cyc > 1 do
             spot = quake.find(spot, "classname", "info_intermission")
             if not spot then spot = quake.find(spot, "classname", "info_intermission") end
@@ -200,13 +198,12 @@ end
 ---@param _self entity
 ---@return nil
 local function execute_changelevel(_self)
-    local pos
     g.intermission_running = 1
     -- enforce a wait time before allowing changelevel
     if g.deathmatch ~= 0 then g.intermission_exittime = quake.time() + 5
     else g.intermission_exittime = quake.time() + 2 end
     quake.write_byte(MSG_ALL, SVC_CDTRACK); quake.write_byte(MSG_ALL, 3); quake.write_byte(MSG_ALL, 3)
-    pos = M.find_intermission()
+    local pos = M.find_intermission()
     local other = quake.find(quake.world, "classname", "player")
     while other do
         other.view_ofs = quake.vec3(0, 0, 0)
@@ -310,10 +307,8 @@ end
 ---Returns the entity to spawn at
 ---@return entity
 function M.select_spawn_point()
-    local spot, thing
-    local pcount
     -- testinfo_player_start is only found in regioned levels
-    spot = quake.find(quake.world, "classname", "testplayerstart")
+    local spot = quake.find(quake.world, "classname", "testplayerstart")
     if spot then return spot end
     -- choose a info_player_deathmatch point
     if g.coop ~= 0 then
@@ -331,8 +326,8 @@ function M.select_spawn_point()
                 -- check if the spot is the same as the last spawn point checked
                 if spot == g.lastspawn then return g.lastspawn end
                 -- count the number of players close to the spawn point
-                pcount = 0
-                thing = quake.find_radius(spot.origin, 32)
+                local pcount = 0
+                local thing = quake.find_radius(spot.origin, 32)
                 while thing do
                     if thing.classname == "player" then pcount = pcount + 1 end
                     thing = thing.chain
@@ -477,9 +472,8 @@ end
 ---@param self entity
 ---@return nil
 function M.player_death_think(self)
-    local forward
     if (self.flags & FL_ONGROUND) ~= 0 then
-        forward = self.velocity:length() - 20
+        local forward = self.velocity:length() - 20
         if forward <= 0 then self.velocity = quake.vec3(0, 0, 0)
         else self.velocity = self.velocity:normalized() * forward end
     end

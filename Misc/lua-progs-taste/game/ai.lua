@@ -228,8 +228,6 @@ end
 ---@param self entity
 ---@return nil
 function M.sight_sound(self)
-    local rsnd
-
     if self.classname == "monster_ogre" then
         quake.sound(self, C.CHAN_VOICE, "ogre/ogwake.wav", 1, C.ATTN_NORM)
     elseif self.classname == "monster_knight" then
@@ -249,7 +247,7 @@ function M.sight_sound(self)
     elseif self.classname == "monster_tarbaby" then
         quake.sound(self, C.CHAN_VOICE, "blob/sight1.wav", 1, C.ATTN_NORM)
     elseif self.classname == "monster_enforcer" then
-        rsnd = math.floor(quake.random() * 3 + 0.5)
+        local rsnd = math.floor(quake.random() * 3 + 0.5)
         if rsnd == 1 then
             quake.sound(self, C.CHAN_VOICE, "enforcer/sight1.wav", 1, C.ATTN_NORM)
         elseif rsnd == 2 then

@@ -156,9 +156,8 @@ army_painc13 = animation.frame("painc13", function() return army_run1 end)
 ---@param _damage number
 ---@return nil
 local function army_pain(self, _attacker, _damage)
-    local r
     if self.pain_finished > quake.time() then return end
-    r = quake.random()
+    local r = quake.random()
     if r < 0.2 then
         self.pain_finished = quake.time() + 0.6
         army_pain1(self)
@@ -177,13 +176,11 @@ end
 ---@param self entity
 ---@return nil
 function army_fire(self)
-    local dir
-    local en
     fight.face(self)
     quake.sound(self, C.CHAN_WEAPON, "soldier/sattck1.wav", 1, C.ATTN_NORM)
     -- fire somewhat behind the player, so a dodging player is harder to hit
-    en = self.enemy
-    dir = en.origin - en.velocity * 0.2
+    local en = self.enemy
+    local dir = en.origin - en.velocity * 0.2
     dir = (dir - self.origin):normalized()
     weapons.fire_bullets(self, 4, dir, quake.vec3(0.1, 0.1, 0))
 end

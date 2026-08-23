@@ -31,24 +31,21 @@ local SOLID_NOT, SOLID_TRIGGER, SOLID_BSP = 0, 1, 4
 local CHAN_VOICE, ATTN_NORM = 2, 1
 local PLAT_LOW_TRIGGER = 1
 
-local plat_center_touch, plat_outside_touch, plat_trigger_use
-local plat_go_up, plat_go_down, plat_crush
+local plat_center_touch
+local plat_go_down
 
 ---@param self entity
 ---@return nil
 local function plat_spawn_inside_trigger(self)
-    local trigger
-    local tmin, tmax
-
     -- middle trigger
-    trigger = quake.spawn()
+    local trigger = quake.spawn()
     trigger.touch = plat_center_touch
     trigger.movetype = MOVETYPE_NONE
     trigger.solid = SOLID_TRIGGER
     trigger.enemy = self
 
-    tmin = self.mins + quake.vec3(25, 25, 0)
-    tmax = self.maxs - quake.vec3(25, 25, -8)
+    local tmin = self.mins + quake.vec3(25, 25, 0)
+    local tmax = self.maxs - quake.vec3(25, 25, -8)
     tmin = quake.vec3(tmin.x, tmin.y, tmax.z - (self.pos1.z - self.pos2.z + 8))
     if (self.spawnflags & PLAT_LOW_TRIGGER) ~= 0 then
         tmax = quake.vec3(tmax.x, tmax.y, tmin.z + 8)
@@ -92,7 +89,7 @@ end
 
 ---@param self entity
 ---@return nil
-plat_go_up = function(self)
+local function plat_go_up(self)
     quake.sound(self, CHAN_VOICE, self.noise, 1, ATTN_NORM)
     self.state = STATE_UP
     subs.calc_move(self, self.pos1, self.speed, plat_hit_top)
@@ -122,7 +119,7 @@ end
 ---@param self entity
 ---@param other entity
 ---@return nil
-plat_outside_touch = function(self, other)
+local function plat_outside_touch(self, other)
     if other.classname ~= "player" then
         return
     end
@@ -140,7 +137,7 @@ end
 ---@param self entity
 ---@param _activator entity
 ---@return nil
-plat_trigger_use = function(self, _activator)
+local plat_trigger_use = function(self, _activator)
     if self.think then
         -- allready activated
         return
@@ -151,7 +148,7 @@ end
 ---@param self entity
 ---@param other entity
 ---@return nil
-plat_crush = function(self, other)
+local plat_crush = function(self, other)
     combat.damage(other, self, self, 1)
 
     if self.state == STATE_UP then
@@ -294,9 +291,7 @@ end
 ---@param self entity
 ---@return nil
 train_next = function(self)
-    local targ
-
-    targ = quake.find(quake.world, "targetname", self.target)
+    local targ = quake.find(quake.world, "targetname", self.target)
     self.target = targ.target
     if self.target == "" then
         quake.object_error(self, "train_next: no next target")
@@ -313,9 +308,7 @@ end
 ---@param self entity
 ---@return nil
 func_train_find = function(self)
-    local targ
-
-    targ = quake.find(quake.world, "targetname", self.target)
+    local targ = quake.find(quake.world, "targetname", self.target)
     self.target = targ.target
     quake.set_origin(self, targ.origin - self.mins)
     if self.targetname == "" then

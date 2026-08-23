@@ -45,9 +45,6 @@ local dog_jump_touch
 ---@param self entity
 ---@return nil
 local function dog_bite(self)
-    local delta
-    local ldmg
-
     if not self.enemy then
         return
     end
@@ -58,13 +55,13 @@ local function dog_bite(self)
         return
     end
 
-    delta = self.enemy.origin - self.origin
+    local delta = self.enemy.origin - self.origin
 
     if delta:length() > 100 then
         return
     end
 
-    ldmg = (quake.random() + quake.random() + quake.random()) * 8
+    local ldmg = (quake.random() + quake.random() + quake.random()) * 8
     combat.damage(self.enemy, self, self, ldmg)
 end
 
@@ -72,15 +69,13 @@ end
 ---@param other entity
 ---@return nil
 function dog_jump_touch(self, other)
-    local ldmg
-
     if self.health <= 0 then
         return
     end
 
     if other.takedamage ~= 0 then
         if self.velocity:length() > 300 then
-            ldmg = 10 + 10 * quake.random()
+            local ldmg = 10 + 10 * quake.random()
             combat.damage(other, self, self, ldmg)
         end
     end
@@ -295,9 +290,6 @@ end
 ---@param self entity
 ---@return boolean
 local function check_dog_jump(self)
-    local dist
-    local d
-
     if self.origin.z + self.mins.z > self.enemy.origin.z + self.enemy.mins.z + 0.75 * self.enemy.size.z then
         return false
     end
@@ -306,10 +298,10 @@ local function check_dog_jump(self)
         return false
     end
 
-    dist = self.enemy.origin - self.origin
+    local dist = self.enemy.origin - self.origin
     dist = quake.vec3(dist.x, dist.y, 0)
 
-    d = dist:length()
+    local d = dist:length()
 
     if d < 80 then
         return false

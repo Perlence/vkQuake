@@ -132,10 +132,8 @@ knight_painb11 = animation.frame("painb11", function() return knight_run1 end)
 ---@param _damage number
 ---@return nil
 local function knight_pain(self, _attacker, _damage)
-    local r
-
     if self.pain_finished > quake.time() then return end
-    r = quake.random()
+    local r = quake.random()
     quake.sound(self, C.CHAN_VOICE, "knight/khurt.wav", 1, C.ATTN_NORM)
     if r < 0.85 then
         knight_pain1(self)
