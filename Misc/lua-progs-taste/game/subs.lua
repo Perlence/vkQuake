@@ -261,6 +261,7 @@ function M.use_targets(self, activator)
 
     -- kill the killtargets
     if self.killtarget ~= "" then
+        ---@type entity?
         local t = quake.world
         while true do
             t = quake.find(t, "targetname", self.killtarget)
@@ -273,6 +274,7 @@ function M.use_targets(self, activator)
 
     -- fire targets
     if self.target ~= "" then
+        ---@type entity?
         local t = quake.world
         while true do
             t = quake.find(t, "targetname", self.target)

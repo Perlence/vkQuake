@@ -288,7 +288,9 @@ local function link_doors(self)
     end
 
     local cmins, cmaxs = self.mins, self.maxs
-    local starte, t = self, self
+    local starte = self
+    ---@type entity?
+    local t = self
 
     while true do
         -- master door
