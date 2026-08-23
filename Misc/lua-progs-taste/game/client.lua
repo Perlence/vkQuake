@@ -22,7 +22,11 @@
 
 local quake = require("quake")
 local combat = require("game.combat")
+local player = require("game.player")
 local subs = require("game.subs")
+local triggers = require("game.triggers")
+local weapons = require("game.weapons")
+local world = require("game.world")
 
 local M = {}
 local g = quake.globals
@@ -268,14 +272,14 @@ end
 function M.respawn(self)
     if g.coop ~= 0 then
         -- make a copy of the dead body for appearances sake
-        require("game.world").copy_to_body_que(self)
+        world.copy_to_body_que(self)
         -- get the spawn parms as they were at level start
         quake.set_spawn_parms(self)
         -- respawn
         M.put_client_in_server(self)
     elseif g.deathmatch ~= 0 then
         -- make a copy of the dead body for appearances sake
-        require("game.world").copy_to_body_que(self)
+        world.copy_to_body_que(self)
         -- set default spawn parms
         M.set_new_parms()
         -- respawn
@@ -291,7 +295,7 @@ end
 ---@return nil
 function M.client_kill(self)
     quake.bprint(self.netname); quake.bprint(" suicides\n")
-    require("game.player").set_suicide_frame(self)
+    player.set_suicide_frame(self)
     self.modelindex = g.modelindex_player
     self.frags = self.frags - 2 -- extra penalty
     M.respawn(self)
@@ -370,10 +374,10 @@ function M.put_client_in_server(self)
     self.effects = 0
     self.invincible_time = 0
     M.decode_level_parms(self)
-    require("game.weapons").set_current_ammo(self)
+    weapons.set_current_ammo(self)
     self.attack_finished = quake.time()
-    self.th_pain = require("game.player").player_pain
-    self.th_die = require("game.player").player_die
+    self.th_pain = player.player_pain
+    self.th_die = player.player_die
     self.deadflag = DEAD_NO
     -- paustime is set by teleporters to keep the player from moving a while
     self.pausetime = 0
@@ -387,12 +391,12 @@ function M.put_client_in_server(self)
     g.modelindex_player = self.modelindex
     quake.set_size(self, quake.vec3(-16, -16, -24), quake.vec3(16, 16, 32))
     self.view_ofs = quake.vec3(0, 0, 22)
-    require("game.player").player_stand1(self)
+    player.player_stand1(self)
     if g.deathmatch ~= 0 or g.coop ~= 0 then
         local vectors = quake.make_vectors(self.angles)
-        require("game.triggers").spawn_tfog(self.origin + vectors.forward * 20)
+        triggers.spawn_tfog(self.origin + vectors.forward * 20)
     end
-    require("game.triggers").spawn_tdeath(self.origin, self)
+    triggers.spawn_tdeath(self.origin, self)
 end
 
 --[[
@@ -618,8 +622,8 @@ function M.player_pre_think(self)
     -- teleporters can force a non-moving pause time
     if quake.time() < self.pausetime then self.velocity = quake.vec3(0, 0, 0) end
     if quake.time() > self.attack_finished and self.currentammo == 0 and self.weapon ~= IT_AXE then
-        self.weapon = require("game.weapons").best_weapon(self)
-        require("game.weapons").set_current_ammo(self)
+        self.weapon = weapons.best_weapon(self)
+        weapons.set_current_ammo(self)
     end
 end
 
@@ -716,7 +720,7 @@ function M.player_post_think(self)
     if self.view_ofs == quake.vec3(0, 0, 0) then return end
     if self.deadflag ~= 0 then return end
     -- do weapon stuff
-    require("game.weapons").weapon_frame(self)
+    weapons.weapon_frame(self)
     -- check to see if player landed and play landing sound
     if self.jump_flag < -300 and (self.flags & FL_ONGROUND) ~= 0 and self.health > 0 then
         if self.watertype == CONTENT_WATER then quake.sound(self, CHAN_BODY, "player/h2ojump.wav", 1, ATTN_NORM)
@@ -750,7 +754,7 @@ function M.client_disconnect(self)
     -- let everyone else know
     quake.bprint(self.netname); quake.bprint(" left the game with "); quake.bprint(tostring(self.frags)); quake.bprint(" frags\n")
     quake.sound(self, CHAN_BODY, "player/tornoff2.wav", 1, ATTN_NONE)
-    require("game.player").set_suicide_frame(self)
+    player.set_suicide_frame(self)
 end
 
 ---called when a player dies

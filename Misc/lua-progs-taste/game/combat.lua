@@ -76,6 +76,8 @@ end
 ---@param attacker entity
 ---@return nil
 function M.killed(targ, attacker)
+    local client = require("game.client")
+
     if targ.health < -99 then
         -- don't let sbar look bad if a player
         targ.health = -99
@@ -95,7 +97,7 @@ function M.killed(targ, attacker)
         quake.write_byte(C.MSG_ALL, C.SVC_KILLEDMONSTER)
     end
 
-    require("game.client").client_obituary(targ, attacker)
+    client.client_obituary(targ, attacker)
 
     targ.takedamage = C.DAMAGE_NO
     targ.touch = subs.null

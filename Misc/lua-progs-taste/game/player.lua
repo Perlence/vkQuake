@@ -98,66 +98,94 @@ player_shot6 = animation.frame("shotatt6", function() return player_run end, fun
 local player_axe1, player_axe2, player_axe3, player_axe4
 player_axe1 = animation.frame("axatt1", function() return player_axe2 end, function(self) self.weaponframe = 1 end)
 player_axe2 = animation.frame("axatt2", function() return player_axe3 end, function(self) self.weaponframe = 2 end)
-player_axe3 = animation.frame("axatt3", function() return player_axe4 end, function(self) self.weaponframe = 3; require("game.weapons").fire_axe(self) end)
+player_axe3 = animation.frame("axatt3", function() return player_axe4 end, function(self)
+    local weapons = require("game.weapons")
+
+    self.weaponframe = 3
+    weapons.fire_axe(self)
+end)
 player_axe4 = animation.frame("axatt4", function() return player_run end, function(self) self.weaponframe = 4 end)
 
 local player_axeb1, player_axeb2, player_axeb3, player_axeb4
 player_axeb1 = animation.frame("axattb1", function() return player_axeb2 end, function(self) self.weaponframe = 5 end)
 player_axeb2 = animation.frame("axattb2", function() return player_axeb3 end, function(self) self.weaponframe = 6 end)
-player_axeb3 = animation.frame("axattb3", function() return player_axeb4 end, function(self) self.weaponframe = 7; require("game.weapons").fire_axe(self) end)
+player_axeb3 = animation.frame("axattb3", function() return player_axeb4 end, function(self)
+    local weapons = require("game.weapons")
+
+    self.weaponframe = 7
+    weapons.fire_axe(self)
+end)
 player_axeb4 = animation.frame("axattb4", function() return player_run end, function(self) self.weaponframe = 8 end)
 
 local player_axec1, player_axec2, player_axec3, player_axec4
 player_axec1 = animation.frame("axattc1", function() return player_axec2 end, function(self) self.weaponframe = 1 end)
 player_axec2 = animation.frame("axattc2", function() return player_axec3 end, function(self) self.weaponframe = 2 end)
-player_axec3 = animation.frame("axattc3", function() return player_axec4 end, function(self) self.weaponframe = 3; require("game.weapons").fire_axe(self) end)
+player_axec3 = animation.frame("axattc3", function() return player_axec4 end, function(self)
+    local weapons = require("game.weapons")
+
+    self.weaponframe = 3
+    weapons.fire_axe(self)
+end)
 player_axec4 = animation.frame("axattc4", function() return player_run end, function(self) self.weaponframe = 4 end)
 
 local player_axed1, player_axed2, player_axed3, player_axed4
 player_axed1 = animation.frame("axattd1", function() return player_axed2 end, function(self) self.weaponframe = 5 end)
 player_axed2 = animation.frame("axattd2", function() return player_axed3 end, function(self) self.weaponframe = 6 end)
-player_axed3 = animation.frame("axattd3", function() return player_axed4 end, function(self) self.weaponframe = 7; require("game.weapons").fire_axe(self) end)
+player_axed3 = animation.frame("axattd3", function() return player_axed4 end, function(self)
+    local weapons = require("game.weapons")
+
+    self.weaponframe = 7
+    weapons.fire_axe(self)
+end)
 player_axed4 = animation.frame("axattd4", function() return player_run end, function(self) self.weaponframe = 8 end)
 
 --============================================================================
 local player_nail1, player_nail2
 player_nail1 = animation.frame("nailatt1", function() return player_nail2 end, function(self)
+    local weapons = require("game.weapons")
+
     self.effects = self.effects | EF_MUZZLEFLASH
     if self.button0 == 0 then player_run(self); return end
     self.weaponframe = self.weaponframe + 1
     if self.weaponframe == 9 then self.weaponframe = 1 end
-    require("game.weapons").super_damage_sound(self)
-    require("game.weapons").fire_spikes(self, 4)
+    weapons.super_damage_sound(self)
+    weapons.fire_spikes(self, 4)
     self.attack_finished = quake.time() + 0.2
 end)
 player_nail2 = animation.frame("nailatt2", function() return player_nail1 end, function(self)
+    local weapons = require("game.weapons")
+
     self.effects = self.effects | EF_MUZZLEFLASH
     if self.button0 == 0 then player_run(self); return end
     self.weaponframe = self.weaponframe + 1
     if self.weaponframe == 9 then self.weaponframe = 1 end
-    require("game.weapons").super_damage_sound(self)
-    require("game.weapons").fire_spikes(self, -4)
+    weapons.super_damage_sound(self)
+    weapons.fire_spikes(self, -4)
     self.attack_finished = quake.time() + 0.2
 end)
 
 --============================================================================
 local player_light1, player_light2
 player_light1 = animation.frame("light1", function() return player_light2 end, function(self)
+    local weapons = require("game.weapons")
+
     self.effects = self.effects | EF_MUZZLEFLASH
     if self.button0 == 0 then player_run(self); return end
     self.weaponframe = self.weaponframe + 1
     if self.weaponframe == 5 then self.weaponframe = 1 end
-    require("game.weapons").super_damage_sound(self)
-    require("game.weapons").fire_lightning(self)
+    weapons.super_damage_sound(self)
+    weapons.fire_lightning(self)
     self.attack_finished = quake.time() + 0.2
 end)
 player_light2 = animation.frame("light2", function() return player_light1 end, function(self)
+    local weapons = require("game.weapons")
+
     self.effects = self.effects | EF_MUZZLEFLASH
     if self.button0 == 0 then player_run(self); return end
     self.weaponframe = self.weaponframe + 1
     if self.weaponframe == 5 then self.weaponframe = 1 end
-    require("game.weapons").super_damage_sound(self)
-    require("game.weapons").fire_lightning(self)
+    weapons.super_damage_sound(self)
+    weapons.fire_lightning(self)
     self.attack_finished = quake.time() + 0.2
 end)
 
@@ -245,6 +273,8 @@ local death_bubbles_spawn
 ---@param self entity
 ---@return nil
 death_bubbles_spawn = function(self)
+    local misc = require("game.misc")
+
     local bubble
     if self.owner.waterlevel ~= 3 then return end
     bubble = quake.spawn()
@@ -254,7 +284,7 @@ death_bubbles_spawn = function(self)
     bubble.solid = SOLID_NOT
     bubble.velocity = quake.vec3(0, 0, 15)
     bubble.nextthink = quake.time() + 0.5
-    bubble.think = require("game.misc").bubble_bob
+    bubble.think = misc.bubble_bob
     bubble.classname = "bubble"
     bubble.frame = 0
     bubble.cnt = 0
@@ -378,6 +408,8 @@ end
 ---@param self entity
 ---@return nil
 function M.player_die(self)
+    local items = require("game.items")
+
     local i
     self.items = self.items - (self.items & IT_INVISIBILITY)
     -- don't die as eyes
@@ -387,7 +419,7 @@ function M.player_die(self)
     self.radsuit_finished = 0
     -- don't use eyes
     self.modelindex = g.modelindex_player
-    if g.deathmatch ~= 0 or g.coop ~= 0 then require("game.items").drop_backpack(self) end
+    if g.deathmatch ~= 0 or g.coop ~= 0 then items.drop_backpack(self) end
     self.weaponmodel = ""
     self.view_ofs = quake.vec3(0, 0, -8)
     self.deadflag = DEAD_DYING

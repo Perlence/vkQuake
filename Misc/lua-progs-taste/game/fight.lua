@@ -36,10 +36,10 @@ When it decides it can't attack, it goes into hunt mode.
 ---@param self entity
 ---@return nil
 function M.knight_attack(self)
+    local knight = require("game.knight")
+
     -- decide if now is a good swing time
     local len = (self.enemy.origin + self.enemy.view_ofs - (self.origin + self.view_ofs)):length()
-
-    local knight = require("game.knight")
     if len < 80 then
         knight.atk1(self)
     else
@@ -161,6 +161,8 @@ end
 ---@param self entity
 ---@return nil
 function M.melee(self)
+    local combat = require("game.combat")
+
     if not self.enemy then
         -- removed before stroke
         return
@@ -173,7 +175,7 @@ function M.melee(self)
     end
 
     local ldmg = (quake.random() + quake.random() + quake.random()) * 3
-    require("game.combat").damage(self.enemy, self, self, ldmg)
+    combat.damage(self.enemy, self, self, ldmg)
 end
 
 ---@param self entity

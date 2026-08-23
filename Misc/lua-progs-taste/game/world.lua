@@ -21,6 +21,7 @@
 ]]
 
 local quake = require("quake")
+local weapons = require("game.weapons")
 
 local M = {}
 local g = quake.globals
@@ -119,7 +120,7 @@ function M.worldspawn(self)
     -- the area based ambient sounds MUST be the first precache_sounds
     -- player precaches
     -- get weapon precaches
-    require("game.weapons").precache()
+    weapons.precache()
 
     -- sounds used from C physics code
     quake.precache_sound("demon/dland2.wav") -- landing thud

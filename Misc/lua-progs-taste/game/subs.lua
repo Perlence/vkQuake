@@ -303,13 +303,15 @@ end
 ---@param thinkst think_callback
 ---@return nil
 function M.check_refire(self, thinkst)
+    local ai = require("game.ai")
+
     if quake.cvar("skill") ~= 3 then
         return
     end
     if self.cnt == 1 then
         return
     end
-    if not require("game.ai").visible(self, self.enemy) then
+    if not ai.visible(self, self.enemy) then
         return
     end
     self.cnt = 1
