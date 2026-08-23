@@ -292,6 +292,10 @@ end
 ---@return nil
 train_next = function(self)
     local targ = quake.find(quake.world, "targetname", self.target)
+    if not targ then
+        quake.object_error(self, "train_next: no next target")
+        error("quake.object_error unexpectedly returned")
+    end
     self.target = targ.target
     if self.target == "" then
         quake.object_error(self, "train_next: no next target")
@@ -308,7 +312,7 @@ end
 ---@param self entity
 ---@return nil
 func_train_find = function(self)
-    local targ = quake.find(quake.world, "targetname", self.target)
+    local targ = assert(quake.find(quake.world, "targetname", self.target), "train has no initial target")
     self.target = targ.target
     quake.set_origin(self, targ.origin - self.mins)
     if self.targetname == "" then
