@@ -84,7 +84,7 @@ end
 ---@param self entity
 ---@param org vec3
 ---@param vec vec3
----@return nil
+---@return entity
 local function launch_laser(self, org, vec)
     if self.classname == "monster_enforcer" then
         quake.sound(self, CHAN_WEAPON, "enforcer/enfire.wav", 1, C.ATTN_NORM)
@@ -93,7 +93,6 @@ local function launch_laser(self, org, vec)
     local new_vec = vec:normalized()
 
     local newmis = quake.spawn()
-    quake.globals.newmis = newmis
     newmis.owner = self
     newmis.movetype = MOVETYPE_FLY
     newmis.solid = SOLID_BBOX
@@ -110,6 +109,7 @@ local function launch_laser(self, org, vec)
     newmis.nextthink = quake.time() + 5
     newmis.think = subs.remove
     newmis.touch = laser_touch
+    return newmis
 end
 
 ---@param self entity

@@ -594,10 +594,9 @@ local spike_touch, superspike_touch
 ---@param self entity
 ---@param org vec3
 ---@param dir vec3
----@return nil
+---@return entity
 function M.launch_spike(self, org, dir)
     local newmis = quake.spawn()
-    quake.globals.newmis = newmis
     newmis.owner = self
     newmis.movetype = MOVETYPE_FLYMISSILE
     newmis.solid = SOLID_BBOX
@@ -613,6 +612,7 @@ function M.launch_spike(self, org, dir)
     quake.set_origin(newmis, org)
 
     newmis.velocity = dir * 1000
+    return newmis
 end
 
 ---@param self entity
@@ -623,10 +623,10 @@ function M.fire_super_spikes(self)
     self.ammo_nails = self.ammo_nails - 2
     self.currentammo = self.ammo_nails
     local dir = quake.aim(self, 1000)
-    M.launch_spike(self, self.origin + quake.vec3(0, 0, 16), dir)
-    quake.globals.newmis.touch = superspike_touch
-    quake.set_model(quake.globals.newmis, "progs/s_spike.mdl")
-    quake.set_size(quake.globals.newmis, quake.vec3(0, 0, 0), quake.vec3(0, 0, 0))
+    local newmis = M.launch_spike(self, self.origin + quake.vec3(0, 0, 16), dir)
+    newmis.touch = superspike_touch
+    quake.set_model(newmis, "progs/s_spike.mdl")
+    quake.set_size(newmis, quake.vec3(0, 0, 0), quake.vec3(0, 0, 0))
     self.punchangle.x = -2
 end
 

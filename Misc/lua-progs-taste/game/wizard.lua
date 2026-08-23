@@ -142,8 +142,7 @@ local function wiz_fast_fire(self)
         local dst = self.enemy.origin - 13 * self.movedir
         local vec = (dst - self.origin):normalized()
         quake.sound(self, C.CHAN_WEAPON, "wizard/wattack.wav", 1, C.ATTN_NORM)
-        weapons.launch_spike(self, self.origin, vec)
-        local newmis = assert(quake.globals.newmis, "launch_spike did not set newmis")
+        local newmis = weapons.launch_spike(self, self.origin, vec)
         newmis.velocity = vec * 600
         newmis.owner = self.owner
         newmis.classname = "wizspike"

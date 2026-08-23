@@ -247,8 +247,7 @@ boss_missile = function(self, p)
 
     local vec = (d - org):normalized()
 
-    weapons.launch_spike(self, org, vec)
-    local newmis = assert(quake.globals.newmis, "launch_spike did not set newmis")
+    local newmis = weapons.launch_spike(self, org, vec)
     quake.set_model(newmis, "progs/lavaball.mdl")
     newmis.avelocity = quake.vec3(200, 100, 300)
     quake.set_size(newmis, quake.vec3(0, 0, 0), quake.vec3(0, 0, 0))

@@ -25,7 +25,6 @@
 ---@field movedist number
 ---@field multi_damage number
 ---@field multi_ent entity?
----@field newmis entity?
 ---@field nextmap string
 ---@field shub entity?
 ---@field sight_entity entity?

@@ -302,27 +302,29 @@ local SPAWNFLAG_SUPERSPIKE, SPAWNFLAG_LASER = 1, 2
 
 ---@param self entity
 ---@param _activator? entity
----@return nil
+---@return entity
 local function spikeshooter_use(self, _activator)
+    local missile
     if (self.spawnflags & SPAWNFLAG_LASER) ~= 0 then
         quake.sound(self, CHAN_VOICE, "enforcer/enfire.wav", 1, ATTN_NORM)
-        enforcer.launch_laser(self, self.origin, self.movedir)
+        missile = enforcer.launch_laser(self, self.origin, self.movedir)
     else
         quake.sound(self, CHAN_VOICE, "weapons/spike2.wav", 1, ATTN_NORM)
-        weapons.launch_spike(self, self.origin, self.movedir)
-        quake.globals.newmis.velocity = self.movedir * 500
+        missile = weapons.launch_spike(self, self.origin, self.movedir)
+        missile.velocity = self.movedir * 500
         if (self.spawnflags & SPAWNFLAG_SUPERSPIKE) ~= 0 then
-            quake.globals.newmis.touch = weapons.superspike_touch
+            missile.touch = weapons.superspike_touch
         end
     end
+    return missile
 end
 
 ---@param self entity
 ---@return nil
 local function shooter_think(self)
-    spikeshooter_use(self)
+    local missile = spikeshooter_use(self)
     self.nextthink = quake.time() + self.wait
-    quake.globals.newmis.velocity = self.movedir * 500
+    missile.velocity = self.movedir * 500
 end
 
 ---QUAKED trap_spikeshooter (0 .5 .8) (-8 -8 -8) (8 8 8) superspike laser
