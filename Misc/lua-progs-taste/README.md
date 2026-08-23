@@ -18,7 +18,7 @@ The `quake` module provides:
 
 The engine passes `self` and `other` to Lua callbacks rather than emulating their mutable QuakeC globals. Game code passes `activator` explicitly to use callbacks. Other game globals remain in `quake.globals`.
 
-`animation.frame()` expands to the same assignments as QuakeC's `=[frame, nexttime, nextthink] { code }` declaration. The next-think argument is resolved lazily to support forward references and cycles, and `nexttime` defaults to 0.1 seconds when omitted. Every original frame function is represented explicitly rather than generated as a sequence.
+`animation.counter()` assigns zero-based model frame numbers in the same order as QuakeC's `$frame` directives. `animation.frame()` expands to the same assignments as QuakeC's `=[frame, nexttime, nextthink] { code }` declaration. The next-think argument is resolved lazily to support forward references and cycles, and `nexttime` defaults to 0.1 seconds when omitted. Every original frame function is represented explicitly rather than generated as a sequence.
 
 ## Layout
 

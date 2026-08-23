@@ -25,21 +25,13 @@ typedef struct
 	int number;
 } lp_entity_t;
 
-typedef struct
-{
-	char (*names)[16];
-	int		 count;
-	qboolean loaded;
-} lp_frame_names_t;
-
-static lua_State	   *lp_state;
-static int				lp_spawns_ref = LUA_NOREF;
-static int				lp_entity_values_ref = LUA_NOREF;
-static int				lp_global_values_ref = LUA_NOREF;
-static int				lp_functions_ref = LUA_NOREF;
-static int				lp_function_names_ref = LUA_NOREF;
-static lp_frame_names_t lp_frame_names[MAX_MODELS];
-static qboolean			lp_active;
+static lua_State *lp_state;
+static int		  lp_spawns_ref = LUA_NOREF;
+static int		  lp_entity_values_ref = LUA_NOREF;
+static int		  lp_global_values_ref = LUA_NOREF;
+static int		  lp_functions_ref = LUA_NOREF;
+static int		  lp_function_names_ref = LUA_NOREF;
+static qboolean	  lp_active;
 
 static int	LP_EntityIndex (lua_State *L);
 static int	LP_EntityNewIndex (lua_State *L);
@@ -501,120 +493,6 @@ static int LP_EntityIndex (lua_State *L)
 	return 1;
 }
 
-static void LP_LoadFrameNames (int modelindex, qmodel_t *model)
-{
-	lp_frame_names_t *cache = &lp_frame_names[modelindex];
-	byte			 *data, *cursor;
-	mdl_t			 *header;
-	int				  numskins, skinwidth, skinheight, numverts, numtris, numframes;
-	int				  i;
-
-	cache->loaded = true;
-	data = COM_LoadFile (model->name, NULL);
-	if (!data)
-		return;
-	header = (mdl_t *)data;
-	if (LittleLong (header->ident) != IDPOLYHEADER || LittleLong (header->version) != ALIAS_VERSION)
-	{
-		Mem_Free (data);
-		return;
-	}
-
-	numskins = LittleLong (header->numskins);
-	skinwidth = LittleLong (header->skinwidth);
-	skinheight = LittleLong (header->skinheight);
-	numverts = LittleLong (header->numverts);
-	numtris = LittleLong (header->numtris);
-	numframes = LittleLong (header->numframes);
-	if (numskins < 0 || skinwidth < 1 || skinheight < 1 || numverts < 1 || numtris < 0 || numframes < 1 || numframes > MAXALIASFRAMES)
-	{
-		Mem_Free (data);
-		return;
-	}
-
-	cursor = data + sizeof (*header);
-	for (i = 0; i < numskins; ++i)
-	{
-		const int type = LittleLong (((daliasskintype_t *)cursor)->type);
-		cursor += sizeof (daliasskintype_t);
-		if (type == ALIAS_SKIN_SINGLE)
-			cursor += skinwidth * skinheight;
-		else
-		{
-			const int count = LittleLong (((daliasskingroup_t *)cursor)->numskins);
-			cursor += sizeof (daliasskingroup_t) + count * sizeof (daliasskininterval_t) + count * skinwidth * skinheight;
-		}
-	}
-	cursor += numverts * sizeof (stvert_t) + numtris * sizeof (dtriangle_t);
-
-	cache->names = Mem_Alloc (numframes * sizeof (*cache->names));
-	cache->count = numframes;
-	for (i = 0; i < numframes; ++i)
-	{
-		const int type = LittleLong (((daliasframetype_t *)cursor)->type);
-		cursor += sizeof (daliasframetype_t);
-		if (type == ALIAS_SINGLE)
-		{
-			daliasframe_t *frame = (daliasframe_t *)cursor;
-			memcpy (cache->names[i], frame->name, sizeof (cache->names[i]));
-			cache->names[i][sizeof (cache->names[i]) - 1] = '\0';
-			cursor = (byte *)(frame + 1) + numverts * sizeof (trivertx_t);
-		}
-		else
-		{
-			daliasgroup_t *group = (daliasgroup_t *)cursor;
-			const int	   count = LittleLong (group->numframes);
-			daliasframe_t *frame = (daliasframe_t *)((byte *)(group + 1) + count * sizeof (daliasinterval_t));
-			int			   j;
-			memcpy (cache->names[i], frame->name, sizeof (cache->names[i]));
-			cache->names[i][sizeof (cache->names[i]) - 1] = '\0';
-			for (j = 0; j < count; ++j)
-				frame = (daliasframe_t *)((byte *)(frame + 1) + numverts * sizeof (trivertx_t));
-			cursor = (byte *)frame;
-		}
-	}
-	Mem_Free (data);
-}
-
-static int LP_FrameForModel (int modelindex, const char *name)
-{
-	qmodel_t   *model = qcvm->GetModel (modelindex);
-	aliashdr_t *alias;
-	int			i;
-
-	if (!model || model->type != mod_alias || !(alias = Mod_Extradata (model)))
-		return -1;
-	for (i = 0; i < alias->numframes; ++i)
-		if (!strcmp (alias->frames[i].name, name))
-			return i;
-
-	/* Replacement MD5 animations have frame numbers but no MDL frame names. */
-	if (modelindex > 0 && modelindex < MAX_MODELS)
-	{
-		lp_frame_names_t *cache = &lp_frame_names[modelindex];
-		if (!cache->loaded)
-			LP_LoadFrameNames (modelindex, model);
-		for (i = 0; i < cache->count; ++i)
-			if (!strcmp (cache->names[i], name))
-				return i;
-	}
-	return -1;
-}
-
-static int LP_FrameForName (edict_t *entity, const char *name)
-{
-	int number = LP_FrameForModel (entity->v.modelindex, name);
-
-	/* Player animations continue while eyes.mdl or no model is displayed. */
-	if (number < 0 && !strcmp (PR_GetString (entity->v.classname), "player"))
-	{
-		ddef_t *modelindex_player = ED_FindGlobal ("modelindex_player");
-		if (modelindex_player)
-			number = LP_FrameForModel (qcvm->globals[modelindex_player->ofs], name);
-	}
-	return number;
-}
-
 static int LP_EntityNewIndex (lua_State *L)
 {
 	edict_t	   *entity = LP_CheckEntity (L, 1);
@@ -627,16 +505,7 @@ static int LP_EntityNewIndex (lua_State *L)
 		lua_setfield (L, -2, name);
 		return 0;
 	}
-	if (!strcmp (name, "frame") && lua_type (L, 3) == LUA_TSTRING)
-	{
-		const char *frame = lua_tostring (L, 3);
-		const int	number = LP_FrameForName (entity, frame);
-		if (number < 0)
-			return luaL_error (L, "model '%s' has no frame '%s'", PR_GetString (entity->v.model), frame);
-		((eval_t *)((float *)&entity->v + field->ofs))->_float = number;
-	}
-	else
-		LP_SetValue (L, 3, field->type, (eval_t *)((float *)&entity->v + field->ofs));
+	LP_SetValue (L, 3, field->type, (eval_t *)((float *)&entity->v + field->ofs));
 	return 0;
 }
 
@@ -1338,15 +1207,8 @@ qboolean LP_Init (void)
 
 void LP_Shutdown (void)
 {
-	int i;
 	if (lp_state)
 		lua_close (lp_state);
-	for (i = 0; i < MAX_MODELS; ++i)
-	{
-		if (lp_frame_names[i].names)
-			Mem_Free (lp_frame_names[i].names);
-		memset (&lp_frame_names[i], 0, sizeof (lp_frame_names[i]));
-	}
 	lp_state = NULL;
 	lp_spawns_ref = LUA_NOREF;
 	lp_entity_values_ref = LUA_NOREF;

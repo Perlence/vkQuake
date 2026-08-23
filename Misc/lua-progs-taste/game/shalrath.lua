@@ -32,6 +32,21 @@ local subs = require("game.subs")
 local weapons = require("game.weapons")
 
 local M = {}
+
+local count = animation.counter()
+local f = {}
+
+f.attack1, f.attack2, f.attack3, f.attack4, f.attack5, f.attack6,
+    f.attack7, f.attack8, f.attack9, f.attack10, f.attack11 = count(11)
+
+f.pain1, f.pain2, f.pain3, f.pain4, f.pain5 = count(5)
+
+f.death1, f.death2, f.death3, f.death4, f.death5, f.death6,
+    f.death7 = count(7)
+
+f.walk1, f.walk2, f.walk3, f.walk4, f.walk5, f.walk6,
+    f.walk7, f.walk8, f.walk9, f.walk10, f.walk11, f.walk12 = count(12)
+
 local ATTN_IDLE = 2
 local CHAN_WEAPON = 1
 local DAMAGE_YES = 1
@@ -50,87 +65,87 @@ SHAL-RATH (Vore)
 local shal_missile
 
 local shal_stand
-shal_stand = animation.frame("walk1", function() return shal_stand end, ai.stand)
+shal_stand = animation.frame(f.walk1, function() return shal_stand end, ai.stand)
 
 local shal_walk1, shal_walk2, shal_walk3, shal_walk4, shal_walk5, shal_walk6
 local shal_walk7, shal_walk8, shal_walk9, shal_walk10, shal_walk11, shal_walk12
 
-shal_walk1 = animation.frame("walk2", function() return shal_walk2 end, function(self)
+shal_walk1 = animation.frame(f.walk2, function() return shal_walk2 end, function(self)
     if quake.random() < 0.2 then
         quake.sound(self, C.CHAN_VOICE, "shalrath/idle.wav", 1, ATTN_IDLE)
     end
     ai.walk(self, 6)
 end)
-shal_walk2 = animation.frame("walk3", function() return shal_walk3 end, function(self) ai.walk(self, 4) end)
-shal_walk3 = animation.frame("walk4", function() return shal_walk4 end, function(self) ai.walk(self, 0) end)
-shal_walk4 = animation.frame("walk5", function() return shal_walk5 end, function(self) ai.walk(self, 0) end)
-shal_walk5 = animation.frame("walk6", function() return shal_walk6 end, function(self) ai.walk(self, 0) end)
-shal_walk6 = animation.frame("walk7", function() return shal_walk7 end, function(self) ai.walk(self, 0) end)
-shal_walk7 = animation.frame("walk8", function() return shal_walk8 end, function(self) ai.walk(self, 5) end)
-shal_walk8 = animation.frame("walk9", function() return shal_walk9 end, function(self) ai.walk(self, 6) end)
-shal_walk9 = animation.frame("walk10", function() return shal_walk10 end, function(self) ai.walk(self, 5) end)
-shal_walk10 = animation.frame("walk11", function() return shal_walk11 end, function(self) ai.walk(self, 0) end)
-shal_walk11 = animation.frame("walk12", function() return shal_walk12 end, function(self) ai.walk(self, 4) end)
-shal_walk12 = animation.frame("walk1", function() return shal_walk1 end, function(self) ai.walk(self, 5) end)
+shal_walk2 = animation.frame(f.walk3, function() return shal_walk3 end, function(self) ai.walk(self, 4) end)
+shal_walk3 = animation.frame(f.walk4, function() return shal_walk4 end, function(self) ai.walk(self, 0) end)
+shal_walk4 = animation.frame(f.walk5, function() return shal_walk5 end, function(self) ai.walk(self, 0) end)
+shal_walk5 = animation.frame(f.walk6, function() return shal_walk6 end, function(self) ai.walk(self, 0) end)
+shal_walk6 = animation.frame(f.walk7, function() return shal_walk7 end, function(self) ai.walk(self, 0) end)
+shal_walk7 = animation.frame(f.walk8, function() return shal_walk8 end, function(self) ai.walk(self, 5) end)
+shal_walk8 = animation.frame(f.walk9, function() return shal_walk9 end, function(self) ai.walk(self, 6) end)
+shal_walk9 = animation.frame(f.walk10, function() return shal_walk10 end, function(self) ai.walk(self, 5) end)
+shal_walk10 = animation.frame(f.walk11, function() return shal_walk11 end, function(self) ai.walk(self, 0) end)
+shal_walk11 = animation.frame(f.walk12, function() return shal_walk12 end, function(self) ai.walk(self, 4) end)
+shal_walk12 = animation.frame(f.walk1, function() return shal_walk1 end, function(self) ai.walk(self, 5) end)
 
 local shal_run1, shal_run2, shal_run3, shal_run4, shal_run5, shal_run6
 local shal_run7, shal_run8, shal_run9, shal_run10, shal_run11, shal_run12
 
-shal_run1 = animation.frame("walk2", function() return shal_run2 end, function(self)
+shal_run1 = animation.frame(f.walk2, function() return shal_run2 end, function(self)
     if quake.random() < 0.2 then
         quake.sound(self, C.CHAN_VOICE, "shalrath/idle.wav", 1, ATTN_IDLE)
     end
     ai.run(self, 6)
 end)
-shal_run2 = animation.frame("walk3", function() return shal_run3 end, function(self) ai.run(self, 4) end)
-shal_run3 = animation.frame("walk4", function() return shal_run4 end, function(self) ai.run(self, 0) end)
-shal_run4 = animation.frame("walk5", function() return shal_run5 end, function(self) ai.run(self, 0) end)
-shal_run5 = animation.frame("walk6", function() return shal_run6 end, function(self) ai.run(self, 0) end)
-shal_run6 = animation.frame("walk7", function() return shal_run7 end, function(self) ai.run(self, 0) end)
-shal_run7 = animation.frame("walk8", function() return shal_run8 end, function(self) ai.run(self, 5) end)
-shal_run8 = animation.frame("walk9", function() return shal_run9 end, function(self) ai.run(self, 6) end)
-shal_run9 = animation.frame("walk10", function() return shal_run10 end, function(self) ai.run(self, 5) end)
-shal_run10 = animation.frame("walk11", function() return shal_run11 end, function(self) ai.run(self, 0) end)
-shal_run11 = animation.frame("walk12", function() return shal_run12 end, function(self) ai.run(self, 4) end)
-shal_run12 = animation.frame("walk1", function() return shal_run1 end, function(self) ai.run(self, 5) end)
+shal_run2 = animation.frame(f.walk3, function() return shal_run3 end, function(self) ai.run(self, 4) end)
+shal_run3 = animation.frame(f.walk4, function() return shal_run4 end, function(self) ai.run(self, 0) end)
+shal_run4 = animation.frame(f.walk5, function() return shal_run5 end, function(self) ai.run(self, 0) end)
+shal_run5 = animation.frame(f.walk6, function() return shal_run6 end, function(self) ai.run(self, 0) end)
+shal_run6 = animation.frame(f.walk7, function() return shal_run7 end, function(self) ai.run(self, 0) end)
+shal_run7 = animation.frame(f.walk8, function() return shal_run8 end, function(self) ai.run(self, 5) end)
+shal_run8 = animation.frame(f.walk9, function() return shal_run9 end, function(self) ai.run(self, 6) end)
+shal_run9 = animation.frame(f.walk10, function() return shal_run10 end, function(self) ai.run(self, 5) end)
+shal_run10 = animation.frame(f.walk11, function() return shal_run11 end, function(self) ai.run(self, 0) end)
+shal_run11 = animation.frame(f.walk12, function() return shal_run12 end, function(self) ai.run(self, 4) end)
+shal_run12 = animation.frame(f.walk1, function() return shal_run1 end, function(self) ai.run(self, 5) end)
 
 local shal_missile
 local shal_attack1, shal_attack2, shal_attack3, shal_attack4, shal_attack5, shal_attack6
 local shal_attack7, shal_attack8, shal_attack9, shal_attack10, shal_attack11
 
-shal_attack1 = animation.frame("attack1", function() return shal_attack2 end, function(self)
+shal_attack1 = animation.frame(f.attack1, function() return shal_attack2 end, function(self)
     quake.sound(self, C.CHAN_VOICE, "shalrath/attack.wav", 1, C.ATTN_NORM)
     fight.face(self)
 end)
-shal_attack2 = animation.frame("attack2", function() return shal_attack3 end, fight.face)
-shal_attack3 = animation.frame("attack3", function() return shal_attack4 end, fight.face)
-shal_attack4 = animation.frame("attack4", function() return shal_attack5 end, fight.face)
-shal_attack5 = animation.frame("attack5", function() return shal_attack6 end, fight.face)
-shal_attack6 = animation.frame("attack6", function() return shal_attack7 end, fight.face)
-shal_attack7 = animation.frame("attack7", function() return shal_attack8 end, fight.face)
-shal_attack8 = animation.frame("attack8", function() return shal_attack9 end, fight.face)
-shal_attack9 = animation.frame("attack9", function() return shal_attack10 end, function(self) shal_missile(self) end)
-shal_attack10 = animation.frame("attack10", function() return shal_attack11 end, fight.face)
-shal_attack11 = animation.frame("attack11", function() return shal_run1 end)
+shal_attack2 = animation.frame(f.attack2, function() return shal_attack3 end, fight.face)
+shal_attack3 = animation.frame(f.attack3, function() return shal_attack4 end, fight.face)
+shal_attack4 = animation.frame(f.attack4, function() return shal_attack5 end, fight.face)
+shal_attack5 = animation.frame(f.attack5, function() return shal_attack6 end, fight.face)
+shal_attack6 = animation.frame(f.attack6, function() return shal_attack7 end, fight.face)
+shal_attack7 = animation.frame(f.attack7, function() return shal_attack8 end, fight.face)
+shal_attack8 = animation.frame(f.attack8, function() return shal_attack9 end, fight.face)
+shal_attack9 = animation.frame(f.attack9, function() return shal_attack10 end, function(self) shal_missile(self) end)
+shal_attack10 = animation.frame(f.attack10, function() return shal_attack11 end, fight.face)
+shal_attack11 = animation.frame(f.attack11, function() return shal_run1 end)
 
 local shal_pain1, shal_pain2, shal_pain3, shal_pain4, shal_pain5
 
-shal_pain1 = animation.frame("pain1", function() return shal_pain2 end)
-shal_pain2 = animation.frame("pain2", function() return shal_pain3 end)
-shal_pain3 = animation.frame("pain3", function() return shal_pain4 end)
-shal_pain4 = animation.frame("pain4", function() return shal_pain5 end)
-shal_pain5 = animation.frame("pain5", function() return shal_run1 end)
+shal_pain1 = animation.frame(f.pain1, function() return shal_pain2 end)
+shal_pain2 = animation.frame(f.pain2, function() return shal_pain3 end)
+shal_pain3 = animation.frame(f.pain3, function() return shal_pain4 end)
+shal_pain4 = animation.frame(f.pain4, function() return shal_pain5 end)
+shal_pain5 = animation.frame(f.pain5, function() return shal_run1 end)
 
 local shal_death1, shal_death2, shal_death3, shal_death4, shal_death5, shal_death6
 local shal_death7
 
-shal_death1 = animation.frame("death1", function() return shal_death2 end)
-shal_death2 = animation.frame("death2", function() return shal_death3 end)
-shal_death3 = animation.frame("death3", function() return shal_death4 end)
-shal_death4 = animation.frame("death4", function() return shal_death5 end)
-shal_death5 = animation.frame("death5", function() return shal_death6 end)
-shal_death6 = animation.frame("death6", function() return shal_death7 end)
-shal_death7 = animation.frame("death7", function() return shal_death7 end)
+shal_death1 = animation.frame(f.death1, function() return shal_death2 end)
+shal_death2 = animation.frame(f.death2, function() return shal_death3 end)
+shal_death3 = animation.frame(f.death3, function() return shal_death4 end)
+shal_death4 = animation.frame(f.death4, function() return shal_death5 end)
+shal_death5 = animation.frame(f.death5, function() return shal_death6 end)
+shal_death6 = animation.frame(f.death6, function() return shal_death7 end)
+shal_death7 = animation.frame(f.death7, function() return shal_death7 end)
 
 ---@param self entity
 ---@param _attacker entity

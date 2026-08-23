@@ -31,6 +31,26 @@ local weapons = require("game.weapons")
 
 local M = {}
 
+local count = animation.counter()
+local f = {}
+
+f.hover1, f.hover2, f.hover3, f.hover4, f.hover5, f.hover6,
+    f.hover7, f.hover8, f.hover9, f.hover10, f.hover11, f.hover12,
+    f.hover13, f.hover14, f.hover15 = count(15)
+
+f.fly1, f.fly2, f.fly3, f.fly4, f.fly5, f.fly6,
+    f.fly7, f.fly8, f.fly9, f.fly10, f.fly11, f.fly12,
+    f.fly13, f.fly14 = count(14)
+
+f.magatt1, f.magatt2, f.magatt3, f.magatt4, f.magatt5, f.magatt6,
+    f.magatt7, f.magatt8, f.magatt9, f.magatt10, f.magatt11, f.magatt12,
+    f.magatt13 = count(13)
+
+f.pain1, f.pain2, f.pain3, f.pain4 = count(4)
+
+f.death1, f.death2, f.death3, f.death4, f.death5, f.death6,
+    f.death7, f.death8 = count(8)
+
 --[[
 ==============================================================================
 
@@ -192,84 +212,84 @@ end
 
 local wiz_stand1, wiz_stand2, wiz_stand3, wiz_stand4, wiz_stand5, wiz_stand6, wiz_stand7, wiz_stand8
 
-wiz_stand1 = animation.frame("hover1", function() return wiz_stand2 end, ai.stand)
-wiz_stand2 = animation.frame("hover2", function() return wiz_stand3 end, ai.stand)
-wiz_stand3 = animation.frame("hover3", function() return wiz_stand4 end, ai.stand)
-wiz_stand4 = animation.frame("hover4", function() return wiz_stand5 end, ai.stand)
-wiz_stand5 = animation.frame("hover5", function() return wiz_stand6 end, ai.stand)
-wiz_stand6 = animation.frame("hover6", function() return wiz_stand7 end, ai.stand)
-wiz_stand7 = animation.frame("hover7", function() return wiz_stand8 end, ai.stand)
-wiz_stand8 = animation.frame("hover8", function() return wiz_stand1 end, ai.stand)
+wiz_stand1 = animation.frame(f.hover1, function() return wiz_stand2 end, ai.stand)
+wiz_stand2 = animation.frame(f.hover2, function() return wiz_stand3 end, ai.stand)
+wiz_stand3 = animation.frame(f.hover3, function() return wiz_stand4 end, ai.stand)
+wiz_stand4 = animation.frame(f.hover4, function() return wiz_stand5 end, ai.stand)
+wiz_stand5 = animation.frame(f.hover5, function() return wiz_stand6 end, ai.stand)
+wiz_stand6 = animation.frame(f.hover6, function() return wiz_stand7 end, ai.stand)
+wiz_stand7 = animation.frame(f.hover7, function() return wiz_stand8 end, ai.stand)
+wiz_stand8 = animation.frame(f.hover8, function() return wiz_stand1 end, ai.stand)
 
 local wiz_walk1, wiz_walk2, wiz_walk3, wiz_walk4, wiz_walk5, wiz_walk6, wiz_walk7, wiz_walk8
 
-wiz_walk1 = animation.frame("hover1", function() return wiz_walk2 end, function(self) ai.walk(self, 8); wiz_idle_sound(self) end)
-wiz_walk2 = animation.frame("hover2", function() return wiz_walk3 end, function(self) ai.walk(self, 8) end)
-wiz_walk3 = animation.frame("hover3", function() return wiz_walk4 end, function(self) ai.walk(self, 8) end)
-wiz_walk4 = animation.frame("hover4", function() return wiz_walk5 end, function(self) ai.walk(self, 8) end)
-wiz_walk5 = animation.frame("hover5", function() return wiz_walk6 end, function(self) ai.walk(self, 8) end)
-wiz_walk6 = animation.frame("hover6", function() return wiz_walk7 end, function(self) ai.walk(self, 8) end)
-wiz_walk7 = animation.frame("hover7", function() return wiz_walk8 end, function(self) ai.walk(self, 8) end)
-wiz_walk8 = animation.frame("hover8", function() return wiz_walk1 end, function(self) ai.walk(self, 8) end)
+wiz_walk1 = animation.frame(f.hover1, function() return wiz_walk2 end, function(self) ai.walk(self, 8); wiz_idle_sound(self) end)
+wiz_walk2 = animation.frame(f.hover2, function() return wiz_walk3 end, function(self) ai.walk(self, 8) end)
+wiz_walk3 = animation.frame(f.hover3, function() return wiz_walk4 end, function(self) ai.walk(self, 8) end)
+wiz_walk4 = animation.frame(f.hover4, function() return wiz_walk5 end, function(self) ai.walk(self, 8) end)
+wiz_walk5 = animation.frame(f.hover5, function() return wiz_walk6 end, function(self) ai.walk(self, 8) end)
+wiz_walk6 = animation.frame(f.hover6, function() return wiz_walk7 end, function(self) ai.walk(self, 8) end)
+wiz_walk7 = animation.frame(f.hover7, function() return wiz_walk8 end, function(self) ai.walk(self, 8) end)
+wiz_walk8 = animation.frame(f.hover8, function() return wiz_walk1 end, function(self) ai.walk(self, 8) end)
 
 local wiz_side2, wiz_side3, wiz_side4, wiz_side5, wiz_side6, wiz_side7, wiz_side8
 
-wiz_side1 = animation.frame("hover1", function() return wiz_side2 end, function(self) ai.run(self, 8); wiz_idle_sound(self) end)
-wiz_side2 = animation.frame("hover2", function() return wiz_side3 end, function(self) ai.run(self, 8) end)
-wiz_side3 = animation.frame("hover3", function() return wiz_side4 end, function(self) ai.run(self, 8) end)
-wiz_side4 = animation.frame("hover4", function() return wiz_side5 end, function(self) ai.run(self, 8) end)
-wiz_side5 = animation.frame("hover5", function() return wiz_side6 end, function(self) ai.run(self, 8) end)
-wiz_side6 = animation.frame("hover6", function() return wiz_side7 end, function(self) ai.run(self, 8) end)
-wiz_side7 = animation.frame("hover7", function() return wiz_side8 end, function(self) ai.run(self, 8) end)
-wiz_side8 = animation.frame("hover8", function() return wiz_side1 end, function(self) ai.run(self, 8) end)
+wiz_side1 = animation.frame(f.hover1, function() return wiz_side2 end, function(self) ai.run(self, 8); wiz_idle_sound(self) end)
+wiz_side2 = animation.frame(f.hover2, function() return wiz_side3 end, function(self) ai.run(self, 8) end)
+wiz_side3 = animation.frame(f.hover3, function() return wiz_side4 end, function(self) ai.run(self, 8) end)
+wiz_side4 = animation.frame(f.hover4, function() return wiz_side5 end, function(self) ai.run(self, 8) end)
+wiz_side5 = animation.frame(f.hover5, function() return wiz_side6 end, function(self) ai.run(self, 8) end)
+wiz_side6 = animation.frame(f.hover6, function() return wiz_side7 end, function(self) ai.run(self, 8) end)
+wiz_side7 = animation.frame(f.hover7, function() return wiz_side8 end, function(self) ai.run(self, 8) end)
+wiz_side8 = animation.frame(f.hover8, function() return wiz_side1 end, function(self) ai.run(self, 8) end)
 
 local wiz_run2, wiz_run3, wiz_run4, wiz_run5, wiz_run6, wiz_run7, wiz_run8, wiz_run9, wiz_run10, wiz_run11, wiz_run12, wiz_run13, wiz_run14
 
-wiz_run1 = animation.frame("fly1", function() return wiz_run2 end, function(self) ai.run(self, 16); wiz_idle_sound(self) end)
-wiz_run2 = animation.frame("fly2", function() return wiz_run3 end, function(self) ai.run(self, 16) end)
-wiz_run3 = animation.frame("fly3", function() return wiz_run4 end, function(self) ai.run(self, 16) end)
-wiz_run4 = animation.frame("fly4", function() return wiz_run5 end, function(self) ai.run(self, 16) end)
-wiz_run5 = animation.frame("fly5", function() return wiz_run6 end, function(self) ai.run(self, 16) end)
-wiz_run6 = animation.frame("fly6", function() return wiz_run7 end, function(self) ai.run(self, 16) end)
-wiz_run7 = animation.frame("fly7", function() return wiz_run8 end, function(self) ai.run(self, 16) end)
-wiz_run8 = animation.frame("fly8", function() return wiz_run9 end, function(self) ai.run(self, 16) end)
-wiz_run9 = animation.frame("fly9", function() return wiz_run10 end, function(self) ai.run(self, 16) end)
-wiz_run10 = animation.frame("fly10", function() return wiz_run11 end, function(self) ai.run(self, 16) end)
-wiz_run11 = animation.frame("fly11", function() return wiz_run12 end, function(self) ai.run(self, 16) end)
-wiz_run12 = animation.frame("fly12", function() return wiz_run13 end, function(self) ai.run(self, 16) end)
-wiz_run13 = animation.frame("fly13", function() return wiz_run14 end, function(self) ai.run(self, 16) end)
-wiz_run14 = animation.frame("fly14", function() return wiz_run1 end, function(self) ai.run(self, 16) end)
+wiz_run1 = animation.frame(f.fly1, function() return wiz_run2 end, function(self) ai.run(self, 16); wiz_idle_sound(self) end)
+wiz_run2 = animation.frame(f.fly2, function() return wiz_run3 end, function(self) ai.run(self, 16) end)
+wiz_run3 = animation.frame(f.fly3, function() return wiz_run4 end, function(self) ai.run(self, 16) end)
+wiz_run4 = animation.frame(f.fly4, function() return wiz_run5 end, function(self) ai.run(self, 16) end)
+wiz_run5 = animation.frame(f.fly5, function() return wiz_run6 end, function(self) ai.run(self, 16) end)
+wiz_run6 = animation.frame(f.fly6, function() return wiz_run7 end, function(self) ai.run(self, 16) end)
+wiz_run7 = animation.frame(f.fly7, function() return wiz_run8 end, function(self) ai.run(self, 16) end)
+wiz_run8 = animation.frame(f.fly8, function() return wiz_run9 end, function(self) ai.run(self, 16) end)
+wiz_run9 = animation.frame(f.fly9, function() return wiz_run10 end, function(self) ai.run(self, 16) end)
+wiz_run10 = animation.frame(f.fly10, function() return wiz_run11 end, function(self) ai.run(self, 16) end)
+wiz_run11 = animation.frame(f.fly11, function() return wiz_run12 end, function(self) ai.run(self, 16) end)
+wiz_run12 = animation.frame(f.fly12, function() return wiz_run13 end, function(self) ai.run(self, 16) end)
+wiz_run13 = animation.frame(f.fly13, function() return wiz_run14 end, function(self) ai.run(self, 16) end)
+wiz_run14 = animation.frame(f.fly14, function() return wiz_run1 end, function(self) ai.run(self, 16) end)
 
 local wiz_fast1, wiz_fast2, wiz_fast3, wiz_fast4, wiz_fast5, wiz_fast6, wiz_fast7, wiz_fast8, wiz_fast9, wiz_fast10
 
-wiz_fast1 = animation.frame("magatt1", function() return wiz_fast2 end, function(self) fight.face(self); wiz_start_fast(self) end)
-wiz_fast2 = animation.frame("magatt2", function() return wiz_fast3 end, function(self) fight.face(self) end)
-wiz_fast3 = animation.frame("magatt3", function() return wiz_fast4 end, function(self) fight.face(self) end)
-wiz_fast4 = animation.frame("magatt4", function() return wiz_fast5 end, function(self) fight.face(self) end)
-wiz_fast5 = animation.frame("magatt5", function() return wiz_fast6 end, function(self) fight.face(self) end)
-wiz_fast6 = animation.frame("magatt6", function() return wiz_fast7 end, function(self) fight.face(self) end)
-wiz_fast7 = animation.frame("magatt5", function() return wiz_fast8 end, function(self) fight.face(self) end)
-wiz_fast8 = animation.frame("magatt4", function() return wiz_fast9 end, function(self) fight.face(self) end)
-wiz_fast9 = animation.frame("magatt3", function() return wiz_fast10 end, function(self) fight.face(self) end)
-wiz_fast10 = animation.frame("magatt2", function() return wiz_run1 end, function(self) fight.face(self); subs.attack_finished(self, 2); wizard_attack_finished(self) end)
+wiz_fast1 = animation.frame(f.magatt1, function() return wiz_fast2 end, function(self) fight.face(self); wiz_start_fast(self) end)
+wiz_fast2 = animation.frame(f.magatt2, function() return wiz_fast3 end, function(self) fight.face(self) end)
+wiz_fast3 = animation.frame(f.magatt3, function() return wiz_fast4 end, function(self) fight.face(self) end)
+wiz_fast4 = animation.frame(f.magatt4, function() return wiz_fast5 end, function(self) fight.face(self) end)
+wiz_fast5 = animation.frame(f.magatt5, function() return wiz_fast6 end, function(self) fight.face(self) end)
+wiz_fast6 = animation.frame(f.magatt6, function() return wiz_fast7 end, function(self) fight.face(self) end)
+wiz_fast7 = animation.frame(f.magatt5, function() return wiz_fast8 end, function(self) fight.face(self) end)
+wiz_fast8 = animation.frame(f.magatt4, function() return wiz_fast9 end, function(self) fight.face(self) end)
+wiz_fast9 = animation.frame(f.magatt3, function() return wiz_fast10 end, function(self) fight.face(self) end)
+wiz_fast10 = animation.frame(f.magatt2, function() return wiz_run1 end, function(self) fight.face(self); subs.attack_finished(self, 2); wizard_attack_finished(self) end)
 
 local wiz_pain1, wiz_pain2, wiz_pain3, wiz_pain4
 
-wiz_pain1 = animation.frame("pain1", function() return wiz_pain2 end)
-wiz_pain2 = animation.frame("pain2", function() return wiz_pain3 end)
-wiz_pain3 = animation.frame("pain3", function() return wiz_pain4 end)
-wiz_pain4 = animation.frame("pain4", function() return wiz_run1 end)
+wiz_pain1 = animation.frame(f.pain1, function() return wiz_pain2 end)
+wiz_pain2 = animation.frame(f.pain2, function() return wiz_pain3 end)
+wiz_pain3 = animation.frame(f.pain3, function() return wiz_pain4 end)
+wiz_pain4 = animation.frame(f.pain4, function() return wiz_run1 end)
 
 local wiz_death1, wiz_death2, wiz_death3, wiz_death4, wiz_death5, wiz_death6, wiz_death7, wiz_death8
 
-wiz_death1 = animation.frame("death1", function() return wiz_death2 end, function(self) self.velocity = quake.vec3(-200 + 400 * quake.random(), -200 + 400 * quake.random(), 100 + 100 * quake.random()); self.flags = self.flags - (self.flags & C.FL_ONGROUND); quake.sound(self, C.CHAN_VOICE, "wizard/wdeath.wav", 1, C.ATTN_NORM) end)
-wiz_death2 = animation.frame("death2", function() return wiz_death3 end)
-wiz_death3 = animation.frame("death3", function() return wiz_death4 end, function(self) self.solid = C.SOLID_NOT end)
-wiz_death4 = animation.frame("death4", function() return wiz_death5 end)
-wiz_death5 = animation.frame("death5", function() return wiz_death6 end)
-wiz_death6 = animation.frame("death6", function() return wiz_death7 end)
-wiz_death7 = animation.frame("death7", function() return wiz_death8 end)
-wiz_death8 = animation.frame("death8", function() return wiz_death8 end)
+wiz_death1 = animation.frame(f.death1, function() return wiz_death2 end, function(self) self.velocity = quake.vec3(-200 + 400 * quake.random(), -200 + 400 * quake.random(), 100 + 100 * quake.random()); self.flags = self.flags - (self.flags & C.FL_ONGROUND); quake.sound(self, C.CHAN_VOICE, "wizard/wdeath.wav", 1, C.ATTN_NORM) end)
+wiz_death2 = animation.frame(f.death2, function() return wiz_death3 end)
+wiz_death3 = animation.frame(f.death3, function() return wiz_death4 end, function(self) self.solid = C.SOLID_NOT end)
+wiz_death4 = animation.frame(f.death4, function() return wiz_death5 end)
+wiz_death5 = animation.frame(f.death5, function() return wiz_death6 end)
+wiz_death6 = animation.frame(f.death6, function() return wiz_death7 end)
+wiz_death7 = animation.frame(f.death7, function() return wiz_death8 end)
+wiz_death8 = animation.frame(f.death8, function() return wiz_death8 end)
 
 ---@param self entity
 ---@return nil

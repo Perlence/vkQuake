@@ -31,6 +31,57 @@ local subs = require("game.subs")
 local weapons = require("game.weapons")
 
 local M = {}
+
+local count = animation.counter()
+local f = {}
+
+f.stand1, f.stand2, f.stand3, f.stand4, f.stand5, f.stand6,
+    f.stand7, f.stand8, f.stand9 = count(9)
+
+f.walk1, f.walk2, f.walk3, f.walk4, f.walk5, f.walk6,
+    f.walk7, f.walk8, f.walk9, f.walk10, f.walk11, f.walk12,
+    f.walk13, f.walk14, f.walk15, f.walk16, f.walk17, f.walk18,
+    f.walk19, f.walk20 = count(20)
+
+f.run1, f.run2, f.run3, f.run4, f.run5, f.run6,
+    f.run7, f.run8 = count(8)
+
+f.pain1, f.pain2, f.pain3, f.pain4, f.pain5 = count(5)
+
+f.death1, f.death2, f.death3, f.death4, f.death5, f.death6,
+    f.death7, f.death8, f.death9, f.death10, f.death11, f.death12 = count(12)
+
+f.deathb1, f.deathb2, f.deathb3, f.deathb4, f.deathb5, f.deathb6,
+    f.deathb7, f.deathb8, f.deathb9 = count(9)
+
+f.char_a1, f.char_a2, f.char_a3, f.char_a4, f.char_a5, f.char_a6,
+    f.char_a7, f.char_a8, f.char_a9, f.char_a10, f.char_a11, f.char_a12,
+    f.char_a13, f.char_a14, f.char_a15, f.char_a16 = count(16)
+
+f.magica1, f.magica2, f.magica3, f.magica4, f.magica5, f.magica6,
+    f.magica7, f.magica8, f.magica9, f.magica10, f.magica11, f.magica12,
+    f.magica13, f.magica14 = count(14)
+
+f.magicb1, f.magicb2, f.magicb3, f.magicb4, f.magicb5, f.magicb6,
+    f.magicb7, f.magicb8, f.magicb9, f.magicb10, f.magicb11, f.magicb12,
+    f.magicb13 = count(13)
+
+f.char_b1, f.char_b2, f.char_b3, f.char_b4, f.char_b5, f.char_b6 = count(6)
+
+f.slice1, f.slice2, f.slice3, f.slice4, f.slice5, f.slice6,
+    f.slice7, f.slice8, f.slice9, f.slice10 = count(10)
+
+f.smash1, f.smash2, f.smash3, f.smash4, f.smash5, f.smash6,
+    f.smash7, f.smash8, f.smash9, f.smash10, f.smash11 = count(11)
+
+f.w_attack1, f.w_attack2, f.w_attack3, f.w_attack4, f.w_attack5, f.w_attack6,
+    f.w_attack7, f.w_attack8, f.w_attack9, f.w_attack10, f.w_attack11, f.w_attack12,
+    f.w_attack13, f.w_attack14, f.w_attack15, f.w_attack16, f.w_attack17, f.w_attack18,
+    f.w_attack19, f.w_attack20, f.w_attack21, f.w_attack22 = count(22)
+
+f.magicc1, f.magicc2, f.magicc3, f.magicc4, f.magicc5, f.magicc6,
+    f.magicc7, f.magicc8, f.magicc9, f.magicc10, f.magicc11 = count(11)
+
 local CHAN_WEAPON = 1
 
 --[[
@@ -112,15 +163,15 @@ end
 local hknight_stand1, hknight_stand2, hknight_stand3, hknight_stand4, hknight_stand5, hknight_stand6
 local hknight_stand7, hknight_stand8, hknight_stand9
 
-hknight_stand1 = animation.frame("stand1", function() return hknight_stand2 end, ai.stand)
-hknight_stand2 = animation.frame("stand2", function() return hknight_stand3 end, ai.stand)
-hknight_stand3 = animation.frame("stand3", function() return hknight_stand4 end, ai.stand)
-hknight_stand4 = animation.frame("stand4", function() return hknight_stand5 end, ai.stand)
-hknight_stand5 = animation.frame("stand5", function() return hknight_stand6 end, ai.stand)
-hknight_stand6 = animation.frame("stand6", function() return hknight_stand7 end, ai.stand)
-hknight_stand7 = animation.frame("stand7", function() return hknight_stand8 end, ai.stand)
-hknight_stand8 = animation.frame("stand8", function() return hknight_stand9 end, ai.stand)
-hknight_stand9 = animation.frame("stand9", function() return hknight_stand1 end, ai.stand)
+hknight_stand1 = animation.frame(f.stand1, function() return hknight_stand2 end, ai.stand)
+hknight_stand2 = animation.frame(f.stand2, function() return hknight_stand3 end, ai.stand)
+hknight_stand3 = animation.frame(f.stand3, function() return hknight_stand4 end, ai.stand)
+hknight_stand4 = animation.frame(f.stand4, function() return hknight_stand5 end, ai.stand)
+hknight_stand5 = animation.frame(f.stand5, function() return hknight_stand6 end, ai.stand)
+hknight_stand6 = animation.frame(f.stand6, function() return hknight_stand7 end, ai.stand)
+hknight_stand7 = animation.frame(f.stand7, function() return hknight_stand8 end, ai.stand)
+hknight_stand8 = animation.frame(f.stand8, function() return hknight_stand9 end, ai.stand)
+hknight_stand9 = animation.frame(f.stand9, function() return hknight_stand1 end, ai.stand)
 
 --===========================================================================
 
@@ -129,91 +180,91 @@ local hknight_walk7, hknight_walk8, hknight_walk9, hknight_walk10, hknight_walk1
 local hknight_walk13, hknight_walk14, hknight_walk15, hknight_walk16, hknight_walk17, hknight_walk18
 local hknight_walk19, hknight_walk20
 
-hknight_walk1 = animation.frame("walk1", function() return hknight_walk2 end, function(self)
+hknight_walk1 = animation.frame(f.walk1, function() return hknight_walk2 end, function(self)
     hk_idle_sound(self)
     ai.walk(self, 2)
 end)
-hknight_walk2 = animation.frame("walk2", function() return hknight_walk3 end, function(self) ai.walk(self, 5) end)
-hknight_walk3 = animation.frame("walk3", function() return hknight_walk4 end, function(self) ai.walk(self, 5) end)
-hknight_walk4 = animation.frame("walk4", function() return hknight_walk5 end, function(self) ai.walk(self, 4) end)
-hknight_walk5 = animation.frame("walk5", function() return hknight_walk6 end, function(self) ai.walk(self, 4) end)
-hknight_walk6 = animation.frame("walk6", function() return hknight_walk7 end, function(self) ai.walk(self, 2) end)
-hknight_walk7 = animation.frame("walk7", function() return hknight_walk8 end, function(self) ai.walk(self, 2) end)
-hknight_walk8 = animation.frame("walk8", function() return hknight_walk9 end, function(self) ai.walk(self, 3) end)
-hknight_walk9 = animation.frame("walk9", function() return hknight_walk10 end, function(self) ai.walk(self, 3) end)
-hknight_walk10 = animation.frame("walk10", function() return hknight_walk11 end, function(self) ai.walk(self, 4) end)
-hknight_walk11 = animation.frame("walk11", function() return hknight_walk12 end, function(self) ai.walk(self, 3) end)
-hknight_walk12 = animation.frame("walk12", function() return hknight_walk13 end, function(self) ai.walk(self, 4) end)
-hknight_walk13 = animation.frame("walk13", function() return hknight_walk14 end, function(self) ai.walk(self, 6) end)
-hknight_walk14 = animation.frame("walk14", function() return hknight_walk15 end, function(self) ai.walk(self, 2) end)
-hknight_walk15 = animation.frame("walk15", function() return hknight_walk16 end, function(self) ai.walk(self, 2) end)
-hknight_walk16 = animation.frame("walk16", function() return hknight_walk17 end, function(self) ai.walk(self, 4) end)
-hknight_walk17 = animation.frame("walk17", function() return hknight_walk18 end, function(self) ai.walk(self, 3) end)
-hknight_walk18 = animation.frame("walk18", function() return hknight_walk19 end, function(self) ai.walk(self, 3) end)
-hknight_walk19 = animation.frame("walk19", function() return hknight_walk20 end, function(self) ai.walk(self, 3) end)
-hknight_walk20 = animation.frame("walk20", function() return hknight_walk1 end, function(self) ai.walk(self, 2) end)
+hknight_walk2 = animation.frame(f.walk2, function() return hknight_walk3 end, function(self) ai.walk(self, 5) end)
+hknight_walk3 = animation.frame(f.walk3, function() return hknight_walk4 end, function(self) ai.walk(self, 5) end)
+hknight_walk4 = animation.frame(f.walk4, function() return hknight_walk5 end, function(self) ai.walk(self, 4) end)
+hknight_walk5 = animation.frame(f.walk5, function() return hknight_walk6 end, function(self) ai.walk(self, 4) end)
+hknight_walk6 = animation.frame(f.walk6, function() return hknight_walk7 end, function(self) ai.walk(self, 2) end)
+hknight_walk7 = animation.frame(f.walk7, function() return hknight_walk8 end, function(self) ai.walk(self, 2) end)
+hknight_walk8 = animation.frame(f.walk8, function() return hknight_walk9 end, function(self) ai.walk(self, 3) end)
+hknight_walk9 = animation.frame(f.walk9, function() return hknight_walk10 end, function(self) ai.walk(self, 3) end)
+hknight_walk10 = animation.frame(f.walk10, function() return hknight_walk11 end, function(self) ai.walk(self, 4) end)
+hknight_walk11 = animation.frame(f.walk11, function() return hknight_walk12 end, function(self) ai.walk(self, 3) end)
+hknight_walk12 = animation.frame(f.walk12, function() return hknight_walk13 end, function(self) ai.walk(self, 4) end)
+hknight_walk13 = animation.frame(f.walk13, function() return hknight_walk14 end, function(self) ai.walk(self, 6) end)
+hknight_walk14 = animation.frame(f.walk14, function() return hknight_walk15 end, function(self) ai.walk(self, 2) end)
+hknight_walk15 = animation.frame(f.walk15, function() return hknight_walk16 end, function(self) ai.walk(self, 2) end)
+hknight_walk16 = animation.frame(f.walk16, function() return hknight_walk17 end, function(self) ai.walk(self, 4) end)
+hknight_walk17 = animation.frame(f.walk17, function() return hknight_walk18 end, function(self) ai.walk(self, 3) end)
+hknight_walk18 = animation.frame(f.walk18, function() return hknight_walk19 end, function(self) ai.walk(self, 3) end)
+hknight_walk19 = animation.frame(f.walk19, function() return hknight_walk20 end, function(self) ai.walk(self, 3) end)
+hknight_walk20 = animation.frame(f.walk20, function() return hknight_walk1 end, function(self) ai.walk(self, 2) end)
 
 --===========================================================================
 
 local hknight_run2, hknight_run3, hknight_run4, hknight_run5, hknight_run6, hknight_run7
 local hknight_run8
 
-hknight_run1 = animation.frame("run1", function() return hknight_run2 end, function(self)
+hknight_run1 = animation.frame(f.run1, function() return hknight_run2 end, function(self)
     hk_idle_sound(self)
     ai.run(self, 20)
     check_for_charge(self)
 end)
-hknight_run2 = animation.frame("run2", function() return hknight_run3 end, function(self) ai.run(self, 25) end)
-hknight_run3 = animation.frame("run3", function() return hknight_run4 end, function(self) ai.run(self, 18) end)
-hknight_run4 = animation.frame("run4", function() return hknight_run5 end, function(self) ai.run(self, 16) end)
-hknight_run5 = animation.frame("run5", function() return hknight_run6 end, function(self) ai.run(self, 14) end)
-hknight_run6 = animation.frame("run6", function() return hknight_run7 end, function(self) ai.run(self, 25) end)
-hknight_run7 = animation.frame("run7", function() return hknight_run8 end, function(self) ai.run(self, 21) end)
-hknight_run8 = animation.frame("run8", function() return hknight_run1 end, function(self) ai.run(self, 13) end)
+hknight_run2 = animation.frame(f.run2, function() return hknight_run3 end, function(self) ai.run(self, 25) end)
+hknight_run3 = animation.frame(f.run3, function() return hknight_run4 end, function(self) ai.run(self, 18) end)
+hknight_run4 = animation.frame(f.run4, function() return hknight_run5 end, function(self) ai.run(self, 16) end)
+hknight_run5 = animation.frame(f.run5, function() return hknight_run6 end, function(self) ai.run(self, 14) end)
+hknight_run6 = animation.frame(f.run6, function() return hknight_run7 end, function(self) ai.run(self, 25) end)
+hknight_run7 = animation.frame(f.run7, function() return hknight_run8 end, function(self) ai.run(self, 21) end)
+hknight_run8 = animation.frame(f.run8, function() return hknight_run1 end, function(self) ai.run(self, 13) end)
 
 --============================================================================
 
 local hknight_pain1, hknight_pain2, hknight_pain3, hknight_pain4, hknight_pain5
 
-hknight_pain1 = animation.frame("pain1", function() return hknight_pain2 end, function(self) quake.sound(self, C.CHAN_VOICE, "hknight/pain1.wav", 1, C.ATTN_NORM) end)
-hknight_pain2 = animation.frame("pain2", function() return hknight_pain3 end)
-hknight_pain3 = animation.frame("pain3", function() return hknight_pain4 end)
-hknight_pain4 = animation.frame("pain4", function() return hknight_pain5 end)
-hknight_pain5 = animation.frame("pain5", function() return hknight_run1 end)
+hknight_pain1 = animation.frame(f.pain1, function() return hknight_pain2 end, function(self) quake.sound(self, C.CHAN_VOICE, "hknight/pain1.wav", 1, C.ATTN_NORM) end)
+hknight_pain2 = animation.frame(f.pain2, function() return hknight_pain3 end)
+hknight_pain3 = animation.frame(f.pain3, function() return hknight_pain4 end)
+hknight_pain4 = animation.frame(f.pain4, function() return hknight_pain5 end)
+hknight_pain5 = animation.frame(f.pain5, function() return hknight_run1 end)
 
 --============================================================================
 
 local hknight_die1, hknight_die2, hknight_die3, hknight_die4, hknight_die5, hknight_die6
 local hknight_die7, hknight_die8, hknight_die9, hknight_die10, hknight_die11, hknight_die12
 
-hknight_die1 = animation.frame("death1", function() return hknight_die2 end, function(self) quake.walk_move(self, self.angles.y, 10) end)
-hknight_die2 = animation.frame("death2", function() return hknight_die3 end, function(self) quake.walk_move(self, self.angles.y, 8) end)
-hknight_die3 = animation.frame("death3", function() return hknight_die4 end, function(self)
+hknight_die1 = animation.frame(f.death1, function() return hknight_die2 end, function(self) quake.walk_move(self, self.angles.y, 10) end)
+hknight_die2 = animation.frame(f.death2, function() return hknight_die3 end, function(self) quake.walk_move(self, self.angles.y, 8) end)
+hknight_die3 = animation.frame(f.death3, function() return hknight_die4 end, function(self)
     self.solid = C.SOLID_NOT
     quake.walk_move(self, self.angles.y, 7)
 end)
-hknight_die4 = animation.frame("death4", function() return hknight_die5 end)
-hknight_die5 = animation.frame("death5", function() return hknight_die6 end)
-hknight_die6 = animation.frame("death6", function() return hknight_die7 end)
-hknight_die7 = animation.frame("death7", function() return hknight_die8 end)
-hknight_die8 = animation.frame("death8", function() return hknight_die9 end, function(self) quake.walk_move(self, self.angles.y, 10) end)
-hknight_die9 = animation.frame("death9", function() return hknight_die10 end, function(self) quake.walk_move(self, self.angles.y, 11) end)
-hknight_die10 = animation.frame("death10", function() return hknight_die11 end)
-hknight_die11 = animation.frame("death11", function() return hknight_die12 end)
-hknight_die12 = animation.frame("death12", function() return hknight_die12 end)
+hknight_die4 = animation.frame(f.death4, function() return hknight_die5 end)
+hknight_die5 = animation.frame(f.death5, function() return hknight_die6 end)
+hknight_die6 = animation.frame(f.death6, function() return hknight_die7 end)
+hknight_die7 = animation.frame(f.death7, function() return hknight_die8 end)
+hknight_die8 = animation.frame(f.death8, function() return hknight_die9 end, function(self) quake.walk_move(self, self.angles.y, 10) end)
+hknight_die9 = animation.frame(f.death9, function() return hknight_die10 end, function(self) quake.walk_move(self, self.angles.y, 11) end)
+hknight_die10 = animation.frame(f.death10, function() return hknight_die11 end)
+hknight_die11 = animation.frame(f.death11, function() return hknight_die12 end)
+hknight_die12 = animation.frame(f.death12, function() return hknight_die12 end)
 
 local hknight_dieb1, hknight_dieb2, hknight_dieb3, hknight_dieb4, hknight_dieb5, hknight_dieb6
 local hknight_dieb7, hknight_dieb8, hknight_dieb9
 
-hknight_dieb1 = animation.frame("deathb1", function() return hknight_dieb2 end)
-hknight_dieb2 = animation.frame("deathb2", function() return hknight_dieb3 end)
-hknight_dieb3 = animation.frame("deathb3", function() return hknight_dieb4 end, function(self) self.solid = C.SOLID_NOT end)
-hknight_dieb4 = animation.frame("deathb4", function() return hknight_dieb5 end)
-hknight_dieb5 = animation.frame("deathb5", function() return hknight_dieb6 end)
-hknight_dieb6 = animation.frame("deathb6", function() return hknight_dieb7 end)
-hknight_dieb7 = animation.frame("deathb7", function() return hknight_dieb8 end)
-hknight_dieb8 = animation.frame("deathb8", function() return hknight_dieb9 end)
-hknight_dieb9 = animation.frame("deathb9", function() return hknight_dieb9 end)
+hknight_dieb1 = animation.frame(f.deathb1, function() return hknight_dieb2 end)
+hknight_dieb2 = animation.frame(f.deathb2, function() return hknight_dieb3 end)
+hknight_dieb3 = animation.frame(f.deathb3, function() return hknight_dieb4 end, function(self) self.solid = C.SOLID_NOT end)
+hknight_dieb4 = animation.frame(f.deathb4, function() return hknight_dieb5 end)
+hknight_dieb5 = animation.frame(f.deathb5, function() return hknight_dieb6 end)
+hknight_dieb6 = animation.frame(f.deathb6, function() return hknight_dieb7 end)
+hknight_dieb7 = animation.frame(f.deathb7, function() return hknight_dieb8 end)
+hknight_dieb8 = animation.frame(f.deathb8, function() return hknight_dieb9 end)
+hknight_dieb9 = animation.frame(f.deathb9, function() return hknight_dieb9 end)
 
 ---@param self entity
 ---@return nil
@@ -243,20 +294,20 @@ local hknight_magica1, hknight_magica2, hknight_magica3, hknight_magica4, hknigh
 local hknight_magica7, hknight_magica8, hknight_magica9, hknight_magica10, hknight_magica11, hknight_magica12
 local hknight_magica13, hknight_magica14
 
-hknight_magica1 = animation.frame("magica1", function() return hknight_magica2 end, fight.face)
-hknight_magica2 = animation.frame("magica2", function() return hknight_magica3 end, fight.face)
-hknight_magica3 = animation.frame("magica3", function() return hknight_magica4 end, fight.face)
-hknight_magica4 = animation.frame("magica4", function() return hknight_magica5 end, fight.face)
-hknight_magica5 = animation.frame("magica5", function() return hknight_magica6 end, fight.face)
-hknight_magica6 = animation.frame("magica6", function() return hknight_magica7 end, fight.face)
-hknight_magica7 = animation.frame("magica7", function() return hknight_magica8 end, function(self) hknight_shot(self, -2) end)
-hknight_magica8 = animation.frame("magica8", function() return hknight_magica9 end, function(self) hknight_shot(self, -1) end)
-hknight_magica9 = animation.frame("magica9", function() return hknight_magica10 end, function(self) hknight_shot(self, 0) end)
-hknight_magica10 = animation.frame("magica10", function() return hknight_magica11 end, function(self) hknight_shot(self, 1) end)
-hknight_magica11 = animation.frame("magica11", function() return hknight_magica12 end, function(self) hknight_shot(self, 2) end)
-hknight_magica12 = animation.frame("magica12", function() return hknight_magica13 end, function(self) hknight_shot(self, 3) end)
-hknight_magica13 = animation.frame("magica13", function() return hknight_magica14 end, fight.face)
-hknight_magica14 = animation.frame("magica14", function() return hknight_run1 end, fight.face)
+hknight_magica1 = animation.frame(f.magica1, function() return hknight_magica2 end, fight.face)
+hknight_magica2 = animation.frame(f.magica2, function() return hknight_magica3 end, fight.face)
+hknight_magica3 = animation.frame(f.magica3, function() return hknight_magica4 end, fight.face)
+hknight_magica4 = animation.frame(f.magica4, function() return hknight_magica5 end, fight.face)
+hknight_magica5 = animation.frame(f.magica5, function() return hknight_magica6 end, fight.face)
+hknight_magica6 = animation.frame(f.magica6, function() return hknight_magica7 end, fight.face)
+hknight_magica7 = animation.frame(f.magica7, function() return hknight_magica8 end, function(self) hknight_shot(self, -2) end)
+hknight_magica8 = animation.frame(f.magica8, function() return hknight_magica9 end, function(self) hknight_shot(self, -1) end)
+hknight_magica9 = animation.frame(f.magica9, function() return hknight_magica10 end, function(self) hknight_shot(self, 0) end)
+hknight_magica10 = animation.frame(f.magica10, function() return hknight_magica11 end, function(self) hknight_shot(self, 1) end)
+hknight_magica11 = animation.frame(f.magica11, function() return hknight_magica12 end, function(self) hknight_shot(self, 2) end)
+hknight_magica12 = animation.frame(f.magica12, function() return hknight_magica13 end, function(self) hknight_shot(self, 3) end)
+hknight_magica13 = animation.frame(f.magica13, function() return hknight_magica14 end, fight.face)
+hknight_magica14 = animation.frame(f.magica14, function() return hknight_run1 end, fight.face)
 
 --============================================================================
 
@@ -264,36 +315,36 @@ local hknight_magicb1, hknight_magicb2, hknight_magicb3, hknight_magicb4, hknigh
 local hknight_magicb7, hknight_magicb8, hknight_magicb9, hknight_magicb10, hknight_magicb11, hknight_magicb12
 local hknight_magicb13
 
-hknight_magicb1 = animation.frame("magicb1", function() return hknight_magicb2 end, fight.face)
-hknight_magicb2 = animation.frame("magicb2", function() return hknight_magicb3 end, fight.face)
-hknight_magicb3 = animation.frame("magicb3", function() return hknight_magicb4 end, fight.face)
-hknight_magicb4 = animation.frame("magicb4", function() return hknight_magicb5 end, fight.face)
-hknight_magicb5 = animation.frame("magicb5", function() return hknight_magicb6 end, fight.face)
-hknight_magicb6 = animation.frame("magicb6", function() return hknight_magicb7 end, fight.face)
-hknight_magicb7 = animation.frame("magicb7", function() return hknight_magicb8 end, function(self) hknight_shot(self, -2) end)
-hknight_magicb8 = animation.frame("magicb8", function() return hknight_magicb9 end, function(self) hknight_shot(self, -1) end)
-hknight_magicb9 = animation.frame("magicb9", function() return hknight_magicb10 end, function(self) hknight_shot(self, 0) end)
-hknight_magicb10 = animation.frame("magicb10", function() return hknight_magicb11 end, function(self) hknight_shot(self, 1) end)
-hknight_magicb11 = animation.frame("magicb11", function() return hknight_magicb12 end, function(self) hknight_shot(self, 2) end)
-hknight_magicb12 = animation.frame("magicb12", function() return hknight_magicb13 end, function(self) hknight_shot(self, 3) end)
-hknight_magicb13 = animation.frame("magicb13", function() return hknight_run1 end, fight.face)
+hknight_magicb1 = animation.frame(f.magicb1, function() return hknight_magicb2 end, fight.face)
+hknight_magicb2 = animation.frame(f.magicb2, function() return hknight_magicb3 end, fight.face)
+hknight_magicb3 = animation.frame(f.magicb3, function() return hknight_magicb4 end, fight.face)
+hknight_magicb4 = animation.frame(f.magicb4, function() return hknight_magicb5 end, fight.face)
+hknight_magicb5 = animation.frame(f.magicb5, function() return hknight_magicb6 end, fight.face)
+hknight_magicb6 = animation.frame(f.magicb6, function() return hknight_magicb7 end, fight.face)
+hknight_magicb7 = animation.frame(f.magicb7, function() return hknight_magicb8 end, function(self) hknight_shot(self, -2) end)
+hknight_magicb8 = animation.frame(f.magicb8, function() return hknight_magicb9 end, function(self) hknight_shot(self, -1) end)
+hknight_magicb9 = animation.frame(f.magicb9, function() return hknight_magicb10 end, function(self) hknight_shot(self, 0) end)
+hknight_magicb10 = animation.frame(f.magicb10, function() return hknight_magicb11 end, function(self) hknight_shot(self, 1) end)
+hknight_magicb11 = animation.frame(f.magicb11, function() return hknight_magicb12 end, function(self) hknight_shot(self, 2) end)
+hknight_magicb12 = animation.frame(f.magicb12, function() return hknight_magicb13 end, function(self) hknight_shot(self, 3) end)
+hknight_magicb13 = animation.frame(f.magicb13, function() return hknight_run1 end, fight.face)
 
 --============================================================================
 
 local hknight_magicc1, hknight_magicc2, hknight_magicc3, hknight_magicc4, hknight_magicc5, hknight_magicc6
 local hknight_magicc7, hknight_magicc8, hknight_magicc9, hknight_magicc10, hknight_magicc11
 
-hknight_magicc1 = animation.frame("magicc1", function() return hknight_magicc2 end, fight.face)
-hknight_magicc2 = animation.frame("magicc2", function() return hknight_magicc3 end, fight.face)
-hknight_magicc3 = animation.frame("magicc3", function() return hknight_magicc4 end, fight.face)
-hknight_magicc4 = animation.frame("magicc4", function() return hknight_magicc5 end, fight.face)
-hknight_magicc5 = animation.frame("magicc5", function() return hknight_magicc6 end, fight.face)
-hknight_magicc6 = animation.frame("magicc6", function() return hknight_magicc7 end, function(self) hknight_shot(self, -2) end)
-hknight_magicc7 = animation.frame("magicc7", function() return hknight_magicc8 end, function(self) hknight_shot(self, -1) end)
-hknight_magicc8 = animation.frame("magicc8", function() return hknight_magicc9 end, function(self) hknight_shot(self, 0) end)
-hknight_magicc9 = animation.frame("magicc9", function() return hknight_magicc10 end, function(self) hknight_shot(self, 1) end)
-hknight_magicc10 = animation.frame("magicc10", function() return hknight_magicc11 end, function(self) hknight_shot(self, 2) end)
-hknight_magicc11 = animation.frame("magicc11", function() return hknight_run1 end, function(self) hknight_shot(self, 3) end)
+hknight_magicc1 = animation.frame(f.magicc1, function() return hknight_magicc2 end, fight.face)
+hknight_magicc2 = animation.frame(f.magicc2, function() return hknight_magicc3 end, fight.face)
+hknight_magicc3 = animation.frame(f.magicc3, function() return hknight_magicc4 end, fight.face)
+hknight_magicc4 = animation.frame(f.magicc4, function() return hknight_magicc5 end, fight.face)
+hknight_magicc5 = animation.frame(f.magicc5, function() return hknight_magicc6 end, fight.face)
+hknight_magicc6 = animation.frame(f.magicc6, function() return hknight_magicc7 end, function(self) hknight_shot(self, -2) end)
+hknight_magicc7 = animation.frame(f.magicc7, function() return hknight_magicc8 end, function(self) hknight_shot(self, -1) end)
+hknight_magicc8 = animation.frame(f.magicc8, function() return hknight_magicc9 end, function(self) hknight_shot(self, 0) end)
+hknight_magicc9 = animation.frame(f.magicc9, function() return hknight_magicc10 end, function(self) hknight_shot(self, 1) end)
+hknight_magicc10 = animation.frame(f.magicc10, function() return hknight_magicc11 end, function(self) hknight_shot(self, 2) end)
+hknight_magicc11 = animation.frame(f.magicc11, function() return hknight_run1 end, function(self) hknight_shot(self, 3) end)
 
 --===========================================================================
 
@@ -301,70 +352,70 @@ local hknight_char_a2, hknight_char_a3, hknight_char_a4, hknight_char_a5, hknigh
 local hknight_char_a8, hknight_char_a9, hknight_char_a10, hknight_char_a11, hknight_char_a12, hknight_char_a13
 local hknight_char_a14, hknight_char_a15, hknight_char_a16
 
-hknight_char_a1 = animation.frame("char_a1", function() return hknight_char_a2 end, function(self) fight.charge(self, 20) end)
-hknight_char_a2 = animation.frame("char_a2", function() return hknight_char_a3 end, function(self) fight.charge(self, 25) end)
-hknight_char_a3 = animation.frame("char_a3", function() return hknight_char_a4 end, function(self) fight.charge(self, 18) end)
-hknight_char_a4 = animation.frame("char_a4", function() return hknight_char_a5 end, function(self) fight.charge(self, 16) end)
-hknight_char_a5 = animation.frame("char_a5", function() return hknight_char_a6 end, function(self) fight.charge(self, 14) end)
-hknight_char_a6 = animation.frame("char_a6", function() return hknight_char_a7 end, function(self) fight.charge(self, 20); fight.melee(self) end)
-hknight_char_a7 = animation.frame("char_a7", function() return hknight_char_a8 end, function(self) fight.charge(self, 21); fight.melee(self) end)
-hknight_char_a8 = animation.frame("char_a8", function() return hknight_char_a9 end, function(self) fight.charge(self, 13); fight.melee(self) end)
-hknight_char_a9 = animation.frame("char_a9", function() return hknight_char_a10 end, function(self) fight.charge(self, 20); fight.melee(self) end)
-hknight_char_a10 = animation.frame("char_a10", function() return hknight_char_a11 end, function(self) fight.charge(self, 20); fight.melee(self) end)
-hknight_char_a11 = animation.frame("char_a11", function() return hknight_char_a12 end, function(self) fight.charge(self, 18); fight.melee(self) end)
-hknight_char_a12 = animation.frame("char_a12", function() return hknight_char_a13 end, function(self) fight.charge(self, 16) end)
-hknight_char_a13 = animation.frame("char_a13", function() return hknight_char_a14 end, function(self) fight.charge(self, 14) end)
-hknight_char_a14 = animation.frame("char_a14", function() return hknight_char_a15 end, function(self) fight.charge(self, 25) end)
-hknight_char_a15 = animation.frame("char_a15", function() return hknight_char_a16 end, function(self) fight.charge(self, 21) end)
-hknight_char_a16 = animation.frame("char_a16", function() return hknight_run1 end, function(self) fight.charge(self, 13) end)
+hknight_char_a1 = animation.frame(f.char_a1, function() return hknight_char_a2 end, function(self) fight.charge(self, 20) end)
+hknight_char_a2 = animation.frame(f.char_a2, function() return hknight_char_a3 end, function(self) fight.charge(self, 25) end)
+hknight_char_a3 = animation.frame(f.char_a3, function() return hknight_char_a4 end, function(self) fight.charge(self, 18) end)
+hknight_char_a4 = animation.frame(f.char_a4, function() return hknight_char_a5 end, function(self) fight.charge(self, 16) end)
+hknight_char_a5 = animation.frame(f.char_a5, function() return hknight_char_a6 end, function(self) fight.charge(self, 14) end)
+hknight_char_a6 = animation.frame(f.char_a6, function() return hknight_char_a7 end, function(self) fight.charge(self, 20); fight.melee(self) end)
+hknight_char_a7 = animation.frame(f.char_a7, function() return hknight_char_a8 end, function(self) fight.charge(self, 21); fight.melee(self) end)
+hknight_char_a8 = animation.frame(f.char_a8, function() return hknight_char_a9 end, function(self) fight.charge(self, 13); fight.melee(self) end)
+hknight_char_a9 = animation.frame(f.char_a9, function() return hknight_char_a10 end, function(self) fight.charge(self, 20); fight.melee(self) end)
+hknight_char_a10 = animation.frame(f.char_a10, function() return hknight_char_a11 end, function(self) fight.charge(self, 20); fight.melee(self) end)
+hknight_char_a11 = animation.frame(f.char_a11, function() return hknight_char_a12 end, function(self) fight.charge(self, 18); fight.melee(self) end)
+hknight_char_a12 = animation.frame(f.char_a12, function() return hknight_char_a13 end, function(self) fight.charge(self, 16) end)
+hknight_char_a13 = animation.frame(f.char_a13, function() return hknight_char_a14 end, function(self) fight.charge(self, 14) end)
+hknight_char_a14 = animation.frame(f.char_a14, function() return hknight_char_a15 end, function(self) fight.charge(self, 25) end)
+hknight_char_a15 = animation.frame(f.char_a15, function() return hknight_char_a16 end, function(self) fight.charge(self, 21) end)
+hknight_char_a16 = animation.frame(f.char_a16, function() return hknight_run1 end, function(self) fight.charge(self, 13) end)
 
 --===========================================================================
 
 local hknight_char_b1, hknight_char_b2, hknight_char_b3, hknight_char_b4, hknight_char_b5, hknight_char_b6
 
-hknight_char_b1 = animation.frame("char_b1", function() return hknight_char_b2 end, function(self)
+hknight_char_b1 = animation.frame(f.char_b1, function() return hknight_char_b2 end, function(self)
     check_continue_charge(self)
     fight.charge(self, 23)
     fight.melee(self)
 end)
-hknight_char_b2 = animation.frame("char_b2", function() return hknight_char_b3 end, function(self) fight.charge(self, 17); fight.melee(self) end)
-hknight_char_b3 = animation.frame("char_b3", function() return hknight_char_b4 end, function(self) fight.charge(self, 12); fight.melee(self) end)
-hknight_char_b4 = animation.frame("char_b4", function() return hknight_char_b5 end, function(self) fight.charge(self, 22); fight.melee(self) end)
-hknight_char_b5 = animation.frame("char_b5", function() return hknight_char_b6 end, function(self) fight.charge(self, 18); fight.melee(self) end)
-hknight_char_b6 = animation.frame("char_b6", function() return hknight_char_b1 end, function(self) fight.charge(self, 8); fight.melee(self) end)
+hknight_char_b2 = animation.frame(f.char_b2, function() return hknight_char_b3 end, function(self) fight.charge(self, 17); fight.melee(self) end)
+hknight_char_b3 = animation.frame(f.char_b3, function() return hknight_char_b4 end, function(self) fight.charge(self, 12); fight.melee(self) end)
+hknight_char_b4 = animation.frame(f.char_b4, function() return hknight_char_b5 end, function(self) fight.charge(self, 22); fight.melee(self) end)
+hknight_char_b5 = animation.frame(f.char_b5, function() return hknight_char_b6 end, function(self) fight.charge(self, 18); fight.melee(self) end)
+hknight_char_b6 = animation.frame(f.char_b6, function() return hknight_char_b1 end, function(self) fight.charge(self, 8); fight.melee(self) end)
 
 --===========================================================================
 
 local hknight_slice1, hknight_slice2, hknight_slice3, hknight_slice4, hknight_slice5, hknight_slice6
 local hknight_slice7, hknight_slice8, hknight_slice9, hknight_slice10
 
-hknight_slice1 = animation.frame("slice1", function() return hknight_slice2 end, function(self) fight.charge(self, 9) end)
-hknight_slice2 = animation.frame("slice2", function() return hknight_slice3 end, function(self) fight.charge(self, 6) end)
-hknight_slice3 = animation.frame("slice3", function() return hknight_slice4 end, function(self) fight.charge(self, 13) end)
-hknight_slice4 = animation.frame("slice4", function() return hknight_slice5 end, function(self) fight.charge(self, 4) end)
-hknight_slice5 = animation.frame("slice5", function() return hknight_slice6 end, function(self) fight.charge(self, 7); fight.melee(self) end)
-hknight_slice6 = animation.frame("slice6", function() return hknight_slice7 end, function(self) fight.charge(self, 15); fight.melee(self) end)
-hknight_slice7 = animation.frame("slice7", function() return hknight_slice8 end, function(self) fight.charge(self, 8); fight.melee(self) end)
-hknight_slice8 = animation.frame("slice8", function() return hknight_slice9 end, function(self) fight.charge(self, 2); fight.melee(self) end)
-hknight_slice9 = animation.frame("slice9", function() return hknight_slice10 end, function(self) fight.melee(self) end)
-hknight_slice10 = animation.frame("slice10", function() return hknight_run1 end, function(self) fight.charge(self, 3) end)
+hknight_slice1 = animation.frame(f.slice1, function() return hknight_slice2 end, function(self) fight.charge(self, 9) end)
+hknight_slice2 = animation.frame(f.slice2, function() return hknight_slice3 end, function(self) fight.charge(self, 6) end)
+hknight_slice3 = animation.frame(f.slice3, function() return hknight_slice4 end, function(self) fight.charge(self, 13) end)
+hknight_slice4 = animation.frame(f.slice4, function() return hknight_slice5 end, function(self) fight.charge(self, 4) end)
+hknight_slice5 = animation.frame(f.slice5, function() return hknight_slice6 end, function(self) fight.charge(self, 7); fight.melee(self) end)
+hknight_slice6 = animation.frame(f.slice6, function() return hknight_slice7 end, function(self) fight.charge(self, 15); fight.melee(self) end)
+hknight_slice7 = animation.frame(f.slice7, function() return hknight_slice8 end, function(self) fight.charge(self, 8); fight.melee(self) end)
+hknight_slice8 = animation.frame(f.slice8, function() return hknight_slice9 end, function(self) fight.charge(self, 2); fight.melee(self) end)
+hknight_slice9 = animation.frame(f.slice9, function() return hknight_slice10 end, function(self) fight.melee(self) end)
+hknight_slice10 = animation.frame(f.slice10, function() return hknight_run1 end, function(self) fight.charge(self, 3) end)
 
 --===========================================================================
 
 local hknight_smash1, hknight_smash2, hknight_smash3, hknight_smash4, hknight_smash5, hknight_smash6
 local hknight_smash7, hknight_smash8, hknight_smash9, hknight_smash10, hknight_smash11
 
-hknight_smash1 = animation.frame("smash1", function() return hknight_smash2 end, function(self) fight.charge(self, 1) end)
-hknight_smash2 = animation.frame("smash2", function() return hknight_smash3 end, function(self) fight.charge(self, 13) end)
-hknight_smash3 = animation.frame("smash3", function() return hknight_smash4 end, function(self) fight.charge(self, 9) end)
-hknight_smash4 = animation.frame("smash4", function() return hknight_smash5 end, function(self) fight.charge(self, 11) end)
-hknight_smash5 = animation.frame("smash5", function() return hknight_smash6 end, function(self) fight.charge(self, 10); fight.melee(self) end)
-hknight_smash6 = animation.frame("smash6", function() return hknight_smash7 end, function(self) fight.charge(self, 7); fight.melee(self) end)
-hknight_smash7 = animation.frame("smash7", function() return hknight_smash8 end, function(self) fight.charge(self, 12); fight.melee(self) end)
-hknight_smash8 = animation.frame("smash8", function() return hknight_smash9 end, function(self) fight.charge(self, 2); fight.melee(self) end)
-hknight_smash9 = animation.frame("smash9", function() return hknight_smash10 end, function(self) fight.charge(self, 3); fight.melee(self) end)
-hknight_smash10 = animation.frame("smash10", function() return hknight_smash11 end, function(self) fight.charge(self, 0) end)
-hknight_smash11 = animation.frame("smash11", function() return hknight_run1 end, function(self) fight.charge(self, 0) end)
+hknight_smash1 = animation.frame(f.smash1, function() return hknight_smash2 end, function(self) fight.charge(self, 1) end)
+hknight_smash2 = animation.frame(f.smash2, function() return hknight_smash3 end, function(self) fight.charge(self, 13) end)
+hknight_smash3 = animation.frame(f.smash3, function() return hknight_smash4 end, function(self) fight.charge(self, 9) end)
+hknight_smash4 = animation.frame(f.smash4, function() return hknight_smash5 end, function(self) fight.charge(self, 11) end)
+hknight_smash5 = animation.frame(f.smash5, function() return hknight_smash6 end, function(self) fight.charge(self, 10); fight.melee(self) end)
+hknight_smash6 = animation.frame(f.smash6, function() return hknight_smash7 end, function(self) fight.charge(self, 7); fight.melee(self) end)
+hknight_smash7 = animation.frame(f.smash7, function() return hknight_smash8 end, function(self) fight.charge(self, 12); fight.melee(self) end)
+hknight_smash8 = animation.frame(f.smash8, function() return hknight_smash9 end, function(self) fight.charge(self, 2); fight.melee(self) end)
+hknight_smash9 = animation.frame(f.smash9, function() return hknight_smash10 end, function(self) fight.charge(self, 3); fight.melee(self) end)
+hknight_smash10 = animation.frame(f.smash10, function() return hknight_smash11 end, function(self) fight.charge(self, 0) end)
+hknight_smash11 = animation.frame(f.smash11, function() return hknight_run1 end, function(self) fight.charge(self, 0) end)
 
 --============================================================================
 
@@ -373,28 +424,28 @@ local hknight_watk7, hknight_watk8, hknight_watk9, hknight_watk10, hknight_watk1
 local hknight_watk13, hknight_watk14, hknight_watk15, hknight_watk16, hknight_watk17, hknight_watk18
 local hknight_watk19, hknight_watk20, hknight_watk21, hknight_watk22
 
-hknight_watk1 = animation.frame("w_attack1", function() return hknight_watk2 end, function(self) fight.charge(self, 2) end)
-hknight_watk2 = animation.frame("w_attack2", function() return hknight_watk3 end, function(self) fight.charge(self, 0) end)
-hknight_watk3 = animation.frame("w_attack3", function() return hknight_watk4 end, function(self) fight.charge(self, 0) end)
-hknight_watk4 = animation.frame("w_attack4", function() return hknight_watk5 end, function(self) fight.melee(self) end)
-hknight_watk5 = animation.frame("w_attack5", function() return hknight_watk6 end, function(self) fight.melee(self) end)
-hknight_watk6 = animation.frame("w_attack6", function() return hknight_watk7 end, function(self) fight.melee(self) end)
-hknight_watk7 = animation.frame("w_attack7", function() return hknight_watk8 end, function(self) fight.charge(self, 1) end)
-hknight_watk8 = animation.frame("w_attack8", function() return hknight_watk9 end, function(self) fight.charge(self, 4) end)
-hknight_watk9 = animation.frame("w_attack9", function() return hknight_watk10 end, function(self) fight.charge(self, 5) end)
-hknight_watk10 = animation.frame("w_attack10", function() return hknight_watk11 end, function(self) fight.charge(self, 3); fight.melee(self) end)
-hknight_watk11 = animation.frame("w_attack11", function() return hknight_watk12 end, function(self) fight.charge(self, 2); fight.melee(self) end)
-hknight_watk12 = animation.frame("w_attack12", function() return hknight_watk13 end, function(self) fight.charge(self, 2); fight.melee(self) end)
-hknight_watk13 = animation.frame("w_attack13", function() return hknight_watk14 end, function(self) fight.charge(self, 0) end)
-hknight_watk14 = animation.frame("w_attack14", function() return hknight_watk15 end, function(self) fight.charge(self, 0) end)
-hknight_watk15 = animation.frame("w_attack15", function() return hknight_watk16 end, function(self) fight.charge(self, 0) end)
-hknight_watk16 = animation.frame("w_attack16", function() return hknight_watk17 end, function(self) fight.charge(self, 1) end)
-hknight_watk17 = animation.frame("w_attack17", function() return hknight_watk18 end, function(self) fight.charge(self, 1); fight.melee(self) end)
-hknight_watk18 = animation.frame("w_attack18", function() return hknight_watk19 end, function(self) fight.charge(self, 3); fight.melee(self) end)
-hknight_watk19 = animation.frame("w_attack19", function() return hknight_watk20 end, function(self) fight.charge(self, 4); fight.melee(self) end)
-hknight_watk20 = animation.frame("w_attack20", function() return hknight_watk21 end, function(self) fight.charge(self, 6) end)
-hknight_watk21 = animation.frame("w_attack21", function() return hknight_watk22 end, function(self) fight.charge(self, 7) end)
-hknight_watk22 = animation.frame("w_attack22", function() return hknight_run1 end, function(self) fight.charge(self, 3) end)
+hknight_watk1 = animation.frame(f.w_attack1, function() return hknight_watk2 end, function(self) fight.charge(self, 2) end)
+hknight_watk2 = animation.frame(f.w_attack2, function() return hknight_watk3 end, function(self) fight.charge(self, 0) end)
+hknight_watk3 = animation.frame(f.w_attack3, function() return hknight_watk4 end, function(self) fight.charge(self, 0) end)
+hknight_watk4 = animation.frame(f.w_attack4, function() return hknight_watk5 end, function(self) fight.melee(self) end)
+hknight_watk5 = animation.frame(f.w_attack5, function() return hknight_watk6 end, function(self) fight.melee(self) end)
+hknight_watk6 = animation.frame(f.w_attack6, function() return hknight_watk7 end, function(self) fight.melee(self) end)
+hknight_watk7 = animation.frame(f.w_attack7, function() return hknight_watk8 end, function(self) fight.charge(self, 1) end)
+hknight_watk8 = animation.frame(f.w_attack8, function() return hknight_watk9 end, function(self) fight.charge(self, 4) end)
+hknight_watk9 = animation.frame(f.w_attack9, function() return hknight_watk10 end, function(self) fight.charge(self, 5) end)
+hknight_watk10 = animation.frame(f.w_attack10, function() return hknight_watk11 end, function(self) fight.charge(self, 3); fight.melee(self) end)
+hknight_watk11 = animation.frame(f.w_attack11, function() return hknight_watk12 end, function(self) fight.charge(self, 2); fight.melee(self) end)
+hknight_watk12 = animation.frame(f.w_attack12, function() return hknight_watk13 end, function(self) fight.charge(self, 2); fight.melee(self) end)
+hknight_watk13 = animation.frame(f.w_attack13, function() return hknight_watk14 end, function(self) fight.charge(self, 0) end)
+hknight_watk14 = animation.frame(f.w_attack14, function() return hknight_watk15 end, function(self) fight.charge(self, 0) end)
+hknight_watk15 = animation.frame(f.w_attack15, function() return hknight_watk16 end, function(self) fight.charge(self, 0) end)
+hknight_watk16 = animation.frame(f.w_attack16, function() return hknight_watk17 end, function(self) fight.charge(self, 1) end)
+hknight_watk17 = animation.frame(f.w_attack17, function() return hknight_watk18 end, function(self) fight.charge(self, 1); fight.melee(self) end)
+hknight_watk18 = animation.frame(f.w_attack18, function() return hknight_watk19 end, function(self) fight.charge(self, 3); fight.melee(self) end)
+hknight_watk19 = animation.frame(f.w_attack19, function() return hknight_watk20 end, function(self) fight.charge(self, 4); fight.melee(self) end)
+hknight_watk20 = animation.frame(f.w_attack20, function() return hknight_watk21 end, function(self) fight.charge(self, 6) end)
+hknight_watk21 = animation.frame(f.w_attack21, function() return hknight_watk22 end, function(self) fight.charge(self, 7) end)
+hknight_watk22 = animation.frame(f.w_attack22, function() return hknight_run1 end, function(self) fight.charge(self, 3) end)
 
 --============================================================================
 

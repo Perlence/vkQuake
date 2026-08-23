@@ -5,10 +5,29 @@ local quake = require("quake")
 
 local M = {}
 
+---Creates a zero-based sequential counter.
+---@return fun(amount: integer): (...: integer)
+function M.counter()
+    local next_value = 0
+
+    return function(amount)
+        assert(math.type(amount) == "integer" and amount > 0,
+            "counter amount must be a positive integer")
+
+        local values = {}
+        for index = 1, amount do
+            values[index] = next_value
+            next_value = next_value + 1
+        end
+
+        return table.unpack(values, 1, amount)
+    end
+end
+
 ---Expands one QuakeC-style `[frame, nexttime, nextthink] { code }` state.
 ---When nexttime is omitted, it defaults to 0.1 seconds.
----@overload fun(frame: string|integer, nextthink: function, code?: function): function
----@param frame string|integer
+---@overload fun(frame: integer, nextthink: function, code?: function): function
+---@param frame integer
 ---@param nexttime number
 ---@param nextthink function
 ---@param code? function
@@ -20,7 +39,7 @@ function M.frame(frame, nexttime, nextthink, code)
         nexttime = 0.1
     end
 
-    assert(frame ~= nil, "an animation frame needs a frame number")
+    assert(math.type(frame) == "integer", "animation frame must be an integer")
     assert(type(nextthink) == "function", "an animation frame needs a next-think resolver")
 
     local caller = debug.getinfo(2, "Sl")

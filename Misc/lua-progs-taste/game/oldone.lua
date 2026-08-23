@@ -26,6 +26,24 @@ local animation = require("game.animation")
 local gibs = require("game.gibs")
 
 local M = {}
+
+local count = animation.counter()
+local f = {}
+
+f.old1, f.old2, f.old3, f.old4, f.old5, f.old6,
+    f.old7, f.old8, f.old9, f.old10, f.old11, f.old12,
+    f.old13, f.old14, f.old15, f.old16, f.old17, f.old18,
+    f.old19, f.old20, f.old21, f.old22, f.old23, f.old24,
+    f.old25, f.old26, f.old27, f.old28, f.old29, f.old30,
+    f.old31, f.old32, f.old33, f.old34, f.old35, f.old36,
+    f.old37, f.old38, f.old39, f.old40, f.old41, f.old42,
+    f.old43, f.old44, f.old45, f.old46 = count(46)
+
+f.shake1, f.shake2, f.shake3, f.shake4, f.shake5, f.shake6,
+    f.shake7, f.shake8, f.shake9, f.shake10, f.shake11, f.shake12,
+    f.shake13, f.shake14, f.shake15, f.shake16, f.shake17, f.shake18,
+    f.shake19, f.shake20, f.shake21 = count(21)
+
 local CHAN_VOICE = 2
 local DAMAGE_YES = 1
 local MSG_BROADCAST = 0
@@ -54,84 +72,84 @@ local old_idle31, old_idle32, old_idle33, old_idle34, old_idle35, old_idle36
 local old_idle37, old_idle38, old_idle39, old_idle40, old_idle41, old_idle42
 local old_idle43, old_idle44, old_idle45, old_idle46
 
-old_idle1 = animation.frame("old1", function() return old_idle2 end)
-old_idle2 = animation.frame("old2", function() return old_idle3 end)
-old_idle3 = animation.frame("old3", function() return old_idle4 end)
-old_idle4 = animation.frame("old4", function() return old_idle5 end)
-old_idle5 = animation.frame("old5", function() return old_idle6 end)
-old_idle6 = animation.frame("old6", function() return old_idle7 end)
-old_idle7 = animation.frame("old7", function() return old_idle8 end)
-old_idle8 = animation.frame("old8", function() return old_idle9 end)
-old_idle9 = animation.frame("old9", function() return old_idle10 end)
-old_idle10 = animation.frame("old10", function() return old_idle11 end)
-old_idle11 = animation.frame("old11", function() return old_idle12 end)
-old_idle12 = animation.frame("old12", function() return old_idle13 end)
-old_idle13 = animation.frame("old13", function() return old_idle14 end)
-old_idle14 = animation.frame("old14", function() return old_idle15 end)
-old_idle15 = animation.frame("old15", function() return old_idle16 end)
-old_idle16 = animation.frame("old16", function() return old_idle17 end)
-old_idle17 = animation.frame("old17", function() return old_idle18 end)
-old_idle18 = animation.frame("old18", function() return old_idle19 end)
-old_idle19 = animation.frame("old19", function() return old_idle20 end)
-old_idle20 = animation.frame("old20", function() return old_idle21 end)
-old_idle21 = animation.frame("old21", function() return old_idle22 end)
-old_idle22 = animation.frame("old22", function() return old_idle23 end)
-old_idle23 = animation.frame("old23", function() return old_idle24 end)
-old_idle24 = animation.frame("old24", function() return old_idle25 end)
-old_idle25 = animation.frame("old25", function() return old_idle26 end)
-old_idle26 = animation.frame("old26", function() return old_idle27 end)
-old_idle27 = animation.frame("old27", function() return old_idle28 end)
-old_idle28 = animation.frame("old28", function() return old_idle29 end)
-old_idle29 = animation.frame("old29", function() return old_idle30 end)
-old_idle30 = animation.frame("old30", function() return old_idle31 end)
-old_idle31 = animation.frame("old31", function() return old_idle32 end)
-old_idle32 = animation.frame("old32", function() return old_idle33 end)
-old_idle33 = animation.frame("old33", function() return old_idle34 end)
-old_idle34 = animation.frame("old34", function() return old_idle35 end)
-old_idle35 = animation.frame("old35", function() return old_idle36 end)
-old_idle36 = animation.frame("old36", function() return old_idle37 end)
-old_idle37 = animation.frame("old37", function() return old_idle38 end)
-old_idle38 = animation.frame("old38", function() return old_idle39 end)
-old_idle39 = animation.frame("old39", function() return old_idle40 end)
-old_idle40 = animation.frame("old40", function() return old_idle41 end)
-old_idle41 = animation.frame("old41", function() return old_idle42 end)
-old_idle42 = animation.frame("old42", function() return old_idle43 end)
-old_idle43 = animation.frame("old43", function() return old_idle44 end)
-old_idle44 = animation.frame("old44", function() return old_idle45 end)
-old_idle45 = animation.frame("old45", function() return old_idle46 end)
-old_idle46 = animation.frame("old46", function() return old_idle1 end)
+old_idle1 = animation.frame(f.old1, function() return old_idle2 end)
+old_idle2 = animation.frame(f.old2, function() return old_idle3 end)
+old_idle3 = animation.frame(f.old3, function() return old_idle4 end)
+old_idle4 = animation.frame(f.old4, function() return old_idle5 end)
+old_idle5 = animation.frame(f.old5, function() return old_idle6 end)
+old_idle6 = animation.frame(f.old6, function() return old_idle7 end)
+old_idle7 = animation.frame(f.old7, function() return old_idle8 end)
+old_idle8 = animation.frame(f.old8, function() return old_idle9 end)
+old_idle9 = animation.frame(f.old9, function() return old_idle10 end)
+old_idle10 = animation.frame(f.old10, function() return old_idle11 end)
+old_idle11 = animation.frame(f.old11, function() return old_idle12 end)
+old_idle12 = animation.frame(f.old12, function() return old_idle13 end)
+old_idle13 = animation.frame(f.old13, function() return old_idle14 end)
+old_idle14 = animation.frame(f.old14, function() return old_idle15 end)
+old_idle15 = animation.frame(f.old15, function() return old_idle16 end)
+old_idle16 = animation.frame(f.old16, function() return old_idle17 end)
+old_idle17 = animation.frame(f.old17, function() return old_idle18 end)
+old_idle18 = animation.frame(f.old18, function() return old_idle19 end)
+old_idle19 = animation.frame(f.old19, function() return old_idle20 end)
+old_idle20 = animation.frame(f.old20, function() return old_idle21 end)
+old_idle21 = animation.frame(f.old21, function() return old_idle22 end)
+old_idle22 = animation.frame(f.old22, function() return old_idle23 end)
+old_idle23 = animation.frame(f.old23, function() return old_idle24 end)
+old_idle24 = animation.frame(f.old24, function() return old_idle25 end)
+old_idle25 = animation.frame(f.old25, function() return old_idle26 end)
+old_idle26 = animation.frame(f.old26, function() return old_idle27 end)
+old_idle27 = animation.frame(f.old27, function() return old_idle28 end)
+old_idle28 = animation.frame(f.old28, function() return old_idle29 end)
+old_idle29 = animation.frame(f.old29, function() return old_idle30 end)
+old_idle30 = animation.frame(f.old30, function() return old_idle31 end)
+old_idle31 = animation.frame(f.old31, function() return old_idle32 end)
+old_idle32 = animation.frame(f.old32, function() return old_idle33 end)
+old_idle33 = animation.frame(f.old33, function() return old_idle34 end)
+old_idle34 = animation.frame(f.old34, function() return old_idle35 end)
+old_idle35 = animation.frame(f.old35, function() return old_idle36 end)
+old_idle36 = animation.frame(f.old36, function() return old_idle37 end)
+old_idle37 = animation.frame(f.old37, function() return old_idle38 end)
+old_idle38 = animation.frame(f.old38, function() return old_idle39 end)
+old_idle39 = animation.frame(f.old39, function() return old_idle40 end)
+old_idle40 = animation.frame(f.old40, function() return old_idle41 end)
+old_idle41 = animation.frame(f.old41, function() return old_idle42 end)
+old_idle42 = animation.frame(f.old42, function() return old_idle43 end)
+old_idle43 = animation.frame(f.old43, function() return old_idle44 end)
+old_idle44 = animation.frame(f.old44, function() return old_idle45 end)
+old_idle45 = animation.frame(f.old45, function() return old_idle46 end)
+old_idle46 = animation.frame(f.old46, function() return old_idle1 end)
 
 local old_thrash1, old_thrash2, old_thrash3, old_thrash4, old_thrash5, old_thrash6
 local old_thrash7, old_thrash8, old_thrash9, old_thrash10, old_thrash11, old_thrash12
 local old_thrash13, old_thrash14, old_thrash15, old_thrash16, old_thrash17, old_thrash18
 local old_thrash19, old_thrash20
 
-old_thrash1 = animation.frame("shake1", function() return old_thrash2 end, function() quake.light_style(0, "m") end)
-old_thrash2 = animation.frame("shake2", function() return old_thrash3 end, function() quake.light_style(0, "k") end)
-old_thrash3 = animation.frame("shake3", function() return old_thrash4 end, function() quake.light_style(0, "k") end)
-old_thrash4 = animation.frame("shake4", function() return old_thrash5 end, function() quake.light_style(0, "i") end)
-old_thrash5 = animation.frame("shake5", function() return old_thrash6 end, function() quake.light_style(0, "g") end)
-old_thrash6 = animation.frame("shake6", function() return old_thrash7 end, function() quake.light_style(0, "e") end)
-old_thrash7 = animation.frame("shake7", function() return old_thrash8 end, function() quake.light_style(0, "c") end)
-old_thrash8 = animation.frame("shake8", function() return old_thrash9 end, function() quake.light_style(0, "a") end)
-old_thrash9 = animation.frame("shake9", function() return old_thrash10 end, function() quake.light_style(0, "c") end)
-old_thrash10 = animation.frame("shake10", function() return old_thrash11 end, function() quake.light_style(0, "e") end)
-old_thrash11 = animation.frame("shake11", function() return old_thrash12 end, function() quake.light_style(0, "g") end)
-old_thrash12 = animation.frame("shake12", function() return old_thrash13 end, function() quake.light_style(0, "i") end)
-old_thrash13 = animation.frame("shake13", function() return old_thrash14 end, function() quake.light_style(0, "k") end)
-old_thrash14 = animation.frame("shake14", function() return old_thrash15 end, function() quake.light_style(0, "m") end)
-old_thrash15 = animation.frame("shake15", function() return old_thrash16 end, function(self)
+old_thrash1 = animation.frame(f.shake1, function() return old_thrash2 end, function() quake.light_style(0, "m") end)
+old_thrash2 = animation.frame(f.shake2, function() return old_thrash3 end, function() quake.light_style(0, "k") end)
+old_thrash3 = animation.frame(f.shake3, function() return old_thrash4 end, function() quake.light_style(0, "k") end)
+old_thrash4 = animation.frame(f.shake4, function() return old_thrash5 end, function() quake.light_style(0, "i") end)
+old_thrash5 = animation.frame(f.shake5, function() return old_thrash6 end, function() quake.light_style(0, "g") end)
+old_thrash6 = animation.frame(f.shake6, function() return old_thrash7 end, function() quake.light_style(0, "e") end)
+old_thrash7 = animation.frame(f.shake7, function() return old_thrash8 end, function() quake.light_style(0, "c") end)
+old_thrash8 = animation.frame(f.shake8, function() return old_thrash9 end, function() quake.light_style(0, "a") end)
+old_thrash9 = animation.frame(f.shake9, function() return old_thrash10 end, function() quake.light_style(0, "c") end)
+old_thrash10 = animation.frame(f.shake10, function() return old_thrash11 end, function() quake.light_style(0, "e") end)
+old_thrash11 = animation.frame(f.shake11, function() return old_thrash12 end, function() quake.light_style(0, "g") end)
+old_thrash12 = animation.frame(f.shake12, function() return old_thrash13 end, function() quake.light_style(0, "i") end)
+old_thrash13 = animation.frame(f.shake13, function() return old_thrash14 end, function() quake.light_style(0, "k") end)
+old_thrash14 = animation.frame(f.shake14, function() return old_thrash15 end, function() quake.light_style(0, "m") end)
+old_thrash15 = animation.frame(f.shake15, function() return old_thrash16 end, function(self)
     quake.light_style(0, "m")
     self.cnt = self.cnt + 1
     if self.cnt ~= 3 then
         self.think = old_thrash1
     end
 end)
-old_thrash16 = animation.frame("shake16", function() return old_thrash17 end, function() quake.light_style(0, "g") end)
-old_thrash17 = animation.frame("shake17", function() return old_thrash18 end, function() quake.light_style(0, "c") end)
-old_thrash18 = animation.frame("shake18", function() return old_thrash19 end, function() quake.light_style(0, "b") end)
-old_thrash19 = animation.frame("shake19", function() return old_thrash20 end, function() quake.light_style(0, "a") end)
-old_thrash20 = animation.frame("shake20", function() return old_thrash20 end, function(self) finale_4(self) end)
+old_thrash16 = animation.frame(f.shake16, function() return old_thrash17 end, function() quake.light_style(0, "g") end)
+old_thrash17 = animation.frame(f.shake17, function() return old_thrash18 end, function() quake.light_style(0, "c") end)
+old_thrash18 = animation.frame(f.shake18, function() return old_thrash19 end, function() quake.light_style(0, "b") end)
+old_thrash19 = animation.frame(f.shake19, function() return old_thrash20 end, function() quake.light_style(0, "a") end)
+old_thrash20 = animation.frame(f.shake20, function() return old_thrash20 end, function(self) finale_4(self) end)
 
 --============================================================================
 

@@ -78,7 +78,7 @@
 ---@field flags number
 ---@field fixangle number
 ---@field fly_sound number
----@field frame number|string
+---@field frame integer
 ---@field frags number
 ---@field goalentity entity?
 ---@field groundentity entity?
