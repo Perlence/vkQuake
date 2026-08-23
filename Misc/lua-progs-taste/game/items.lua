@@ -419,15 +419,12 @@ end
 ---@param other entity
 ---@return nil
 local function weapon_touch(self, other)
-    local hadammo
     local leave
 
     if (other.flags & C.FL_CLIENT) == 0 then
         return
     end
 
-    -- if the player was using his best weapon, change up to the new one if better
-    local best = weapons.best_weapon(other)
     local new = 0
 
     if quake.cvar("deathmatch") == 2 or quake.cvar("coop") ~= 0 then
@@ -440,42 +437,36 @@ local function weapon_touch(self, other)
         if leave ~= 0 and (other.items & 4) ~= 0 then
             return
         end
-        hadammo = other.ammo_nails
         new = 4
         other.ammo_nails = other.ammo_nails + 30
     elseif self.classname == "weapon_supernailgun" then
         if leave ~= 0 and (other.items & 8) ~= 0 then
             return
         end
-        hadammo = other.ammo_rockets
         new = 8
         other.ammo_nails = other.ammo_nails + 30
     elseif self.classname == "weapon_supershotgun" then
         if leave ~= 0 and (other.items & 2) ~= 0 then
             return
         end
-        hadammo = other.ammo_rockets
         new = 2
         other.ammo_shells = other.ammo_shells + 5
     elseif self.classname == "weapon_rocketlauncher" then
         if leave ~= 0 and (other.items & 32) ~= 0 then
             return
         end
-        hadammo = other.ammo_rockets
         new = 32
         other.ammo_rockets = other.ammo_rockets + 5
     elseif self.classname == "weapon_grenadelauncher" then
         if leave ~= 0 and (other.items & 16) ~= 0 then
             return
         end
-        hadammo = other.ammo_rockets
         new = 16
         other.ammo_rockets = other.ammo_rockets + 5
     elseif self.classname == "weapon_lightning" then
         if leave ~= 0 and (other.items & 64) ~= 0 then
             return
         end
-        hadammo = other.ammo_rockets
         new = 64
         other.ammo_cells = other.ammo_cells + 15
     else
