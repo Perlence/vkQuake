@@ -358,7 +358,10 @@ local function teleport_touch(self, other)
     M.spawn_tfog(other.origin)
 
     local t = quake.find(quake.world, "targetname", self.target)
-    if not t then quake.object_error(self, "couldn't find target") end
+    if not t then
+        quake.object_error(self, "couldn't find target")
+        error("quake.object_error unexpectedly returned")
+    end
 
     -- spawn a tfog flash in front of the destination
     local vectors = quake.make_vectors(t.mangle)
