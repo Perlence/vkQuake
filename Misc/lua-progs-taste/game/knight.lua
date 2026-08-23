@@ -72,87 +72,94 @@ KNIGHT
 ==============================================================================
 ]]
 
-local knight_stand = {}
-knight_stand[1] = animation.frame(f.stand1, function() return knight_stand[2] end, ai.stand)
-knight_stand[2] = animation.frame(f.stand2, function() return knight_stand[3] end, ai.stand)
-knight_stand[3] = animation.frame(f.stand3, function() return knight_stand[4] end, ai.stand)
-knight_stand[4] = animation.frame(f.stand4, function() return knight_stand[5] end, ai.stand)
-knight_stand[5] = animation.frame(f.stand5, function() return knight_stand[6] end, ai.stand)
-knight_stand[6] = animation.frame(f.stand6, function() return knight_stand[7] end, ai.stand)
-knight_stand[7] = animation.frame(f.stand7, function() return knight_stand[8] end, ai.stand)
-knight_stand[8] = animation.frame(f.stand8, function() return knight_stand[9] end, ai.stand)
-knight_stand[9] = animation.frame(f.stand9, function() return knight_stand[1] end, ai.stand)
+local knight_stand = animation.loop({
+    { f.stand1, ai.stand },
+    { f.stand2, ai.stand },
+    { f.stand3, ai.stand },
+    { f.stand4, ai.stand },
+    { f.stand5, ai.stand },
+    { f.stand6, ai.stand },
+    { f.stand7, ai.stand },
+    { f.stand8, ai.stand },
+    { f.stand9, ai.stand },
+})
 
-local knight_walk = {}
-knight_walk[1] = animation.frame(f.walk1, function() return knight_walk[2] end, function(self) if quake.random() < 0.2 then quake.sound(self, C.CHAN_VOICE, "knight/idle.wav", 1, C.ATTN_IDLE) end; ai.walk(self, 3) end)
-knight_walk[2] = animation.frame(f.walk2, function() return knight_walk[3] end, function(self) ai.walk(self, 2) end)
-knight_walk[3] = animation.frame(f.walk3, function() return knight_walk[4] end, function(self) ai.walk(self, 3) end)
-knight_walk[4] = animation.frame(f.walk4, function() return knight_walk[5] end, function(self) ai.walk(self, 4) end)
-knight_walk[5] = animation.frame(f.walk5, function() return knight_walk[6] end, function(self) ai.walk(self, 3) end)
-knight_walk[6] = animation.frame(f.walk6, function() return knight_walk[7] end, function(self) ai.walk(self, 3) end)
-knight_walk[7] = animation.frame(f.walk7, function() return knight_walk[8] end, function(self) ai.walk(self, 3) end)
-knight_walk[8] = animation.frame(f.walk8, function() return knight_walk[9] end, function(self) ai.walk(self, 4) end)
-knight_walk[9] = animation.frame(f.walk9, function() return knight_walk[10] end, function(self) ai.walk(self, 3) end)
-knight_walk[10] = animation.frame(f.walk10, function() return knight_walk[11] end, function(self) ai.walk(self, 3) end)
-knight_walk[11] = animation.frame(f.walk11, function() return knight_walk[12] end, function(self) ai.walk(self, 2) end)
-knight_walk[12] = animation.frame(f.walk12, function() return knight_walk[13] end, function(self) ai.walk(self, 3) end)
-knight_walk[13] = animation.frame(f.walk13, function() return knight_walk[14] end, function(self) ai.walk(self, 4) end)
-knight_walk[14] = animation.frame(f.walk14, function() return knight_walk[1] end, function(self) ai.walk(self, 3) end)
+local knight_walk = animation.loop({
+    { f.walk1, function(self) if quake.random() < 0.2 then quake.sound(self, C.CHAN_VOICE, "knight/idle.wav", 1, C.ATTN_IDLE) end; ai.walk(self, 3) end },
+    { f.walk2, function(self) ai.walk(self, 2) end },
+    { f.walk3, function(self) ai.walk(self, 3) end },
+    { f.walk4, function(self) ai.walk(self, 4) end },
+    { f.walk5, function(self) ai.walk(self, 3) end },
+    { f.walk6, function(self) ai.walk(self, 3) end },
+    { f.walk7, function(self) ai.walk(self, 3) end },
+    { f.walk8, function(self) ai.walk(self, 4) end },
+    { f.walk9, function(self) ai.walk(self, 3) end },
+    { f.walk10, function(self) ai.walk(self, 3) end },
+    { f.walk11, function(self) ai.walk(self, 2) end },
+    { f.walk12, function(self) ai.walk(self, 3) end },
+    { f.walk13, function(self) ai.walk(self, 4) end },
+    { f.walk14, function(self) ai.walk(self, 3) end },
+})
 
-local knight_run = {}
-knight_run[1] = animation.frame(f.runb1, function() return knight_run[2] end, function(self) if quake.random() < 0.2 then quake.sound(self, C.CHAN_VOICE, "knight/idle.wav", 1, C.ATTN_IDLE) end; ai.run(self, 16) end)
-knight_run[2] = animation.frame(f.runb2, function() return knight_run[3] end, function(self) ai.run(self, 20) end)
-knight_run[3] = animation.frame(f.runb3, function() return knight_run[4] end, function(self) ai.run(self, 13) end)
-knight_run[4] = animation.frame(f.runb4, function() return knight_run[5] end, function(self) ai.run(self, 7) end)
-knight_run[5] = animation.frame(f.runb5, function() return knight_run[6] end, function(self) ai.run(self, 16) end)
-knight_run[6] = animation.frame(f.runb6, function() return knight_run[7] end, function(self) ai.run(self, 20) end)
-knight_run[7] = animation.frame(f.runb7, function() return knight_run[8] end, function(self) ai.run(self, 14) end)
-knight_run[8] = animation.frame(f.runb8, function() return knight_run[1] end, function(self) ai.run(self, 6) end)
+local knight_run = animation.loop({
+    { f.runb1, function(self) if quake.random() < 0.2 then quake.sound(self, C.CHAN_VOICE, "knight/idle.wav", 1, C.ATTN_IDLE) end; ai.run(self, 16) end },
+    { f.runb2, function(self) ai.run(self, 20) end },
+    { f.runb3, function(self) ai.run(self, 13) end },
+    { f.runb4, function(self) ai.run(self, 7) end },
+    { f.runb5, function(self) ai.run(self, 16) end },
+    { f.runb6, function(self) ai.run(self, 20) end },
+    { f.runb7, function(self) ai.run(self, 14) end },
+    { f.runb8, function(self) ai.run(self, 6) end },
+})
 
-local knight_runatk = {}
-knight_runatk[1] = animation.frame(f.runattack1, function() return knight_runatk[2] end, function(self) if quake.random() > 0.5 then quake.sound(self, C.CHAN_WEAPON, "knight/sword2.wav", 1, C.ATTN_NORM) else quake.sound(self, C.CHAN_WEAPON, "knight/sword1.wav", 1, C.ATTN_NORM) end; fight.charge(self, 20) end)
-knight_runatk[2] = animation.frame(f.runattack2, function() return knight_runatk[3] end, function(self) fight.charge_side(self) end)
-knight_runatk[3] = animation.frame(f.runattack3, function() return knight_runatk[4] end, function(self) fight.charge_side(self) end)
-knight_runatk[4] = animation.frame(f.runattack4, function() return knight_runatk[5] end, function(self) fight.charge_side(self) end)
-knight_runatk[5] = animation.frame(f.runattack5, function() return knight_runatk[6] end, function(self) fight.melee_side(self) end)
-knight_runatk[6] = animation.frame(f.runattack6, function() return knight_runatk[7] end, function(self) fight.melee_side(self) end)
-knight_runatk[7] = animation.frame(f.runattack7, function() return knight_runatk[8] end, function(self) fight.melee_side(self) end)
-knight_runatk[8] = animation.frame(f.runattack8, function() return knight_runatk[9] end, function(self) fight.melee_side(self) end)
-knight_runatk[9] = animation.frame(f.runattack9, function() return knight_runatk[10] end, function(self) fight.melee_side(self) end)
-knight_runatk[10] = animation.frame(f.runattack10, function() return knight_runatk[11] end, function(self) fight.charge_side(self) end)
-knight_runatk[11] = animation.frame(f.runattack11, function() return knight_run[1] end, function(self) fight.charge(self, 10) end)
+local knight_runatk = animation.sequence({
+    { f.runattack1, function(self) if quake.random() > 0.5 then quake.sound(self, C.CHAN_WEAPON, "knight/sword2.wav", 1, C.ATTN_NORM) else quake.sound(self, C.CHAN_WEAPON, "knight/sword1.wav", 1, C.ATTN_NORM) end; fight.charge(self, 20) end },
+    { f.runattack2, function(self) fight.charge_side(self) end },
+    { f.runattack3, function(self) fight.charge_side(self) end },
+    { f.runattack4, function(self) fight.charge_side(self) end },
+    { f.runattack5, function(self) fight.melee_side(self) end },
+    { f.runattack6, function(self) fight.melee_side(self) end },
+    { f.runattack7, function(self) fight.melee_side(self) end },
+    { f.runattack8, function(self) fight.melee_side(self) end },
+    { f.runattack9, function(self) fight.melee_side(self) end },
+    { f.runattack10, function(self) fight.charge_side(self) end },
+    { f.runattack11, function(self) fight.charge(self, 10) end },
+}, function() return knight_run end)
 
-local knight_atk = {}
-knight_atk[1] = animation.frame(f.attackb1, function() return knight_atk[2] end, function(self) quake.sound(self, C.CHAN_WEAPON, "knight/sword1.wav", 1, C.ATTN_NORM); fight.charge(self, 0) end)
-knight_atk[2] = animation.frame(f.attackb2, function() return knight_atk[3] end, function(self) fight.charge(self, 7) end)
-knight_atk[3] = animation.frame(f.attackb3, function() return knight_atk[4] end, function(self) fight.charge(self, 4) end)
-knight_atk[4] = animation.frame(f.attackb4, function() return knight_atk[5] end, function(self) fight.charge(self, 0) end)
-knight_atk[5] = animation.frame(f.attackb5, function() return knight_atk[6] end, function(self) fight.charge(self, 3) end)
-knight_atk[6] = animation.frame(f.attackb6, function() return knight_atk[7] end, function(self) fight.charge(self, 4); fight.melee(self) end)
-knight_atk[7] = animation.frame(f.attackb7, function() return knight_atk[8] end, function(self) fight.charge(self, 1); fight.melee(self) end)
-knight_atk[8] = animation.frame(f.attackb8, function() return knight_atk[9] end, function(self) fight.charge(self, 3); fight.melee(self) end)
-knight_atk[9] = animation.frame(f.attackb9, function() return knight_atk[10] end, function(self) fight.charge(self, 1) end)
-knight_atk[10] = animation.frame(f.attackb10, function() return knight_run[1] end, function(self) fight.charge(self, 5) end)
+local knight_atk = animation.sequence({
+    { f.attackb1, function(self) quake.sound(self, C.CHAN_WEAPON, "knight/sword1.wav", 1, C.ATTN_NORM); fight.charge(self, 0) end },
+    { f.attackb2, function(self) fight.charge(self, 7) end },
+    { f.attackb3, function(self) fight.charge(self, 4) end },
+    { f.attackb4, function(self) fight.charge(self, 0) end },
+    { f.attackb5, function(self) fight.charge(self, 3) end },
+    { f.attackb6, function(self) fight.charge(self, 4); fight.melee(self) end },
+    { f.attackb7, function(self) fight.charge(self, 1); fight.melee(self) end },
+    { f.attackb8, function(self) fight.charge(self, 3); fight.melee(self) end },
+    { f.attackb9, function(self) fight.charge(self, 1) end },
+    { f.attackb10, function(self) fight.charge(self, 5) end },
+}, function() return knight_run end)
 
 --===========================================================================
 
-local knight_pain = {}
-knight_pain[1] = animation.frame(f.pain1, function() return knight_pain[2] end)
-knight_pain[2] = animation.frame(f.pain2, function() return knight_pain[3] end)
-knight_pain[3] = animation.frame(f.pain3, function() return knight_run[1] end)
+local knight_pain = animation.sequence({
+    { f.pain1 },
+    { f.pain2 },
+    { f.pain3 },
+}, function() return knight_run end)
 
-local knight_painb = {}
-knight_painb[1] = animation.frame(f.painb1, function() return knight_painb[2] end, function(self) ai.pain_forward(self, 0) end)
-knight_painb[2] = animation.frame(f.painb2, function() return knight_painb[3] end, function(self) ai.pain_forward(self, 3) end)
-knight_painb[3] = animation.frame(f.painb3, function() return knight_painb[4] end)
-knight_painb[4] = animation.frame(f.painb4, function() return knight_painb[5] end)
-knight_painb[5] = animation.frame(f.painb5, function() return knight_painb[6] end, function(self) ai.pain_forward(self, 2) end)
-knight_painb[6] = animation.frame(f.painb6, function() return knight_painb[7] end, function(self) ai.pain_forward(self, 4) end)
-knight_painb[7] = animation.frame(f.painb7, function() return knight_painb[8] end, function(self) ai.pain_forward(self, 2) end)
-knight_painb[8] = animation.frame(f.painb8, function() return knight_painb[9] end, function(self) ai.pain_forward(self, 5) end)
-knight_painb[9] = animation.frame(f.painb9, function() return knight_painb[10] end, function(self) ai.pain_forward(self, 5) end)
-knight_painb[10] = animation.frame(f.painb10, function() return knight_painb[11] end, function(self) ai.pain_forward(self, 0) end)
-knight_painb[11] = animation.frame(f.painb11, function() return knight_run[1] end)
+local knight_painb = animation.sequence({
+    { f.painb1, function(self) ai.pain_forward(self, 0) end },
+    { f.painb2, function(self) ai.pain_forward(self, 3) end },
+    { f.painb3 },
+    { f.painb4 },
+    { f.painb5, function(self) ai.pain_forward(self, 2) end },
+    { f.painb6, function(self) ai.pain_forward(self, 4) end },
+    { f.painb7, function(self) ai.pain_forward(self, 2) end },
+    { f.painb8, function(self) ai.pain_forward(self, 5) end },
+    { f.painb9, function(self) ai.pain_forward(self, 5) end },
+    { f.painb10, function(self) ai.pain_forward(self, 0) end },
+    { f.painb11 },
+}, function() return knight_run end)
 
 ---@param self entity
 ---@param _attacker entity
@@ -163,52 +170,59 @@ local function knight_pain_handler(self, _attacker, _damage)
     local r = quake.random()
     quake.sound(self, C.CHAN_VOICE, "knight/khurt.wav", 1, C.ATTN_NORM)
     if r < 0.85 then
-        knight_pain[1](self)
+        knight_pain(self)
         self.pain_finished = quake.time() + 1
     else
-        knight_painb[1](self)
+        knight_painb(self)
         self.pain_finished = quake.time() + 1
     end
 end
 
 --===========================================================================
 
-local knight_bow = {}
-knight_bow[1] = animation.frame(f.kneel1, function() return knight_bow[2] end, ai.turn)
-knight_bow[2] = animation.frame(f.kneel2, function() return knight_bow[3] end, ai.turn)
-knight_bow[3] = animation.frame(f.kneel3, function() return knight_bow[4] end, ai.turn)
-knight_bow[4] = animation.frame(f.kneel4, function() return knight_bow[5] end, ai.turn)
-knight_bow[5] = animation.frame(f.kneel5, function() return knight_bow[5] end, ai.turn)
-knight_bow[6] = animation.frame(f.kneel4, function() return knight_bow[7] end, ai.turn)
-knight_bow[7] = animation.frame(f.kneel3, function() return knight_bow[8] end, ai.turn)
-knight_bow[8] = animation.frame(f.kneel2, function() return knight_bow[9] end, ai.turn)
-knight_bow[9] = animation.frame(f.kneel1, function() return knight_bow[10] end, ai.turn)
-knight_bow[10] = animation.frame(f.walk1, function() return knight_walk[1] end, ai.turn)
+local knight_bow
+local knight_bow_up
+knight_bow = animation.hold({
+    { f.kneel1, ai.turn },
+    { f.kneel2, ai.turn },
+    { f.kneel3, ai.turn },
+    { f.kneel4, ai.turn },
+    { f.kneel5, ai.turn },
+})
+knight_bow_up = animation.sequence({
+    { f.kneel4, ai.turn },
+    { f.kneel3, ai.turn },
+    { f.kneel2, ai.turn },
+    { f.kneel1, ai.turn },
+    { f.walk1, ai.turn },
+}, function() return knight_walk end)
 
-local knight_die = {}
-knight_die[1] = animation.frame(f.death1, function() return knight_die[2] end)
-knight_die[2] = animation.frame(f.death2, function() return knight_die[3] end)
-knight_die[3] = animation.frame(f.death3, function() return knight_die[4] end, function(self) self.solid = C.SOLID_NOT end)
-knight_die[4] = animation.frame(f.death4, function() return knight_die[5] end)
-knight_die[5] = animation.frame(f.death5, function() return knight_die[6] end)
-knight_die[6] = animation.frame(f.death6, function() return knight_die[7] end)
-knight_die[7] = animation.frame(f.death7, function() return knight_die[8] end)
-knight_die[8] = animation.frame(f.death8, function() return knight_die[9] end)
-knight_die[9] = animation.frame(f.death9, function() return knight_die[10] end)
-knight_die[10] = animation.frame(f.death10, function() return knight_die[10] end)
+local knight_die = animation.hold({
+    { f.death1 },
+    { f.death2 },
+    { f.death3, function(self) self.solid = C.SOLID_NOT end },
+    { f.death4 },
+    { f.death5 },
+    { f.death6 },
+    { f.death7 },
+    { f.death8 },
+    { f.death9 },
+    { f.death10 },
+})
 
-local knight_dieb = {}
-knight_dieb[1] = animation.frame(f.deathb1, function() return knight_dieb[2] end)
-knight_dieb[2] = animation.frame(f.deathb2, function() return knight_dieb[3] end)
-knight_dieb[3] = animation.frame(f.deathb3, function() return knight_dieb[4] end, function(self) self.solid = C.SOLID_NOT end)
-knight_dieb[4] = animation.frame(f.deathb4, function() return knight_dieb[5] end)
-knight_dieb[5] = animation.frame(f.deathb5, function() return knight_dieb[6] end)
-knight_dieb[6] = animation.frame(f.deathb6, function() return knight_dieb[7] end)
-knight_dieb[7] = animation.frame(f.deathb7, function() return knight_dieb[8] end)
-knight_dieb[8] = animation.frame(f.deathb8, function() return knight_dieb[9] end)
-knight_dieb[9] = animation.frame(f.deathb9, function() return knight_dieb[10] end)
-knight_dieb[10] = animation.frame(f.deathb10, function() return knight_dieb[11] end)
-knight_dieb[11] = animation.frame(f.deathb11, function() return knight_dieb[11] end)
+local knight_dieb = animation.hold({
+    { f.deathb1 },
+    { f.deathb2 },
+    { f.deathb3, function(self) self.solid = C.SOLID_NOT end },
+    { f.deathb4 },
+    { f.deathb5 },
+    { f.deathb6 },
+    { f.deathb7 },
+    { f.deathb8 },
+    { f.deathb9 },
+    { f.deathb10 },
+    { f.deathb11 },
+})
 
 ---@param self entity
 ---@return nil
@@ -225,7 +239,7 @@ local function knight_die_handler(self)
 
     -- regular death
     quake.sound(self, C.CHAN_VOICE, "knight/kdeath.wav", 1, C.ATTN_NORM)
-    if quake.random() < 0.5 then knight_die[1](self) else knight_dieb[1](self) end
+    if quake.random() < 0.5 then knight_die(self) else knight_dieb(self) end
 end
 
 ---QUAKED monster_knight (1 0 0) (-16 -16 -24) (16 16 40) Ambush
@@ -246,17 +260,17 @@ function M.spawn(self)
     quake.set_model(self, "progs/knight.mdl")
     quake.set_size(self, quake.vec3(-16, -16, -24), quake.vec3(16, 16, 40))
     self.health = 75
-    self.th_stand = knight_stand[1]
-    self.th_walk = knight_walk[1]
-    self.th_run = knight_run[1]
-    self.th_melee = knight_atk[1]
+    self.th_stand = knight_stand
+    self.th_walk = knight_walk
+    self.th_run = knight_run
+    self.th_melee = knight_atk
     self.th_pain = knight_pain_handler
     self.th_die = knight_die_handler
     monsters.walk_start(self)
 end
 
-M.atk1 = knight_atk[1]
-M.runatk1 = knight_runatk[1]
+M.atk1 = knight_atk
+M.runatk1 = knight_runatk
 
 quake.register_entity("monster_knight", M.spawn)
 

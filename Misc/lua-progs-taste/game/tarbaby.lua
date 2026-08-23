@@ -64,70 +64,74 @@ BLOB (Spawn)
 ==============================================================================
 ]]
 
-local tbaby_stand1
-tbaby_stand1 = animation.frame(f.walk1, function() return tbaby_stand1 end, ai.stand)
+local tbaby_stand1 = animation.loop({
+    { f.walk1, ai.stand },
+})
 
-local tbaby_hang1
-tbaby_hang1 = animation.frame(f.walk1, function() return tbaby_hang1 end, ai.stand)
+local tbaby_hang1 = animation.loop({
+    { f.walk1, ai.stand },
+})
 
-local tbaby_walk = {}
-tbaby_walk[1] = animation.frame(f.walk1, function() return tbaby_walk[2] end, ai.turn)
-tbaby_walk[2] = animation.frame(f.walk2, function() return tbaby_walk[3] end, ai.turn)
-tbaby_walk[3] = animation.frame(f.walk3, function() return tbaby_walk[4] end, ai.turn)
-tbaby_walk[4] = animation.frame(f.walk4, function() return tbaby_walk[5] end, ai.turn)
-tbaby_walk[5] = animation.frame(f.walk5, function() return tbaby_walk[6] end, ai.turn)
-tbaby_walk[6] = animation.frame(f.walk6, function() return tbaby_walk[7] end, ai.turn)
-tbaby_walk[7] = animation.frame(f.walk7, function() return tbaby_walk[8] end, ai.turn)
-tbaby_walk[8] = animation.frame(f.walk8, function() return tbaby_walk[9] end, ai.turn)
-tbaby_walk[9] = animation.frame(f.walk9, function() return tbaby_walk[10] end, ai.turn)
-tbaby_walk[10] = animation.frame(f.walk10, function() return tbaby_walk[11] end, ai.turn)
-tbaby_walk[11] = animation.frame(f.walk11, function() return tbaby_walk[12] end, function(self) ai.walk(self, 2) end)
-tbaby_walk[12] = animation.frame(f.walk12, function() return tbaby_walk[13] end, function(self) ai.walk(self, 2) end)
-tbaby_walk[13] = animation.frame(f.walk13, function() return tbaby_walk[14] end, function(self) ai.walk(self, 2) end)
-tbaby_walk[14] = animation.frame(f.walk14, function() return tbaby_walk[15] end, function(self) ai.walk(self, 2) end)
-tbaby_walk[15] = animation.frame(f.walk15, function() return tbaby_walk[16] end, function(self) ai.walk(self, 2) end)
-tbaby_walk[16] = animation.frame(f.walk16, function() return tbaby_walk[17] end, function(self) ai.walk(self, 2) end)
-tbaby_walk[17] = animation.frame(f.walk17, function() return tbaby_walk[18] end, function(self) ai.walk(self, 2) end)
-tbaby_walk[18] = animation.frame(f.walk18, function() return tbaby_walk[19] end, function(self) ai.walk(self, 2) end)
-tbaby_walk[19] = animation.frame(f.walk19, function() return tbaby_walk[20] end, function(self) ai.walk(self, 2) end)
-tbaby_walk[20] = animation.frame(f.walk20, function() return tbaby_walk[21] end, function(self) ai.walk(self, 2) end)
-tbaby_walk[21] = animation.frame(f.walk21, function() return tbaby_walk[22] end, function(self) ai.walk(self, 2) end)
-tbaby_walk[22] = animation.frame(f.walk22, function() return tbaby_walk[23] end, function(self) ai.walk(self, 2) end)
-tbaby_walk[23] = animation.frame(f.walk23, function() return tbaby_walk[24] end, function(self) ai.walk(self, 2) end)
-tbaby_walk[24] = animation.frame(f.walk24, function() return tbaby_walk[25] end, function(self) ai.walk(self, 2) end)
-tbaby_walk[25] = animation.frame(f.walk25, function() return tbaby_walk[1] end, function(self) ai.walk(self, 2) end)
+local tbaby_walk = animation.loop({
+    { f.walk1, ai.turn },
+    { f.walk2, ai.turn },
+    { f.walk3, ai.turn },
+    { f.walk4, ai.turn },
+    { f.walk5, ai.turn },
+    { f.walk6, ai.turn },
+    { f.walk7, ai.turn },
+    { f.walk8, ai.turn },
+    { f.walk9, ai.turn },
+    { f.walk10, ai.turn },
+    { f.walk11, function(self) ai.walk(self, 2) end },
+    { f.walk12, function(self) ai.walk(self, 2) end },
+    { f.walk13, function(self) ai.walk(self, 2) end },
+    { f.walk14, function(self) ai.walk(self, 2) end },
+    { f.walk15, function(self) ai.walk(self, 2) end },
+    { f.walk16, function(self) ai.walk(self, 2) end },
+    { f.walk17, function(self) ai.walk(self, 2) end },
+    { f.walk18, function(self) ai.walk(self, 2) end },
+    { f.walk19, function(self) ai.walk(self, 2) end },
+    { f.walk20, function(self) ai.walk(self, 2) end },
+    { f.walk21, function(self) ai.walk(self, 2) end },
+    { f.walk22, function(self) ai.walk(self, 2) end },
+    { f.walk23, function(self) ai.walk(self, 2) end },
+    { f.walk24, function(self) ai.walk(self, 2) end },
+    { f.walk25, function(self) ai.walk(self, 2) end },
+})
 
-local tbaby_run = {}
-tbaby_run[1] = animation.frame(f.run1, function() return tbaby_run[2] end, fight.face)
-tbaby_run[2] = animation.frame(f.run2, function() return tbaby_run[3] end, fight.face)
-tbaby_run[3] = animation.frame(f.run3, function() return tbaby_run[4] end, fight.face)
-tbaby_run[4] = animation.frame(f.run4, function() return tbaby_run[5] end, fight.face)
-tbaby_run[5] = animation.frame(f.run5, function() return tbaby_run[6] end, fight.face)
-tbaby_run[6] = animation.frame(f.run6, function() return tbaby_run[7] end, fight.face)
-tbaby_run[7] = animation.frame(f.run7, function() return tbaby_run[8] end, fight.face)
-tbaby_run[8] = animation.frame(f.run8, function() return tbaby_run[9] end, fight.face)
-tbaby_run[9] = animation.frame(f.run9, function() return tbaby_run[10] end, fight.face)
-tbaby_run[10] = animation.frame(f.run10, function() return tbaby_run[11] end, fight.face)
-tbaby_run[11] = animation.frame(f.run11, function() return tbaby_run[12] end, function(self) ai.run(self, 2) end)
-tbaby_run[12] = animation.frame(f.run12, function() return tbaby_run[13] end, function(self) ai.run(self, 2) end)
-tbaby_run[13] = animation.frame(f.run13, function() return tbaby_run[14] end, function(self) ai.run(self, 2) end)
-tbaby_run[14] = animation.frame(f.run14, function() return tbaby_run[15] end, function(self) ai.run(self, 2) end)
-tbaby_run[15] = animation.frame(f.run15, function() return tbaby_run[16] end, function(self) ai.run(self, 2) end)
-tbaby_run[16] = animation.frame(f.run16, function() return tbaby_run[17] end, function(self) ai.run(self, 2) end)
-tbaby_run[17] = animation.frame(f.run17, function() return tbaby_run[18] end, function(self) ai.run(self, 2) end)
-tbaby_run[18] = animation.frame(f.run18, function() return tbaby_run[19] end, function(self) ai.run(self, 2) end)
-tbaby_run[19] = animation.frame(f.run19, function() return tbaby_run[20] end, function(self) ai.run(self, 2) end)
-tbaby_run[20] = animation.frame(f.run20, function() return tbaby_run[21] end, function(self) ai.run(self, 2) end)
-tbaby_run[21] = animation.frame(f.run21, function() return tbaby_run[22] end, function(self) ai.run(self, 2) end)
-tbaby_run[22] = animation.frame(f.run22, function() return tbaby_run[23] end, function(self) ai.run(self, 2) end)
-tbaby_run[23] = animation.frame(f.run23, function() return tbaby_run[24] end, function(self) ai.run(self, 2) end)
-tbaby_run[24] = animation.frame(f.run24, function() return tbaby_run[25] end, function(self) ai.run(self, 2) end)
-tbaby_run[25] = animation.frame(f.run25, function() return tbaby_run[1] end, function(self) ai.run(self, 2) end)
+local tbaby_run = animation.loop({
+    { f.run1, fight.face },
+    { f.run2, fight.face },
+    { f.run3, fight.face },
+    { f.run4, fight.face },
+    { f.run5, fight.face },
+    { f.run6, fight.face },
+    { f.run7, fight.face },
+    { f.run8, fight.face },
+    { f.run9, fight.face },
+    { f.run10, fight.face },
+    { f.run11, function(self) ai.run(self, 2) end },
+    { f.run12, function(self) ai.run(self, 2) end },
+    { f.run13, function(self) ai.run(self, 2) end },
+    { f.run14, function(self) ai.run(self, 2) end },
+    { f.run15, function(self) ai.run(self, 2) end },
+    { f.run16, function(self) ai.run(self, 2) end },
+    { f.run17, function(self) ai.run(self, 2) end },
+    { f.run18, function(self) ai.run(self, 2) end },
+    { f.run19, function(self) ai.run(self, 2) end },
+    { f.run20, function(self) ai.run(self, 2) end },
+    { f.run21, function(self) ai.run(self, 2) end },
+    { f.run22, function(self) ai.run(self, 2) end },
+    { f.run23, function(self) ai.run(self, 2) end },
+    { f.run24, function(self) ai.run(self, 2) end },
+    { f.run25, function(self) ai.run(self, 2) end },
+})
 
 --============================================================================
 
-local tbaby_jump = {}
-
+local tbaby_jump
+local tbaby_jump_air
 ---@param self entity
 ---@param other entity
 ---@return nil
@@ -146,7 +150,7 @@ local function tar_jump_touch(self, other)
         if (self.flags & FL_ONGROUND) ~= 0 then
             -- jump randomly to not get hung up
             self.touch = subs.null
-            self.think = tbaby_run[1]
+            self.think = tbaby_run
             self.movetype = C.MOVETYPE_STEP
             self.nextthink = quake.time() + 0.1
         end
@@ -154,61 +158,65 @@ local function tar_jump_touch(self, other)
     end
 
     self.touch = subs.null
-    self.think = tbaby_jump[1]
+    self.think = tbaby_jump
     self.nextthink = quake.time() + 0.1
 end
 
+local tbaby_fly = animation.loop({
+    { f.fly1 },
+    { f.fly2 },
+    { f.fly3 },
+    { f.fly4, function(self)
+        self.cnt = self.cnt + 1
+        if self.cnt == 4 then
+            tbaby_jump_air(self)
+        end
+    end },
+})
 
-
-local tbaby_fly = {}
-tbaby_fly[1] = animation.frame(f.fly1, function() return tbaby_fly[2] end)
-tbaby_fly[2] = animation.frame(f.fly2, function() return tbaby_fly[3] end)
-tbaby_fly[3] = animation.frame(f.fly3, function() return tbaby_fly[4] end)
-tbaby_fly[4] = animation.frame(f.fly4, function() return tbaby_fly[1] end, function(self)
-    self.cnt = self.cnt + 1
-    if self.cnt == 4 then
-        tbaby_jump[5](self)
-    end
-end)
-
-tbaby_jump[1] = animation.frame(f.jump1, function() return tbaby_jump[2] end, fight.face)
-tbaby_jump[2] = animation.frame(f.jump2, function() return tbaby_jump[3] end, fight.face)
-tbaby_jump[3] = animation.frame(f.jump3, function() return tbaby_jump[4] end, fight.face)
-tbaby_jump[4] = animation.frame(f.jump4, function() return tbaby_jump[5] end, fight.face)
-tbaby_jump[5] = animation.frame(f.jump5, function() return tbaby_jump[6] end, function(self)
-    self.movetype = MOVETYPE_BOUNCE
-    self.touch = tar_jump_touch
-    local vectors = quake.make_vectors(self.angles)
-    self.origin = self.origin + quake.vec3(0, 0, 1)
-    self.velocity = vectors.forward * 600 + quake.vec3(0, 0, 200)
-    self.velocity = self.velocity + quake.vec3(0, 0, quake.random() * 150)
-    if (self.flags & FL_ONGROUND) ~= 0 then
-        self.flags = self.flags - FL_ONGROUND
-    end
-    self.cnt = 0
-end)
-tbaby_jump[6] = animation.frame(f.jump6, function() return tbaby_fly[1] end)
+tbaby_jump = animation.sequence({
+    { f.jump1, fight.face },
+    { f.jump2, fight.face },
+    { f.jump3, fight.face },
+    { f.jump4, fight.face },
+}, function() return tbaby_jump_air end)
+tbaby_jump_air = animation.sequence({
+    { f.jump5, function(self)
+        self.movetype = MOVETYPE_BOUNCE
+        self.touch = tar_jump_touch
+        local vectors = quake.make_vectors(self.angles)
+        self.origin = self.origin + quake.vec3(0, 0, 1)
+        self.velocity = vectors.forward * 600 + quake.vec3(0, 0, 200)
+        self.velocity = self.velocity + quake.vec3(0, 0, quake.random() * 150)
+        if (self.flags & FL_ONGROUND) ~= 0 then
+            self.flags = self.flags - FL_ONGROUND
+        end
+        self.cnt = 0
+    end },
+    { f.jump6 },
+}, function() return tbaby_fly end)
 
 --============================================================================
 
-local tbaby_die = {}
-tbaby_die[1] = animation.frame(f.exp, function() return tbaby_die[2] end, function(self)
-    self.takedamage = C.DAMAGE_NO
-end)
-tbaby_die[2] = animation.frame(f.exp, function() return tbaby_run[1] end, function(self)
-    combat.radius_damage(self, self, 120, quake.world)
+local tbaby_die = animation.sequence({
+    { f.exp, function(self)
+        self.takedamage = C.DAMAGE_NO
+    end },
+    { f.exp, function(self)
+        combat.radius_damage(self, self, 120, quake.world)
 
-    quake.sound(self, C.CHAN_VOICE, "blob/death1.wav", 1, C.ATTN_NORM)
-    self.origin = self.origin - self.velocity:normalized() * 8
+        quake.sound(self, C.CHAN_VOICE, "blob/death1.wav", 1, C.ATTN_NORM)
+        self.origin = self.origin - self.velocity:normalized() * 8
 
-    quake.write_byte(0, 23)
-    quake.write_byte(0, 11)
-    quake.write_coord(0, self.origin.x)
-    quake.write_coord(0, self.origin.y)
-    quake.write_coord(0, self.origin.z)
+        quake.write_byte(0, 23)
+        quake.write_byte(0, 11)
+        quake.write_coord(0, self.origin.x)
+        quake.write_coord(0, self.origin.y)
+        quake.write_coord(0, self.origin.z)
 
-    weapons.become_explosion(self)
-end)
+        weapons.become_explosion(self)
+    end },
+}, function() return tbaby_run end)
 
 --============================================================================
 
@@ -236,11 +244,11 @@ function M.spawn(self)
     self.health = 80
 
     self.th_stand = tbaby_stand1
-    self.th_walk = tbaby_walk[1]
-    self.th_run = tbaby_run[1]
-    self.th_missile = tbaby_jump[1]
-    self.th_melee = tbaby_jump[1]
-    self.th_die = tbaby_die[1]
+    self.th_walk = tbaby_walk
+    self.th_run = tbaby_run
+    self.th_missile = tbaby_jump
+    self.th_melee = tbaby_jump
+    self.th_die = tbaby_die
 
     monsters.walk_start(self)
 end

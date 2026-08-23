@@ -66,80 +66,97 @@ DEMON (Fiend)
 
 local demon_jump_touch, demon_melee
 
-local demon1_stand = {}
-demon1_stand[1] = animation.frame(f.stand1, function() return demon1_stand[2] end, ai.stand)
-demon1_stand[2] = animation.frame(f.stand2, function() return demon1_stand[3] end, ai.stand)
-demon1_stand[3] = animation.frame(f.stand3, function() return demon1_stand[4] end, ai.stand)
-demon1_stand[4] = animation.frame(f.stand4, function() return demon1_stand[5] end, ai.stand)
-demon1_stand[5] = animation.frame(f.stand5, function() return demon1_stand[6] end, ai.stand)
-demon1_stand[6] = animation.frame(f.stand6, function() return demon1_stand[7] end, ai.stand)
-demon1_stand[7] = animation.frame(f.stand7, function() return demon1_stand[8] end, ai.stand)
-demon1_stand[8] = animation.frame(f.stand8, function() return demon1_stand[9] end, ai.stand)
-demon1_stand[9] = animation.frame(f.stand9, function() return demon1_stand[10] end, ai.stand)
-demon1_stand[10] = animation.frame(f.stand10, function() return demon1_stand[11] end, ai.stand)
-demon1_stand[11] = animation.frame(f.stand11, function() return demon1_stand[12] end, ai.stand)
-demon1_stand[12] = animation.frame(f.stand12, function() return demon1_stand[13] end, ai.stand)
-demon1_stand[13] = animation.frame(f.stand13, function() return demon1_stand[1] end, ai.stand)
+local demon1_stand = animation.loop({
+    { f.stand1, ai.stand },
+    { f.stand2, ai.stand },
+    { f.stand3, ai.stand },
+    { f.stand4, ai.stand },
+    { f.stand5, ai.stand },
+    { f.stand6, ai.stand },
+    { f.stand7, ai.stand },
+    { f.stand8, ai.stand },
+    { f.stand9, ai.stand },
+    { f.stand10, ai.stand },
+    { f.stand11, ai.stand },
+    { f.stand12, ai.stand },
+    { f.stand13, ai.stand },
+})
 
-local demon1_walk = {}
-demon1_walk[1] = animation.frame(f.walk1, function() return demon1_walk[2] end, function(self) if quake.random() < 0.2 then quake.sound(self, C.CHAN_VOICE, "demon/idle1.wav", 1, C.ATTN_IDLE) end; ai.walk(self, 8) end)
-demon1_walk[2] = animation.frame(f.walk2, function() return demon1_walk[3] end, function(self) ai.walk(self, 6) end)
-demon1_walk[3] = animation.frame(f.walk3, function() return demon1_walk[4] end, function(self) ai.walk(self, 6) end)
-demon1_walk[4] = animation.frame(f.walk4, function() return demon1_walk[5] end, function(self) ai.walk(self, 7) end)
-demon1_walk[5] = animation.frame(f.walk5, function() return demon1_walk[6] end, function(self) ai.walk(self, 4) end)
-demon1_walk[6] = animation.frame(f.walk6, function() return demon1_walk[7] end, function(self) ai.walk(self, 6) end)
-demon1_walk[7] = animation.frame(f.walk7, function() return demon1_walk[8] end, function(self) ai.walk(self, 10) end)
-demon1_walk[8] = animation.frame(f.walk8, function() return demon1_walk[1] end, function(self) ai.walk(self, 10) end)
+local demon1_walk = animation.loop({
+    { f.walk1, function(self) if quake.random() < 0.2 then quake.sound(self, C.CHAN_VOICE, "demon/idle1.wav", 1, C.ATTN_IDLE) end; ai.walk(self, 8) end },
+    { f.walk2, function(self) ai.walk(self, 6) end },
+    { f.walk3, function(self) ai.walk(self, 6) end },
+    { f.walk4, function(self) ai.walk(self, 7) end },
+    { f.walk5, function(self) ai.walk(self, 4) end },
+    { f.walk6, function(self) ai.walk(self, 6) end },
+    { f.walk7, function(self) ai.walk(self, 10) end },
+    { f.walk8, function(self) ai.walk(self, 10) end },
+})
 
-local demon1_run = {}
-demon1_run[1] = animation.frame(f.run1, function() return demon1_run[2] end, function(self) if quake.random() < 0.2 then quake.sound(self, C.CHAN_VOICE, "demon/idle1.wav", 1, C.ATTN_IDLE) end; ai.run(self, 20) end)
-demon1_run[2] = animation.frame(f.run2, function() return demon1_run[3] end, function(self) ai.run(self, 15) end)
-demon1_run[3] = animation.frame(f.run3, function() return demon1_run[4] end, function(self) ai.run(self, 36) end)
-demon1_run[4] = animation.frame(f.run4, function() return demon1_run[5] end, function(self) ai.run(self, 20) end)
-demon1_run[5] = animation.frame(f.run5, function() return demon1_run[6] end, function(self) ai.run(self, 15) end)
-demon1_run[6] = animation.frame(f.run6, function() return demon1_run[1] end, function(self) ai.run(self, 36) end)
+local demon1_run = animation.loop({
+    { f.run1, function(self) if quake.random() < 0.2 then quake.sound(self, C.CHAN_VOICE, "demon/idle1.wav", 1, C.ATTN_IDLE) end; ai.run(self, 20) end },
+    { f.run2, function(self) ai.run(self, 15) end },
+    { f.run3, function(self) ai.run(self, 36) end },
+    { f.run4, function(self) ai.run(self, 20) end },
+    { f.run5, function(self) ai.run(self, 15) end },
+    { f.run6, function(self) ai.run(self, 36) end },
+})
 
-local demon1_jump = {}
-demon1_jump[1] = animation.frame(f.leap1, function() return demon1_jump[2] end, fight.face)
-demon1_jump[2] = animation.frame(f.leap2, function() return demon1_jump[3] end, fight.face)
-demon1_jump[3] = animation.frame(f.leap3, function() return demon1_jump[4] end, fight.face)
-demon1_jump[4] = animation.frame(f.leap4, function() return demon1_jump[5] end, function(self) fight.face(self); self.touch = demon_jump_touch; local vectors = quake.make_vectors(self.angles); self.origin = self.origin + quake.vec3(0, 0, 1); self.velocity = vectors.forward * 600 + quake.vec3(0, 0, 250); if (self.flags & C.FL_ONGROUND) ~= 0 then self.flags = self.flags - C.FL_ONGROUND end end)
-demon1_jump[5] = animation.frame(f.leap5, function() return demon1_jump[6] end)
-demon1_jump[6] = animation.frame(f.leap6, function() return demon1_jump[7] end)
-demon1_jump[7] = animation.frame(f.leap7, function() return demon1_jump[8] end)
-demon1_jump[8] = animation.frame(f.leap8, function() return demon1_jump[9] end)
-demon1_jump[9] = animation.frame(f.leap9, function() return demon1_jump[10] end)
-demon1_jump[10] = animation.frame(f.leap10, function() return demon1_jump[1] end, function(self)
-    self.nextthink = quake.time() + 3
-    -- if three seconds pass, assume demon is stuck and jump again
-end)
-demon1_jump[11] = animation.frame(f.leap11, function() return demon1_jump[12] end)
-demon1_jump[12] = animation.frame(f.leap12, function() return demon1_run[1] end)
+local demon1_jump
+local demon1_jump_land
+demon1_jump = animation.loop({
+    { f.leap1, fight.face },
+    { f.leap2, fight.face },
+    { f.leap3, fight.face },
+    { f.leap4, function(self)
+        fight.face(self)
+        self.touch = demon_jump_touch
+        local vectors = quake.make_vectors(self.angles)
+        self.origin = self.origin + quake.vec3(0, 0, 1)
+        self.velocity = vectors.forward * 600 + quake.vec3(0, 0, 250)
+        if (self.flags & C.FL_ONGROUND) ~= 0 then self.flags = self.flags - C.FL_ONGROUND end
+    end },
+    { f.leap5 },
+    { f.leap6 },
+    { f.leap7 },
+    { f.leap8 },
+    { f.leap9 },
+    { f.leap10, function(self)
+        self.nextthink = quake.time() + 3
+        -- if three seconds pass, assume demon is stuck and jump again
+    end },
+})
+demon1_jump_land = animation.sequence({
+    { f.leap11 },
+    { f.leap12 },
+}, function() return demon1_run end)
 
-local demon1_atta = {}
-demon1_atta[1] = animation.frame(f.attacka1, function() return demon1_atta[2] end, function(self) fight.charge(self, 4) end)
-demon1_atta[2] = animation.frame(f.attacka2, function() return demon1_atta[3] end, function(self) fight.charge(self, 0) end)
-demon1_atta[3] = animation.frame(f.attacka3, function() return demon1_atta[4] end, function(self) fight.charge(self, 0) end)
-demon1_atta[4] = animation.frame(f.attacka4, function() return demon1_atta[5] end, function(self) fight.charge(self, 1) end)
-demon1_atta[5] = animation.frame(f.attacka5, function() return demon1_atta[6] end, function(self) fight.charge(self, 2); demon_melee(self, 200) end)
-demon1_atta[6] = animation.frame(f.attacka6, function() return demon1_atta[7] end, function(self) fight.charge(self, 1) end)
-demon1_atta[7] = animation.frame(f.attacka7, function() return demon1_atta[8] end, function(self) fight.charge(self, 6) end)
-demon1_atta[8] = animation.frame(f.attacka8, function() return demon1_atta[9] end, function(self) fight.charge(self, 8) end)
-demon1_atta[9] = animation.frame(f.attacka9, function() return demon1_atta[10] end, function(self) fight.charge(self, 4) end)
-demon1_atta[10] = animation.frame(f.attacka10, function() return demon1_atta[11] end, function(self) fight.charge(self, 2) end)
-demon1_atta[11] = animation.frame(f.attacka11, function() return demon1_atta[12] end, function(self) demon_melee(self, -200) end)
-demon1_atta[12] = animation.frame(f.attacka12, function() return demon1_atta[13] end, function(self) fight.charge(self, 5) end)
-demon1_atta[13] = animation.frame(f.attacka13, function() return demon1_atta[14] end, function(self) fight.charge(self, 8) end)
-demon1_atta[14] = animation.frame(f.attacka14, function() return demon1_atta[15] end, function(self) fight.charge(self, 4) end)
-demon1_atta[15] = animation.frame(f.attacka15, function() return demon1_run[1] end, function(self) fight.charge(self, 4) end)
+local demon1_atta = animation.sequence({
+    { f.attacka1, function(self) fight.charge(self, 4) end },
+    { f.attacka2, function(self) fight.charge(self, 0) end },
+    { f.attacka3, function(self) fight.charge(self, 0) end },
+    { f.attacka4, function(self) fight.charge(self, 1) end },
+    { f.attacka5, function(self) fight.charge(self, 2); demon_melee(self, 200) end },
+    { f.attacka6, function(self) fight.charge(self, 1) end },
+    { f.attacka7, function(self) fight.charge(self, 6) end },
+    { f.attacka8, function(self) fight.charge(self, 8) end },
+    { f.attacka9, function(self) fight.charge(self, 4) end },
+    { f.attacka10, function(self) fight.charge(self, 2) end },
+    { f.attacka11, function(self) demon_melee(self, -200) end },
+    { f.attacka12, function(self) fight.charge(self, 5) end },
+    { f.attacka13, function(self) fight.charge(self, 8) end },
+    { f.attacka14, function(self) fight.charge(self, 4) end },
+    { f.attacka15, function(self) fight.charge(self, 4) end },
+}, function() return demon1_run end)
 
-local demon1_pain = {}
-demon1_pain[1] = animation.frame(f.pain1, function() return demon1_pain[2] end)
-demon1_pain[2] = animation.frame(f.pain2, function() return demon1_pain[3] end)
-demon1_pain[3] = animation.frame(f.pain3, function() return demon1_pain[4] end)
-demon1_pain[4] = animation.frame(f.pain4, function() return demon1_pain[5] end)
-demon1_pain[5] = animation.frame(f.pain5, function() return demon1_pain[6] end)
-demon1_pain[6] = animation.frame(f.pain6, function() return demon1_run[1] end)
+local demon1_pain = animation.sequence({
+    { f.pain1 },
+    { f.pain2 },
+    { f.pain3 },
+    { f.pain4 },
+    { f.pain5 },
+    { f.pain6 },
+}, function() return demon1_run end)
 
 ---@param self entity
 ---@param _attacker entity
@@ -151,19 +168,20 @@ local function demon1_pain_handler(self, _attacker, damage)
     self.pain_finished = quake.time() + 1
     quake.sound(self, C.CHAN_VOICE, "demon/dpain1.wav", 1, C.ATTN_NORM)
     if quake.random() * 200 > damage then return end -- didn't flinch
-    demon1_pain[1](self)
+    demon1_pain(self)
 end
 
-local demon1_die = {}
-demon1_die[1] = animation.frame(f.death1, function() return demon1_die[2] end, function(self) quake.sound(self, C.CHAN_VOICE, "demon/ddeath.wav", 1, C.ATTN_NORM) end)
-demon1_die[2] = animation.frame(f.death2, function() return demon1_die[3] end)
-demon1_die[3] = animation.frame(f.death3, function() return demon1_die[4] end)
-demon1_die[4] = animation.frame(f.death4, function() return demon1_die[5] end)
-demon1_die[5] = animation.frame(f.death5, function() return demon1_die[6] end)
-demon1_die[6] = animation.frame(f.death6, function() return demon1_die[7] end, function(self) self.solid = C.SOLID_NOT end)
-demon1_die[7] = animation.frame(f.death7, function() return demon1_die[8] end)
-demon1_die[8] = animation.frame(f.death8, function() return demon1_die[9] end)
-demon1_die[9] = animation.frame(f.death9, function() return demon1_die[9] end)
+local demon1_die = animation.hold({
+    { f.death1, function(self) quake.sound(self, C.CHAN_VOICE, "demon/ddeath.wav", 1, C.ATTN_NORM) end },
+    { f.death2 },
+    { f.death3 },
+    { f.death4 },
+    { f.death5 },
+    { f.death6, function(self) self.solid = C.SOLID_NOT end },
+    { f.death7 },
+    { f.death8 },
+    { f.death9 },
+})
 
 ---@param self entity
 ---@return nil
@@ -178,12 +196,12 @@ local function demon_die(self)
         return
     end
     -- regular death
-    demon1_die[1](self)
+    demon1_die(self)
 end
 
 ---@param self entity
 ---@return nil
-local function demon_melee_attack(self) demon1_atta[1](self) end
+local function demon_melee_attack(self) demon1_atta(self) end
 
 ---QUAKED monster_demon1 (1 0 0) (-32 -32 -24) (32 32 64) Ambush
 ---@param self entity
@@ -203,12 +221,12 @@ function M.spawn(self)
     quake.set_model(self, "progs/demon.mdl")
     quake.set_size(self, C.VEC_HULL2_MIN, C.VEC_HULL2_MAX)
     self.health = 300
-    self.th_stand = demon1_stand[1]
-    self.th_walk = demon1_walk[1]
-    self.th_run = demon1_run[1]
+    self.th_stand = demon1_stand
+    self.th_walk = demon1_walk
+    self.th_run = demon1_run
     self.th_die = demon_die
     self.th_melee = demon_melee_attack -- one of two attacks
-    self.th_missile = demon1_jump[1] -- jump attack
+    self.th_missile = demon1_jump -- jump attack
     self.th_pain = demon1_pain_handler
     self.check_attack = M.check_attack
     monsters.walk_start(self)
@@ -291,13 +309,13 @@ function demon_jump_touch(self, other)
         if (self.flags & C.FL_ONGROUND) ~= 0 then
             -- jump randomly to not get hung up
             self.touch = subs.null
-            self.think = demon1_jump[1]
+            self.think = demon1_jump
             self.nextthink = quake.time() + 0.1
         end
         return -- not on ground yet
     end
     self.touch = subs.null
-    self.think = demon1_jump[11]
+    self.think = demon1_jump_land
     self.nextthink = quake.time() + 0.1
 end
 

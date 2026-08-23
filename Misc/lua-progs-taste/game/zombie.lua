@@ -95,71 +95,75 @@ local SPAWN_CRUCIFIED = 1
 
 --=============================================================================
 
-local zombie_stand = {}
-zombie_stand[1] = animation.frame(f.stand1, function() return zombie_stand[2] end, ai.stand)
-zombie_stand[2] = animation.frame(f.stand2, function() return zombie_stand[3] end, ai.stand)
-zombie_stand[3] = animation.frame(f.stand3, function() return zombie_stand[4] end, ai.stand)
-zombie_stand[4] = animation.frame(f.stand4, function() return zombie_stand[5] end, ai.stand)
-zombie_stand[5] = animation.frame(f.stand5, function() return zombie_stand[6] end, ai.stand)
-zombie_stand[6] = animation.frame(f.stand6, function() return zombie_stand[7] end, ai.stand)
-zombie_stand[7] = animation.frame(f.stand7, function() return zombie_stand[8] end, ai.stand)
-zombie_stand[8] = animation.frame(f.stand8, function() return zombie_stand[9] end, ai.stand)
-zombie_stand[9] = animation.frame(f.stand9, function() return zombie_stand[10] end, ai.stand)
-zombie_stand[10] = animation.frame(f.stand10, function() return zombie_stand[11] end, ai.stand)
-zombie_stand[11] = animation.frame(f.stand11, function() return zombie_stand[12] end, ai.stand)
-zombie_stand[12] = animation.frame(f.stand12, function() return zombie_stand[13] end, ai.stand)
-zombie_stand[13] = animation.frame(f.stand13, function() return zombie_stand[14] end, ai.stand)
-zombie_stand[14] = animation.frame(f.stand14, function() return zombie_stand[15] end, ai.stand)
-zombie_stand[15] = animation.frame(f.stand15, function() return zombie_stand[1] end, ai.stand)
+local zombie_stand = animation.loop({
+    { f.stand1, ai.stand },
+    { f.stand2, ai.stand },
+    { f.stand3, ai.stand },
+    { f.stand4, ai.stand },
+    { f.stand5, ai.stand },
+    { f.stand6, ai.stand },
+    { f.stand7, ai.stand },
+    { f.stand8, ai.stand },
+    { f.stand9, ai.stand },
+    { f.stand10, ai.stand },
+    { f.stand11, ai.stand },
+    { f.stand12, ai.stand },
+    { f.stand13, ai.stand },
+    { f.stand14, ai.stand },
+    { f.stand15, ai.stand },
+})
 
-local zombie_cruc = {}
-zombie_cruc[1] = animation.frame(f.cruc_1, function() return zombie_cruc[2] end, function(self) if quake.random() < 0.1 then quake.sound(self, C.CHAN_VOICE, "zombie/idle_w2.wav", 1, C.ATTN_STATIC) end end)
-zombie_cruc[2] = animation.frame(f.cruc_2, function() return zombie_cruc[3] end, function(self) self.nextthink = quake.time() + 0.1 + quake.random() * 0.1 end)
-zombie_cruc[3] = animation.frame(f.cruc_3, function() return zombie_cruc[4] end, function(self) self.nextthink = quake.time() + 0.1 + quake.random() * 0.1 end)
-zombie_cruc[4] = animation.frame(f.cruc_4, function() return zombie_cruc[5] end, function(self) self.nextthink = quake.time() + 0.1 + quake.random() * 0.1 end)
-zombie_cruc[5] = animation.frame(f.cruc_5, function() return zombie_cruc[6] end, function(self) self.nextthink = quake.time() + 0.1 + quake.random() * 0.1 end)
-zombie_cruc[6] = animation.frame(f.cruc_6, function() return zombie_cruc[1] end, function(self) self.nextthink = quake.time() + 0.1 + quake.random() * 0.1 end)
+local zombie_cruc = animation.loop({
+    { f.cruc_1, function(self) if quake.random() < 0.1 then quake.sound(self, C.CHAN_VOICE, "zombie/idle_w2.wav", 1, C.ATTN_STATIC) end end },
+    { f.cruc_2, function(self) self.nextthink = quake.time() + 0.1 + quake.random() * 0.1 end },
+    { f.cruc_3, function(self) self.nextthink = quake.time() + 0.1 + quake.random() * 0.1 end },
+    { f.cruc_4, function(self) self.nextthink = quake.time() + 0.1 + quake.random() * 0.1 end },
+    { f.cruc_5, function(self) self.nextthink = quake.time() + 0.1 + quake.random() * 0.1 end },
+    { f.cruc_6, function(self) self.nextthink = quake.time() + 0.1 + quake.random() * 0.1 end },
+})
 
-local zombie_walk = {}
-zombie_walk[1] = animation.frame(f.walk1, function() return zombie_walk[2] end, function(self) ai.walk(self, 0) end)
-zombie_walk[2] = animation.frame(f.walk2, function() return zombie_walk[3] end, function(self) ai.walk(self, 2) end)
-zombie_walk[3] = animation.frame(f.walk3, function() return zombie_walk[4] end, function(self) ai.walk(self, 3) end)
-zombie_walk[4] = animation.frame(f.walk4, function() return zombie_walk[5] end, function(self) ai.walk(self, 2) end)
-zombie_walk[5] = animation.frame(f.walk5, function() return zombie_walk[6] end, function(self) ai.walk(self, 1) end)
-zombie_walk[6] = animation.frame(f.walk6, function() return zombie_walk[7] end, function(self) ai.walk(self, 0) end)
-zombie_walk[7] = animation.frame(f.walk7, function() return zombie_walk[8] end, function(self) ai.walk(self, 0) end)
-zombie_walk[8] = animation.frame(f.walk8, function() return zombie_walk[9] end, function(self) ai.walk(self, 0) end)
-zombie_walk[9] = animation.frame(f.walk9, function() return zombie_walk[10] end, function(self) ai.walk(self, 0) end)
-zombie_walk[10] = animation.frame(f.walk10, function() return zombie_walk[11] end, function(self) ai.walk(self, 0) end)
-zombie_walk[11] = animation.frame(f.walk11, function() return zombie_walk[12] end, function(self) ai.walk(self, 2) end)
-zombie_walk[12] = animation.frame(f.walk12, function() return zombie_walk[13] end, function(self) ai.walk(self, 2) end)
-zombie_walk[13] = animation.frame(f.walk13, function() return zombie_walk[14] end, function(self) ai.walk(self, 1) end)
-zombie_walk[14] = animation.frame(f.walk14, function() return zombie_walk[15] end, function(self) ai.walk(self, 0) end)
-zombie_walk[15] = animation.frame(f.walk15, function() return zombie_walk[16] end, function(self) ai.walk(self, 0) end)
-zombie_walk[16] = animation.frame(f.walk16, function() return zombie_walk[17] end, function(self) ai.walk(self, 0) end)
-zombie_walk[17] = animation.frame(f.walk17, function() return zombie_walk[18] end, function(self) ai.walk(self, 0) end)
-zombie_walk[18] = animation.frame(f.walk18, function() return zombie_walk[19] end, function(self) ai.walk(self, 0) end)
-zombie_walk[19] = animation.frame(f.walk19, function() return zombie_walk[1] end, function(self) ai.walk(self, 0); if quake.random() < 0.2 then quake.sound(self, C.CHAN_VOICE, "zombie/z_idle.wav", 1, C.ATTN_IDLE) end end)
+local zombie_walk = animation.loop({
+    { f.walk1, function(self) ai.walk(self, 0) end },
+    { f.walk2, function(self) ai.walk(self, 2) end },
+    { f.walk3, function(self) ai.walk(self, 3) end },
+    { f.walk4, function(self) ai.walk(self, 2) end },
+    { f.walk5, function(self) ai.walk(self, 1) end },
+    { f.walk6, function(self) ai.walk(self, 0) end },
+    { f.walk7, function(self) ai.walk(self, 0) end },
+    { f.walk8, function(self) ai.walk(self, 0) end },
+    { f.walk9, function(self) ai.walk(self, 0) end },
+    { f.walk10, function(self) ai.walk(self, 0) end },
+    { f.walk11, function(self) ai.walk(self, 2) end },
+    { f.walk12, function(self) ai.walk(self, 2) end },
+    { f.walk13, function(self) ai.walk(self, 1) end },
+    { f.walk14, function(self) ai.walk(self, 0) end },
+    { f.walk15, function(self) ai.walk(self, 0) end },
+    { f.walk16, function(self) ai.walk(self, 0) end },
+    { f.walk17, function(self) ai.walk(self, 0) end },
+    { f.walk18, function(self) ai.walk(self, 0) end },
+    { f.walk19, function(self) ai.walk(self, 0); if quake.random() < 0.2 then quake.sound(self, C.CHAN_VOICE, "zombie/z_idle.wav", 1, C.ATTN_IDLE) end end },
+})
 
-local zombie_run = {}
-zombie_run[1] = animation.frame(f.run1, function() return zombie_run[2] end, function(self) ai.run(self, 1); self.inpain = 0 end)
-zombie_run[2] = animation.frame(f.run2, function() return zombie_run[3] end, function(self) ai.run(self, 1) end)
-zombie_run[3] = animation.frame(f.run3, function() return zombie_run[4] end, function(self) ai.run(self, 0) end)
-zombie_run[4] = animation.frame(f.run4, function() return zombie_run[5] end, function(self) ai.run(self, 1) end)
-zombie_run[5] = animation.frame(f.run5, function() return zombie_run[6] end, function(self) ai.run(self, 2) end)
-zombie_run[6] = animation.frame(f.run6, function() return zombie_run[7] end, function(self) ai.run(self, 3) end)
-zombie_run[7] = animation.frame(f.run7, function() return zombie_run[8] end, function(self) ai.run(self, 4) end)
-zombie_run[8] = animation.frame(f.run8, function() return zombie_run[9] end, function(self) ai.run(self, 4) end)
-zombie_run[9] = animation.frame(f.run9, function() return zombie_run[10] end, function(self) ai.run(self, 2) end)
-zombie_run[10] = animation.frame(f.run10, function() return zombie_run[11] end, function(self) ai.run(self, 0) end)
-zombie_run[11] = animation.frame(f.run11, function() return zombie_run[12] end, function(self) ai.run(self, 0) end)
-zombie_run[12] = animation.frame(f.run12, function() return zombie_run[13] end, function(self) ai.run(self, 0) end)
-zombie_run[13] = animation.frame(f.run13, function() return zombie_run[14] end, function(self) ai.run(self, 2) end)
-zombie_run[14] = animation.frame(f.run14, function() return zombie_run[15] end, function(self) ai.run(self, 4) end)
-zombie_run[15] = animation.frame(f.run15, function() return zombie_run[16] end, function(self) ai.run(self, 6) end)
-zombie_run[16] = animation.frame(f.run16, function() return zombie_run[17] end, function(self) ai.run(self, 7) end)
-zombie_run[17] = animation.frame(f.run17, function() return zombie_run[18] end, function(self) ai.run(self, 3) end)
-zombie_run[18] = animation.frame(f.run18, function() return zombie_run[1] end, function(self) ai.run(self, 8); if quake.random() < 0.2 then quake.sound(self, C.CHAN_VOICE, "zombie/z_idle.wav", 1, C.ATTN_IDLE) end; if quake.random() > 0.8 then quake.sound(self, C.CHAN_VOICE, "zombie/z_idle1.wav", 1, C.ATTN_IDLE) end end)
+local zombie_run = animation.loop({
+    { f.run1, function(self) ai.run(self, 1); self.inpain = 0 end },
+    { f.run2, function(self) ai.run(self, 1) end },
+    { f.run3, function(self) ai.run(self, 0) end },
+    { f.run4, function(self) ai.run(self, 1) end },
+    { f.run5, function(self) ai.run(self, 2) end },
+    { f.run6, function(self) ai.run(self, 3) end },
+    { f.run7, function(self) ai.run(self, 4) end },
+    { f.run8, function(self) ai.run(self, 4) end },
+    { f.run9, function(self) ai.run(self, 2) end },
+    { f.run10, function(self) ai.run(self, 0) end },
+    { f.run11, function(self) ai.run(self, 0) end },
+    { f.run12, function(self) ai.run(self, 0) end },
+    { f.run13, function(self) ai.run(self, 2) end },
+    { f.run14, function(self) ai.run(self, 4) end },
+    { f.run15, function(self) ai.run(self, 6) end },
+    { f.run16, function(self) ai.run(self, 7) end },
+    { f.run17, function(self) ai.run(self, 3) end },
+    { f.run18, function(self) ai.run(self, 8); if quake.random() < 0.2 then quake.sound(self, C.CHAN_VOICE, "zombie/z_idle.wav", 1, C.ATTN_IDLE) end; if quake.random() > 0.8 then quake.sound(self, C.CHAN_VOICE, "zombie/z_idle1.wav", 1, C.ATTN_IDLE) end end },
+})
 
 --[[
 =============================================================================
@@ -214,58 +218,61 @@ local function zombie_fire_grenade(self, st)
     quake.set_origin(missile, org)
 end
 
-local zombie_atta = {}
-zombie_atta[1] = animation.frame(f.atta1, function() return zombie_atta[2] end, function(self) fight.face(self) end)
-zombie_atta[2] = animation.frame(f.atta2, function() return zombie_atta[3] end, function(self) fight.face(self) end)
-zombie_atta[3] = animation.frame(f.atta3, function() return zombie_atta[4] end, function(self) fight.face(self) end)
-zombie_atta[4] = animation.frame(f.atta4, function() return zombie_atta[5] end, function(self) fight.face(self) end)
-zombie_atta[5] = animation.frame(f.atta5, function() return zombie_atta[6] end, function(self) fight.face(self) end)
-zombie_atta[6] = animation.frame(f.atta6, function() return zombie_atta[7] end, function(self) fight.face(self) end)
-zombie_atta[7] = animation.frame(f.atta7, function() return zombie_atta[8] end, function(self) fight.face(self) end)
-zombie_atta[8] = animation.frame(f.atta8, function() return zombie_atta[9] end, function(self) fight.face(self) end)
-zombie_atta[9] = animation.frame(f.atta9, function() return zombie_atta[10] end, function(self) fight.face(self) end)
-zombie_atta[10] = animation.frame(f.atta10, function() return zombie_atta[11] end, function(self) fight.face(self) end)
-zombie_atta[11] = animation.frame(f.atta11, function() return zombie_atta[12] end, function(self) fight.face(self) end)
-zombie_atta[12] = animation.frame(f.atta12, function() return zombie_atta[13] end, function(self) fight.face(self) end)
-zombie_atta[13] = animation.frame(f.atta13, function() return zombie_run[1] end, function(self) fight.face(self); zombie_fire_grenade(self, quake.vec3(-10, -22, 30)) end)
+local zombie_atta = animation.sequence({
+    { f.atta1, function(self) fight.face(self) end },
+    { f.atta2, function(self) fight.face(self) end },
+    { f.atta3, function(self) fight.face(self) end },
+    { f.atta4, function(self) fight.face(self) end },
+    { f.atta5, function(self) fight.face(self) end },
+    { f.atta6, function(self) fight.face(self) end },
+    { f.atta7, function(self) fight.face(self) end },
+    { f.atta8, function(self) fight.face(self) end },
+    { f.atta9, function(self) fight.face(self) end },
+    { f.atta10, function(self) fight.face(self) end },
+    { f.atta11, function(self) fight.face(self) end },
+    { f.atta12, function(self) fight.face(self) end },
+    { f.atta13, function(self) fight.face(self); zombie_fire_grenade(self, quake.vec3(-10, -22, 30)) end },
+}, function() return zombie_run end)
 
-local zombie_attb = {}
-zombie_attb[1] = animation.frame(f.attb1, function() return zombie_attb[2] end, function(self) fight.face(self) end)
-zombie_attb[2] = animation.frame(f.attb2, function() return zombie_attb[3] end, function(self) fight.face(self) end)
-zombie_attb[3] = animation.frame(f.attb3, function() return zombie_attb[4] end, function(self) fight.face(self) end)
-zombie_attb[4] = animation.frame(f.attb4, function() return zombie_attb[5] end, function(self) fight.face(self) end)
-zombie_attb[5] = animation.frame(f.attb5, function() return zombie_attb[6] end, function(self) fight.face(self) end)
-zombie_attb[6] = animation.frame(f.attb6, function() return zombie_attb[7] end, function(self) fight.face(self) end)
-zombie_attb[7] = animation.frame(f.attb7, function() return zombie_attb[8] end, function(self) fight.face(self) end)
-zombie_attb[8] = animation.frame(f.attb8, function() return zombie_attb[9] end, function(self) fight.face(self) end)
-zombie_attb[9] = animation.frame(f.attb9, function() return zombie_attb[10] end, function(self) fight.face(self) end)
-zombie_attb[10] = animation.frame(f.attb10, function() return zombie_attb[11] end, function(self) fight.face(self) end)
-zombie_attb[11] = animation.frame(f.attb11, function() return zombie_attb[12] end, function(self) fight.face(self) end)
-zombie_attb[12] = animation.frame(f.attb12, function() return zombie_attb[13] end, function(self) fight.face(self) end)
-zombie_attb[13] = animation.frame(f.attb13, function() return zombie_attb[14] end, function(self) fight.face(self) end)
-zombie_attb[14] = animation.frame(f.attb13, function() return zombie_run[1] end, function(self) fight.face(self); zombie_fire_grenade(self, quake.vec3(-10, -24, 29)) end)
+local zombie_attb = animation.sequence({
+    { f.attb1, function(self) fight.face(self) end },
+    { f.attb2, function(self) fight.face(self) end },
+    { f.attb3, function(self) fight.face(self) end },
+    { f.attb4, function(self) fight.face(self) end },
+    { f.attb5, function(self) fight.face(self) end },
+    { f.attb6, function(self) fight.face(self) end },
+    { f.attb7, function(self) fight.face(self) end },
+    { f.attb8, function(self) fight.face(self) end },
+    { f.attb9, function(self) fight.face(self) end },
+    { f.attb10, function(self) fight.face(self) end },
+    { f.attb11, function(self) fight.face(self) end },
+    { f.attb12, function(self) fight.face(self) end },
+    { f.attb13, function(self) fight.face(self) end },
+    { f.attb13, function(self) fight.face(self); zombie_fire_grenade(self, quake.vec3(-10, -24, 29)) end },
+}, function() return zombie_run end)
 
-local zombie_attc = {}
-zombie_attc[1] = animation.frame(f.attc1, function() return zombie_attc[2] end, function(self) fight.face(self) end)
-zombie_attc[2] = animation.frame(f.attc2, function() return zombie_attc[3] end, function(self) fight.face(self) end)
-zombie_attc[3] = animation.frame(f.attc3, function() return zombie_attc[4] end, function(self) fight.face(self) end)
-zombie_attc[4] = animation.frame(f.attc4, function() return zombie_attc[5] end, function(self) fight.face(self) end)
-zombie_attc[5] = animation.frame(f.attc5, function() return zombie_attc[6] end, function(self) fight.face(self) end)
-zombie_attc[6] = animation.frame(f.attc6, function() return zombie_attc[7] end, function(self) fight.face(self) end)
-zombie_attc[7] = animation.frame(f.attc7, function() return zombie_attc[8] end, function(self) fight.face(self) end)
-zombie_attc[8] = animation.frame(f.attc8, function() return zombie_attc[9] end, function(self) fight.face(self) end)
-zombie_attc[9] = animation.frame(f.attc9, function() return zombie_attc[10] end, function(self) fight.face(self) end)
-zombie_attc[10] = animation.frame(f.attc10, function() return zombie_attc[11] end, function(self) fight.face(self) end)
-zombie_attc[11] = animation.frame(f.attc11, function() return zombie_attc[12] end, function(self) fight.face(self) end)
-zombie_attc[12] = animation.frame(f.attc12, function() return zombie_run[1] end, function(self) fight.face(self); zombie_fire_grenade(self, quake.vec3(-12, -19, 29)) end)
+local zombie_attc = animation.sequence({
+    { f.attc1, function(self) fight.face(self) end },
+    { f.attc2, function(self) fight.face(self) end },
+    { f.attc3, function(self) fight.face(self) end },
+    { f.attc4, function(self) fight.face(self) end },
+    { f.attc5, function(self) fight.face(self) end },
+    { f.attc6, function(self) fight.face(self) end },
+    { f.attc7, function(self) fight.face(self) end },
+    { f.attc8, function(self) fight.face(self) end },
+    { f.attc9, function(self) fight.face(self) end },
+    { f.attc10, function(self) fight.face(self) end },
+    { f.attc11, function(self) fight.face(self) end },
+    { f.attc12, function(self) fight.face(self); zombie_fire_grenade(self, quake.vec3(-12, -19, 29)) end },
+}, function() return zombie_run end)
 
 ---@param self entity
 ---@return nil
 local function zombie_missile(self)
     local r = quake.random()
-    if r < 0.3 then zombie_atta[1](self)
-    elseif r < 0.6 then zombie_attb[1](self)
-    else zombie_attc[1](self) end
+    if r < 0.3 then zombie_atta(self)
+    elseif r < 0.6 then zombie_attb(self)
+    else zombie_attc(self) end
 end
 
 --[[
@@ -276,155 +283,164 @@ PAIN
 =============================================================================
 ]]
 
-local zombie_paina = {}
-zombie_paina[1] = animation.frame(f.paina1, function() return zombie_paina[2] end, function(self) quake.sound(self, C.CHAN_VOICE, "zombie/z_pain.wav", 1, C.ATTN_NORM) end)
-zombie_paina[2] = animation.frame(f.paina2, function() return zombie_paina[3] end, function(self) ai.pain_forward(self, 3) end)
-zombie_paina[3] = animation.frame(f.paina3, function() return zombie_paina[4] end, function(self) ai.pain_forward(self, 1) end)
-zombie_paina[4] = animation.frame(f.paina4, function() return zombie_paina[5] end, function(self) ai.pain(self, 1) end)
-zombie_paina[5] = animation.frame(f.paina5, function() return zombie_paina[6] end, function(self) ai.pain(self, 3) end)
-zombie_paina[6] = animation.frame(f.paina6, function() return zombie_paina[7] end, function(self) ai.pain(self, 1) end)
-zombie_paina[7] = animation.frame(f.paina7, function() return zombie_paina[8] end)
-zombie_paina[8] = animation.frame(f.paina8, function() return zombie_paina[9] end)
-zombie_paina[9] = animation.frame(f.paina9, function() return zombie_paina[10] end)
-zombie_paina[10] = animation.frame(f.paina10, function() return zombie_paina[11] end)
-zombie_paina[11] = animation.frame(f.paina11, function() return zombie_paina[12] end)
-zombie_paina[12] = animation.frame(f.paina12, function() return zombie_run[1] end)
+local zombie_paina = animation.sequence({
+    { f.paina1, function(self) quake.sound(self, C.CHAN_VOICE, "zombie/z_pain.wav", 1, C.ATTN_NORM) end },
+    { f.paina2, function(self) ai.pain_forward(self, 3) end },
+    { f.paina3, function(self) ai.pain_forward(self, 1) end },
+    { f.paina4, function(self) ai.pain(self, 1) end },
+    { f.paina5, function(self) ai.pain(self, 3) end },
+    { f.paina6, function(self) ai.pain(self, 1) end },
+    { f.paina7 },
+    { f.paina8 },
+    { f.paina9 },
+    { f.paina10 },
+    { f.paina11 },
+    { f.paina12 },
+}, function() return zombie_run end)
 
-local zombie_painb = {}
-zombie_painb[1] = animation.frame(f.painb1, function() return zombie_painb[2] end, function(self) quake.sound(self, C.CHAN_VOICE, "zombie/z_pain1.wav", 1, C.ATTN_NORM) end)
-zombie_painb[2] = animation.frame(f.painb2, function() return zombie_painb[3] end, function(self) ai.pain(self, 2) end)
-zombie_painb[3] = animation.frame(f.painb3, function() return zombie_painb[4] end, function(self) ai.pain(self, 8) end)
-zombie_painb[4] = animation.frame(f.painb4, function() return zombie_painb[5] end, function(self) ai.pain(self, 6) end)
-zombie_painb[5] = animation.frame(f.painb5, function() return zombie_painb[6] end, function(self) ai.pain(self, 2) end)
-zombie_painb[6] = animation.frame(f.painb6, function() return zombie_painb[7] end)
-zombie_painb[7] = animation.frame(f.painb7, function() return zombie_painb[8] end)
-zombie_painb[8] = animation.frame(f.painb8, function() return zombie_painb[9] end)
-zombie_painb[9] = animation.frame(f.painb9, function() return zombie_painb[10] end, function(self) quake.sound(self, C.CHAN_BODY, "zombie/z_fall.wav", 1, C.ATTN_NORM) end)
-zombie_painb[10] = animation.frame(f.painb10, function() return zombie_painb[11] end)
-zombie_painb[11] = animation.frame(f.painb11, function() return zombie_painb[12] end)
-zombie_painb[12] = animation.frame(f.painb12, function() return zombie_painb[13] end)
-zombie_painb[13] = animation.frame(f.painb13, function() return zombie_painb[14] end)
-zombie_painb[14] = animation.frame(f.painb14, function() return zombie_painb[15] end)
-zombie_painb[15] = animation.frame(f.painb15, function() return zombie_painb[16] end)
-zombie_painb[16] = animation.frame(f.painb16, function() return zombie_painb[17] end)
-zombie_painb[17] = animation.frame(f.painb17, function() return zombie_painb[18] end)
-zombie_painb[18] = animation.frame(f.painb18, function() return zombie_painb[19] end)
-zombie_painb[19] = animation.frame(f.painb19, function() return zombie_painb[20] end)
-zombie_painb[20] = animation.frame(f.painb20, function() return zombie_painb[21] end)
-zombie_painb[21] = animation.frame(f.painb21, function() return zombie_painb[22] end)
-zombie_painb[22] = animation.frame(f.painb22, function() return zombie_painb[23] end)
-zombie_painb[23] = animation.frame(f.painb23, function() return zombie_painb[24] end)
-zombie_painb[24] = animation.frame(f.painb24, function() return zombie_painb[25] end)
-zombie_painb[25] = animation.frame(f.painb25, function() return zombie_painb[26] end, function(self) ai.pain_forward(self, 1) end)
-zombie_painb[26] = animation.frame(f.painb26, function() return zombie_painb[27] end)
-zombie_painb[27] = animation.frame(f.painb27, function() return zombie_painb[28] end)
-zombie_painb[28] = animation.frame(f.painb28, function() return zombie_run[1] end)
+local zombie_painb = animation.sequence({
+    { f.painb1, function(self) quake.sound(self, C.CHAN_VOICE, "zombie/z_pain1.wav", 1, C.ATTN_NORM) end },
+    { f.painb2, function(self) ai.pain(self, 2) end },
+    { f.painb3, function(self) ai.pain(self, 8) end },
+    { f.painb4, function(self) ai.pain(self, 6) end },
+    { f.painb5, function(self) ai.pain(self, 2) end },
+    { f.painb6 },
+    { f.painb7 },
+    { f.painb8 },
+    { f.painb9, function(self) quake.sound(self, C.CHAN_BODY, "zombie/z_fall.wav", 1, C.ATTN_NORM) end },
+    { f.painb10 },
+    { f.painb11 },
+    { f.painb12 },
+    { f.painb13 },
+    { f.painb14 },
+    { f.painb15 },
+    { f.painb16 },
+    { f.painb17 },
+    { f.painb18 },
+    { f.painb19 },
+    { f.painb20 },
+    { f.painb21 },
+    { f.painb22 },
+    { f.painb23 },
+    { f.painb24 },
+    { f.painb25, function(self) ai.pain_forward(self, 1) end },
+    { f.painb26 },
+    { f.painb27 },
+    { f.painb28 },
+}, function() return zombie_run end)
 
-local zombie_painc = {}
-zombie_painc[1] = animation.frame(f.painc1, function() return zombie_painc[2] end, function(self) quake.sound(self, C.CHAN_VOICE, "zombie/z_pain1.wav", 1, C.ATTN_NORM) end)
-zombie_painc[2] = animation.frame(f.painc2, function() return zombie_painc[3] end)
-zombie_painc[3] = animation.frame(f.painc3, function() return zombie_painc[4] end, function(self) ai.pain(self, 3) end)
-zombie_painc[4] = animation.frame(f.painc4, function() return zombie_painc[5] end, function(self) ai.pain(self, 1) end)
-zombie_painc[5] = animation.frame(f.painc5, function() return zombie_painc[6] end)
-zombie_painc[6] = animation.frame(f.painc6, function() return zombie_painc[7] end)
-zombie_painc[7] = animation.frame(f.painc7, function() return zombie_painc[8] end)
-zombie_painc[8] = animation.frame(f.painc8, function() return zombie_painc[9] end)
-zombie_painc[9] = animation.frame(f.painc9, function() return zombie_painc[10] end)
-zombie_painc[10] = animation.frame(f.painc10, function() return zombie_painc[11] end)
-zombie_painc[11] = animation.frame(f.painc11, function() return zombie_painc[12] end, function(self) ai.pain_forward(self, 1) end)
-zombie_painc[12] = animation.frame(f.painc12, function() return zombie_painc[13] end, function(self) ai.pain_forward(self, 1) end)
-zombie_painc[13] = animation.frame(f.painc13, function() return zombie_painc[14] end)
-zombie_painc[14] = animation.frame(f.painc14, function() return zombie_painc[15] end)
-zombie_painc[15] = animation.frame(f.painc15, function() return zombie_painc[16] end)
-zombie_painc[16] = animation.frame(f.painc16, function() return zombie_painc[17] end)
-zombie_painc[17] = animation.frame(f.painc17, function() return zombie_painc[18] end)
-zombie_painc[18] = animation.frame(f.painc18, function() return zombie_run[1] end)
+local zombie_painc = animation.sequence({
+    { f.painc1, function(self) quake.sound(self, C.CHAN_VOICE, "zombie/z_pain1.wav", 1, C.ATTN_NORM) end },
+    { f.painc2 },
+    { f.painc3, function(self) ai.pain(self, 3) end },
+    { f.painc4, function(self) ai.pain(self, 1) end },
+    { f.painc5 },
+    { f.painc6 },
+    { f.painc7 },
+    { f.painc8 },
+    { f.painc9 },
+    { f.painc10 },
+    { f.painc11, function(self) ai.pain_forward(self, 1) end },
+    { f.painc12, function(self) ai.pain_forward(self, 1) end },
+    { f.painc13 },
+    { f.painc14 },
+    { f.painc15 },
+    { f.painc16 },
+    { f.painc17 },
+    { f.painc18 },
+}, function() return zombie_run end)
 
-local zombie_paind = {}
-zombie_paind[1] = animation.frame(f.paind1, function() return zombie_paind[2] end, function(self) quake.sound(self, C.CHAN_VOICE, "zombie/z_pain.wav", 1, C.ATTN_NORM) end)
-zombie_paind[2] = animation.frame(f.paind2, function() return zombie_paind[3] end)
-zombie_paind[3] = animation.frame(f.paind3, function() return zombie_paind[4] end)
-zombie_paind[4] = animation.frame(f.paind4, function() return zombie_paind[5] end)
-zombie_paind[5] = animation.frame(f.paind5, function() return zombie_paind[6] end)
-zombie_paind[6] = animation.frame(f.paind6, function() return zombie_paind[7] end)
-zombie_paind[7] = animation.frame(f.paind7, function() return zombie_paind[8] end)
-zombie_paind[8] = animation.frame(f.paind8, function() return zombie_paind[9] end)
-zombie_paind[9] = animation.frame(f.paind9, function() return zombie_paind[10] end, function(self) ai.pain(self, 1) end)
-zombie_paind[10] = animation.frame(f.paind10, function() return zombie_paind[11] end)
-zombie_paind[11] = animation.frame(f.paind11, function() return zombie_paind[12] end)
-zombie_paind[12] = animation.frame(f.paind12, function() return zombie_paind[13] end)
-zombie_paind[13] = animation.frame(f.paind13, function() return zombie_run[1] end)
+local zombie_paind = animation.sequence({
+    { f.paind1, function(self) quake.sound(self, C.CHAN_VOICE, "zombie/z_pain.wav", 1, C.ATTN_NORM) end },
+    { f.paind2 },
+    { f.paind3 },
+    { f.paind4 },
+    { f.paind5 },
+    { f.paind6 },
+    { f.paind7 },
+    { f.paind8 },
+    { f.paind9, function(self) ai.pain(self, 1) end },
+    { f.paind10 },
+    { f.paind11 },
+    { f.paind12 },
+    { f.paind13 },
+}, function() return zombie_run end)
 
-local zombie_paine = {}
-zombie_paine[1] = animation.frame(f.paine1, function() return zombie_paine[2] end, function(self)
+local zombie_paine
+local zombie_paine_recover
+zombie_paine = animation.sequence({
+    { f.paine1, function(self)
         quake.sound(self, C.CHAN_VOICE, "zombie/z_pain.wav", 1, C.ATTN_NORM)
         self.health = 60
-    end)
-zombie_paine[2] = animation.frame(f.paine2, function() return zombie_paine[3] end, function(self)
+    end },
+    { f.paine2, function(self)
         ai.pain(self, 8)
-    end)
-zombie_paine[3] = animation.frame(f.paine3, function() return zombie_paine[4] end, function(self)
+    end },
+    { f.paine3, function(self)
         ai.pain(self, 5)
-    end)
-zombie_paine[4] = animation.frame(f.paine4, function() return zombie_paine[5] end, function(self)
+    end },
+    { f.paine4, function(self)
         ai.pain(self, 3)
-    end)
-zombie_paine[5] = animation.frame(f.paine5, function() return zombie_paine[6] end, function(self)
+    end },
+    { f.paine5, function(self)
         ai.pain(self, 1)
-    end)
-zombie_paine[6] = animation.frame(f.paine6, function() return zombie_paine[7] end, function(self)
+    end },
+    { f.paine6, function(self)
         ai.pain(self, 2)
-    end)
-zombie_paine[7] = animation.frame(f.paine7, function() return zombie_paine[8] end, function(self)
+    end },
+    { f.paine7, function(self)
         ai.pain(self, 1)
-    end)
-zombie_paine[8] = animation.frame(f.paine8, function() return zombie_paine[9] end, function(self)
+    end },
+    { f.paine8, function(self)
         ai.pain(self, 1)
-    end)
-zombie_paine[9] = animation.frame(f.paine9, function() return zombie_paine[10] end, function(self)
+    end },
+    { f.paine9, function(self)
         ai.pain(self, 2)
-    end)
-zombie_paine[10] = animation.frame(f.paine10, function() return zombie_paine[11] end, function(self)
+    end },
+    { f.paine10, function(self)
         quake.sound(self, C.CHAN_BODY, "zombie/z_fall.wav", 1, C.ATTN_NORM)
         self.solid = C.SOLID_NOT
-    end)
-zombie_paine[11] = animation.frame(f.paine11, function() return zombie_paine[12] end, function(self)
+    end },
+}, function() return zombie_paine_recover end)
+zombie_paine_recover = animation.sequence({
+    { f.paine11, function(self)
         self.nextthink = self.nextthink + 5
         self.health = 60
-    end)
-zombie_paine[12] = animation.frame(f.paine12, function() return zombie_paine[13] end, function(self)
+    end },
+    { f.paine12, function(self)
         -- see if ok to stand up
         self.health = 60
         quake.sound(self, C.CHAN_VOICE, "zombie/z_idle.wav", 1, C.ATTN_IDLE)
         self.solid = C.SOLID_SLIDEBOX
-        if not quake.walk_move(self, 0, 0) then self.think = zombie_paine[11]; self.solid = C.SOLID_NOT; return end
-    end)
-zombie_paine[13] = animation.frame(f.paine13, function() return zombie_paine[14] end)
-zombie_paine[14] = animation.frame(f.paine14, function() return zombie_paine[15] end)
-zombie_paine[15] = animation.frame(f.paine15, function() return zombie_paine[16] end)
-zombie_paine[16] = animation.frame(f.paine16, function() return zombie_paine[17] end)
-zombie_paine[17] = animation.frame(f.paine17, function() return zombie_paine[18] end)
-zombie_paine[18] = animation.frame(f.paine18, function() return zombie_paine[19] end)
-zombie_paine[19] = animation.frame(f.paine19, function() return zombie_paine[20] end)
-zombie_paine[20] = animation.frame(f.paine20, function() return zombie_paine[21] end)
-zombie_paine[21] = animation.frame(f.paine21, function() return zombie_paine[22] end)
-zombie_paine[22] = animation.frame(f.paine22, function() return zombie_paine[23] end)
-zombie_paine[23] = animation.frame(f.paine23, function() return zombie_paine[24] end)
-zombie_paine[24] = animation.frame(f.paine24, function() return zombie_paine[25] end)
-zombie_paine[25] = animation.frame(f.paine25, function() return zombie_paine[26] end, function(self)
+        if not quake.walk_move(self, 0, 0) then self.think = zombie_paine_recover; self.solid = C.SOLID_NOT; return end
+    end },
+    { f.paine13 },
+    { f.paine14 },
+    { f.paine15 },
+    { f.paine16 },
+    { f.paine17 },
+    { f.paine18 },
+    { f.paine19 },
+    { f.paine20 },
+    { f.paine21 },
+    { f.paine22 },
+    { f.paine23 },
+    { f.paine24 },
+    { f.paine25, function(self)
         ai.pain_forward(self, 5)
-    end)
-zombie_paine[26] = animation.frame(f.paine26, function() return zombie_paine[27] end, function(self)
+    end },
+    { f.paine26, function(self)
         ai.pain_forward(self, 3)
-    end)
-zombie_paine[27] = animation.frame(f.paine27, function() return zombie_paine[28] end, function(self)
+    end },
+    { f.paine27, function(self)
         ai.pain_forward(self, 1)
-    end)
-zombie_paine[28] = animation.frame(f.paine28, function() return zombie_paine[29] end, function(self)
+    end },
+    { f.paine28, function(self)
         ai.pain(self, 1)
-    end)
-zombie_paine[29] = animation.frame(f.paine29, function() return zombie_paine[30] end)
-zombie_paine[30] = animation.frame(f.paine30, function() return zombie_run[1] end)
+    end },
+    { f.paine29 },
+    { f.paine30 },
+}, function() return zombie_run end)
 
 ---@param self entity
 ---@return nil
@@ -459,7 +475,7 @@ local function zombie_pain(self, _attacker, take)
     if take < 9 then return end -- totally ignore
     if self.inpain == 2 then return end -- down on ground, so don't reset any counters
     -- go down immediately if a big enough hit
-    if take >= 25 then self.inpain = 2; zombie_paine[1](self); return end
+    if take >= 25 then self.inpain = 2; zombie_paine(self); return end
     if self.inpain ~= 0 then
         -- if hit again in next gre seconds while not in pain frames, definitely drop
         self.pain_finished = quake.time() + 3
@@ -469,16 +485,16 @@ local function zombie_pain(self, _attacker, take)
     if self.pain_finished > quake.time() then
         -- hit again, so drop down
         self.inpain = 2
-        zombie_paine[1](self)
+        zombie_paine(self)
         return
     end
     -- gp into one of the fast pain animations
     self.inpain = 1
     local r = quake.random()
-    if r < 0.25 then zombie_paina[1](self)
-    elseif r < 0.5 then zombie_painb[1](self)
-    elseif r < 0.75 then zombie_painc[1](self)
-    else zombie_paind[1](self) end
+    if r < 0.25 then zombie_paina(self)
+    elseif r < 0.5 then zombie_painb(self)
+    elseif r < 0.75 then zombie_painc(self)
+    else zombie_paind(self) end
 end
 
 --============================================================================
@@ -508,15 +524,15 @@ function M.spawn(self)
     quake.set_model(self, "progs/zombie.mdl")
     quake.set_size(self, quake.vec3(-16, -16, -24), quake.vec3(16, 16, 40))
     self.health = 60
-    self.th_stand = zombie_stand[1]
-    self.th_walk = zombie_walk[1]
-    self.th_run = zombie_run[1]
+    self.th_stand = zombie_stand
+    self.th_walk = zombie_walk
+    self.th_run = zombie_run
     self.th_pain = zombie_pain
     self.th_die = zombie_die
     self.th_missile = zombie_missile
     if (self.spawnflags & SPAWN_CRUCIFIED) ~= 0 then
         self.movetype = C.MOVETYPE_NONE
-        zombie_cruc[1](self)
+        zombie_cruc(self)
     else
         monsters.walk_start(self)
     end

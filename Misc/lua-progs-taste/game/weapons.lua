@@ -329,14 +329,14 @@ ROCKETS
 ==============================================================================
 ]]
 
-local s_explode = {}
-
-s_explode[1] = animation.frame(0, function() return s_explode[2] end)
-s_explode[2] = animation.frame(1, function() return s_explode[3] end)
-s_explode[3] = animation.frame(2, function() return s_explode[4] end)
-s_explode[4] = animation.frame(3, function() return s_explode[5] end)
-s_explode[5] = animation.frame(4, function() return s_explode[6] end)
-s_explode[6] = animation.frame(5, function() return subs.remove end)
+local s_explode = animation.sequence({
+    { 0 },
+    { 1 },
+    { 2 },
+    { 3 },
+    { 4 },
+    { 5 },
+}, function() return subs.remove end)
 
 ---@param self entity
 ---@return nil
@@ -346,7 +346,7 @@ function M.become_explosion(self)
     self.touch = subs.null
     quake.set_model(self, "progs/s_explod.spr")
     self.solid = SOLID_NOT
-    s_explode[1](self)
+    s_explode(self)
 end
 
 ---@param self entity
@@ -1168,7 +1168,7 @@ Plays sound if needed
 ========
 ]]
 M.superspike_touch = superspike_touch
-M.explode = s_explode[1]
+M.explode = s_explode
 
 ---@param self entity
 ---@return nil

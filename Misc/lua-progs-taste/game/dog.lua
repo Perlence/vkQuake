@@ -69,8 +69,8 @@ DOG (Rottweiler)
 ==============================================================================
 ]]
 
-local dog_leap = {}
-local dog_run = {}
+local dog_leap
+local dog_run
 local dog_jump_touch
 
 ---@param self entity
@@ -115,119 +115,128 @@ function dog_jump_touch(self, other)
         if (self.flags & C.FL_ONGROUND) ~= 0 then
             -- jump randomly to not get hung up
             self.touch = subs.null
-            self.think = dog_leap[1]
+            self.think = dog_leap
             self.nextthink = quake.time() + 0.1
         end
         return -- not on ground yet
     end
 
     self.touch = subs.null
-    self.think = dog_run[1]
+    self.think = dog_run
     self.nextthink = quake.time() + 0.1
 end
 
-local dog_stand = {}
-dog_stand[1] = animation.frame(f.stand1, function() return dog_stand[2] end, ai.stand)
-dog_stand[2] = animation.frame(f.stand2, function() return dog_stand[3] end, ai.stand)
-dog_stand[3] = animation.frame(f.stand3, function() return dog_stand[4] end, ai.stand)
-dog_stand[4] = animation.frame(f.stand4, function() return dog_stand[5] end, ai.stand)
-dog_stand[5] = animation.frame(f.stand5, function() return dog_stand[6] end, ai.stand)
-dog_stand[6] = animation.frame(f.stand6, function() return dog_stand[7] end, ai.stand)
-dog_stand[7] = animation.frame(f.stand7, function() return dog_stand[8] end, ai.stand)
-dog_stand[8] = animation.frame(f.stand8, function() return dog_stand[9] end, ai.stand)
-dog_stand[9] = animation.frame(f.stand9, function() return dog_stand[1] end, ai.stand)
+local dog_stand = animation.loop({
+    { f.stand1, ai.stand },
+    { f.stand2, ai.stand },
+    { f.stand3, ai.stand },
+    { f.stand4, ai.stand },
+    { f.stand5, ai.stand },
+    { f.stand6, ai.stand },
+    { f.stand7, ai.stand },
+    { f.stand8, ai.stand },
+    { f.stand9, ai.stand },
+})
 
-local dog_walk = {}
-dog_walk[1] = animation.frame(f.walk1, function() return dog_walk[2] end, function(self)
-    if quake.random() < 0.2 then
-        quake.sound(self, C.CHAN_VOICE, "dog/idle.wav", 1, C.ATTN_IDLE)
-    end
-    ai.walk(self, 8)
-end)
-dog_walk[2] = animation.frame(f.walk2, function() return dog_walk[3] end, function(self) ai.walk(self, 8) end)
-dog_walk[3] = animation.frame(f.walk3, function() return dog_walk[4] end, function(self) ai.walk(self, 8) end)
-dog_walk[4] = animation.frame(f.walk4, function() return dog_walk[5] end, function(self) ai.walk(self, 8) end)
-dog_walk[5] = animation.frame(f.walk5, function() return dog_walk[6] end, function(self) ai.walk(self, 8) end)
-dog_walk[6] = animation.frame(f.walk6, function() return dog_walk[7] end, function(self) ai.walk(self, 8) end)
-dog_walk[7] = animation.frame(f.walk7, function() return dog_walk[8] end, function(self) ai.walk(self, 8) end)
-dog_walk[8] = animation.frame(f.walk8, function() return dog_walk[1] end, function(self) ai.walk(self, 8) end)
+local dog_walk = animation.loop({
+    { f.walk1, function(self)
+        if quake.random() < 0.2 then
+            quake.sound(self, C.CHAN_VOICE, "dog/idle.wav", 1, C.ATTN_IDLE)
+        end
+        ai.walk(self, 8)
+    end },
+    { f.walk2, function(self) ai.walk(self, 8) end },
+    { f.walk3, function(self) ai.walk(self, 8) end },
+    { f.walk4, function(self) ai.walk(self, 8) end },
+    { f.walk5, function(self) ai.walk(self, 8) end },
+    { f.walk6, function(self) ai.walk(self, 8) end },
+    { f.walk7, function(self) ai.walk(self, 8) end },
+    { f.walk8, function(self) ai.walk(self, 8) end },
+})
 
-dog_run[1] = animation.frame(f.run1, function() return dog_run[2] end, function(self)
-    if quake.random() < 0.2 then
-        quake.sound(self, C.CHAN_VOICE, "dog/idle.wav", 1, C.ATTN_IDLE)
-    end
-    ai.run(self, 16)
-end)
-dog_run[2] = animation.frame(f.run2, function() return dog_run[3] end, function(self) ai.run(self, 32) end)
-dog_run[3] = animation.frame(f.run3, function() return dog_run[4] end, function(self) ai.run(self, 32) end)
-dog_run[4] = animation.frame(f.run4, function() return dog_run[5] end, function(self) ai.run(self, 20) end)
-dog_run[5] = animation.frame(f.run5, function() return dog_run[6] end, function(self) ai.run(self, 64) end)
-dog_run[6] = animation.frame(f.run6, function() return dog_run[7] end, function(self) ai.run(self, 32) end)
-dog_run[7] = animation.frame(f.run7, function() return dog_run[8] end, function(self) ai.run(self, 16) end)
-dog_run[8] = animation.frame(f.run8, function() return dog_run[9] end, function(self) ai.run(self, 32) end)
-dog_run[9] = animation.frame(f.run9, function() return dog_run[10] end, function(self) ai.run(self, 32) end)
-dog_run[10] = animation.frame(f.run10, function() return dog_run[11] end, function(self) ai.run(self, 20) end)
-dog_run[11] = animation.frame(f.run11, function() return dog_run[12] end, function(self) ai.run(self, 64) end)
-dog_run[12] = animation.frame(f.run12, function() return dog_run[1] end, function(self) ai.run(self, 32) end)
+dog_run = animation.loop({
+    { f.run1, function(self)
+        if quake.random() < 0.2 then
+            quake.sound(self, C.CHAN_VOICE, "dog/idle.wav", 1, C.ATTN_IDLE)
+        end
+        ai.run(self, 16)
+    end },
+    { f.run2, function(self) ai.run(self, 32) end },
+    { f.run3, function(self) ai.run(self, 32) end },
+    { f.run4, function(self) ai.run(self, 20) end },
+    { f.run5, function(self) ai.run(self, 64) end },
+    { f.run6, function(self) ai.run(self, 32) end },
+    { f.run7, function(self) ai.run(self, 16) end },
+    { f.run8, function(self) ai.run(self, 32) end },
+    { f.run9, function(self) ai.run(self, 32) end },
+    { f.run10, function(self) ai.run(self, 20) end },
+    { f.run11, function(self) ai.run(self, 64) end },
+    { f.run12, function(self) ai.run(self, 32) end },
+})
 
-local dog_atta = {}
-dog_atta[1] = animation.frame(f.attack1, function() return dog_atta[2] end, function(self) fight.charge(self, 10) end)
-dog_atta[2] = animation.frame(f.attack2, function() return dog_atta[3] end, function(self) fight.charge(self, 10) end)
-dog_atta[3] = animation.frame(f.attack3, function() return dog_atta[4] end, function(self) fight.charge(self, 10) end)
-dog_atta[4] = animation.frame(f.attack4, function() return dog_atta[5] end, function(self)
-    quake.sound(self, C.CHAN_VOICE, "dog/dattack1.wav", 1, C.ATTN_NORM)
-    dog_bite(self)
-end)
-dog_atta[5] = animation.frame(f.attack5, function() return dog_atta[6] end, function(self) fight.charge(self, 10) end)
-dog_atta[6] = animation.frame(f.attack6, function() return dog_atta[7] end, function(self) fight.charge(self, 10) end)
-dog_atta[7] = animation.frame(f.attack7, function() return dog_atta[8] end, function(self) fight.charge(self, 10) end)
-dog_atta[8] = animation.frame(f.attack8, function() return dog_run[1] end, function(self) fight.charge(self, 10) end)
+local dog_atta = animation.sequence({
+    { f.attack1, function(self) fight.charge(self, 10) end },
+    { f.attack2, function(self) fight.charge(self, 10) end },
+    { f.attack3, function(self) fight.charge(self, 10) end },
+    { f.attack4, function(self)
+        quake.sound(self, C.CHAN_VOICE, "dog/dattack1.wav", 1, C.ATTN_NORM)
+        dog_bite(self)
+    end },
+    { f.attack5, function(self) fight.charge(self, 10) end },
+    { f.attack6, function(self) fight.charge(self, 10) end },
+    { f.attack7, function(self) fight.charge(self, 10) end },
+    { f.attack8, function(self) fight.charge(self, 10) end },
+}, function() return dog_run end)
 
-dog_leap[1] = animation.frame(f.leap1, function() return dog_leap[2] end, fight.face)
-dog_leap[2] = animation.frame(f.leap2, function() return dog_leap[3] end, function(self)
-    fight.face(self)
+dog_leap = animation.hold({
+    { f.leap1, fight.face },
+    { f.leap2, function(self)
+        fight.face(self)
 
-    self.touch = dog_jump_touch
-    local vectors = quake.make_vectors(self.angles)
-    self.origin = self.origin + quake.vec3(0, 0, 1)
-    self.velocity = vectors.forward * 300 + quake.vec3(0, 0, 200)
-    if (self.flags & C.FL_ONGROUND) ~= 0 then
-        self.flags = self.flags - C.FL_ONGROUND
-    end
-end)
-dog_leap[3] = animation.frame(f.leap3, function() return dog_leap[4] end)
-dog_leap[4] = animation.frame(f.leap4, function() return dog_leap[5] end)
-dog_leap[5] = animation.frame(f.leap5, function() return dog_leap[6] end)
-dog_leap[6] = animation.frame(f.leap6, function() return dog_leap[7] end)
-dog_leap[7] = animation.frame(f.leap7, function() return dog_leap[8] end)
-dog_leap[8] = animation.frame(f.leap8, function() return dog_leap[9] end)
-dog_leap[9] = animation.frame(f.leap9, function() return dog_leap[9] end)
+        self.touch = dog_jump_touch
+        local vectors = quake.make_vectors(self.angles)
+        self.origin = self.origin + quake.vec3(0, 0, 1)
+        self.velocity = vectors.forward * 300 + quake.vec3(0, 0, 200)
+        if (self.flags & C.FL_ONGROUND) ~= 0 then
+            self.flags = self.flags - C.FL_ONGROUND
+        end
+    end },
+    { f.leap3 },
+    { f.leap4 },
+    { f.leap5 },
+    { f.leap6 },
+    { f.leap7 },
+    { f.leap8 },
+    { f.leap9 },
+})
 
-local dog_pain = {}
-dog_pain[1] = animation.frame(f.pain1, function() return dog_pain[2] end)
-dog_pain[2] = animation.frame(f.pain2, function() return dog_pain[3] end)
-dog_pain[3] = animation.frame(f.pain3, function() return dog_pain[4] end)
-dog_pain[4] = animation.frame(f.pain4, function() return dog_pain[5] end)
-dog_pain[5] = animation.frame(f.pain5, function() return dog_pain[6] end)
-dog_pain[6] = animation.frame(f.pain6, function() return dog_run[1] end)
+local dog_pain = animation.sequence({
+    { f.pain1 },
+    { f.pain2 },
+    { f.pain3 },
+    { f.pain4 },
+    { f.pain5 },
+    { f.pain6 },
+}, function() return dog_run end)
 
-local dog_painb = {}
-dog_painb[1] = animation.frame(f.painb1, function() return dog_painb[2] end)
-dog_painb[2] = animation.frame(f.painb2, function() return dog_painb[3] end)
-dog_painb[3] = animation.frame(f.painb3, function() return dog_painb[4] end, function(self) ai.pain(self, 4) end)
-dog_painb[4] = animation.frame(f.painb4, function() return dog_painb[5] end, function(self) ai.pain(self, 12) end)
-dog_painb[5] = animation.frame(f.painb5, function() return dog_painb[6] end, function(self) ai.pain(self, 12) end)
-dog_painb[6] = animation.frame(f.painb6, function() return dog_painb[7] end, function(self) ai.pain(self, 2) end)
-dog_painb[7] = animation.frame(f.painb7, function() return dog_painb[8] end)
-dog_painb[8] = animation.frame(f.painb8, function() return dog_painb[9] end, function(self) ai.pain(self, 4) end)
-dog_painb[9] = animation.frame(f.painb9, function() return dog_painb[10] end)
-dog_painb[10] = animation.frame(f.painb10, function() return dog_painb[11] end, function(self) ai.pain(self, 10) end)
-dog_painb[11] = animation.frame(f.painb11, function() return dog_painb[12] end)
-dog_painb[12] = animation.frame(f.painb12, function() return dog_painb[13] end)
-dog_painb[13] = animation.frame(f.painb13, function() return dog_painb[14] end)
-dog_painb[14] = animation.frame(f.painb14, function() return dog_painb[15] end)
-dog_painb[15] = animation.frame(f.painb15, function() return dog_painb[16] end)
-dog_painb[16] = animation.frame(f.painb16, function() return dog_run[1] end)
+local dog_painb = animation.sequence({
+    { f.painb1 },
+    { f.painb2 },
+    { f.painb3, function(self) ai.pain(self, 4) end },
+    { f.painb4, function(self) ai.pain(self, 12) end },
+    { f.painb5, function(self) ai.pain(self, 12) end },
+    { f.painb6, function(self) ai.pain(self, 2) end },
+    { f.painb7 },
+    { f.painb8, function(self) ai.pain(self, 4) end },
+    { f.painb9 },
+    { f.painb10, function(self) ai.pain(self, 10) end },
+    { f.painb11 },
+    { f.painb12 },
+    { f.painb13 },
+    { f.painb14 },
+    { f.painb15 },
+    { f.painb16 },
+}, function() return dog_run end)
 
 ---@param self entity
 ---@param _attacker entity
@@ -237,35 +246,35 @@ local function dog_pain_handler(self, _attacker, _damage)
     quake.sound(self, C.CHAN_VOICE, "dog/dpain1.wav", 1, C.ATTN_NORM)
 
     if quake.random() > 0.5 then
-        dog_pain[1](self)
+        dog_pain(self)
     else
-        dog_painb[1](self)
+        dog_painb(self)
     end
 end
 
-local dog_die = {}
+local dog_die = animation.hold({
+    { f.death1 },
+    { f.death2 },
+    { f.death3 },
+    { f.death4 },
+    { f.death5 },
+    { f.death6 },
+    { f.death7 },
+    { f.death8 },
+    { f.death9 },
+})
 
-dog_die[1] = animation.frame(f.death1, function() return dog_die[2] end)
-dog_die[2] = animation.frame(f.death2, function() return dog_die[3] end)
-dog_die[3] = animation.frame(f.death3, function() return dog_die[4] end)
-dog_die[4] = animation.frame(f.death4, function() return dog_die[5] end)
-dog_die[5] = animation.frame(f.death5, function() return dog_die[6] end)
-dog_die[6] = animation.frame(f.death6, function() return dog_die[7] end)
-dog_die[7] = animation.frame(f.death7, function() return dog_die[8] end)
-dog_die[8] = animation.frame(f.death8, function() return dog_die[9] end)
-dog_die[9] = animation.frame(f.death9, function() return dog_die[9] end)
-
-local dog_dieb = {}
-
-dog_dieb[1] = animation.frame(f.deathb1, function() return dog_dieb[2] end)
-dog_dieb[2] = animation.frame(f.deathb2, function() return dog_dieb[3] end)
-dog_dieb[3] = animation.frame(f.deathb3, function() return dog_dieb[4] end)
-dog_dieb[4] = animation.frame(f.deathb4, function() return dog_dieb[5] end)
-dog_dieb[5] = animation.frame(f.deathb5, function() return dog_dieb[6] end)
-dog_dieb[6] = animation.frame(f.deathb6, function() return dog_dieb[7] end)
-dog_dieb[7] = animation.frame(f.deathb7, function() return dog_dieb[8] end)
-dog_dieb[8] = animation.frame(f.deathb8, function() return dog_dieb[9] end)
-dog_dieb[9] = animation.frame(f.deathb9, function() return dog_dieb[9] end)
+local dog_dieb = animation.hold({
+    { f.deathb1 },
+    { f.deathb2 },
+    { f.deathb3 },
+    { f.deathb4 },
+    { f.deathb5 },
+    { f.deathb6 },
+    { f.deathb7 },
+    { f.deathb8 },
+    { f.deathb9 },
+})
 
 ---@param self entity
 ---@return nil
@@ -285,9 +294,9 @@ local function dog_die_handler(self)
     self.solid = C.SOLID_NOT
 
     if quake.random() > 0.5 then
-        dog_die[1](self)
+        dog_die(self)
     else
-        dog_dieb[1](self)
+        dog_dieb(self)
     end
 end
 
@@ -376,13 +385,13 @@ function M.spawn(self)
     quake.set_size(self, quake.vec3(-32, -32, -24), quake.vec3(32, 32, 40))
     self.health = 25
 
-    self.th_stand = dog_stand[1]
-    self.th_walk = dog_walk[1]
-    self.th_run = dog_run[1]
+    self.th_stand = dog_stand
+    self.th_walk = dog_walk
+    self.th_run = dog_run
     self.th_pain = dog_pain_handler
     self.th_die = dog_die_handler
-    self.th_melee = dog_atta[1]
-    self.th_missile = dog_leap[1]
+    self.th_melee = dog_atta
+    self.th_missile = dog_leap
     self.check_attack = M.check_attack
     monsters.walk_start(self)
 end

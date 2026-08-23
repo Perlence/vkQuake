@@ -62,79 +62,86 @@ SHAL-RATH (Vore)
 ==============================================================================
 ]]
 
-local shal_stand1
-shal_stand1 = animation.frame(f.walk1, function() return shal_stand1 end, ai.stand)
+local shal_stand1 = animation.loop({
+    { f.walk1, ai.stand },
+})
 
-local shal_walk = {}
-shal_walk[1] = animation.frame(f.walk2, function() return shal_walk[2] end, function(self)
-    if quake.random() < 0.2 then
-        quake.sound(self, C.CHAN_VOICE, "shalrath/idle.wav", 1, ATTN_IDLE)
-    end
-    ai.walk(self, 6)
-end)
-shal_walk[2] = animation.frame(f.walk3, function() return shal_walk[3] end, function(self) ai.walk(self, 4) end)
-shal_walk[3] = animation.frame(f.walk4, function() return shal_walk[4] end, function(self) ai.walk(self, 0) end)
-shal_walk[4] = animation.frame(f.walk5, function() return shal_walk[5] end, function(self) ai.walk(self, 0) end)
-shal_walk[5] = animation.frame(f.walk6, function() return shal_walk[6] end, function(self) ai.walk(self, 0) end)
-shal_walk[6] = animation.frame(f.walk7, function() return shal_walk[7] end, function(self) ai.walk(self, 0) end)
-shal_walk[7] = animation.frame(f.walk8, function() return shal_walk[8] end, function(self) ai.walk(self, 5) end)
-shal_walk[8] = animation.frame(f.walk9, function() return shal_walk[9] end, function(self) ai.walk(self, 6) end)
-shal_walk[9] = animation.frame(f.walk10, function() return shal_walk[10] end, function(self) ai.walk(self, 5) end)
-shal_walk[10] = animation.frame(f.walk11, function() return shal_walk[11] end, function(self) ai.walk(self, 0) end)
-shal_walk[11] = animation.frame(f.walk12, function() return shal_walk[12] end, function(self) ai.walk(self, 4) end)
-shal_walk[12] = animation.frame(f.walk1, function() return shal_walk[1] end, function(self) ai.walk(self, 5) end)
+local shal_walk = animation.loop({
+    { f.walk2, function(self)
+        if quake.random() < 0.2 then
+            quake.sound(self, C.CHAN_VOICE, "shalrath/idle.wav", 1, ATTN_IDLE)
+        end
+        ai.walk(self, 6)
+    end },
+    { f.walk3, function(self) ai.walk(self, 4) end },
+    { f.walk4, function(self) ai.walk(self, 0) end },
+    { f.walk5, function(self) ai.walk(self, 0) end },
+    { f.walk6, function(self) ai.walk(self, 0) end },
+    { f.walk7, function(self) ai.walk(self, 0) end },
+    { f.walk8, function(self) ai.walk(self, 5) end },
+    { f.walk9, function(self) ai.walk(self, 6) end },
+    { f.walk10, function(self) ai.walk(self, 5) end },
+    { f.walk11, function(self) ai.walk(self, 0) end },
+    { f.walk12, function(self) ai.walk(self, 4) end },
+    { f.walk1, function(self) ai.walk(self, 5) end },
+})
 
-local shal_run = {}
-shal_run[1] = animation.frame(f.walk2, function() return shal_run[2] end, function(self)
-    if quake.random() < 0.2 then
-        quake.sound(self, C.CHAN_VOICE, "shalrath/idle.wav", 1, ATTN_IDLE)
-    end
-    ai.run(self, 6)
-end)
-shal_run[2] = animation.frame(f.walk3, function() return shal_run[3] end, function(self) ai.run(self, 4) end)
-shal_run[3] = animation.frame(f.walk4, function() return shal_run[4] end, function(self) ai.run(self, 0) end)
-shal_run[4] = animation.frame(f.walk5, function() return shal_run[5] end, function(self) ai.run(self, 0) end)
-shal_run[5] = animation.frame(f.walk6, function() return shal_run[6] end, function(self) ai.run(self, 0) end)
-shal_run[6] = animation.frame(f.walk7, function() return shal_run[7] end, function(self) ai.run(self, 0) end)
-shal_run[7] = animation.frame(f.walk8, function() return shal_run[8] end, function(self) ai.run(self, 5) end)
-shal_run[8] = animation.frame(f.walk9, function() return shal_run[9] end, function(self) ai.run(self, 6) end)
-shal_run[9] = animation.frame(f.walk10, function() return shal_run[10] end, function(self) ai.run(self, 5) end)
-shal_run[10] = animation.frame(f.walk11, function() return shal_run[11] end, function(self) ai.run(self, 0) end)
-shal_run[11] = animation.frame(f.walk12, function() return shal_run[12] end, function(self) ai.run(self, 4) end)
-shal_run[12] = animation.frame(f.walk1, function() return shal_run[1] end, function(self) ai.run(self, 5) end)
+local shal_run = animation.loop({
+    { f.walk2, function(self)
+        if quake.random() < 0.2 then
+            quake.sound(self, C.CHAN_VOICE, "shalrath/idle.wav", 1, ATTN_IDLE)
+        end
+        ai.run(self, 6)
+    end },
+    { f.walk3, function(self) ai.run(self, 4) end },
+    { f.walk4, function(self) ai.run(self, 0) end },
+    { f.walk5, function(self) ai.run(self, 0) end },
+    { f.walk6, function(self) ai.run(self, 0) end },
+    { f.walk7, function(self) ai.run(self, 0) end },
+    { f.walk8, function(self) ai.run(self, 5) end },
+    { f.walk9, function(self) ai.run(self, 6) end },
+    { f.walk10, function(self) ai.run(self, 5) end },
+    { f.walk11, function(self) ai.run(self, 0) end },
+    { f.walk12, function(self) ai.run(self, 4) end },
+    { f.walk1, function(self) ai.run(self, 5) end },
+})
 
 local shal_missile
-local shal_attack = {}
-shal_attack[1] = animation.frame(f.attack1, function() return shal_attack[2] end, function(self)
-    quake.sound(self, C.CHAN_VOICE, "shalrath/attack.wav", 1, C.ATTN_NORM)
-    fight.face(self)
-end)
-shal_attack[2] = animation.frame(f.attack2, function() return shal_attack[3] end, fight.face)
-shal_attack[3] = animation.frame(f.attack3, function() return shal_attack[4] end, fight.face)
-shal_attack[4] = animation.frame(f.attack4, function() return shal_attack[5] end, fight.face)
-shal_attack[5] = animation.frame(f.attack5, function() return shal_attack[6] end, fight.face)
-shal_attack[6] = animation.frame(f.attack6, function() return shal_attack[7] end, fight.face)
-shal_attack[7] = animation.frame(f.attack7, function() return shal_attack[8] end, fight.face)
-shal_attack[8] = animation.frame(f.attack8, function() return shal_attack[9] end, fight.face)
-shal_attack[9] = animation.frame(f.attack9, function() return shal_attack[10] end, function(self) shal_missile(self) end)
-shal_attack[10] = animation.frame(f.attack10, function() return shal_attack[11] end, fight.face)
-shal_attack[11] = animation.frame(f.attack11, function() return shal_run[1] end)
 
-local shal_pain = {}
-shal_pain[1] = animation.frame(f.pain1, function() return shal_pain[2] end)
-shal_pain[2] = animation.frame(f.pain2, function() return shal_pain[3] end)
-shal_pain[3] = animation.frame(f.pain3, function() return shal_pain[4] end)
-shal_pain[4] = animation.frame(f.pain4, function() return shal_pain[5] end)
-shal_pain[5] = animation.frame(f.pain5, function() return shal_run[1] end)
+local shal_attack = animation.sequence({
+    { f.attack1, function(self)
+        quake.sound(self, C.CHAN_VOICE, "shalrath/attack.wav", 1, C.ATTN_NORM)
+        fight.face(self)
+    end },
+    { f.attack2, fight.face },
+    { f.attack3, fight.face },
+    { f.attack4, fight.face },
+    { f.attack5, fight.face },
+    { f.attack6, fight.face },
+    { f.attack7, fight.face },
+    { f.attack8, fight.face },
+    { f.attack9, function(self) shal_missile(self) end },
+    { f.attack10, fight.face },
+    { f.attack11 },
+}, function() return shal_run end)
 
-local shal_death = {}
-shal_death[1] = animation.frame(f.death1, function() return shal_death[2] end)
-shal_death[2] = animation.frame(f.death2, function() return shal_death[3] end)
-shal_death[3] = animation.frame(f.death3, function() return shal_death[4] end)
-shal_death[4] = animation.frame(f.death4, function() return shal_death[5] end)
-shal_death[5] = animation.frame(f.death5, function() return shal_death[6] end)
-shal_death[6] = animation.frame(f.death6, function() return shal_death[7] end)
-shal_death[7] = animation.frame(f.death7, function() return shal_death[7] end)
+local shal_pain = animation.sequence({
+    { f.pain1 },
+    { f.pain2 },
+    { f.pain3 },
+    { f.pain4 },
+    { f.pain5 },
+}, function() return shal_run end)
+
+local shal_death = animation.hold({
+    { f.death1 },
+    { f.death2 },
+    { f.death3 },
+    { f.death4 },
+    { f.death5 },
+    { f.death6 },
+    { f.death7 },
+})
 
 ---@param self entity
 ---@param _attacker entity
@@ -146,7 +153,7 @@ local function shalrath_pain(self, _attacker, _damage)
     end
 
     quake.sound(self, C.CHAN_VOICE, "shalrath/pain.wav", 1, C.ATTN_NORM)
-    shal_pain[1](self)
+    shal_pain(self)
     self.pain_finished = quake.time() + 3
 end
 
@@ -164,7 +171,7 @@ local function shalrath_die(self)
     end
 
     quake.sound(self, C.CHAN_VOICE, "shalrath/death.wav", 1, C.ATTN_NORM)
-    shal_death[1](self)
+    shal_death(self)
     self.solid = C.SOLID_NOT
 end
 
@@ -282,11 +289,11 @@ function M.spawn(self)
     self.health = 400
 
     self.th_stand = shal_stand1
-    self.th_walk = shal_walk[1]
-    self.th_run = shal_run[1]
+    self.th_walk = shal_walk
+    self.th_run = shal_run
     self.th_die = shalrath_die
     self.th_pain = shalrath_pain
-    self.th_missile = shal_attack[1]
+    self.th_missile = shal_attack
 
     self.think = monsters.walk_start
     self.nextthink = quake.time() + 0.1 + quake.random() * 0.1

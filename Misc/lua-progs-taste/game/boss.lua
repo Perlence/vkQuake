@@ -92,146 +92,155 @@ local function boss_face(self)
     fight.face(self)
 end
 
-local boss_missile = {}
+local boss_missile
 
-local boss_rise = {}
-boss_rise[1] = animation.frame(f.rise1, function() return boss_rise[2] end, function(self) quake.sound(self, CHAN_WEAPON, "boss1/out1.wav", 1, C.ATTN_NORM) end)
-boss_rise[2] = animation.frame(f.rise2, function() return boss_rise[3] end, function(self) quake.sound(self, C.CHAN_VOICE, "boss1/sight1.wav", 1, C.ATTN_NORM) end)
-boss_rise[3] = animation.frame(f.rise3, function() return boss_rise[4] end)
-boss_rise[4] = animation.frame(f.rise4, function() return boss_rise[5] end)
-boss_rise[5] = animation.frame(f.rise5, function() return boss_rise[6] end)
-boss_rise[6] = animation.frame(f.rise6, function() return boss_rise[7] end)
-boss_rise[7] = animation.frame(f.rise7, function() return boss_rise[8] end)
-boss_rise[8] = animation.frame(f.rise8, function() return boss_rise[9] end)
-boss_rise[9] = animation.frame(f.rise9, function() return boss_rise[10] end)
-boss_rise[10] = animation.frame(f.rise10, function() return boss_rise[11] end)
-boss_rise[11] = animation.frame(f.rise11, function() return boss_rise[12] end)
-boss_rise[12] = animation.frame(f.rise12, function() return boss_rise[13] end)
-boss_rise[13] = animation.frame(f.rise13, function() return boss_rise[14] end)
-boss_rise[14] = animation.frame(f.rise14, function() return boss_rise[15] end)
-boss_rise[15] = animation.frame(f.rise15, function() return boss_rise[16] end)
-boss_rise[16] = animation.frame(f.rise16, function() return boss_rise[17] end)
-boss_rise[17] = animation.frame(f.rise17, function() return boss_missile[1] end)
+local boss_rise = animation.sequence({
+    { f.rise1, function(self) quake.sound(self, CHAN_WEAPON, "boss1/out1.wav", 1, C.ATTN_NORM) end },
+    { f.rise2, function(self) quake.sound(self, C.CHAN_VOICE, "boss1/sight1.wav", 1, C.ATTN_NORM) end },
+    { f.rise3 },
+    { f.rise4 },
+    { f.rise5 },
+    { f.rise6 },
+    { f.rise7 },
+    { f.rise8 },
+    { f.rise9 },
+    { f.rise10 },
+    { f.rise11 },
+    { f.rise12 },
+    { f.rise13 },
+    { f.rise14 },
+    { f.rise15 },
+    { f.rise16 },
+    { f.rise17 },
+}, function() return boss_missile end)
 
-local boss_idle = {}
-boss_idle[1] = animation.frame(f.walk1, function() return boss_idle[2] end, function(_self)
-    -- look for other players
-end)
-boss_idle[2] = animation.frame(f.walk2, function() return boss_idle[3] end, boss_face)
-boss_idle[3] = animation.frame(f.walk3, function() return boss_idle[4] end, boss_face)
-boss_idle[4] = animation.frame(f.walk4, function() return boss_idle[5] end, boss_face)
-boss_idle[5] = animation.frame(f.walk5, function() return boss_idle[6] end, boss_face)
-boss_idle[6] = animation.frame(f.walk6, function() return boss_idle[7] end, boss_face)
-boss_idle[7] = animation.frame(f.walk7, function() return boss_idle[8] end, boss_face)
-boss_idle[8] = animation.frame(f.walk8, function() return boss_idle[9] end, boss_face)
-boss_idle[9] = animation.frame(f.walk9, function() return boss_idle[10] end, boss_face)
-boss_idle[10] = animation.frame(f.walk10, function() return boss_idle[11] end, boss_face)
-boss_idle[11] = animation.frame(f.walk11, function() return boss_idle[12] end, boss_face)
-boss_idle[12] = animation.frame(f.walk12, function() return boss_idle[13] end, boss_face)
-boss_idle[13] = animation.frame(f.walk13, function() return boss_idle[14] end, boss_face)
-boss_idle[14] = animation.frame(f.walk14, function() return boss_idle[15] end, boss_face)
-boss_idle[15] = animation.frame(f.walk15, function() return boss_idle[16] end, boss_face)
-boss_idle[16] = animation.frame(f.walk16, function() return boss_idle[17] end, boss_face)
-boss_idle[17] = animation.frame(f.walk17, function() return boss_idle[18] end, boss_face)
-boss_idle[18] = animation.frame(f.walk18, function() return boss_idle[19] end, boss_face)
-boss_idle[19] = animation.frame(f.walk19, function() return boss_idle[20] end, boss_face)
-boss_idle[20] = animation.frame(f.walk20, function() return boss_idle[21] end, boss_face)
-boss_idle[21] = animation.frame(f.walk21, function() return boss_idle[22] end, boss_face)
-boss_idle[22] = animation.frame(f.walk22, function() return boss_idle[23] end, boss_face)
-boss_idle[23] = animation.frame(f.walk23, function() return boss_idle[24] end, boss_face)
-boss_idle[24] = animation.frame(f.walk24, function() return boss_idle[25] end, boss_face)
-boss_idle[25] = animation.frame(f.walk25, function() return boss_idle[26] end, boss_face)
-boss_idle[26] = animation.frame(f.walk26, function() return boss_idle[27] end, boss_face)
-boss_idle[27] = animation.frame(f.walk27, function() return boss_idle[28] end, boss_face)
-boss_idle[28] = animation.frame(f.walk28, function() return boss_idle[29] end, boss_face)
-boss_idle[29] = animation.frame(f.walk29, function() return boss_idle[30] end, boss_face)
-boss_idle[30] = animation.frame(f.walk30, function() return boss_idle[31] end, boss_face)
-boss_idle[31] = animation.frame(f.walk31, function() return boss_idle[1] end, boss_face)
+local boss_idle = animation.loop({
+    { f.walk1, function(_self)
+        -- look for other players
+    end },
+    { f.walk2, boss_face },
+    { f.walk3, boss_face },
+    { f.walk4, boss_face },
+    { f.walk5, boss_face },
+    { f.walk6, boss_face },
+    { f.walk7, boss_face },
+    { f.walk8, boss_face },
+    { f.walk9, boss_face },
+    { f.walk10, boss_face },
+    { f.walk11, boss_face },
+    { f.walk12, boss_face },
+    { f.walk13, boss_face },
+    { f.walk14, boss_face },
+    { f.walk15, boss_face },
+    { f.walk16, boss_face },
+    { f.walk17, boss_face },
+    { f.walk18, boss_face },
+    { f.walk19, boss_face },
+    { f.walk20, boss_face },
+    { f.walk21, boss_face },
+    { f.walk22, boss_face },
+    { f.walk23, boss_face },
+    { f.walk24, boss_face },
+    { f.walk25, boss_face },
+    { f.walk26, boss_face },
+    { f.walk27, boss_face },
+    { f.walk28, boss_face },
+    { f.walk29, boss_face },
+    { f.walk30, boss_face },
+    { f.walk31, boss_face },
+})
 
-boss_missile[1] = animation.frame(f.attack1, function() return boss_missile[2] end, boss_face)
-boss_missile[2] = animation.frame(f.attack2, function() return boss_missile[3] end, boss_face)
-boss_missile[3] = animation.frame(f.attack3, function() return boss_missile[4] end, boss_face)
-boss_missile[4] = animation.frame(f.attack4, function() return boss_missile[5] end, boss_face)
-boss_missile[5] = animation.frame(f.attack5, function() return boss_missile[6] end, boss_face)
-boss_missile[6] = animation.frame(f.attack6, function() return boss_missile[7] end, boss_face)
-boss_missile[7] = animation.frame(f.attack7, function() return boss_missile[8] end, boss_face)
-boss_missile[8] = animation.frame(f.attack8, function() return boss_missile[9] end, boss_face)
-boss_missile[9] = animation.frame(f.attack9, function() return boss_missile[10] end, function(self) boss_launch_missile(self, quake.vec3(100, 100, 200)) end)
-boss_missile[10] = animation.frame(f.attack10, function() return boss_missile[11] end, boss_face)
-boss_missile[11] = animation.frame(f.attack11, function() return boss_missile[12] end, boss_face)
-boss_missile[12] = animation.frame(f.attack12, function() return boss_missile[13] end, boss_face)
-boss_missile[13] = animation.frame(f.attack13, function() return boss_missile[14] end, boss_face)
-boss_missile[14] = animation.frame(f.attack14, function() return boss_missile[15] end, boss_face)
-boss_missile[15] = animation.frame(f.attack15, function() return boss_missile[16] end, boss_face)
-boss_missile[16] = animation.frame(f.attack16, function() return boss_missile[17] end, boss_face)
-boss_missile[17] = animation.frame(f.attack17, function() return boss_missile[18] end, boss_face)
-boss_missile[18] = animation.frame(f.attack18, function() return boss_missile[19] end, boss_face)
-boss_missile[19] = animation.frame(f.attack19, function() return boss_missile[20] end, boss_face)
-boss_missile[20] = animation.frame(f.attack20, function() return boss_missile[21] end, function(self) boss_launch_missile(self, quake.vec3(100, -100, 200)) end)
-boss_missile[21] = animation.frame(f.attack21, function() return boss_missile[22] end, boss_face)
-boss_missile[22] = animation.frame(f.attack22, function() return boss_missile[23] end, boss_face)
-boss_missile[23] = animation.frame(f.attack23, function() return boss_missile[1] end, boss_face)
+boss_missile = animation.loop({
+    { f.attack1, boss_face },
+    { f.attack2, boss_face },
+    { f.attack3, boss_face },
+    { f.attack4, boss_face },
+    { f.attack5, boss_face },
+    { f.attack6, boss_face },
+    { f.attack7, boss_face },
+    { f.attack8, boss_face },
+    { f.attack9, function(self) boss_launch_missile(self, quake.vec3(100, 100, 200)) end },
+    { f.attack10, boss_face },
+    { f.attack11, boss_face },
+    { f.attack12, boss_face },
+    { f.attack13, boss_face },
+    { f.attack14, boss_face },
+    { f.attack15, boss_face },
+    { f.attack16, boss_face },
+    { f.attack17, boss_face },
+    { f.attack18, boss_face },
+    { f.attack19, boss_face },
+    { f.attack20, function(self) boss_launch_missile(self, quake.vec3(100, -100, 200)) end },
+    { f.attack21, boss_face },
+    { f.attack22, boss_face },
+    { f.attack23, boss_face },
+})
 
-local boss_shocka = {}
-boss_shocka[1] = animation.frame(f.shocka1, function() return boss_shocka[2] end)
-boss_shocka[2] = animation.frame(f.shocka2, function() return boss_shocka[3] end)
-boss_shocka[3] = animation.frame(f.shocka3, function() return boss_shocka[4] end)
-boss_shocka[4] = animation.frame(f.shocka4, function() return boss_shocka[5] end)
-boss_shocka[5] = animation.frame(f.shocka5, function() return boss_shocka[6] end)
-boss_shocka[6] = animation.frame(f.shocka6, function() return boss_shocka[7] end)
-boss_shocka[7] = animation.frame(f.shocka7, function() return boss_shocka[8] end)
-boss_shocka[8] = animation.frame(f.shocka8, function() return boss_shocka[9] end)
-boss_shocka[9] = animation.frame(f.shocka9, function() return boss_shocka[10] end)
-boss_shocka[10] = animation.frame(f.shocka10, function() return boss_missile[1] end)
+local boss_shocka = animation.sequence({
+    { f.shocka1 },
+    { f.shocka2 },
+    { f.shocka3 },
+    { f.shocka4 },
+    { f.shocka5 },
+    { f.shocka6 },
+    { f.shocka7 },
+    { f.shocka8 },
+    { f.shocka9 },
+    { f.shocka10 },
+}, function() return boss_missile end)
 
-local boss_shockb = {}
-boss_shockb[1] = animation.frame(f.shockb1, function() return boss_shockb[2] end)
-boss_shockb[2] = animation.frame(f.shockb2, function() return boss_shockb[3] end)
-boss_shockb[3] = animation.frame(f.shockb3, function() return boss_shockb[4] end)
-boss_shockb[4] = animation.frame(f.shockb4, function() return boss_shockb[5] end)
-boss_shockb[5] = animation.frame(f.shockb5, function() return boss_shockb[6] end)
-boss_shockb[6] = animation.frame(f.shockb6, function() return boss_shockb[7] end)
-boss_shockb[7] = animation.frame(f.shockb1, function() return boss_shockb[8] end)
-boss_shockb[8] = animation.frame(f.shockb2, function() return boss_shockb[9] end)
-boss_shockb[9] = animation.frame(f.shockb3, function() return boss_shockb[10] end)
-boss_shockb[10] = animation.frame(f.shockb4, function() return boss_missile[1] end)
+local boss_shockb = animation.sequence({
+    { f.shockb1 },
+    { f.shockb2 },
+    { f.shockb3 },
+    { f.shockb4 },
+    { f.shockb5 },
+    { f.shockb6 },
+    { f.shockb1 },
+    { f.shockb2 },
+    { f.shockb3 },
+    { f.shockb4 },
+}, function() return boss_missile end)
 
-local boss_death = {}
+local boss_death
 
-local boss_shockc = {}
-boss_shockc[1] = animation.frame(f.shockc1, function() return boss_shockc[2] end)
-boss_shockc[2] = animation.frame(f.shockc2, function() return boss_shockc[3] end)
-boss_shockc[3] = animation.frame(f.shockc3, function() return boss_shockc[4] end)
-boss_shockc[4] = animation.frame(f.shockc4, function() return boss_shockc[5] end)
-boss_shockc[5] = animation.frame(f.shockc5, function() return boss_shockc[6] end)
-boss_shockc[6] = animation.frame(f.shockc6, function() return boss_shockc[7] end)
-boss_shockc[7] = animation.frame(f.shockc7, function() return boss_shockc[8] end)
-boss_shockc[8] = animation.frame(f.shockc8, function() return boss_shockc[9] end)
-boss_shockc[9] = animation.frame(f.shockc9, function() return boss_shockc[10] end)
-boss_shockc[10] = animation.frame(f.shockc10, function() return boss_death[1] end)
+local boss_shockc = animation.sequence({
+    { f.shockc1 },
+    { f.shockc2 },
+    { f.shockc3 },
+    { f.shockc4 },
+    { f.shockc5 },
+    { f.shockc6 },
+    { f.shockc7 },
+    { f.shockc8 },
+    { f.shockc9 },
+    { f.shockc10 },
+}, function() return boss_death end)
 
-boss_death[1] = animation.frame(f.death1, function() return boss_death[2] end, function(self) quake.sound(self, C.CHAN_VOICE, "boss1/death.wav", 1, C.ATTN_NORM) end)
-boss_death[2] = animation.frame(f.death2, function() return boss_death[3] end)
-boss_death[3] = animation.frame(f.death3, function() return boss_death[4] end)
-boss_death[4] = animation.frame(f.death4, function() return boss_death[5] end)
-boss_death[5] = animation.frame(f.death5, function() return boss_death[6] end)
-boss_death[6] = animation.frame(f.death6, function() return boss_death[7] end)
-boss_death[7] = animation.frame(f.death7, function() return boss_death[8] end)
-boss_death[8] = animation.frame(f.death8, function() return boss_death[9] end)
-boss_death[9] = animation.frame(f.death9, function() return boss_death[10] end, function(self)
-    quake.sound(self, CHAN_BODY, "boss1/out1.wav", 1, C.ATTN_NORM)
-    quake.write_byte(MSG_BROADCAST, SVC_TEMPENTITY)
-    quake.write_byte(MSG_BROADCAST, TE_LAVASPLASH)
-    quake.write_coord(MSG_BROADCAST, self.origin.x)
-    quake.write_coord(MSG_BROADCAST, self.origin.y)
-    quake.write_coord(MSG_BROADCAST, self.origin.z)
-end)
-boss_death[10] = animation.frame(f.death9, function() return boss_death[10] end, function(self)
-    quake.globals.killed_monsters = quake.globals.killed_monsters + 1
-    quake.write_byte(C.MSG_ALL, C.SVC_KILLEDMONSTER) -- FIXME: reliable broadcast
-    subs.use_targets(self, quake.globals.activator)
-    quake.remove(self)
-end)
+boss_death = animation.hold({
+    { f.death1, function(self) quake.sound(self, C.CHAN_VOICE, "boss1/death.wav", 1, C.ATTN_NORM) end },
+    { f.death2 },
+    { f.death3 },
+    { f.death4 },
+    { f.death5 },
+    { f.death6 },
+    { f.death7 },
+    { f.death8 },
+    { f.death9, function(self)
+        quake.sound(self, CHAN_BODY, "boss1/out1.wav", 1, C.ATTN_NORM)
+        quake.write_byte(MSG_BROADCAST, SVC_TEMPENTITY)
+        quake.write_byte(MSG_BROADCAST, TE_LAVASPLASH)
+        quake.write_coord(MSG_BROADCAST, self.origin.x)
+        quake.write_coord(MSG_BROADCAST, self.origin.y)
+        quake.write_coord(MSG_BROADCAST, self.origin.z)
+    end },
+    { f.death9, function(self)
+        quake.globals.killed_monsters = quake.globals.killed_monsters + 1
+        quake.write_byte(C.MSG_ALL, C.SVC_KILLEDMONSTER) -- FIXME: reliable broadcast
+        subs.use_targets(self, quake.globals.activator)
+        quake.remove(self)
+    end },
+})
 
 ---@param self entity
 ---@param p vec3
@@ -265,7 +274,7 @@ function boss_launch_missile(self, p)
 
     -- check for dead enemy
     if self.enemy.health <= 0 then
-        boss_idle[1](self)
+        boss_idle(self)
     end
 end
 
@@ -295,7 +304,7 @@ local function boss_awake(self, activator)
     quake.write_coord(MSG_BROADCAST, self.origin.z)
 
     self.yaw_speed = 20
-    boss_rise[1](self)
+    boss_rise(self)
 end
 
 ---QUAKED monster_boss (1 0 0) (-128 -128 -24) (128 128 256)
@@ -400,11 +409,11 @@ local function lightning_use(self, activator)
         quake.sound(boss, C.CHAN_VOICE, "boss1/pain.wav", 1, C.ATTN_NORM)
         boss.health = boss.health - 1
         if boss.health >= 2 then
-            boss_shocka[1](boss)
+            boss_shocka(boss)
         elseif boss.health == 1 then
-            boss_shockb[1](boss)
+            boss_shockb(boss)
         elseif boss.health == 0 then
-            boss_shockc[1](boss)
+            boss_shockc(boss)
         end
     end
 end
