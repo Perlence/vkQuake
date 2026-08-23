@@ -228,7 +228,7 @@ function M.bodyque(_self) end
 ---@param ent entity
 ---@return nil
 function M.copy_to_body_que(ent)
-    local body = g.bodyque_head
+    local body = assert(g.bodyque_head, "body queue is not initialized")
     body.angles = ent.angles
     body.model = ent.model
     body.modelindex = ent.modelindex
@@ -239,7 +239,7 @@ function M.copy_to_body_que(ent)
     body.flags = 0
     quake.set_origin(body, ent.origin)
     quake.set_size(body, ent.mins, ent.maxs)
-    g.bodyque_head = body.owner
+    g.bodyque_head = assert(body.owner, "body queue entry has no successor")
 end
 
 quake.register_entity("worldspawn", M.worldspawn)

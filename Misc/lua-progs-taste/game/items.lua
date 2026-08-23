@@ -233,7 +233,7 @@ end
 ---@param self entity
 ---@return nil
 item_megahealth_rot = function(self)
-    local other = self.owner
+    local other = assert(self.owner, "megahealth has no owner")
 
     if other.health > other.max_health then
         other.health = other.health - 1

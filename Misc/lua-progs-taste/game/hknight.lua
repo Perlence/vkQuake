@@ -61,7 +61,7 @@ local function hknight_shot(self, offset)
     vec = quake.vec3(vec.x, vec.y, 0 - vec.z + (quake.random() - 0.5) * 0.1)
 
     weapons.launch_spike(self, org, vec)
-    local newmis = quake.globals.newmis
+    local newmis = assert(quake.globals.newmis, "launch_spike did not set newmis")
     newmis.classname = "knightspike"
     quake.set_model(newmis, "progs/k_spike.mdl")
     quake.set_size(newmis, quake.vec3(0, 0, 0), quake.vec3(0, 0, 0))

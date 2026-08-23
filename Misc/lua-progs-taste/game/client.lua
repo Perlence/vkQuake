@@ -120,7 +120,10 @@ function M.find_intermission()
         local cyc = quake.random() * 4
         while cyc > 1 do
             spot = quake.find(spot, "classname", "info_intermission")
-            if not spot then spot = quake.find(spot, "classname", "info_intermission") end
+            if not spot then
+                spot = quake.find(spot, "classname", "info_intermission")
+                assert(spot, "intermission entity disappeared")
+            end
             cyc = cyc - 1
         end
         return spot

@@ -248,7 +248,7 @@ boss_missile = function(self, p)
     local vec = (d - org):normalized()
 
     weapons.launch_spike(self, org, vec)
-    local newmis = quake.globals.newmis
+    local newmis = assert(quake.globals.newmis, "launch_spike did not set newmis")
     quake.set_model(newmis, "progs/lavaball.mdl")
     newmis.avelocity = quake.vec3(200, 100, 300)
     quake.set_size(newmis, quake.vec3(0, 0, 0), quake.vec3(0, 0, 0))
@@ -320,8 +320,8 @@ end
 ---@param self entity
 ---@return nil
 local function lightning_fire(self)
-    local le1 = quake.globals.le1
-    local le2 = quake.globals.le2
+    local le1 = assert(quake.globals.le1, "first lightning endpoint is missing")
+    local le2 = assert(quake.globals.le2, "second lightning endpoint is missing")
     if quake.time() >= quake.globals.lightning_end then
         -- done here, put the terminals back up
         doors.go_down(le1)

@@ -55,7 +55,7 @@ end
 ---@param enemy_range integer
 ---@return boolean
 function M.check_attack(self, enemy_range)
-    local targ = self.enemy
+    local targ = assert(self.enemy, "monster has no enemy")
 
     -- see if any entities are in the way of the shot
     local spot1 = self.origin + self.view_ofs
@@ -208,7 +208,7 @@ end
 ---@param enemy_range integer
 ---@return boolean
 function M.soldier_check_attack(self, enemy_range)
-    local targ = self.enemy
+    local targ = assert(self.enemy, "monster has no enemy")
 
     -- see if any entities are in the way of the shot
     local spot1 = self.origin + self.view_ofs
@@ -281,7 +281,7 @@ function M.sham_check_attack(self, enemy_range, enemy_vis)
         return false
     end
 
-    local targ = self.enemy
+    local targ = assert(self.enemy, "monster has no enemy")
 
     -- see if any entities are in the way of the shot
     local spot1 = self.origin + self.view_ofs
@@ -336,7 +336,7 @@ function M.ogre_check_attack(self, enemy_range, enemy_vis)
         return false
     end
 
-    local targ = self.enemy
+    local targ = assert(self.enemy, "monster has no enemy")
 
     -- see if any entities are in the way of the shot
     local spot1 = self.origin + self.view_ofs

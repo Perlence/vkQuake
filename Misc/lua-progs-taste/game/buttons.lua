@@ -39,7 +39,7 @@ local button_wait = function(self)
     self.state = STATE_TOP
     self.nextthink = self.ltime + self.wait
     self.think = button_return
-    local activator = self.enemy
+    local activator = assert(self.enemy, "button has no activator")
     subs.use_targets(self, activator)
     self.frame = 1 -- use alternate textures
 end

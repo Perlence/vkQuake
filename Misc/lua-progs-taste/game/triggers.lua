@@ -78,7 +78,7 @@ local function multi_trigger(self)
     -- don't trigger again until reset
     self.takedamage = DAMAGE_NO
 
-    local activator = self.enemy
+    local activator = assert(self.enemy, "trigger has no activator")
     subs.use_targets(self, activator)
 
     if self.wait > 0 then

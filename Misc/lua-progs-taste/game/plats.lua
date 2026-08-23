@@ -107,7 +107,7 @@ plat_center_touch = function(self, other)
         return
     end
 
-    self = self.enemy
+    self = assert(self.enemy, "platform trigger has no platform")
     if self.state == STATE_BOTTOM then
         plat_go_up(self)
     elseif self.state == STATE_TOP then
@@ -128,7 +128,7 @@ local function plat_outside_touch(self, other)
         return
     end
 
-    self = self.enemy
+    self = assert(self.enemy, "platform trigger has no platform")
     if self.state == STATE_TOP then
         plat_go_down(self)
     end

@@ -178,7 +178,7 @@ end
 ---@param self entity
 ---@return nil
 local function door_killed(self)
-    local owner = self.owner
+    local owner = assert(self.owner, "door has no owner")
     owner.health = owner.max_health
     -- will be reset upon return
     owner.takedamage = DAMAGE_NO
@@ -304,7 +304,7 @@ local function link_doors(self)
 
             -- shootable, fired, or key doors just needed the owner/enemy links,
             -- they don't spawn a field
-            self = self.owner
+            self = assert(self.owner, "door has no owner")
             if self.health ~= 0 then return end
             if self.targetname ~= "" then return end
             if self.items ~= 0 then return end

@@ -179,7 +179,7 @@ function army_fire(self)
     fight.face(self)
     quake.sound(self, C.CHAN_WEAPON, "soldier/sattck1.wav", 1, C.ATTN_NORM)
     -- fire somewhat behind the player, so a dodging player is harder to hit
-    local en = self.enemy
+    local en = assert(self.enemy, "monster has no enemy")
     local dir = en.origin - en.velocity * 0.2
     dir = (dir - self.origin):normalized()
     weapons.fire_bullets(self, 4, dir, quake.vec3(0.1, 0.1, 0))

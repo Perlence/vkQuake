@@ -89,7 +89,7 @@ function M.check_attack(self)
         if self.attack_state ~= C.AS_STRAIGHT then self.attack_state = C.AS_STRAIGHT; wiz_run1(self) end
         return false
     end
-    local targ = self.enemy
+    local targ = assert(self.enemy, "monster has no enemy")
     -- see if any entities are in the way of the shot
     local spot1 = self.origin + self.view_ofs
     local spot2 = targ.origin + targ.view_ofs
@@ -143,7 +143,7 @@ local function wiz_fast_fire(self)
         local vec = (dst - self.origin):normalized()
         quake.sound(self, C.CHAN_WEAPON, "wizard/wattack.wav", 1, C.ATTN_NORM)
         weapons.launch_spike(self, self.origin, vec)
-        local newmis = quake.globals.newmis
+        local newmis = assert(quake.globals.newmis, "launch_spike did not set newmis")
         newmis.velocity = vec * 600
         newmis.owner = self.owner
         newmis.classname = "wizspike"

@@ -302,7 +302,7 @@ function M.find_target(self)
     -- spawn flag prior to the ambush flag, and I forgot about it, so the second
     -- spawn flag works as well
     if quake.globals.sight_entity_time >= quake.time() - 0.1 and (self.spawnflags & 3) == 0 then
-        client = quake.globals.sight_entity
+        client = assert(quake.globals.sight_entity, "recent sight entity is missing")
         if client.enemy == self.enemy then
             return false
         end

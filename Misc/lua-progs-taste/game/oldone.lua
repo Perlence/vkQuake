@@ -184,7 +184,7 @@ end
 ---@return nil
 finale_2 = function(self)
     -- start a teleport splash inside shub
-    local shub = quake.globals.shub
+    local shub = assert(quake.globals.shub, "finale has no shub")
     local o = shub.origin - quake.vec3(0, 100, 0)
     quake.write_byte(MSG_BROADCAST, SVC_TEMPENTITY)
     quake.write_byte(MSG_BROADCAST, TE_TELEPORT)
@@ -202,7 +202,7 @@ end
 ---@return nil
 finale_3 = function(_self)
     -- start shub thrashing wildly
-    local shub = quake.globals.shub
+    local shub = assert(quake.globals.shub, "finale has no shub")
     shub.think = old_thrash1
     quake.sound(shub, CHAN_VOICE, "boss2/death.wav", 1, C.ATTN_NORM)
     quake.light_style(0, "abcdefghijklmlkjihgfedcb")
