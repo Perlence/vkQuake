@@ -25,8 +25,6 @@ local C = require("game.constants")
 local animation = require("game.animation")
 local gibs = require("game.gibs")
 
-local M = {}
-
 local count = animation.counter()
 local f = {}
 
@@ -281,7 +279,7 @@ end
 ---QUAKED monster_oldone (1 0 0) (-16 -16 -24) (16 16 32)
 ---@param self entity
 ---@return nil
-function M.spawn(self)
+local function spawn(self)
     if quake.cvar("deathmatch") ~= 0 then
         quake.remove(self)
         return
@@ -312,6 +310,4 @@ function M.spawn(self)
     quake.globals.total_monsters = quake.globals.total_monsters + 1
 end
 
-quake.register_entity("monster_oldone", M.spawn)
-
-return M
+quake.register_entity("monster_oldone", spawn)

@@ -23,8 +23,6 @@ local quake = require("quake")
 local combat = require("game.combat")
 local subs = require("game.subs")
 
-local M = {}
-
 local STATE_TOP, STATE_BOTTOM, STATE_UP, STATE_DOWN = 0, 1, 2, 3
 local MOVETYPE_NONE, MOVETYPE_PUSH = 0, 7
 local SOLID_NOT, SOLID_TRIGGER, SOLID_BSP = 0, 1, 4
@@ -184,7 +182,7 @@ end
 ---2) chain slow
 ---@param self entity
 ---@return nil
-function M.func_plat(self)
+local function func_plat(self)
     if self.t_length == 0 then
         self.t_length = 80
     end
@@ -333,7 +331,7 @@ end
 ---1) ratchet metal
 ---@param self entity
 ---@return nil
-function M.func_train(self)
+local function func_train(self)
     if self.speed == 0 then self.speed = 100 end
     if self.target == "" then quake.object_error(self, "func_train without a target") end
     if self.dmg == 0 then self.dmg = 2 end
@@ -373,7 +371,7 @@ end
 ---This is used for the final bos
 ---@param self entity
 ---@return nil
-function M.misc_teleporttrain(self)
+local function misc_teleporttrain(self)
     if self.speed == 0 then self.speed = 100 end
     if self.target == "" then quake.object_error(self, "func_train without a target") end
 
@@ -400,8 +398,6 @@ function M.misc_teleporttrain(self)
     self.think = func_train_find
 end
 
-quake.register_entity("func_plat", M.func_plat)
-quake.register_entity("func_train", M.func_train)
-quake.register_entity("misc_teleporttrain", M.misc_teleporttrain)
-
-return M
+quake.register_entity("func_plat", func_plat)
+quake.register_entity("func_train", func_train)
+quake.register_entity("misc_teleporttrain", misc_teleporttrain)

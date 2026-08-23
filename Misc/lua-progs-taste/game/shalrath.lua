@@ -31,8 +31,6 @@ local monsters = require("game.monsters")
 local subs = require("game.subs")
 local weapons = require("game.weapons")
 
-local M = {}
-
 local count = animation.counter()
 local f = {}
 
@@ -265,7 +263,7 @@ end
 ---QUAKED monster_shalrath (1 0 0) (-32 -32 -24) (32 32 48) Ambush
 ---@param self entity
 ---@return nil
-function M.spawn(self)
+local function spawn(self)
     if quake.cvar("deathmatch") ~= 0 then
         quake.remove(self)
         return
@@ -299,6 +297,4 @@ function M.spawn(self)
     self.nextthink = quake.time() + 0.1 + quake.random() * 0.1
 end
 
-quake.register_entity("monster_shalrath", M.spawn)
-
-return M
+quake.register_entity("monster_shalrath", spawn)

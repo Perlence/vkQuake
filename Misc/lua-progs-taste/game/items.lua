@@ -42,7 +42,7 @@ BE .8 .3 .4 IN COLOR ]]
 
 ---@param self entity
 ---@return nil
-function M.regen(self)
+local function regen(self)
     -- restore original model
     quake.set_model(self, self.mdl)
     -- allow it to be touched again
@@ -57,7 +57,7 @@ end
 ---prints a warning message when spawned
 ---@param self entity
 ---@return nil
-function M.noclass(self)
+local function noclass(self)
     quake.dprint("noclass spawned at")
     quake.dprint(quake.vector_to_string(self.origin))
     quake.dprint("\n")
@@ -67,7 +67,7 @@ end
 ---plants the object on the floor
 ---@param self entity
 ---@return nil
-function M.place_item(self)
+local function place_item(self)
     -- so it can be restored on respawn
     self.mdl = self.model
     -- make extra wide
@@ -89,10 +89,10 @@ end
 ---Sets the clipping size and plants the object on the floor
 ---@param self entity
 ---@return nil
-function M.start_item(self)
+local function start_item(self)
     self.pickup_touch = self.touch
     self.nextthink = quake.time() + 0.2 -- items start after other solids
-    self.think = M.place_item
+    self.think = place_item
 end
 
 --[[
@@ -110,7 +110,7 @@ HEALTH BOX
 ---@param healamount number
 ---@param ignore integer
 ---@return integer
-function M.heal(entity, healamount, ignore)
+local function heal(entity, healamount, ignore)
     if entity.health <= 0 then
         return 0
     end
@@ -145,7 +145,7 @@ local health_touch, item_megahealth_rot
 
 ---@param self entity
 ---@return nil
-function M.item_health(self)
+local function item_health(self)
     self.touch = health_touch
 
     if (self.spawnflags & H_ROTTEN) ~= 0 then
@@ -172,7 +172,7 @@ function M.item_health(self)
         self.healtype = 1
     end
     quake.set_size(self, quake.vec3(0, 0, 0), quake.vec3(32, 32, 56))
-    M.start_item(self)
+    start_item(self)
 end
 
 ---@param self entity
@@ -189,11 +189,11 @@ health_touch = function(self, other)
         if other.health >= 250 then
             return
         end
-        if M.heal(other, self.healamount, 1) == 0 then
+        if heal(other, self.healamount, 1) == 0 then
             return
         end
     else
-        if M.heal(other, self.healamount, 0) == 0 then
+        if heal(other, self.healamount, 0) == 0 then
             return
         end
     end
@@ -222,7 +222,7 @@ health_touch = function(self, other)
             if quake.cvar("deathmatch") ~= 0 then
                 self.nextthink = quake.time() + 20
             end
-            self.think = M.regen
+            self.think = regen
         end
     end
 
@@ -248,7 +248,7 @@ item_megahealth_rot = function(self)
     -- deathmatch 2 is silly old rules
     if quake.cvar("deathmatch") == 1 then
         self.nextthink = quake.time() + 20
-        self.think = M.regen
+        self.think = regen
     end
 end
 
@@ -303,7 +303,7 @@ local function armor_touch(self, other)
     if quake.cvar("deathmatch") == 1 then
         self.nextthink = quake.time() + 20
     end
-    self.think = M.regen
+    self.think = regen
 
     quake.sprint(other, "You got armor\n")
     -- armor touch sound
@@ -317,37 +317,37 @@ end
 ---QUAKED item_armor1 (0 .5 .8) (-16 -16 0) (16 16 32)
 ---@param self entity
 ---@return nil
-function M.item_armor1(self)
+local function item_armor1(self)
     self.touch = armor_touch
     quake.precache_model("progs/armor.mdl")
     quake.set_model(self, "progs/armor.mdl")
     self.skin = 0
     quake.set_size(self, quake.vec3(-16, -16, 0), quake.vec3(16, 16, 56))
-    M.start_item(self)
+    start_item(self)
 end
 
 ---QUAKED item_armor2 (0 .5 .8) (-16 -16 0) (16 16 32)
 ---@param self entity
 ---@return nil
-function M.item_armor2(self)
+local function item_armor2(self)
     self.touch = armor_touch
     quake.precache_model("progs/armor.mdl")
     quake.set_model(self, "progs/armor.mdl")
     self.skin = 1
     quake.set_size(self, quake.vec3(-16, -16, 0), quake.vec3(16, 16, 56))
-    M.start_item(self)
+    start_item(self)
 end
 
 ---QUAKED item_armorInv (0 .5 .8) (-16 -16 0) (16 16 32)
 ---@param self entity
 ---@return nil
-function M.item_armor_inv(self)
+local function item_armor_inv(self)
     self.touch = armor_touch
     quake.precache_model("progs/armor.mdl")
     quake.set_model(self, "progs/armor.mdl")
     self.skin = 2
     quake.set_size(self, quake.vec3(-16, -16, 0), quake.vec3(16, 16, 56))
-    M.start_item(self)
+    start_item(self)
 end
 
 --[[
@@ -360,7 +360,7 @@ WEAPONS
 
 ---@param other entity
 ---@return nil
-function M.bound_other_ammo(other)
+local function bound_other_ammo(other)
     if other.ammo_shells > 100 then
         other.ammo_shells = 100
     end
@@ -377,7 +377,7 @@ end
 
 ---@param w integer
 ---@return integer
-function M.rank_for_weapon(w)
+local function rank_for_weapon(w)
     if w == 64 then -- IT_LIGHTNING
         return 1
     end
@@ -406,10 +406,10 @@ end
 ---@param old integer
 ---@param new integer
 ---@return nil
-function M.deathmatch_weapon(self, old, new)
+local function deathmatch_weapon(self, old, new)
     -- change self.weapon if desired
-    local old_rank = M.rank_for_weapon(self.weapon)
-    local new_rank = M.rank_for_weapon(new)
+    local old_rank = rank_for_weapon(self.weapon)
+    local new_rank = rank_for_weapon(new)
     if new_rank < old_rank then
         self.weapon = new
     end
@@ -480,7 +480,7 @@ local function weapon_touch(self, other)
     quake.sound(other, C.CHAN_ITEM, "weapons/pkup.wav", 1, C.ATTN_NORM)
     quake.stuff_cmd(other, "bf\n")
 
-    M.bound_other_ammo(other)
+    bound_other_ammo(other)
 
     -- change to the weapon
     local old = other.items
@@ -489,7 +489,7 @@ local function weapon_touch(self, other)
     if quake.cvar("deathmatch") == 0 then
         other.weapon = new
     else
-        M.deathmatch_weapon(other, old, new)
+        deathmatch_weapon(other, old, new)
     end
 
     weapons.set_current_ammo(other)
@@ -503,7 +503,7 @@ local function weapon_touch(self, other)
     if quake.cvar("deathmatch") == 1 then
         self.nextthink = quake.time() + 30
     end
-    self.think = M.regen
+    self.think = regen
 
     subs.use_targets(self, other) -- fire all targets / killtargets
 end
@@ -511,79 +511,79 @@ end
 ---QUAKED weapon_supershotgun (0 .5 .8) (-16 -16 0) (16 16 32)
 ---@param self entity
 ---@return nil
-function M.weapon_supershotgun(self)
+local function weapon_supershotgun(self)
     quake.precache_model("progs/g_shot.mdl")
     quake.set_model(self, "progs/g_shot.mdl")
     self.weapon = 2
     self.netname = "Double-barrelled Shotgun"
     self.touch = weapon_touch
     quake.set_size(self, quake.vec3(-16, -16, 0), quake.vec3(16, 16, 56))
-    M.start_item(self)
+    start_item(self)
 end
 
 ---QUAKED weapon_nailgun (0 .5 .8) (-16 -16 0) (16 16 32)
 ---@param self entity
 ---@return nil
-function M.weapon_nailgun(self)
+local function weapon_nailgun(self)
     quake.precache_model("progs/g_nail.mdl")
     quake.set_model(self, "progs/g_nail.mdl")
     self.weapon = 4
     self.netname = "Nailgun"
     self.touch = weapon_touch
     quake.set_size(self, quake.vec3(-16, -16, 0), quake.vec3(16, 16, 56))
-    M.start_item(self)
+    start_item(self)
 end
 
 ---QUAKED weapon_supernailgun (0 .5 .8) (-16 -16 0) (16 16 32)
 ---@param self entity
 ---@return nil
-function M.weapon_supernailgun(self)
+local function weapon_supernailgun(self)
     quake.precache_model("progs/g_nail2.mdl")
     quake.set_model(self, "progs/g_nail2.mdl")
     self.weapon = 8
     self.netname = "Super Nailgun"
     self.touch = weapon_touch
     quake.set_size(self, quake.vec3(-16, -16, 0), quake.vec3(16, 16, 56))
-    M.start_item(self)
+    start_item(self)
 end
 
 ---QUAKED weapon_grenadelauncher (0 .5 .8) (-16 -16 0) (16 16 32)
 ---@param self entity
 ---@return nil
-function M.weapon_grenadelauncher(self)
+local function weapon_grenadelauncher(self)
     quake.precache_model("progs/g_rock.mdl")
     quake.set_model(self, "progs/g_rock.mdl")
     self.weapon = 16
     self.netname = "Grenade Launcher"
     self.touch = weapon_touch
     quake.set_size(self, quake.vec3(-16, -16, 0), quake.vec3(16, 16, 56))
-    M.start_item(self)
+    start_item(self)
 end
 
 ---QUAKED weapon_rocketlauncher (0 .5 .8) (-16 -16 0) (16 16 32)
 ---@param self entity
 ---@return nil
-function M.weapon_rocketlauncher(self)
+local function weapon_rocketlauncher(self)
     quake.precache_model("progs/g_rock2.mdl")
     quake.set_model(self, "progs/g_rock2.mdl")
     self.weapon = 32
     self.netname = "Rocket Launcher"
     self.touch = weapon_touch
     quake.set_size(self, quake.vec3(-16, -16, 0), quake.vec3(16, 16, 56))
-    M.start_item(self)
+    start_item(self)
 end
 
 ---QUAKED weapon_lightning (0 .5 .8) (-16 -16 0) (16 16 32)
 ---@param self entity
 ---@return nil
-function M.weapon_lightning(self)
+local function weapon_lightning(self)
     quake.precache_model("progs/g_light.mdl")
     quake.set_model(self, "progs/g_light.mdl")
     self.weapon = 64
     self.netname = "Thunderbolt"
     self.touch = weapon_touch
     quake.set_size(self, quake.vec3(-16, -16, 0), quake.vec3(16, 16, 56))
-    M.start_item(self)
+    start_item(self)
 end
 
 --[[
@@ -640,7 +640,7 @@ local function ammo_touch(self, other)
         other.ammo_cells = other.ammo_cells + self.aflag
     end
 
-    M.bound_other_ammo(other)
+    bound_other_ammo(other)
 
     quake.sprint(other, "You got the ")
     quake.sprint(other, self.netname)
@@ -664,7 +664,7 @@ local function ammo_touch(self, other)
         self.nextthink = quake.time() + 30
     end
 
-    self.think = M.regen
+    self.think = regen
 
     -- fire all targets / killtargets
     subs.use_targets(self, other)
@@ -675,7 +675,7 @@ local WEAPON_BIG2 = 1
 ---QUAKED item_shells (0 .5 .8) (0 0 0) (32 32 32) big
 ---@param self entity
 ---@return nil
-function M.item_shells(self)
+local function item_shells(self)
     self.touch = ammo_touch
 
     if (self.spawnflags & WEAPON_BIG2) ~= 0 then
@@ -690,13 +690,13 @@ function M.item_shells(self)
     self.weapon = 1
     self.netname = "shells"
     quake.set_size(self, quake.vec3(0, 0, 0), quake.vec3(32, 32, 56))
-    M.start_item(self)
+    start_item(self)
 end
 
 ---QUAKED item_spikes (0 .5 .8) (0 0 0) (32 32 32) big
 ---@param self entity
 ---@return nil
-function M.item_spikes(self)
+local function item_spikes(self)
     self.touch = ammo_touch
 
     if (self.spawnflags & WEAPON_BIG2) ~= 0 then
@@ -711,13 +711,13 @@ function M.item_spikes(self)
     self.weapon = 2
     self.netname = "nails"
     quake.set_size(self, quake.vec3(0, 0, 0), quake.vec3(32, 32, 56))
-    M.start_item(self)
+    start_item(self)
 end
 
 ---QUAKED item_rockets (0 .5 .8) (0 0 0) (32 32 32) big
 ---@param self entity
 ---@return nil
-function M.item_rockets(self)
+local function item_rockets(self)
     self.touch = ammo_touch
 
     if (self.spawnflags & WEAPON_BIG2) ~= 0 then
@@ -732,13 +732,13 @@ function M.item_rockets(self)
     self.weapon = 3
     self.netname = "rockets"
     quake.set_size(self, quake.vec3(0, 0, 0), quake.vec3(32, 32, 56))
-    M.start_item(self)
+    start_item(self)
 end
 
 ---QUAKED item_cells (0 .5 .8) (0 0 0) (32 32 32) big
 ---@param self entity
 ---@return nil
-function M.item_cells(self)
+local function item_cells(self)
     self.touch = ammo_touch
 
     if (self.spawnflags & WEAPON_BIG2) ~= 0 then
@@ -753,7 +753,7 @@ function M.item_cells(self)
     self.weapon = 4
     self.netname = "cells"
     quake.set_size(self, quake.vec3(0, 0, 0), quake.vec3(32, 32, 56))
-    M.start_item(self)
+    start_item(self)
 end
 
 --[[QUAKED item_weapon (0 .5 .8) (0 0 0) (32 32 32) shotgun rocket spikes big
@@ -767,7 +767,7 @@ local WEAPON_BIG = 8
 
 ---@param self entity
 ---@return nil
-function M.item_weapon(self)
+local function item_weapon(self)
     self.touch = ammo_touch
 
     if (self.spawnflags & WEAPON_SHOTGUN) ~= 0 then
@@ -813,7 +813,7 @@ function M.item_weapon(self)
     end
 
     quake.set_size(self, quake.vec3(0, 0, 0), quake.vec3(32, 32, 56))
-    M.start_item(self)
+    start_item(self)
 end
 
 --[[
@@ -882,7 +882,7 @@ end
 ---2: base
 ---@param self entity
 ---@return nil
-function M.item_key1(self)
+local function item_key1(self)
     if quake.world.worldtype == 0 then
         quake.precache_model("progs/w_s_key.mdl")
         quake.set_model(self, "progs/w_s_key.mdl")
@@ -900,7 +900,7 @@ function M.item_key1(self)
     self.touch = key_touch
     self.items = 131072 -- IT_KEY1
     quake.set_size(self, quake.vec3(-16, -16, -24), quake.vec3(16, 16, 32))
-    M.start_item(self)
+    start_item(self)
 end
 
 ---QUAKED item_key2 (0 .5 .8) (-16 -16 -24) (16 16 32)
@@ -914,7 +914,7 @@ end
 ---2: base
 ---@param self entity
 ---@return nil
-function M.item_key2(self)
+local function item_key2(self)
     if quake.world.worldtype == 0 then
         quake.precache_model("progs/w_g_key.mdl")
         quake.set_model(self, "progs/w_g_key.mdl")
@@ -934,7 +934,7 @@ function M.item_key2(self)
     self.touch = key_touch
     self.items = 262144 -- IT_KEY2
     quake.set_size(self, quake.vec3(-16, -16, -24), quake.vec3(16, 16, 32))
-    M.start_item(self)
+    start_item(self)
 end
 
 --[[
@@ -973,7 +973,7 @@ end
 ---End of level sigil, pick up to end episode and return to jrstart.
 ---@param self entity
 ---@return nil
-function M.item_sigil(self)
+local function item_sigil(self)
     if self.spawnflags == 0 then
         quake.object_error(self, "no spawnflags")
     end
@@ -1000,7 +1000,7 @@ function M.item_sigil(self)
 
     self.touch = sigil_touch
     quake.set_size(self, quake.vec3(-16, -16, -24), quake.vec3(16, 16, 32))
-    M.start_item(self)
+    start_item(self)
 end
 
 --[[
@@ -1036,7 +1036,7 @@ local function powerup_touch(self, other)
             self.nextthink = quake.time() + 60
         end
 
-        self.think = M.regen
+        self.think = regen
     end
 
     quake.sound(other, C.CHAN_VOICE, self.noise, 1, C.ATTN_NORM)
@@ -1073,7 +1073,7 @@ end
 ---Player is invulnerable for 30 seconds
 ---@param self entity
 ---@return nil
-function M.item_artifact_invulnerability(self)
+local function item_artifact_invulnerability(self)
     self.touch = powerup_touch
 
     quake.precache_model("progs/invulner.mdl")
@@ -1085,14 +1085,14 @@ function M.item_artifact_invulnerability(self)
     self.netname = "Pentagram of Protection"
     self.items = 1048576 -- IT_INVULNERABILITY
     quake.set_size(self, quake.vec3(-16, -16, -24), quake.vec3(16, 16, 32))
-    M.start_item(self)
+    start_item(self)
 end
 
 ---QUAKED item_artifact_envirosuit (0 .5 .8) (-16 -16 -24) (16 16 32)
 ---Player takes no damage from water or slime for 30 seconds
 ---@param self entity
 ---@return nil
-function M.item_artifact_envirosuit(self)
+local function item_artifact_envirosuit(self)
     self.touch = powerup_touch
 
     quake.precache_model("progs/suit.mdl")
@@ -1103,14 +1103,14 @@ function M.item_artifact_envirosuit(self)
     self.netname = "Biosuit"
     self.items = 2097152 -- IT_SUIT
     quake.set_size(self, quake.vec3(-16, -16, -24), quake.vec3(16, 16, 32))
-    M.start_item(self)
+    start_item(self)
 end
 
 ---QUAKED item_artifact_invisibility (0 .5 .8) (-16 -16 -24) (16 16 32)
 ---Player is invisible for 30 seconds
 ---@param self entity
 ---@return nil
-function M.item_artifact_invisibility(self)
+local function item_artifact_invisibility(self)
     self.touch = powerup_touch
 
     quake.precache_model("progs/invisibl.mdl")
@@ -1122,14 +1122,14 @@ function M.item_artifact_invisibility(self)
     self.netname = "Ring of Shadows"
     self.items = C.IT_INVISIBILITY
     quake.set_size(self, quake.vec3(-16, -16, -24), quake.vec3(16, 16, 32))
-    M.start_item(self)
+    start_item(self)
 end
 
 ---QUAKED item_artifact_super_damage (0 .5 .8) (-16 -16 -24) (16 16 32)
 ---The next attack from the player will do 4x damage
 ---@param self entity
 ---@return nil
-function M.item_artifact_super_damage(self)
+local function item_artifact_super_damage(self)
     self.touch = powerup_touch
 
     quake.precache_model("progs/quaddama.mdl")
@@ -1141,7 +1141,7 @@ function M.item_artifact_super_damage(self)
     self.netname = "Quad Damage"
     self.items = 4194304 -- IT_QUAD
     quake.set_size(self, quake.vec3(-16, -16, -24), quake.vec3(16, 16, 32))
-    M.start_item(self)
+    start_item(self)
 end
 
 --[[
@@ -1190,7 +1190,7 @@ local function backpack_touch(self, other)
     local old = other.items
     other.items = other.items | new
 
-    M.bound_other_ammo(other)
+    bound_other_ammo(other)
 
     if self.ammo_shells ~= 0 then
         if acount ~= 0 then
@@ -1241,11 +1241,11 @@ local function backpack_touch(self, other)
     if (other.flags & 16) ~= 0 then -- FL_INWATER
         -- switch best weapon if there is no lightning gun in the pack
         if new ~= 64 then -- IT_LIGHTNING
-            M.deathmatch_weapon(other, old, new)
+            deathmatch_weapon(other, old, new)
         end
     else
         -- switch to the best weapon in backpack
-        M.deathmatch_weapon(other, old, new)
+        deathmatch_weapon(other, old, new)
     end
 
     weapons.set_current_ammo(other)
@@ -1304,28 +1304,28 @@ function M.drop_backpack(self)
     item.think = subs.remove
 end
 
-quake.register_entity("noclass", M.noclass)
-quake.register_entity("item_health", M.item_health)
-quake.register_entity("item_armor1", M.item_armor1)
-quake.register_entity("item_armor2", M.item_armor2)
-quake.register_entity("item_armorInv", M.item_armor_inv)
-quake.register_entity("weapon_supershotgun", M.weapon_supershotgun)
-quake.register_entity("weapon_nailgun", M.weapon_nailgun)
-quake.register_entity("weapon_supernailgun", M.weapon_supernailgun)
-quake.register_entity("weapon_grenadelauncher", M.weapon_grenadelauncher)
-quake.register_entity("weapon_rocketlauncher", M.weapon_rocketlauncher)
-quake.register_entity("weapon_lightning", M.weapon_lightning)
-quake.register_entity("item_shells", M.item_shells)
-quake.register_entity("item_spikes", M.item_spikes)
-quake.register_entity("item_rockets", M.item_rockets)
-quake.register_entity("item_cells", M.item_cells)
-quake.register_entity("item_weapon", M.item_weapon)
-quake.register_entity("item_key1", M.item_key1)
-quake.register_entity("item_key2", M.item_key2)
-quake.register_entity("item_sigil", M.item_sigil)
-quake.register_entity("item_artifact_invulnerability", M.item_artifact_invulnerability)
-quake.register_entity("item_artifact_envirosuit", M.item_artifact_envirosuit)
-quake.register_entity("item_artifact_invisibility", M.item_artifact_invisibility)
-quake.register_entity("item_artifact_super_damage", M.item_artifact_super_damage)
+quake.register_entity("noclass", noclass)
+quake.register_entity("item_health", item_health)
+quake.register_entity("item_armor1", item_armor1)
+quake.register_entity("item_armor2", item_armor2)
+quake.register_entity("item_armorInv", item_armor_inv)
+quake.register_entity("weapon_supershotgun", weapon_supershotgun)
+quake.register_entity("weapon_nailgun", weapon_nailgun)
+quake.register_entity("weapon_supernailgun", weapon_supernailgun)
+quake.register_entity("weapon_grenadelauncher", weapon_grenadelauncher)
+quake.register_entity("weapon_rocketlauncher", weapon_rocketlauncher)
+quake.register_entity("weapon_lightning", weapon_lightning)
+quake.register_entity("item_shells", item_shells)
+quake.register_entity("item_spikes", item_spikes)
+quake.register_entity("item_rockets", item_rockets)
+quake.register_entity("item_cells", item_cells)
+quake.register_entity("item_weapon", item_weapon)
+quake.register_entity("item_key1", item_key1)
+quake.register_entity("item_key2", item_key2)
+quake.register_entity("item_sigil", item_sigil)
+quake.register_entity("item_artifact_invulnerability", item_artifact_invulnerability)
+quake.register_entity("item_artifact_envirosuit", item_artifact_envirosuit)
+quake.register_entity("item_artifact_invisibility", item_artifact_invisibility)
+quake.register_entity("item_artifact_super_damage", item_artifact_super_damage)
 
 return M

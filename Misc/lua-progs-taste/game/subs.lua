@@ -27,6 +27,8 @@ local SOLID_TRIGGER = 1
 
 local M = {}
 
+local calc_angle_move
+
 ---@param _self entity
 ---@return nil
 function M.null(_self)
@@ -85,7 +87,7 @@ local calc_move_done
 ---@param tspeed number
 ---@param func think_callback
 ---@return nil
-function M.calc_move_ent(ent, tdest, tspeed, func)
+local function calc_move_ent(ent, tdest, tspeed, func)
     M.calc_move(ent, tdest, tspeed, func)
 end
 
@@ -143,7 +145,6 @@ calc_move_done = function(self)
         self.think1(self)
     end
 end
-M.calc_move_done = calc_move_done
 
 --[[
 =============
@@ -162,8 +163,8 @@ local calc_angle_move_done
 ---@param tspeed number
 ---@param func think_callback
 ---@return nil
-function M.calc_angle_move_ent(ent, destangle, tspeed, func)
-    M.calc_angle_move(ent, destangle, tspeed, func)
+local function calc_angle_move_ent(ent, destangle, tspeed, func)
+    calc_angle_move(ent, destangle, tspeed, func)
 end
 
 ---@param self entity
@@ -171,7 +172,7 @@ end
 ---@param tspeed number
 ---@param func think_callback
 ---@return nil
-function M.calc_angle_move(self, destangle, tspeed, func)
+function calc_angle_move(self, destangle, tspeed, func)
     if tspeed == 0 then
         quake.object_error("No speed is defined!")
     end
@@ -207,7 +208,6 @@ calc_angle_move_done = function(self)
         self.think1(self)
     end
 end
-M.calc_angle_move_done = calc_angle_move_done
 
 --=============================================================================
 
@@ -215,11 +215,10 @@ local delay_think
 
 ---@param self entity
 ---@return nil
-function M.delay_think(self)
+delay_think = function(self)
     M.use_targets(self, self.enemy)
     quake.remove(self)
 end
-delay_think = M.delay_think
 
 ---the global "activator" should be set to the entity that initiated the firing.
 ---

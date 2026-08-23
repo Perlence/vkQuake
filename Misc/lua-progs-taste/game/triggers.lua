@@ -141,7 +141,7 @@ end
 ---set "message" to text string
 ---@param self entity
 ---@return nil
-function M.trigger_multiple(self)
+local function trigger_multiple(self)
     if self.sounds == 1 then
         quake.precache_sound("misc/secret.wav"); self.noise = "misc/secret.wav"
     elseif self.sounds == 2 then
@@ -183,9 +183,9 @@ end
 ---set "message" to text string
 ---@param self entity
 ---@return nil
-function M.trigger_once(self)
+local function trigger_once(self)
     self.wait = -1
-    M.trigger_multiple(self)
+    trigger_multiple(self)
 end
 
 --=============================================================================
@@ -194,7 +194,7 @@ end
 ---This fixed size trigger cannot be touched, it can only be fired by other events. It can contain killtargets, targets, delays, and messages.
 ---@param self entity
 ---@return nil
-function M.trigger_relay(self)
+local function trigger_relay(self)
     self.use = subs.use_targets
 end
 
@@ -210,7 +210,7 @@ end
 ---set "message" to text string
 ---@param self entity
 ---@return nil
-function M.trigger_secret(self)
+local function trigger_secret(self)
     quake.globals.total_secrets = quake.globals.total_secrets + 1
     self.wait = -1
     if self.message == "" then self.message = "You found a secret area!" end
@@ -221,7 +221,7 @@ function M.trigger_secret(self)
     elseif self.sounds == 2 then
         quake.precache_sound("misc/talk.wav"); self.noise = "misc/talk.wav"
     end
-    M.trigger_multiple(self)
+    trigger_multiple(self)
 end
 
 --=============================================================================
@@ -258,7 +258,7 @@ end
 ---After the counter has been triggered "count" times (default 2), it will fire all of it's targets and remove itself.
 ---@param self entity
 ---@return nil
-function M.trigger_counter(self)
+local function trigger_counter(self)
     self.wait = -1
     if self.count == 0 then self.count = 2 end
     self.use = counter_use
@@ -392,7 +392,7 @@ end
 ---This is the destination marker for a teleporter. It should have a "targetname" field with the same value as a teleporter's "target" field.
 ---@param self entity
 ---@return nil
-function M.info_teleport_destination(self)
+local function info_teleport_destination(self)
     -- this does nothing, just serves as a target spot
     self.mangle = self.angles
     self.angles = quake.vec3(0, 0, 0)
@@ -416,7 +416,7 @@ end
 ---If the trigger_teleport has a targetname, it will only teleport entities when it has been fired.
 ---@param self entity
 ---@return nil
-function M.trigger_teleport(self)
+local function trigger_teleport(self)
     subs.init_trigger(self)
     self.touch = teleport_touch
     -- find the destination
@@ -452,7 +452,7 @@ end
 ---Only used on start map.
 ---@param self entity
 ---@return nil
-function M.trigger_setskill(self)
+local function trigger_setskill(self)
     subs.init_trigger(self)
     self.touch = trigger_skill_touch
 end
@@ -487,7 +487,7 @@ end
 ---Only fires if playing the registered version, otherwise prints the message
 ---@param self entity
 ---@return nil
-function M.trigger_onlyregistered(self)
+local function trigger_onlyregistered(self)
     quake.precache_sound("misc/talk.wav")
     subs.init_trigger(self)
     self.touch = trigger_onlyregistered_touch
@@ -520,7 +520,7 @@ end
 ---defalt dmg = 5
 ---@param self entity
 ---@return nil
-function M.trigger_hurt(self)
+local function trigger_hurt(self)
     subs.init_trigger(self)
     self.touch = hurt_touch
     if self.dmg == 0 then self.dmg = 5 end
@@ -550,7 +550,7 @@ end
 ---Pushes the player
 ---@param self entity
 ---@return nil
-function M.trigger_push(self)
+local function trigger_push(self)
     subs.init_trigger(self)
     quake.precache_sound("ambience/windfly.wav")
     self.touch = trigger_push_touch
@@ -578,7 +578,7 @@ end
 ---"height" default to 200, the speed thrown upwards
 ---@param self entity
 ---@return nil
-function M.trigger_monsterjump(self)
+local function trigger_monsterjump(self)
     if self.speed == 0 then self.speed = 200 end
     if self.height == 0 then self.height = 200 end
     if self.angles == quake.vec3(0, 0, 0) then self.angles = quake.vec3(0, 360, 0) end
@@ -586,17 +586,17 @@ function M.trigger_monsterjump(self)
     self.touch = trigger_monsterjump_touch
 end
 
-quake.register_entity("trigger_multiple", M.trigger_multiple)
-quake.register_entity("trigger_once", M.trigger_once)
-quake.register_entity("trigger_relay", M.trigger_relay)
-quake.register_entity("trigger_secret", M.trigger_secret)
-quake.register_entity("trigger_counter", M.trigger_counter)
-quake.register_entity("info_teleport_destination", M.info_teleport_destination)
-quake.register_entity("trigger_teleport", M.trigger_teleport)
-quake.register_entity("trigger_setskill", M.trigger_setskill)
-quake.register_entity("trigger_onlyregistered", M.trigger_onlyregistered)
-quake.register_entity("trigger_hurt", M.trigger_hurt)
-quake.register_entity("trigger_push", M.trigger_push)
-quake.register_entity("trigger_monsterjump", M.trigger_monsterjump)
+quake.register_entity("trigger_multiple", trigger_multiple)
+quake.register_entity("trigger_once", trigger_once)
+quake.register_entity("trigger_relay", trigger_relay)
+quake.register_entity("trigger_secret", trigger_secret)
+quake.register_entity("trigger_counter", trigger_counter)
+quake.register_entity("info_teleport_destination", info_teleport_destination)
+quake.register_entity("trigger_teleport", trigger_teleport)
+quake.register_entity("trigger_setskill", trigger_setskill)
+quake.register_entity("trigger_onlyregistered", trigger_onlyregistered)
+quake.register_entity("trigger_hurt", trigger_hurt)
+quake.register_entity("trigger_push", trigger_push)
+quake.register_entity("trigger_monsterjump", trigger_monsterjump)
 
 return M

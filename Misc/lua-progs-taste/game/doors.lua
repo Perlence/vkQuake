@@ -349,7 +349,7 @@ end
 ---4) screechy metal
 ---@param self entity
 ---@return nil
-function M.func_door(self)
+local function func_door(self)
     if quake.world.worldtype == 0 then
         quake.precache_sound("doors/medtry.wav"); quake.precache_sound("doors/meduse.wav")
         self.noise3 = "doors/medtry.wav"; self.noise4 = "doors/meduse.wav"
@@ -622,7 +622,7 @@ end
 ---3) base
 ---@param self entity
 ---@return nil
-function M.func_door_secret(self)
+local function func_door_secret(self)
     if self.sounds == 0 then self.sounds = 3 end
     if self.sounds == 1 then
         quake.precache_sound("doors/latch2.wav")
@@ -677,7 +677,7 @@ end
 
 M.go_down = door_go_down
 
-quake.register_entity("func_door", M.func_door)
-quake.register_entity("func_door_secret", M.func_door_secret)
+quake.register_entity("func_door", func_door)
+quake.register_entity("func_door_secret", func_door_secret)
 
 return M

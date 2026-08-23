@@ -245,7 +245,7 @@ end
 ---QUAKED monster_knight (1 0 0) (-16 -16 -24) (16 16 40) Ambush
 ---@param self entity
 ---@return nil
-function M.spawn(self)
+local function spawn(self)
     if quake.cvar("deathmatch") ~= 0 then quake.remove(self); return end
     quake.precache_model("progs/knight.mdl")
     quake.precache_model("progs/h_knight.mdl")
@@ -272,6 +272,6 @@ end
 M.atk1 = knight_atk
 M.runatk1 = knight_runatk
 
-quake.register_entity("monster_knight", M.spawn)
+quake.register_entity("monster_knight", spawn)
 
 return M

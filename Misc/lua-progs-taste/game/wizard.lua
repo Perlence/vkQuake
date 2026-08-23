@@ -29,8 +29,6 @@ local monsters = require("game.monsters")
 local subs = require("game.subs")
 local weapons = require("game.weapons")
 
-local M = {}
-
 local count = animation.counter()
 local f = {}
 
@@ -99,9 +97,10 @@ end
 
 local wiz_run
 local wiz_side
+
 ---@param self entity
 ---@return boolean
-function M.check_attack(self)
+local function check_attack(self)
     local enemy_range = quake.globals.enemy_range
     if quake.time() < self.attack_finished then return false end
     if not quake.globals.enemy_vis then return false end
@@ -323,7 +322,7 @@ local function wiz_missile(self) wiz_fast(self) end
 ---QUAKED monster_wizard (1 0 0) (-16 -16 -24) (16 16 40) Ambush
 ---@param self entity
 ---@return nil
-function M.spawn(self)
+local function spawn(self)
     if quake.cvar("deathmatch") ~= 0 then quake.remove(self); return end
     quake.precache_model("progs/wizard.mdl")
     quake.precache_model("progs/h_wizard.mdl")
@@ -347,10 +346,8 @@ function M.spawn(self)
     self.th_missile = wiz_missile
     self.th_pain = wiz_pain_callback
     self.th_die = wiz_die
-    self.check_attack = M.check_attack
+    self.check_attack = check_attack
     monsters.fly_start(self)
 end
 
-quake.register_entity("monster_wizard", M.spawn)
-
-return M
+quake.register_entity("monster_wizard", spawn)

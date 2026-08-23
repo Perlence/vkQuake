@@ -30,8 +30,6 @@ local monsters = require("game.monsters")
 local subs = require("game.subs")
 local weapons = require("game.weapons")
 
-local M = {}
-
 local count = animation.counter()
 local f = {}
 
@@ -299,7 +297,7 @@ end
 ---QUAKED monster_shambler (1 0 0) (-32 -32 -24) (32 32 64) Ambush
 ---@param self entity
 ---@return nil
-function M.spawn(self)
+local function spawn(self)
     if quake.cvar("deathmatch") ~= 0 then quake.remove(self); return end
     quake.precache_model("progs/shambler.mdl")
     quake.precache_model("progs/s_light.mdl")
@@ -329,6 +327,4 @@ function M.spawn(self)
     monsters.walk_start(self)
 end
 
-quake.register_entity("monster_shambler", M.spawn)
-
-return M
+quake.register_entity("monster_shambler", spawn)

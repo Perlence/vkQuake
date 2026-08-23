@@ -28,8 +28,6 @@ local subs = require("game.subs")
 local weapons = require("game.weapons")
 local doors = require("game.doors")
 
-local M = {}
-
 local count = animation.counter()
 local f = {}
 
@@ -310,7 +308,7 @@ end
 ---QUAKED monster_boss (1 0 0) (-128 -128 -24) (128 128 256)
 ---@param self entity
 ---@return nil
-function M.spawn(self)
+local function spawn(self)
     if quake.cvar("deathmatch") ~= 0 then
         quake.remove(self)
         return
@@ -422,11 +420,9 @@ end
 ---Just for boss level.
 ---@param self entity
 ---@return nil
-function M.spawn_lightning(self)
+local function spawn_lightning(self)
     self.use = lightning_use
 end
 
-quake.register_entity("monster_boss", M.spawn)
-quake.register_entity("event_lightning", M.spawn_lightning)
-
-return M
+quake.register_entity("monster_boss", spawn)
+quake.register_entity("event_lightning", spawn_lightning)

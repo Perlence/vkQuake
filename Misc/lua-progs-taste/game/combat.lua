@@ -75,7 +75,7 @@ end
 ---@param targ entity
 ---@param attacker entity
 ---@return nil
-function M.killed(targ, attacker)
+local function killed(targ, attacker)
     local client = require("game.client")
 
     if targ.health < -99 then
@@ -176,7 +176,7 @@ function M.damage(targ, inflictor, attacker, damage)
     targ.health = targ.health - take
 
     if targ.health <= 0 then
-        M.killed(targ, attacker)
+        killed(targ, attacker)
         return
     end
 
@@ -242,7 +242,7 @@ end
 ---@param attacker entity
 ---@param damage number
 ---@return nil
-function M.beam_damage(attacker, damage)
+local function beam_damage(attacker, damage)
     local head = quake.find_radius(attacker.origin, damage + 40)
 
     while head do

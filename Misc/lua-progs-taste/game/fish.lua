@@ -29,8 +29,6 @@ local gibs = require("game.gibs")
 local monsters = require("game.monsters")
 local subs = require("game.subs")
 
-local M = {}
-
 local count = animation.counter()
 local f = {}
 
@@ -224,7 +222,7 @@ end
 ---QUAKED monster_fish (1 0 0) (-16 -16 -24) (16 16 24) Ambush
 ---@param self entity
 ---@return nil
-function M.spawn(self)
+local function spawn(self)
     if quake.cvar("deathmatch") ~= 0 then
         quake.remove(self)
         return
@@ -251,6 +249,4 @@ function M.spawn(self)
     monsters.swim_start(self)
 end
 
-quake.register_entity("monster_fish", M.spawn)
-
-return M
+quake.register_entity("monster_fish", spawn)

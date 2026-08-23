@@ -66,7 +66,7 @@ walkmove(angle, speed) primitive is all or nothing
 --
 ---@param v number
 ---@return number
-function M.angle_mod(v)
+local function angle_mod(v)
     while v >= 360 do
         v = v - 360
     end
@@ -99,7 +99,7 @@ local t_movetarget
 
 ---@param self entity
 ---@return nil
-function M.movetarget_f(self)
+local function movetarget_f(self)
     if self.targetname == "" then
         quake.object_error("monster_movetarget: no targetname")
     end
@@ -113,8 +113,8 @@ end
 ---Monsters will continue walking towards the next target corner.
 ---@param self entity
 ---@return nil
-function M.path_corner(self)
-    M.movetarget_f(self)
+local function path_corner(self)
+    movetarget_f(self)
 end
 
 ---Something has bumped into a movetarget.  If it is a monster
@@ -148,9 +148,8 @@ t_movetarget = function(self, other)
         return
     end
 end
-M.t_movetarget = t_movetarget
 
-quake.register_entity("path_corner", M.path_corner)
+quake.register_entity("path_corner", path_corner)
 
 --============================================================================
 
@@ -162,7 +161,7 @@ quake.register_entity("path_corner", M.path_corner)
 ---@param self entity
 ---@param targ entity
 ---@return integer
-function M.range(self, targ)
+local function range(self, targ)
     local spot1 = self.origin + self.view_ofs
     local spot2 = targ.origin + targ.view_ofs
 
@@ -202,7 +201,7 @@ end
 ---@param self entity
 ---@param targ entity
 ---@return boolean
-function M.in_front(self, targ)
+local function in_front(self, targ)
     local forward = quake.make_vectors(self.angles).forward
     local vec = (targ.origin - self.origin):normalized()
     local dot = vec:dot(forward)
@@ -217,7 +216,7 @@ end
 
 ---@param self entity
 ---@return nil
-function M.hunt_target(self)
+local function hunt_target(self)
     self.goalentity = self.enemy
     self.think = self.th_run
     self.ideal_yaw = quake.vector_to_yaw(self.enemy.origin - self.origin)
@@ -227,7 +226,7 @@ end
 
 ---@param self entity
 ---@return nil
-function M.sight_sound(self)
+local function sight_sound(self)
     if self.classname == "monster_ogre" then
         quake.sound(self, C.CHAN_VOICE, "ogre/ogwake.wav", 1, C.ATTN_NORM)
     elseif self.classname == "monster_knight" then
@@ -275,8 +274,8 @@ function M.found_target(self)
 
     self.show_hostile = quake.time() + 1 -- wake up other monsters
 
-    M.sight_sound(self)
-    M.hunt_target(self)
+    sight_sound(self)
+    hunt_target(self)
 end
 
 ---Self is currently not attacking anything, so try to find a target
@@ -292,7 +291,7 @@ end
 ---slower noticing monsters.
 ---@param self entity
 ---@return boolean
-function M.find_target(self)
+local function find_target(self)
     local client
 
     -- if the first spawnflag bit is set, the monster will only wake up on
@@ -324,7 +323,7 @@ function M.find_target(self)
         return false
     end
 
-    local r = M.range(self, client)
+    local r = range(self, client)
     if r == C.RANGE_FAR then
         return false
     end
@@ -334,11 +333,11 @@ function M.find_target(self)
     end
 
     if r == C.RANGE_NEAR then
-        if client.show_hostile < quake.time() and not M.in_front(self, client) then
+        if client.show_hostile < quake.time() and not in_front(self, client) then
             return false
         end
     elseif r == C.RANGE_MID then
-        if --[[ client.show_hostile < time || ]] not M.in_front(self, client) then
+        if --[[ client.show_hostile < time || ]] not in_front(self, client) then
             return false
         end
     end
@@ -400,7 +399,7 @@ function M.walk(self, dist)
     quake.globals.movedist = dist
 
     -- check for noticing a player
-    if M.find_target(self) then
+    if find_target(self) then
         return
     end
 
@@ -411,7 +410,7 @@ end
 ---@param self entity
 ---@return nil
 function M.stand(self)
-    if M.find_target(self) then
+    if find_target(self) then
         return
     end
 
@@ -425,7 +424,7 @@ end
 ---@param self entity
 ---@return nil
 function M.turn(self)
-    if M.find_target(self) then
+    if find_target(self) then
         return
     end
 
@@ -437,7 +436,7 @@ end
 ---@param self entity
 ---@param dest3 vec3
 ---@return nil
-function M.choose_turn(self, dest3)
+local function choose_turn(self, dest3)
     local dir = self.origin - dest3
     local normal = quake.globals.trace_plane_normal
     local newdir = quake.vec3(normal.y, 0 - normal.x, 0)
@@ -453,8 +452,8 @@ end
 
 ---@param self entity
 ---@return boolean
-function M.facing_ideal(self)
-    local delta = M.angle_mod(self.angles.y - self.ideal_yaw)
+local function facing_ideal(self)
+    local delta = angle_mod(self.angles.y - self.ideal_yaw)
     if delta > 45 and delta < 315 then
         return false
     end
@@ -467,7 +466,7 @@ end
 ---@param enemy_vis boolean
 ---@param enemy_range integer
 ---@return boolean
-function M.check_any_attack(self, enemy_vis, enemy_range)
+local function check_any_attack(self, enemy_vis, enemy_range)
     if not enemy_vis then
         return false
     end
@@ -496,11 +495,11 @@ end
 ---@param self entity
 ---@param enemy_yaw number
 ---@return nil
-function M.run_melee(self, enemy_yaw)
+local function run_melee(self, enemy_yaw)
     self.ideal_yaw = enemy_yaw
     quake.change_yaw(self)
 
-    if M.facing_ideal(self) then
+    if facing_ideal(self) then
         self.th_melee(self)
         self.attack_state = C.AS_STRAIGHT
     end
@@ -510,10 +509,10 @@ end
 ---@param self entity
 ---@param enemy_yaw number
 ---@return nil
-function M.run_missile(self, enemy_yaw)
+local function run_missile(self, enemy_yaw)
     self.ideal_yaw = enemy_yaw
     quake.change_yaw(self)
-    if M.facing_ideal(self) then
+    if facing_ideal(self) then
         self.th_missile(self)
         self.attack_state = C.AS_STRAIGHT
     end
@@ -524,7 +523,7 @@ end
 ---@param enemy_yaw number
 ---@param movedist number
 ---@return nil
-function M.run_slide(self, enemy_yaw, movedist)
+local function run_slide(self, enemy_yaw, movedist)
     self.ideal_yaw = enemy_yaw
     quake.change_yaw(self)
     local ofs
@@ -555,7 +554,7 @@ function M.run(self, dist)
         -- FIXME: look all around for other targets
         if self.oldenemy and self.oldenemy.health > 0 then
             self.enemy = self.oldenemy
-            M.hunt_target(self)
+            hunt_target(self)
         else
             if self.movetarget then
                 self.th_walk(self)
@@ -578,33 +577,33 @@ function M.run(self, dist)
 
     -- look for other coop players
     if quake.cvar("coop") ~= 0 and self.search_time < quake.time() then
-        if M.find_target(self) then
+        if find_target(self) then
             return
         end
     end
 
-    local enemy_infront = M.in_front(self, self.enemy)
-    local enemy_range = M.range(self, self.enemy)
+    local enemy_infront = in_front(self, self.enemy)
+    local enemy_range = range(self, self.enemy)
     local enemy_yaw = quake.vector_to_yaw(self.enemy.origin - self.origin)
     quake.globals.enemy_infront = enemy_infront
     quake.globals.enemy_range = enemy_range
     quake.globals.enemy_yaw = enemy_yaw
 
     if self.attack_state == C.AS_MISSILE then
-        M.run_missile(self, enemy_yaw)
+        run_missile(self, enemy_yaw)
         return
     end
     if self.attack_state == C.AS_MELEE then
-        M.run_melee(self, enemy_yaw)
+        run_melee(self, enemy_yaw)
         return
     end
 
-    if M.check_any_attack(self, enemy_vis, enemy_range) then
+    if check_any_attack(self, enemy_vis, enemy_range) then
         return -- beginning an attack
     end
 
     if self.attack_state == C.AS_SLIDING then
-        M.run_slide(self, enemy_yaw, dist)
+        run_slide(self, enemy_yaw, dist)
         return
     end
 

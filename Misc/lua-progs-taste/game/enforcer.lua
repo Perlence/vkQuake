@@ -377,7 +377,7 @@ end
 ---QUAKED monster_enforcer (1 0 0) (-16 -16 -24) (16 16 40) Ambush
 ---@param self entity
 ---@return nil
-function M.spawn(self)
+local function spawn(self)
     if quake.cvar("deathmatch") ~= 0 then
         quake.remove(self)
         return
@@ -417,6 +417,6 @@ end
 
 M.launch_laser = launch_laser
 
-quake.register_entity("monster_enforcer", M.spawn)
+quake.register_entity("monster_enforcer", spawn)
 
 return M

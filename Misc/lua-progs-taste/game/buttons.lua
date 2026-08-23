@@ -24,8 +24,6 @@ See file, 'COPYING', for details.
 local quake = require("quake")
 local subs = require("game.subs")
 
-local M = {}
-
 local STATE_TOP, STATE_BOTTOM, STATE_UP, STATE_DOWN = 0, 1, 2, 3
 local MOVETYPE_PUSH, SOLID_BSP = 7, 4
 local DAMAGE_NO, DAMAGE_YES = 0, 1
@@ -125,7 +123,7 @@ end
 ---3) in-out
 ---@param self entity
 ---@return nil
-function M.func_button(self)
+local function func_button(self)
     if self.sounds == 0 then
         quake.precache_sound("buttons/airbut1.wav")
         self.noise = "buttons/airbut1.wav"
@@ -176,6 +174,4 @@ function M.func_button(self)
     self.pos2 = self.pos1 + self.movedir * (math.abs(self.movedir:dot(self.size)) - self.lip)
 end
 
-quake.register_entity("func_button", M.func_button)
-
-return M
+quake.register_entity("func_button", func_button)

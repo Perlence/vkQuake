@@ -31,8 +31,6 @@ local monsters = require("game.monsters")
 local subs = require("game.subs")
 local weapons = require("game.weapons")
 
-local M = {}
-
 local count = animation.counter()
 local f = {}
 
@@ -382,7 +380,7 @@ end
 ---QUAKED monster_ogre (1 0 0) (-32 -32 -24) (32 32 64) Ambush
 ---@param self entity
 ---@return nil
-function M.spawn(self)
+local function spawn(self)
     if quake.cvar("deathmatch") ~= 0 then quake.remove(self); return end
     quake.precache_model("progs/ogre.mdl")
     quake.precache_model("progs/h_ogre.mdl")
@@ -411,9 +409,7 @@ end
 
 ---@param self entity
 ---@return nil
-function M.spawn_marksman(self) M.spawn(self) end
+local function spawn_marksman(self) spawn(self) end
 
-quake.register_entity("monster_ogre", M.spawn)
-quake.register_entity("monster_ogre_marksman", M.spawn_marksman)
-
-return M
+quake.register_entity("monster_ogre", spawn)
+quake.register_entity("monster_ogre_marksman", spawn_marksman)

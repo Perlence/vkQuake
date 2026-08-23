@@ -43,7 +43,7 @@ local M = {}
 ---@param self entity
 ---@param activator entity
 ---@return nil
-function M.use(self, activator)
+local function use(self, activator)
     if self.enemy then
         return
     end
@@ -91,7 +91,7 @@ end
 
 ---@param self entity
 ---@return nil
-function M.walk_start_go(self)
+local function walk_start_go(self)
     -- raise off floor a bit
     self.origin = quake.vec3(self.origin.x, self.origin.y, self.origin.z + 1)
     quake.drop_to_floor(self)
@@ -109,7 +109,7 @@ function M.walk_start_go(self)
         self.yaw_speed = 20
     end
     self.view_ofs = quake.vec3(0, 0, 25)
-    self.use = M.use
+    self.use = use
 
     self.flags = self.flags | C.FL_MONSTER
 
@@ -144,13 +144,13 @@ function M.walk_start(self)
     -- delay drop to floor to make sure all doors have been spawned
     -- spread think times so they don't all happen at same time
     self.nextthink = self.nextthink + quake.random() * 0.5
-    self.think = M.walk_start_go
+    self.think = walk_start_go
     quake.globals.total_monsters = quake.globals.total_monsters + 1
 end
 
 ---@param self entity
 ---@return nil
-function M.fly_start_go(self)
+local function fly_start_go(self)
     self.takedamage = C.DAMAGE_AIM
 
     self.ideal_yaw = self.angles.y
@@ -158,7 +158,7 @@ function M.fly_start_go(self)
         self.yaw_speed = 10
     end
     self.view_ofs = quake.vec3(0, 0, 25)
-    self.use = M.use
+    self.use = use
 
     self.flags = self.flags | C.FL_FLY
     self.flags = self.flags | C.FL_MONSTER
@@ -195,13 +195,13 @@ end
 function M.fly_start(self)
     -- spread think times so they don't all happen at same time
     self.nextthink = self.nextthink + quake.random() * 0.5
-    self.think = M.fly_start_go
+    self.think = fly_start_go
     quake.globals.total_monsters = quake.globals.total_monsters + 1
 end
 
 ---@param self entity
 ---@return nil
-function M.swim_start_go(self)
+local function swim_start_go(self)
     if quake.cvar("deathmatch") ~= 0 then
         quake.remove(self)
         return
@@ -214,7 +214,7 @@ function M.swim_start_go(self)
         self.yaw_speed = 10
     end
     self.view_ofs = quake.vec3(0, 0, 10)
-    self.use = M.use
+    self.use = use
 
     self.flags = self.flags | C.FL_SWIM
     self.flags = self.flags | C.FL_MONSTER
@@ -244,7 +244,7 @@ end
 function M.swim_start(self)
     -- spread think times so they don't all happen at same time
     self.nextthink = self.nextthink + quake.random() * 0.5
-    self.think = M.swim_start_go
+    self.think = swim_start_go
     quake.globals.total_monsters = quake.globals.total_monsters + 1
 end
 

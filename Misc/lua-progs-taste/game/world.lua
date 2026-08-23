@@ -109,7 +109,7 @@ World Types:
 --=======================
 ---@param self entity
 ---@return nil
-function M.worldspawn(self)
+local function worldspawn(self)
     g.lastspawn = quake.world
     init_body_que()
 
@@ -221,7 +221,7 @@ BODY QUE
 -- creates bodyques
 ---@param _self entity
 ---@return nil
-function M.bodyque(_self) end
+local function bodyque(_self) end
 
 -- make a body que entry for the given ent so the ent can be
 -- respawned elsewhere
@@ -242,7 +242,7 @@ function M.copy_to_body_que(ent)
     g.bodyque_head = assert(body.owner, "body queue entry has no successor")
 end
 
-quake.register_entity("worldspawn", M.worldspawn)
-quake.register_entity("bodyque", M.bodyque)
+quake.register_entity("worldspawn", worldspawn)
+quake.register_entity("bodyque", bodyque)
 
 return M

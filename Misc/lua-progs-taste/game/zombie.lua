@@ -29,8 +29,6 @@ local gibs = require("game.gibs")
 local monsters = require("game.monsters")
 local subs = require("game.subs")
 
-local M = {}
-
 local count = animation.counter()
 local f = {}
 
@@ -504,7 +502,7 @@ end
 ---If crucified, stick the bounding box 12 pixels back into a wall to look right.
 ---@param self entity
 ---@return nil
-function M.spawn(self)
+local function spawn(self)
     if quake.cvar("deathmatch") ~= 0 then quake.remove(self); return end
     quake.precache_model("progs/zombie.mdl")
     quake.precache_model("progs/h_zombie.mdl")
@@ -538,6 +536,4 @@ function M.spawn(self)
     end
 end
 
-quake.register_entity("monster_zombie", M.spawn)
-
-return M
+quake.register_entity("monster_zombie", spawn)

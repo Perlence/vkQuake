@@ -30,8 +30,6 @@ local monsters = require("game.monsters")
 local subs = require("game.subs")
 local weapons = require("game.weapons")
 
-local M = {}
-
 local count = animation.counter()
 local f = {}
 
@@ -223,7 +221,7 @@ local tbaby_die = animation.sequence({
 ---QUAKED monster_tarbaby (1 0 0) (-16 -16 -24) (16 16 24) Ambush
 ---@param self entity
 ---@return nil
-function M.spawn(self)
+local function spawn(self)
     if quake.cvar("deathmatch") ~= 0 then
         quake.remove(self)
         return
@@ -253,6 +251,4 @@ function M.spawn(self)
     monsters.walk_start(self)
 end
 
-quake.register_entity("monster_tarbaby", M.spawn)
-
-return M
+quake.register_entity("monster_tarbaby", spawn)

@@ -9,7 +9,6 @@ local M = {
     AS_MELEE = 3,
     AS_MISSILE = 4,
 
-    ATTN_NONE = 0,
     ATTN_NORM = 1,
     ATTN_IDLE = 2,
     ATTN_STATIC = 3,

@@ -37,7 +37,7 @@ local ATTN_NORM, ATTN_STATIC = 1, 3
 ---Used as a positional target for spotlights, etc.
 ---@param self entity
 ---@return nil
-function M.info_null(self)
+local function info_null(self)
     quake.remove(self)
 end
 
@@ -45,7 +45,7 @@ end
 ---Used as a positional target for lightning.
 ---@param _self entity
 ---@return nil
-function M.info_notnull(_self)
+local function info_notnull(_self)
 end
 
 --============================================================================
@@ -72,7 +72,7 @@ end
 ---If targeted, it will toggle between on or off.
 ---@param self entity
 ---@return nil
-function M.light(self)
+local function light(self)
     if self.targetname == "" then
         -- inert light
         quake.remove(self)
@@ -93,7 +93,7 @@ end
 ---Makes steady fluorescent humming sound
 ---@param self entity
 ---@return nil
-function M.light_fluoro(self)
+local function light_fluoro(self)
     if self.style >= 32 then
         self.use = light_use
         if (self.spawnflags & START_OFF) ~= 0 then quake.light_style(self.style, "a")
@@ -110,7 +110,7 @@ end
 ---Makes sparking, broken fluorescent sound
 ---@param self entity
 ---@return nil
-function M.light_fluorospark(self)
+local function light_fluorospark(self)
     if self.style == 0 then self.style = 10 end
     quake.precache_sound("ambience/buzz1.wav")
     quake.ambient_sound(self.origin, "ambience/buzz1.wav", 0.5, ATTN_STATIC)
@@ -122,7 +122,7 @@ end
 ---Default style is 0
 ---@param self entity
 ---@return nil
-function M.light_globe(self)
+local function light_globe(self)
     quake.precache_model("progs/s_light.spr")
     quake.set_model(self, "progs/s_light.spr")
     quake.make_static(self)
@@ -142,7 +142,7 @@ end
 ---Default style is 0
 ---@param self entity
 ---@return nil
-function M.light_torch_small_walltorch(self)
+local function light_torch_small_walltorch(self)
     quake.precache_model("progs/flame.mdl")
     quake.set_model(self, "progs/flame.mdl")
     fire_ambient(self)
@@ -153,7 +153,7 @@ end
 ---Large yellow flame ball
 ---@param self entity
 ---@return nil
-function M.light_flame_large_yellow(self)
+local function light_flame_large_yellow(self)
     quake.precache_model("progs/flame2.mdl")
     quake.set_model(self, "progs/flame2.mdl")
     self.frame = 1
@@ -165,7 +165,7 @@ end
 ---Small yellow flame ball
 ---@param self entity
 ---@return nil
-function M.light_flame_small_yellow(self)
+local function light_flame_small_yellow(self)
     quake.precache_model("progs/flame2.mdl")
     quake.set_model(self, "progs/flame2.mdl")
     fire_ambient(self)
@@ -176,7 +176,7 @@ end
 ---Small white flame ball
 ---@param self entity
 ---@return nil
-function M.light_flame_small_white(self)
+local function light_flame_small_white(self)
     quake.precache_model("progs/flame2.mdl")
     quake.set_model(self, "progs/flame2.mdl")
     fire_ambient(self)
@@ -193,7 +193,7 @@ local fire_fly, fire_touch
 
 ---@param self entity
 ---@return nil
-function M.misc_fireball(self)
+local function misc_fireball(self)
     quake.precache_model("progs/lavaball.mdl")
     self.classname = "fireball"
     self.nextthink = quake.time() + quake.random() * 5
@@ -250,7 +250,7 @@ end
 ---TESTING THING
 ---@param self entity
 ---@return nil
-function M.misc_explobox(self)
+local function misc_explobox(self)
     self.solid = SOLID_BBOX
     self.movetype = MOVETYPE_NONE
     quake.precache_model("maps/b_explob.bsp")
@@ -275,7 +275,7 @@ end
 ---Smaller exploding box, REGISTERED ONLY
 ---@param self entity
 ---@return nil
-function M.misc_explobox2(self)
+local function misc_explobox2(self)
     self.solid = SOLID_BBOX
     self.movetype = MOVETYPE_NONE
     quake.precache_model2("maps/b_exbox2.bsp")
@@ -332,7 +332,7 @@ end
 ---Laser is only for REGISTERED.
 ---@param self entity
 ---@return nil
-function M.trap_spikeshooter(self)
+local function trap_spikeshooter(self)
     subs.set_movedir(self)
     self.use = spikeshooter_use
     if (self.spawnflags & SPAWNFLAG_LASER) ~= 0 then
@@ -350,8 +350,8 @@ end
 ---"nextthink" delay before firing first spike, so multiple shooters can be stagered.
 ---@param self entity
 ---@return nil
-function M.trap_shooter(self)
-    M.trap_spikeshooter(self)
+local function trap_shooter(self)
+    trap_spikeshooter(self)
     if self.wait == 0 then self.wait = 1 end
     self.nextthink = self.nextthink + self.wait + self.ltime
     self.think = shooter_think
@@ -371,7 +371,7 @@ local make_bubbles, bubble_remove, bubble_bob
 ---testing air bubbles
 ---@param self entity
 ---@return nil
-function M.air_bubbles(self)
+local function air_bubbles(self)
     if quake.cvar("deathmatch") ~= 0 then
         quake.remove(self)
         return
@@ -459,7 +459,7 @@ M.bubble_bob = bubble_bob
 ---Just for the debugging level. Don't use
 ---@param self entity
 ---@return nil
-function M.viewthing(self)
+local function viewthing(self)
     self.movetype = MOVETYPE_NONE
     self.solid = SOLID_NOT
     quake.precache_model("progs/player.mdl")
@@ -486,7 +486,7 @@ end
 ---This is just a solid wall if not inhibitted
 ---@param self entity
 ---@return nil
-function M.func_wall(self)
+local function func_wall(self)
     self.angles = quake.vec3(0, 0, 0)
     self.movetype = MOVETYPE_PUSH -- so it doesn't get pushed by anything
     self.solid = SOLID_BSP
@@ -498,7 +498,7 @@ end
 ---A simple entity that looks solid but lets you walk through it.
 ---@param self entity
 ---@return nil
-function M.func_illusionary(self)
+local function func_illusionary(self)
     self.angles = quake.vec3(0, 0, 0)
     self.movetype = MOVETYPE_NONE
     self.solid = SOLID_NOT
@@ -510,7 +510,7 @@ end
 ---This bmodel will appear if the episode has allready been completed, so players can't reenter it.
 ---@param self entity
 ---@return nil
-function M.func_episodegate(self)
+local function func_episodegate(self)
     if (quake.globals.serverflags & self.spawnflags) == 0 then
         -- can still enter episode
         return
@@ -526,7 +526,7 @@ end
 ---This bmodel appears unless players have all of the episode sigils.
 ---@param self entity
 ---@return nil
-function M.func_bossgate(self)
+local function func_bossgate(self)
     if (quake.globals.serverflags & 15) == 15 then
         -- all episodes completed
         return
@@ -543,7 +543,7 @@ end
 ---QUAKED ambient_suck_wind (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
 ---@param self entity
 ---@return nil
-function M.ambient_suck_wind(self)
+local function ambient_suck_wind(self)
     quake.precache_sound("ambience/suck1.wav")
     quake.ambient_sound(self.origin, "ambience/suck1.wav", 1, ATTN_STATIC)
 end
@@ -551,7 +551,7 @@ end
 ---QUAKED ambient_drone (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
 ---@param self entity
 ---@return nil
-function M.ambient_drone(self)
+local function ambient_drone(self)
     quake.precache_sound("ambience/drone6.wav")
     quake.ambient_sound(self.origin, "ambience/drone6.wav", 0.5, ATTN_STATIC)
 end
@@ -559,7 +559,7 @@ end
 ---QUAKED ambient_flouro_buzz (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
 ---@param self entity
 ---@return nil
-function M.ambient_flouro_buzz(self)
+local function ambient_flouro_buzz(self)
     quake.precache_sound("ambience/buzz1.wav")
     quake.ambient_sound(self.origin, "ambience/buzz1.wav", 1, ATTN_STATIC)
 end
@@ -567,7 +567,7 @@ end
 ---QUAKED ambient_drip (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
 ---@param self entity
 ---@return nil
-function M.ambient_drip(self)
+local function ambient_drip(self)
     quake.precache_sound("ambience/drip1.wav")
     quake.ambient_sound(self.origin, "ambience/drip1.wav", 0.5, ATTN_STATIC)
 end
@@ -575,7 +575,7 @@ end
 ---QUAKED ambient_comp_hum (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
 ---@param self entity
 ---@return nil
-function M.ambient_comp_hum(self)
+local function ambient_comp_hum(self)
     quake.precache_sound("ambience/comp1.wav")
     quake.ambient_sound(self.origin, "ambience/comp1.wav", 1, ATTN_STATIC)
 end
@@ -583,7 +583,7 @@ end
 ---QUAKED ambient_thunder (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
 ---@param self entity
 ---@return nil
-function M.ambient_thunder(self)
+local function ambient_thunder(self)
     quake.precache_sound("ambience/thunder1.wav")
     quake.ambient_sound(self.origin, "ambience/thunder1.wav", 0.5, ATTN_STATIC)
 end
@@ -591,7 +591,7 @@ end
 ---QUAKED ambient_light_buzz (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
 ---@param self entity
 ---@return nil
-function M.ambient_light_buzz(self)
+local function ambient_light_buzz(self)
     quake.precache_sound("ambience/fl_hum1.wav")
     quake.ambient_sound(self.origin, "ambience/fl_hum1.wav", 0.5, ATTN_STATIC)
 end
@@ -599,7 +599,7 @@ end
 ---QUAKED ambient_swamp1 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
 ---@param self entity
 ---@return nil
-function M.ambient_swamp1(self)
+local function ambient_swamp1(self)
     quake.precache_sound("ambience/swamp1.wav")
     quake.ambient_sound(self.origin, "ambience/swamp1.wav", 0.5, ATTN_STATIC)
 end
@@ -607,7 +607,7 @@ end
 ---QUAKED ambient_swamp2 (0.3 0.1 0.6) (-10 -10 -8) (10 10 8)
 ---@param self entity
 ---@return nil
-function M.ambient_swamp2(self)
+local function ambient_swamp2(self)
     quake.precache_sound("ambience/swamp2.wav")
     quake.ambient_sound(self.origin, "ambience/swamp2.wav", 0.5, ATTN_STATIC)
 end
@@ -632,7 +632,7 @@ end
 ---For optimzation testing, starts a lot of sounds.
 ---@param self entity
 ---@return nil
-function M.misc_noisemaker(self)
+local function misc_noisemaker(self)
     quake.precache_sound2("enforcer/enfire.wav")
     quake.precache_sound2("enforcer/enfstop.wav")
     quake.precache_sound2("enforcer/sight1.wav")
@@ -647,36 +647,36 @@ function M.misc_noisemaker(self)
     self.think = noise_think
 end
 
-quake.register_entity("info_null", M.info_null)
-quake.register_entity("info_notnull", M.info_notnull)
-quake.register_entity("light", M.light)
-quake.register_entity("light_fluoro", M.light_fluoro)
-quake.register_entity("light_fluorospark", M.light_fluorospark)
-quake.register_entity("light_globe", M.light_globe)
-quake.register_entity("light_torch_small_walltorch", M.light_torch_small_walltorch)
-quake.register_entity("light_flame_large_yellow", M.light_flame_large_yellow)
-quake.register_entity("light_flame_small_yellow", M.light_flame_small_yellow)
-quake.register_entity("light_flame_small_white", M.light_flame_small_white)
-quake.register_entity("misc_fireball", M.misc_fireball)
-quake.register_entity("misc_explobox", M.misc_explobox)
-quake.register_entity("misc_explobox2", M.misc_explobox2)
-quake.register_entity("trap_spikeshooter", M.trap_spikeshooter)
-quake.register_entity("trap_shooter", M.trap_shooter)
-quake.register_entity("air_bubbles", M.air_bubbles)
-quake.register_entity("viewthing", M.viewthing)
-quake.register_entity("func_wall", M.func_wall)
-quake.register_entity("func_illusionary", M.func_illusionary)
-quake.register_entity("func_episodegate", M.func_episodegate)
-quake.register_entity("func_bossgate", M.func_bossgate)
-quake.register_entity("ambient_suck_wind", M.ambient_suck_wind)
-quake.register_entity("ambient_drone", M.ambient_drone)
-quake.register_entity("ambient_flouro_buzz", M.ambient_flouro_buzz)
-quake.register_entity("ambient_drip", M.ambient_drip)
-quake.register_entity("ambient_comp_hum", M.ambient_comp_hum)
-quake.register_entity("ambient_thunder", M.ambient_thunder)
-quake.register_entity("ambient_light_buzz", M.ambient_light_buzz)
-quake.register_entity("ambient_swamp1", M.ambient_swamp1)
-quake.register_entity("ambient_swamp2", M.ambient_swamp2)
-quake.register_entity("misc_noisemaker", M.misc_noisemaker)
+quake.register_entity("info_null", info_null)
+quake.register_entity("info_notnull", info_notnull)
+quake.register_entity("light", light)
+quake.register_entity("light_fluoro", light_fluoro)
+quake.register_entity("light_fluorospark", light_fluorospark)
+quake.register_entity("light_globe", light_globe)
+quake.register_entity("light_torch_small_walltorch", light_torch_small_walltorch)
+quake.register_entity("light_flame_large_yellow", light_flame_large_yellow)
+quake.register_entity("light_flame_small_yellow", light_flame_small_yellow)
+quake.register_entity("light_flame_small_white", light_flame_small_white)
+quake.register_entity("misc_fireball", misc_fireball)
+quake.register_entity("misc_explobox", misc_explobox)
+quake.register_entity("misc_explobox2", misc_explobox2)
+quake.register_entity("trap_spikeshooter", trap_spikeshooter)
+quake.register_entity("trap_shooter", trap_shooter)
+quake.register_entity("air_bubbles", air_bubbles)
+quake.register_entity("viewthing", viewthing)
+quake.register_entity("func_wall", func_wall)
+quake.register_entity("func_illusionary", func_illusionary)
+quake.register_entity("func_episodegate", func_episodegate)
+quake.register_entity("func_bossgate", func_bossgate)
+quake.register_entity("ambient_suck_wind", ambient_suck_wind)
+quake.register_entity("ambient_drone", ambient_drone)
+quake.register_entity("ambient_flouro_buzz", ambient_flouro_buzz)
+quake.register_entity("ambient_drip", ambient_drip)
+quake.register_entity("ambient_comp_hum", ambient_comp_hum)
+quake.register_entity("ambient_thunder", ambient_thunder)
+quake.register_entity("ambient_light_buzz", ambient_light_buzz)
+quake.register_entity("ambient_swamp1", ambient_swamp1)
+quake.register_entity("ambient_swamp2", ambient_swamp2)
+quake.register_entity("misc_noisemaker", misc_noisemaker)
 
 return M

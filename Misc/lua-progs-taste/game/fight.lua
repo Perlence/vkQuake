@@ -35,7 +35,7 @@ When it decides it can't attack, it goes into hunt mode.
 
 ---@param self entity
 ---@return nil
-function M.knight_attack(self)
+local function knight_attack(self)
     local knight = require("game.knight")
 
     -- decide if now is a good swing time
@@ -75,7 +75,7 @@ function M.check_attack(self, enemy_range)
         -- melee attack
         if self.th_melee then
             if self.classname == "monster_knight" then
-                M.knight_attack(self)
+                knight_attack(self)
             else
                 self.th_melee(self)
             end

@@ -4,38 +4,38 @@
 local M = {}
 
 -- Keep this list in progs.src order. Requiring a module performs its QuakeC
--- entity registrations and exposes it here for callers that need the module.
-M.subs = require("game.subs")
-M.fight = require("game.fight")
-M.ai = require("game.ai")
-M.combat = require("game.combat")
-M.items = require("game.items")
-M.weapons = require("game.weapons")
+-- entity registrations. Only the entry-point modules are exported.
+require("game.subs")
+require("game.fight")
+require("game.ai")
+require("game.combat")
+require("game.items")
+require("game.weapons")
 M.world = require("game.world")
 M.client = require("game.client")
-M.player = require("game.player")
-M.monsters = require("game.monsters")
-M.doors = require("game.doors")
-M.buttons = require("game.buttons")
-M.triggers = require("game.triggers")
-M.plats = require("game.plats")
-M.misc = require("game.misc")
+require("game.player")
+require("game.monsters")
+require("game.doors")
+require("game.buttons")
+require("game.triggers")
+require("game.plats")
+require("game.misc")
 
-M.ogre = require("game.ogre")
-M.demon = require("game.demon")
-M.shambler = require("game.shambler")
-M.knight = require("game.knight")
-M.soldier = require("game.soldier")
-M.wizard = require("game.wizard")
-M.dog = require("game.dog")
-M.zombie = require("game.zombie")
-M.boss = require("game.boss")
+require("game.ogre")
+require("game.demon")
+require("game.shambler")
+require("game.knight")
+require("game.soldier")
+require("game.wizard")
+require("game.dog")
+require("game.zombie")
+require("game.boss")
 
-M.tarbaby = require("game.tarbaby") -- registered
-M.hknight = require("game.hknight") -- registered
-M.fish = require("game.fish") -- registered
-M.shalrath = require("game.shalrath") -- registered
-M.enforcer = require("game.enforcer") -- registered
-M.oldone = require("game.oldone") -- registered
+require("game.tarbaby")
+require("game.hknight")
+require("game.fish")
+require("game.shalrath")
+require("game.enforcer")
+require("game.oldone")
 
 return M

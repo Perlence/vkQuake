@@ -63,7 +63,7 @@ local SVC_CDTRACK, SVC_INTERMISSION, SVC_FINALE, SVC_SELLSCREEN = 32, 30, 31, 33
 ---Use mangle instead of angle, so you can set pitch or roll as well as yaw.  'pitch roll yaw'
 ---@param _self entity
 ---@return nil
-function M.info_intermission(_self) end
+local function info_intermission(_self) end
 
 ---@param self entity
 ---@return nil
@@ -95,7 +95,7 @@ end
 
 ---@param self entity
 ---@return nil
-function M.decode_level_parms(self)
+local function decode_level_parms(self)
     if g.serverflags ~= 0 and quake.world.model == "maps/start.bsp" then
         M.set_new_parms() -- take away all stuff on starting new episode
     end
@@ -112,7 +112,7 @@ end
 
 ---Returns the entity to view from
 ---@return entity
-function M.find_intermission()
+local function find_intermission()
     -- look for info_intermission first
     local spot = quake.find(quake.world, "classname", "info_intermission")
     if spot then
@@ -140,7 +140,7 @@ function M.find_intermission()
 end
 
 ---@return nil
-function M.goto_next_map()
+local function goto_next_map()
     if quake.cvar("samelevel") ~= 0 then -- if samelevel is set, stay on same level
         quake.change_level(g.mapname)
     else
@@ -156,9 +156,9 @@ local finale_e4 = "Despite the awful might of the Elder\nWorld, you have achieve
 local finale_all = "Now, you have all four Runes. You sense\ntremendous invisible forces moving to\nunseal ancient barriers. Shub-Niggurath\nhad hoped to use the Runes Herself to\nclear off the Earth, but now instead,\nyou will use them to enter her home and\nconfront her as an avatar of avenging\nEarth-life. If you defeat her, you will\nbe remembered forever as the savior of\nthe planet. If she conquers, it will be\nas if you had never been born."
 
 ---@return nil
-function M.exit_intermission()
+local function exit_intermission()
     -- skip any text in deathmatch
-    if g.deathmatch ~= 0 then M.goto_next_map(); return end
+    if g.deathmatch ~= 0 then goto_next_map(); return end
     g.intermission_exittime = quake.time() + 1
     g.intermission_running = g.intermission_running + 1
     -- run some text if at the end of an episode
@@ -169,7 +169,7 @@ function M.exit_intermission()
         elseif quake.world.model == "maps/e2m6.bsp" then text = finale_e2
         elseif quake.world.model == "maps/e3m6.bsp" then text = finale_e3
         elseif quake.world.model == "maps/e4m7.bsp" then text = finale_e4
-        else M.goto_next_map(); return end
+        else goto_next_map(); return end
         quake.write_byte(MSG_ALL, SVC_CDTRACK); quake.write_byte(MSG_ALL, 2); quake.write_byte(MSG_ALL, 3)
         quake.write_byte(MSG_ALL, SVC_FINALE); quake.write_string(MSG_ALL, text)
         return
@@ -186,16 +186,16 @@ function M.exit_intermission()
             return
         end
     end
-    M.goto_next_map()
+    goto_next_map()
 end
 
 ---When the player presses attack or jump, change to the next level
 ---@param self entity
 ---@return nil
-function M.intermission_think(self)
+local function intermission_think(self)
     if quake.time() < g.intermission_exittime then return end
     if self.button0 == 0 and self.button1 == 0 and self.button2 == 0 then return end
-    M.exit_intermission()
+    exit_intermission()
 end
 
 ---@param _self entity
@@ -206,7 +206,7 @@ local function execute_changelevel(_self)
     if g.deathmatch ~= 0 then g.intermission_exittime = quake.time() + 5
     else g.intermission_exittime = quake.time() + 2 end
     quake.write_byte(MSG_ALL, SVC_CDTRACK); quake.write_byte(MSG_ALL, 3); quake.write_byte(MSG_ALL, 3)
-    local pos = M.find_intermission()
+    local pos = find_intermission()
     local other = quake.find(quake.world, "classname", "player")
     while other do
         other.view_ofs = quake.vec3(0, 0, 0)
@@ -239,7 +239,7 @@ local function changelevel_touch(self, other)
     subs.use_targets(self, self)
     if (self.spawnflags & 1) ~= 0 and g.deathmatch == 0 then
         -- NO_INTERMISSION
-        M.goto_next_map()
+        goto_next_map()
         return
     end
     self.touch = subs.null
@@ -253,7 +253,7 @@ end
 ---When the player touches this, he gets sent to the map listed in the "map" variable.  Unless the NO_INTERMISSION flag is set, the view will go to the info_intermission spot and display stats.
 ---@param self entity
 ---@return nil
-function M.trigger_changelevel(self)
+local function trigger_changelevel(self)
     if self.map == "" then quake.object_error("changelevel trigger doesn't have map") end
     subs.init_trigger(self)
     self.touch = changelevel_touch
@@ -269,7 +269,7 @@ end
 -- called by ClientKill and DeadThink
 ---@param self entity
 ---@return nil
-function M.respawn(self)
+local function respawn(self)
     if g.coop ~= 0 then
         -- make a copy of the dead body for appearances sake
         world.copy_to_body_que(self)
@@ -298,18 +298,18 @@ function M.client_kill(self)
     player.set_suicide_frame(self)
     self.modelindex = g.modelindex_player
     self.frags = self.frags - 2 -- extra penalty
-    M.respawn(self)
+    respawn(self)
 end
 
 ---@param _v vec3
 ---@return boolean
-function M.check_spawn_point(_v)
+local function check_spawn_point(_v)
     return false
 end
 
 ---Returns the entity to spawn at
 ---@return entity
-function M.select_spawn_point()
+local function select_spawn_point()
     -- testinfo_player_start is only found in regioned levels
     local spot = quake.find(quake.world, "classname", "testplayerstart")
     if spot then return spot end
@@ -354,7 +354,7 @@ end
 ---@param self entity
 ---@return nil
 function M.put_client_in_server(self)
-    local spot = M.select_spawn_point()
+    local spot = select_spawn_point()
     self.classname = "player"
     self.health = 100
     self.takedamage = DAMAGE_AIM
@@ -371,7 +371,7 @@ function M.put_client_in_server(self)
     self.invincible_finished = 0
     self.effects = 0
     self.invincible_time = 0
-    M.decode_level_parms(self)
+    decode_level_parms(self)
     weapons.set_current_ammo(self)
     self.attack_finished = quake.time()
     self.th_pain = player.player_pain
@@ -409,26 +409,26 @@ end
 ---The normal starting point for a level.
 ---@param _self entity
 ---@return nil
-function M.info_player_start(_self) end
+local function info_player_start(_self) end
 ---QUAKED info_player_start2 (1 0 0) (-16 -16 -24) (16 16 24)
 ---Only used on start map for the return point from an episode.
 ---@param _self entity
 ---@return nil
-function M.info_player_start2(_self) end
+local function info_player_start2(_self) end
 -- saved out by quaked in region mode
 ---@param _self entity
 ---@return nil
-function M.testplayerstart(_self) end
+local function testplayerstart(_self) end
 ---QUAKED info_player_deathmatch (1 0 1) (-16 -16 -24) (16 16 24)
 ---potential spawning position for deathmatch games
 ---@param _self entity
 ---@return nil
-function M.info_player_deathmatch(_self) end
+local function info_player_deathmatch(_self) end
 ---QUAKED info_player_coop (1 0 1) (-16 -16 -24) (16 16 24)
 ---potential spawning position for coop games
 ---@param _self entity
 ---@return nil
-function M.info_player_coop(_self) end
+local function info_player_coop(_self) end
 
 --[[
 ===============================================================================
@@ -440,7 +440,7 @@ RULES
 
 -- go to the next level for deathmatch
 ---@return nil
-function M.next_level()
+local function next_level()
     local o
     if g.mapname == "start" then
         if quake.cvar("registered") == 0 then g.mapname = "e1m1"
@@ -463,18 +463,18 @@ end
 ---Exit deathmatch games upon conditions
 ---@param self entity
 ---@return nil
-function M.check_rules(self)
+local function check_rules(self)
     if g.gameover ~= 0 then return end -- someone else quit the game already
     local timelimit = quake.cvar("timelimit") * 60
     local fraglimit = quake.cvar("fraglimit")
-    if timelimit ~= 0 and quake.time() >= timelimit then M.next_level(); return end
-    if fraglimit ~= 0 and self.frags >= fraglimit then M.next_level(); return end
+    if timelimit ~= 0 and quake.time() >= timelimit then next_level(); return end
+    if fraglimit ~= 0 and self.frags >= fraglimit then next_level(); return end
 end
 
 --============================================================================
 ---@param self entity
 ---@return nil
-function M.player_death_think(self)
+local function player_death_think(self)
     if (self.flags & FL_ONGROUND) ~= 0 then
         local forward = self.velocity:length() - 20
         if forward <= 0 then self.velocity = quake.vec3(0, 0, 0)
@@ -489,12 +489,12 @@ function M.player_death_think(self)
     -- wait for any button down
     if self.button2 == 0 and self.button1 == 0 and self.button0 == 0 then return end
     self.button0, self.button1, self.button2 = 0, 0, 0
-    M.respawn(self)
+    respawn(self)
 end
 
 ---@param self entity
 ---@return nil
-function M.player_jump(self)
+local function player_jump(self)
     if (self.flags & FL_WATERJUMP) ~= 0 then return end
     if self.waterlevel >= 2 then
         if self.watertype == CONTENT_WATER then self.velocity = quake.vec3(self.velocity.x, self.velocity.y, 100)
@@ -520,7 +520,7 @@ end
 
 ---@param self entity
 ---@return nil
-function M.water_move(self)
+local function water_move(self)
     if self.movetype == MOVETYPE_NOCLIP then return end
     if self.health < 0 then return end
     if self.waterlevel ~= 3 then
@@ -572,7 +572,7 @@ end
 
 ---@param self entity
 ---@return nil
-function M.check_water_jump(self)
+local function check_water_jump(self)
     -- check for a jump-out-of-water
     local vectors = quake.make_vectors(self.angles)
     local start = self.origin + quake.vec3(0, 0, 8)
@@ -602,20 +602,20 @@ end
 function M.player_pre_think(self)
     if g.intermission_running ~= 0 then
         -- otherwise a button could be missed between the think tics
-        M.intermission_think(self)
+        intermission_think(self)
         return
     end
     -- intermission or finale
     if self.view_ofs == quake.vec3(0, 0, 0) then return end
     -- is this still used
     quake.make_vectors(self.v_angle)
-    M.check_rules(self)
-    M.water_move(self)
-    if self.waterlevel == 2 then M.check_water_jump(self) end
-    if self.deadflag >= DEAD_DEAD then M.player_death_think(self); return end
+    check_rules(self)
+    water_move(self)
+    if self.waterlevel == 2 then check_water_jump(self) end
+    if self.deadflag >= DEAD_DEAD then player_death_think(self); return end
     -- dying, so do nothing
     if self.deadflag == DEAD_DYING then return end
-    if self.button2 ~= 0 then M.player_jump(self) else self.flags = self.flags | FL_JUMPRELEASED end
+    if self.button2 ~= 0 then player_jump(self) else self.flags = self.flags | FL_JUMPRELEASED end
     -- teleporters can force a non-moving pause time
     if quake.time() < self.pausetime then self.velocity = quake.vec3(0, 0, 0) end
     if quake.time() > self.attack_finished and self.currentammo == 0 and self.weapon ~= IT_AXE then
@@ -637,7 +637,7 @@ end
 ---Check for turning off powerups
 ---@param self entity
 ---@return nil
-function M.check_powerups(self)
+local function check_powerups(self)
     if self.health <= 0 then return end
     -- invisibility
     if self.invisible_finished ~= 0 then
@@ -729,7 +729,7 @@ function M.player_post_think(self)
         self.jump_flag = 0
     end
     if (self.flags & FL_ONGROUND) == 0 then self.jump_flag = self.velocity.z end
-    M.check_powerups(self)
+    check_powerups(self)
 end
 
 ---called when a player connects to a server
@@ -738,7 +738,7 @@ end
 function M.client_connect(self)
     quake.bprint(self.netname); quake.bprint(" entered the game\n")
     -- a client connecting during an intermission can cause problems
-    if g.intermission_running ~= 0 then M.exit_intermission() end
+    if g.intermission_running ~= 0 then exit_intermission() end
 end
 
 ---called when a player disconnects from a server
@@ -856,15 +856,12 @@ function M.client_obituary(targ, attacker)
     end
 end
 
-M.execute_changelevel = execute_changelevel
-M.changelevel_touch = changelevel_touch
-
-quake.register_entity("info_intermission", M.info_intermission)
-quake.register_entity("trigger_changelevel", M.trigger_changelevel)
-quake.register_entity("info_player_start", M.info_player_start)
-quake.register_entity("info_player_start2", M.info_player_start2)
-quake.register_entity("testplayerstart", M.testplayerstart)
-quake.register_entity("info_player_deathmatch", M.info_player_deathmatch)
-quake.register_entity("info_player_coop", M.info_player_coop)
+quake.register_entity("info_intermission", info_intermission)
+quake.register_entity("trigger_changelevel", trigger_changelevel)
+quake.register_entity("info_player_start", info_player_start)
+quake.register_entity("info_player_start2", info_player_start2)
+quake.register_entity("testplayerstart", testplayerstart)
+quake.register_entity("info_player_deathmatch", info_player_deathmatch)
+quake.register_entity("info_player_coop", info_player_coop)
 
 return M

@@ -29,8 +29,6 @@ local gibs = require("game.gibs")
 local monsters = require("game.monsters")
 local subs = require("game.subs")
 
-local M = {}
-
 local count = animation.counter()
 local f = {}
 
@@ -343,7 +341,7 @@ end
 
 ---@param self entity
 ---@return boolean
-function M.check_attack(self)
+local function check_attack(self)
     -- if close enough for slashing, go for it
     if check_dog_melee(self) then
         self.attack_state = C.AS_MELEE
@@ -363,7 +361,7 @@ end
 ---QUAKED monster_dog (1 0 0) (-32 -32 -24) (32 32 40) Ambush
 ---@param self entity
 ---@return nil
-function M.spawn(self)
+local function spawn(self)
     if quake.cvar("deathmatch") ~= 0 then
         quake.remove(self)
         return
@@ -392,10 +390,8 @@ function M.spawn(self)
     self.th_die = dog_die_handler
     self.th_melee = dog_atta
     self.th_missile = dog_leap
-    self.check_attack = M.check_attack
+    self.check_attack = check_attack
     monsters.walk_start(self)
 end
 
-quake.register_entity("monster_dog", M.spawn)
-
-return M
+quake.register_entity("monster_dog", spawn)
