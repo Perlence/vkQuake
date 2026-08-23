@@ -441,7 +441,7 @@ trigger_setskill
 local function trigger_skill_touch(self, other)
     if other.classname ~= "player" then return end
     quake.cvar_set("skill", self.message)
-    quake.globals.skill = tonumber(self.message)
+    quake.globals.skill = tonumber(self.message) or 0
 end
 
 ---QUAKED trigger_setskill (.5 .5 .5) ?

@@ -301,7 +301,7 @@ end
 local SPAWNFLAG_SUPERSPIKE, SPAWNFLAG_LASER = 1, 2
 
 ---@param self entity
----@param _activator entity
+---@param _activator? entity
 ---@return nil
 local function spikeshooter_use(self, _activator)
     if (self.spawnflags & SPAWNFLAG_LASER) ~= 0 then
