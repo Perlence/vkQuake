@@ -450,8 +450,8 @@ local SECRET_1ST_DOWN = 4 -- 1st move is down from arrow
 local SECRET_NO_SHOOT = 8 -- only opened by trigger
 local SECRET_YES_SHOOT = 16 -- shootable even if targeted
 
-local fd_secret_move1, fd_secret_move2, fd_secret_move3, fd_secret_move4
-local fd_secret_move5, fd_secret_move6, fd_secret_done
+local fd_secret_move1, fd_secret_move2, fd_secret_move3, fd_secret_move4,
+    fd_secret_move5, fd_secret_move6, fd_secret_done
 
 -- empty pain function
 ---@param _self entity

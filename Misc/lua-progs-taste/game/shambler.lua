@@ -69,62 +69,58 @@ SHAMBLER
 ==============================================================================
 ]]
 
-local sham_stand1, sham_stand2, sham_stand3, sham_stand4, sham_stand5, sham_stand6, sham_stand7, sham_stand8, sham_stand9, sham_stand10, sham_stand11, sham_stand12, sham_stand13, sham_stand14, sham_stand15, sham_stand16, sham_stand17
+local sham_stand = {}
+sham_stand[1] = animation.frame(f.stand1, function() return sham_stand[2] end, ai.stand)
+sham_stand[2] = animation.frame(f.stand2, function() return sham_stand[3] end, ai.stand)
+sham_stand[3] = animation.frame(f.stand3, function() return sham_stand[4] end, ai.stand)
+sham_stand[4] = animation.frame(f.stand4, function() return sham_stand[5] end, ai.stand)
+sham_stand[5] = animation.frame(f.stand5, function() return sham_stand[6] end, ai.stand)
+sham_stand[6] = animation.frame(f.stand6, function() return sham_stand[7] end, ai.stand)
+sham_stand[7] = animation.frame(f.stand7, function() return sham_stand[8] end, ai.stand)
+sham_stand[8] = animation.frame(f.stand8, function() return sham_stand[9] end, ai.stand)
+sham_stand[9] = animation.frame(f.stand9, function() return sham_stand[10] end, ai.stand)
+sham_stand[10] = animation.frame(f.stand10, function() return sham_stand[11] end, ai.stand)
+sham_stand[11] = animation.frame(f.stand11, function() return sham_stand[12] end, ai.stand)
+sham_stand[12] = animation.frame(f.stand12, function() return sham_stand[13] end, ai.stand)
+sham_stand[13] = animation.frame(f.stand13, function() return sham_stand[14] end, ai.stand)
+sham_stand[14] = animation.frame(f.stand14, function() return sham_stand[15] end, ai.stand)
+sham_stand[15] = animation.frame(f.stand15, function() return sham_stand[16] end, ai.stand)
+sham_stand[16] = animation.frame(f.stand16, function() return sham_stand[17] end, ai.stand)
+sham_stand[17] = animation.frame(f.stand17, function() return sham_stand[1] end, ai.stand)
 
-sham_stand1 = animation.frame(f.stand1, function() return sham_stand2 end, ai.stand)
-sham_stand2 = animation.frame(f.stand2, function() return sham_stand3 end, ai.stand)
-sham_stand3 = animation.frame(f.stand3, function() return sham_stand4 end, ai.stand)
-sham_stand4 = animation.frame(f.stand4, function() return sham_stand5 end, ai.stand)
-sham_stand5 = animation.frame(f.stand5, function() return sham_stand6 end, ai.stand)
-sham_stand6 = animation.frame(f.stand6, function() return sham_stand7 end, ai.stand)
-sham_stand7 = animation.frame(f.stand7, function() return sham_stand8 end, ai.stand)
-sham_stand8 = animation.frame(f.stand8, function() return sham_stand9 end, ai.stand)
-sham_stand9 = animation.frame(f.stand9, function() return sham_stand10 end, ai.stand)
-sham_stand10 = animation.frame(f.stand10, function() return sham_stand11 end, ai.stand)
-sham_stand11 = animation.frame(f.stand11, function() return sham_stand12 end, ai.stand)
-sham_stand12 = animation.frame(f.stand12, function() return sham_stand13 end, ai.stand)
-sham_stand13 = animation.frame(f.stand13, function() return sham_stand14 end, ai.stand)
-sham_stand14 = animation.frame(f.stand14, function() return sham_stand15 end, ai.stand)
-sham_stand15 = animation.frame(f.stand15, function() return sham_stand16 end, ai.stand)
-sham_stand16 = animation.frame(f.stand16, function() return sham_stand17 end, ai.stand)
-sham_stand17 = animation.frame(f.stand17, function() return sham_stand1 end, ai.stand)
+local sham_walk = {}
+sham_walk[1] = animation.frame(f.walk1, function() return sham_walk[2] end, function(self) ai.walk(self, 10) end)
+sham_walk[2] = animation.frame(f.walk2, function() return sham_walk[3] end, function(self) ai.walk(self, 9) end)
+sham_walk[3] = animation.frame(f.walk3, function() return sham_walk[4] end, function(self) ai.walk(self, 9) end)
+sham_walk[4] = animation.frame(f.walk4, function() return sham_walk[5] end, function(self) ai.walk(self, 5) end)
+sham_walk[5] = animation.frame(f.walk5, function() return sham_walk[6] end, function(self) ai.walk(self, 6) end)
+sham_walk[6] = animation.frame(f.walk6, function() return sham_walk[7] end, function(self) ai.walk(self, 12) end)
+sham_walk[7] = animation.frame(f.walk7, function() return sham_walk[8] end, function(self) ai.walk(self, 8) end)
+sham_walk[8] = animation.frame(f.walk8, function() return sham_walk[9] end, function(self) ai.walk(self, 3) end)
+sham_walk[9] = animation.frame(f.walk9, function() return sham_walk[10] end, function(self) ai.walk(self, 13) end)
+sham_walk[10] = animation.frame(f.walk10, function() return sham_walk[11] end, function(self) ai.walk(self, 9) end)
+sham_walk[11] = animation.frame(f.walk11, function() return sham_walk[12] end, function(self) ai.walk(self, 7) end)
+sham_walk[12] = animation.frame(f.walk12, function() return sham_walk[1] end, function(self) ai.walk(self, 7); if quake.random() > 0.8 then quake.sound(self, C.CHAN_VOICE, "shambler/sidle.wav", 1, C.ATTN_IDLE) end end)
 
-local sham_walk1, sham_walk2, sham_walk3, sham_walk4, sham_walk5, sham_walk6, sham_walk7, sham_walk8, sham_walk9, sham_walk10, sham_walk11, sham_walk12
+local sham_run = {}
+sham_run[1] = animation.frame(f.run1, function() return sham_run[2] end, function(self) ai.run(self, 20) end)
+sham_run[2] = animation.frame(f.run2, function() return sham_run[3] end, function(self) ai.run(self, 24) end)
+sham_run[3] = animation.frame(f.run3, function() return sham_run[4] end, function(self) ai.run(self, 20) end)
+sham_run[4] = animation.frame(f.run4, function() return sham_run[5] end, function(self) ai.run(self, 20) end)
+sham_run[5] = animation.frame(f.run5, function() return sham_run[6] end, function(self) ai.run(self, 24) end)
+sham_run[6] = animation.frame(f.run6, function() return sham_run[1] end, function(self) ai.run(self, 20); if quake.random() > 0.8 then quake.sound(self, C.CHAN_VOICE, "shambler/sidle.wav", 1, C.ATTN_IDLE) end end)
 
-sham_walk1 = animation.frame(f.walk1, function() return sham_walk2 end, function(self) ai.walk(self, 10) end)
-sham_walk2 = animation.frame(f.walk2, function() return sham_walk3 end, function(self) ai.walk(self, 9) end)
-sham_walk3 = animation.frame(f.walk3, function() return sham_walk4 end, function(self) ai.walk(self, 9) end)
-sham_walk4 = animation.frame(f.walk4, function() return sham_walk5 end, function(self) ai.walk(self, 5) end)
-sham_walk5 = animation.frame(f.walk5, function() return sham_walk6 end, function(self) ai.walk(self, 6) end)
-sham_walk6 = animation.frame(f.walk6, function() return sham_walk7 end, function(self) ai.walk(self, 12) end)
-sham_walk7 = animation.frame(f.walk7, function() return sham_walk8 end, function(self) ai.walk(self, 8) end)
-sham_walk8 = animation.frame(f.walk8, function() return sham_walk9 end, function(self) ai.walk(self, 3) end)
-sham_walk9 = animation.frame(f.walk9, function() return sham_walk10 end, function(self) ai.walk(self, 13) end)
-sham_walk10 = animation.frame(f.walk10, function() return sham_walk11 end, function(self) ai.walk(self, 9) end)
-sham_walk11 = animation.frame(f.walk11, function() return sham_walk12 end, function(self) ai.walk(self, 7) end)
-sham_walk12 = animation.frame(f.walk12, function() return sham_walk1 end, function(self) ai.walk(self, 7); if quake.random() > 0.8 then quake.sound(self, C.CHAN_VOICE, "shambler/sidle.wav", 1, C.ATTN_IDLE) end end)
-
-local sham_run1, sham_run2, sham_run3, sham_run4, sham_run5, sham_run6
-
-sham_run1 = animation.frame(f.run1, function() return sham_run2 end, function(self) ai.run(self, 20) end)
-sham_run2 = animation.frame(f.run2, function() return sham_run3 end, function(self) ai.run(self, 24) end)
-sham_run3 = animation.frame(f.run3, function() return sham_run4 end, function(self) ai.run(self, 20) end)
-sham_run4 = animation.frame(f.run4, function() return sham_run5 end, function(self) ai.run(self, 20) end)
-sham_run5 = animation.frame(f.run5, function() return sham_run6 end, function(self) ai.run(self, 24) end)
-sham_run6 = animation.frame(f.run6, function() return sham_run1 end, function(self) ai.run(self, 20); if quake.random() > 0.8 then quake.sound(self, C.CHAN_VOICE, "shambler/sidle.wav", 1, C.ATTN_IDLE) end end)
-
-local sham_smash1, sham_smash2, sham_smash3, sham_smash4, sham_smash5, sham_smash6, sham_smash7, sham_smash8, sham_smash9, sham_smash10, sham_smash11, sham_smash12
-
-sham_smash1 = animation.frame(f.smash1, function() return sham_smash2 end, function(self) quake.sound(self, C.CHAN_VOICE, "shambler/melee1.wav", 1, C.ATTN_NORM); fight.charge(self, 2) end)
-sham_smash2 = animation.frame(f.smash2, function() return sham_smash3 end, function(self) fight.charge(self, 6) end)
-sham_smash3 = animation.frame(f.smash3, function() return sham_smash4 end, function(self) fight.charge(self, 6) end)
-sham_smash4 = animation.frame(f.smash4, function() return sham_smash5 end, function(self) fight.charge(self, 5) end)
-sham_smash5 = animation.frame(f.smash5, function() return sham_smash6 end, function(self) fight.charge(self, 4) end)
-sham_smash6 = animation.frame(f.smash6, function() return sham_smash7 end, function(self) fight.charge(self, 1) end)
-sham_smash7 = animation.frame(f.smash7, function() return sham_smash8 end, function(self) fight.charge(self, 0) end)
-sham_smash8 = animation.frame(f.smash8, function() return sham_smash9 end, function(self) fight.charge(self, 0) end)
-sham_smash9 = animation.frame(f.smash9, function() return sham_smash10 end, function(self) fight.charge(self, 0) end)
-sham_smash10 = animation.frame(f.smash10, function() return sham_smash11 end, function(self)
+local sham_smash = {}
+sham_smash[1] = animation.frame(f.smash1, function() return sham_smash[2] end, function(self) quake.sound(self, C.CHAN_VOICE, "shambler/melee1.wav", 1, C.ATTN_NORM); fight.charge(self, 2) end)
+sham_smash[2] = animation.frame(f.smash2, function() return sham_smash[3] end, function(self) fight.charge(self, 6) end)
+sham_smash[3] = animation.frame(f.smash3, function() return sham_smash[4] end, function(self) fight.charge(self, 6) end)
+sham_smash[4] = animation.frame(f.smash4, function() return sham_smash[5] end, function(self) fight.charge(self, 5) end)
+sham_smash[5] = animation.frame(f.smash5, function() return sham_smash[6] end, function(self) fight.charge(self, 4) end)
+sham_smash[6] = animation.frame(f.smash6, function() return sham_smash[7] end, function(self) fight.charge(self, 1) end)
+sham_smash[7] = animation.frame(f.smash7, function() return sham_smash[8] end, function(self) fight.charge(self, 0) end)
+sham_smash[8] = animation.frame(f.smash8, function() return sham_smash[9] end, function(self) fight.charge(self, 0) end)
+sham_smash[9] = animation.frame(f.smash9, function() return sham_smash[10] end, function(self) fight.charge(self, 0) end)
+sham_smash[10] = animation.frame(f.smash10, function() return sham_smash[11] end, function(self)
     if not self.enemy then return end
     fight.charge(self, 0)
     local delta = self.enemy.origin - self.origin
@@ -137,10 +133,8 @@ sham_smash10 = animation.frame(f.smash10, function() return sham_smash11 end, fu
     weapons.spawn_meat_spray(self, self.origin + vectors.forward * 16, quake.crandom() * 100 * vectors.right)
     weapons.spawn_meat_spray(self, self.origin + vectors.forward * 16, quake.crandom() * 100 * vectors.right)
 end)
-sham_smash11 = animation.frame(f.smash11, function() return sham_smash12 end, function(self) fight.charge(self, 5) end)
-sham_smash12 = animation.frame(f.smash12, function() return sham_run1 end, function(self) fight.charge(self, 4) end)
-
-local sham_swingr1
+sham_smash[11] = animation.frame(f.smash11, function() return sham_smash[12] end, function(self) fight.charge(self, 5) end)
+sham_smash[12] = animation.frame(f.smash12, function() return sham_run[1] end, function(self) fight.charge(self, 4) end)
 
 ---@param self entity
 ---@param side number
@@ -159,37 +153,36 @@ local function sham_claw(self, side)
     end
 end
 
-local sham_swingl1, sham_swingl2, sham_swingl3, sham_swingl4, sham_swingl5, sham_swingl6, sham_swingl7, sham_swingl8, sham_swingl9
+local sham_swingr = {}
 
-sham_swingl1 = animation.frame(f.swingl1, function() return sham_swingl2 end, function(self) quake.sound(self, C.CHAN_VOICE, "shambler/melee2.wav", 1, C.ATTN_NORM); fight.charge(self, 5) end)
-sham_swingl2 = animation.frame(f.swingl2, function() return sham_swingl3 end, function(self) fight.charge(self, 3) end)
-sham_swingl3 = animation.frame(f.swingl3, function() return sham_swingl4 end, function(self) fight.charge(self, 7) end)
-sham_swingl4 = animation.frame(f.swingl4, function() return sham_swingl5 end, function(self) fight.charge(self, 3) end)
-sham_swingl5 = animation.frame(f.swingl5, function() return sham_swingl6 end, function(self) fight.charge(self, 7) end)
-sham_swingl6 = animation.frame(f.swingl6, function() return sham_swingl7 end, function(self) fight.charge(self, 9) end)
-sham_swingl7 = animation.frame(f.swingl7, function() return sham_swingl8 end, function(self) fight.charge(self, 5); sham_claw(self, 250) end)
-sham_swingl8 = animation.frame(f.swingl8, function() return sham_swingl9 end, function(self) fight.charge(self, 4) end)
-sham_swingl9 = animation.frame(f.swingl9, function() return sham_run1 end, function(self) fight.charge(self, 8); if quake.random() < 0.5 then self.think = sham_swingr1 end end)
+local sham_swingl = {}
+sham_swingl[1] = animation.frame(f.swingl1, function() return sham_swingl[2] end, function(self) quake.sound(self, C.CHAN_VOICE, "shambler/melee2.wav", 1, C.ATTN_NORM); fight.charge(self, 5) end)
+sham_swingl[2] = animation.frame(f.swingl2, function() return sham_swingl[3] end, function(self) fight.charge(self, 3) end)
+sham_swingl[3] = animation.frame(f.swingl3, function() return sham_swingl[4] end, function(self) fight.charge(self, 7) end)
+sham_swingl[4] = animation.frame(f.swingl4, function() return sham_swingl[5] end, function(self) fight.charge(self, 3) end)
+sham_swingl[5] = animation.frame(f.swingl5, function() return sham_swingl[6] end, function(self) fight.charge(self, 7) end)
+sham_swingl[6] = animation.frame(f.swingl6, function() return sham_swingl[7] end, function(self) fight.charge(self, 9) end)
+sham_swingl[7] = animation.frame(f.swingl7, function() return sham_swingl[8] end, function(self) fight.charge(self, 5); sham_claw(self, 250) end)
+sham_swingl[8] = animation.frame(f.swingl8, function() return sham_swingl[9] end, function(self) fight.charge(self, 4) end)
+sham_swingl[9] = animation.frame(f.swingl9, function() return sham_run[1] end, function(self) fight.charge(self, 8); if quake.random() < 0.5 then self.think = sham_swingr[1] end end)
 
-local sham_swingr2, sham_swingr3, sham_swingr4, sham_swingr5, sham_swingr6, sham_swingr7, sham_swingr8, sham_swingr9
-
-sham_swingr1 = animation.frame(f.swingr1, function() return sham_swingr2 end, function(self) quake.sound(self, C.CHAN_VOICE, "shambler/melee1.wav", 1, C.ATTN_NORM); fight.charge(self, 1) end)
-sham_swingr2 = animation.frame(f.swingr2, function() return sham_swingr3 end, function(self) fight.charge(self, 8) end)
-sham_swingr3 = animation.frame(f.swingr3, function() return sham_swingr4 end, function(self) fight.charge(self, 14) end)
-sham_swingr4 = animation.frame(f.swingr4, function() return sham_swingr5 end, function(self) fight.charge(self, 7) end)
-sham_swingr5 = animation.frame(f.swingr5, function() return sham_swingr6 end, function(self) fight.charge(self, 3) end)
-sham_swingr6 = animation.frame(f.swingr6, function() return sham_swingr7 end, function(self) fight.charge(self, 6) end)
-sham_swingr7 = animation.frame(f.swingr7, function() return sham_swingr8 end, function(self) fight.charge(self, 6); sham_claw(self, -250) end)
-sham_swingr8 = animation.frame(f.swingr8, function() return sham_swingr9 end, function(self) fight.charge(self, 3) end)
-sham_swingr9 = animation.frame(f.swingr9, function() return sham_run1 end, function(self) fight.charge(self, 1); fight.charge(self, 10); if quake.random() < 0.5 then self.think = sham_swingl1 end end)
+sham_swingr[1] = animation.frame(f.swingr1, function() return sham_swingr[2] end, function(self) quake.sound(self, C.CHAN_VOICE, "shambler/melee1.wav", 1, C.ATTN_NORM); fight.charge(self, 1) end)
+sham_swingr[2] = animation.frame(f.swingr2, function() return sham_swingr[3] end, function(self) fight.charge(self, 8) end)
+sham_swingr[3] = animation.frame(f.swingr3, function() return sham_swingr[4] end, function(self) fight.charge(self, 14) end)
+sham_swingr[4] = animation.frame(f.swingr4, function() return sham_swingr[5] end, function(self) fight.charge(self, 7) end)
+sham_swingr[5] = animation.frame(f.swingr5, function() return sham_swingr[6] end, function(self) fight.charge(self, 3) end)
+sham_swingr[6] = animation.frame(f.swingr6, function() return sham_swingr[7] end, function(self) fight.charge(self, 6) end)
+sham_swingr[7] = animation.frame(f.swingr7, function() return sham_swingr[8] end, function(self) fight.charge(self, 6); sham_claw(self, -250) end)
+sham_swingr[8] = animation.frame(f.swingr8, function() return sham_swingr[9] end, function(self) fight.charge(self, 3) end)
+sham_swingr[9] = animation.frame(f.swingr9, function() return sham_run[1] end, function(self) fight.charge(self, 1); fight.charge(self, 10); if quake.random() < 0.5 then self.think = sham_swingl[1] end end)
 
 ---@param self entity
 ---@return nil
 local function sham_melee(self)
     local chance = quake.random()
-    if chance > 0.6 or self.health == 600 then sham_smash1(self)
-    elseif chance > 0.3 then sham_swingr1(self)
-    else sham_swingl1(self) end
+    if chance > 0.6 or self.health == 600 then sham_smash[1](self)
+    elseif chance > 0.3 then sham_swingr[1](self)
+    else sham_swingl[1](self) end
 end
 
 --============================================================================
@@ -214,12 +207,11 @@ local function cast_lightning(self)
     weapons.lightning_damage(self, org, trace.endpos, self, 10)
 end
 
-local sham_magic1, sham_magic2, sham_magic3, sham_magic4, sham_magic5, sham_magic6
-local sham_magic9, sham_magic10, sham_magic11, sham_magic12
+local sham_magic = {}
 
-sham_magic1 = animation.frame(f.magic1, function() return sham_magic2 end, function(self) fight.face(self); quake.sound(self, C.CHAN_WEAPON, "shambler/sattck1.wav", 1, C.ATTN_NORM) end)
-sham_magic2 = animation.frame(f.magic2, function() return sham_magic3 end, fight.face)
-sham_magic3 = animation.frame(f.magic3, function() return sham_magic4 end, function(self)
+sham_magic[1] = animation.frame(f.magic1, function() return sham_magic[2] end, function(self) fight.face(self); quake.sound(self, C.CHAN_WEAPON, "shambler/sattck1.wav", 1, C.ATTN_NORM) end)
+sham_magic[2] = animation.frame(f.magic2, function() return sham_magic[3] end, fight.face)
+sham_magic[3] = animation.frame(f.magic3, function() return sham_magic[4] end, function(self)
     fight.face(self)
     self.nextthink = self.nextthink + 0.2
     self.effects = self.effects | C.EF_MUZZLEFLASH
@@ -232,22 +224,21 @@ sham_magic3 = animation.frame(f.magic3, function() return sham_magic4 end, funct
     o.nextthink = quake.time() + 0.7
     o.think = subs.remove
 end)
-sham_magic4 = animation.frame(f.magic4, function() return sham_magic5 end, function(self) self.effects = self.effects | C.EF_MUZZLEFLASH; self.owner.frame = 1 end)
-sham_magic5 = animation.frame(f.magic5, function() return sham_magic6 end, function(self) self.effects = self.effects | C.EF_MUZZLEFLASH; self.owner.frame = 2 end)
-sham_magic6 = animation.frame(f.magic6, function() return sham_magic9 end, function(self) quake.remove(self.owner); cast_lightning(self); quake.sound(self, C.CHAN_WEAPON, "shambler/sboom.wav", 1, C.ATTN_NORM) end)
-sham_magic9 = animation.frame(f.magic9, function() return sham_magic10 end, cast_lightning)
-sham_magic10 = animation.frame(f.magic10, function() return sham_magic11 end, cast_lightning)
-sham_magic11 = animation.frame(f.magic11, function() return sham_magic12 end, function(self) if quake.cvar("skill") == 3 then cast_lightning(self) end end)
-sham_magic12 = animation.frame(f.magic12, function() return sham_run1 end)
+sham_magic[4] = animation.frame(f.magic4, function() return sham_magic[5] end, function(self) self.effects = self.effects | C.EF_MUZZLEFLASH; self.owner.frame = 1 end)
+sham_magic[5] = animation.frame(f.magic5, function() return sham_magic[6] end, function(self) self.effects = self.effects | C.EF_MUZZLEFLASH; self.owner.frame = 2 end)
+sham_magic[6] = animation.frame(f.magic6, function() return sham_magic[9] end, function(self) quake.remove(self.owner); cast_lightning(self); quake.sound(self, C.CHAN_WEAPON, "shambler/sboom.wav", 1, C.ATTN_NORM) end)
+sham_magic[9] = animation.frame(f.magic9, function() return sham_magic[10] end, cast_lightning)
+sham_magic[10] = animation.frame(f.magic10, function() return sham_magic[11] end, cast_lightning)
+sham_magic[11] = animation.frame(f.magic11, function() return sham_magic[12] end, function(self) if quake.cvar("skill") == 3 then cast_lightning(self) end end)
+sham_magic[12] = animation.frame(f.magic12, function() return sham_run[1] end)
 
-local sham_pain1, sham_pain2, sham_pain3, sham_pain4, sham_pain5, sham_pain6
-
-sham_pain1 = animation.frame(f.pain1, function() return sham_pain2 end)
-sham_pain2 = animation.frame(f.pain2, function() return sham_pain3 end)
-sham_pain3 = animation.frame(f.pain3, function() return sham_pain4 end)
-sham_pain4 = animation.frame(f.pain4, function() return sham_pain5 end)
-sham_pain5 = animation.frame(f.pain5, function() return sham_pain6 end)
-sham_pain6 = animation.frame(f.pain6, function() return sham_run1 end)
+local sham_pain = {}
+sham_pain[1] = animation.frame(f.pain1, function() return sham_pain[2] end)
+sham_pain[2] = animation.frame(f.pain2, function() return sham_pain[3] end)
+sham_pain[3] = animation.frame(f.pain3, function() return sham_pain[4] end)
+sham_pain[4] = animation.frame(f.pain4, function() return sham_pain[5] end)
+sham_pain[5] = animation.frame(f.pain5, function() return sham_pain[6] end)
+sham_pain[6] = animation.frame(f.pain6, function() return sham_run[1] end)
 
 ---@param self entity
 ---@param _attacker entity
@@ -259,24 +250,23 @@ local function sham_pain_callback(self, _attacker, damage)
     if quake.random() * 400 > damage then return end -- didn't flinch
     if self.pain_finished > quake.time() then return end
     self.pain_finished = quake.time() + 2
-    sham_pain1(self)
+    sham_pain[1](self)
 end
 
 --============================================================================
 
-local sham_death1, sham_death2, sham_death3, sham_death4, sham_death5, sham_death6, sham_death7, sham_death8, sham_death9, sham_death10, sham_death11
-
-sham_death1 = animation.frame(f.death1, function() return sham_death2 end)
-sham_death2 = animation.frame(f.death2, function() return sham_death3 end)
-sham_death3 = animation.frame(f.death3, function() return sham_death4 end, function(self) self.solid = C.SOLID_NOT end)
-sham_death4 = animation.frame(f.death4, function() return sham_death5 end)
-sham_death5 = animation.frame(f.death5, function() return sham_death6 end)
-sham_death6 = animation.frame(f.death6, function() return sham_death7 end)
-sham_death7 = animation.frame(f.death7, function() return sham_death8 end)
-sham_death8 = animation.frame(f.death8, function() return sham_death9 end)
-sham_death9 = animation.frame(f.death9, function() return sham_death10 end)
-sham_death10 = animation.frame(f.death10, function() return sham_death11 end)
-sham_death11 = animation.frame(f.death11, function() return sham_death11 end)
+local sham_death = {}
+sham_death[1] = animation.frame(f.death1, function() return sham_death[2] end)
+sham_death[2] = animation.frame(f.death2, function() return sham_death[3] end)
+sham_death[3] = animation.frame(f.death3, function() return sham_death[4] end, function(self) self.solid = C.SOLID_NOT end)
+sham_death[4] = animation.frame(f.death4, function() return sham_death[5] end)
+sham_death[5] = animation.frame(f.death5, function() return sham_death[6] end)
+sham_death[6] = animation.frame(f.death6, function() return sham_death[7] end)
+sham_death[7] = animation.frame(f.death7, function() return sham_death[8] end)
+sham_death[8] = animation.frame(f.death8, function() return sham_death[9] end)
+sham_death[9] = animation.frame(f.death9, function() return sham_death[10] end)
+sham_death[10] = animation.frame(f.death10, function() return sham_death[11] end)
+sham_death[11] = animation.frame(f.death11, function() return sham_death[11] end)
 
 ---@param self entity
 ---@return nil
@@ -292,7 +282,7 @@ local function sham_die(self)
     end
     -- regular death
     quake.sound(self, C.CHAN_VOICE, "shambler/sdeath.wav", 1, C.ATTN_NORM)
-    sham_death1(self)
+    sham_death[1](self)
 end
 
 --============================================================================
@@ -320,12 +310,12 @@ function M.spawn(self)
     quake.set_model(self, "progs/shambler.mdl")
     quake.set_size(self, C.VEC_HULL2_MIN, C.VEC_HULL2_MAX)
     self.health = 600
-    self.th_stand = sham_stand1
-    self.th_walk = sham_walk1
-    self.th_run = sham_run1
+    self.th_stand = sham_stand[1]
+    self.th_walk = sham_walk[1]
+    self.th_run = sham_run[1]
     self.th_die = sham_die
     self.th_melee = sham_melee
-    self.th_missile = sham_magic1
+    self.th_missile = sham_magic[1]
     self.th_pain = sham_pain_callback
     monsters.walk_start(self)
 end

@@ -97,7 +97,8 @@ local function launch_missile(self, missile, mspeed, accuracy)
     missile.think = subs.remove
 end
 
-local wiz_run1, wiz_side1
+local wiz_run = {}
+local wiz_side = {}
 
 ---@param self entity
 ---@return boolean
@@ -106,7 +107,7 @@ function M.check_attack(self)
     if quake.time() < self.attack_finished then return false end
     if not quake.globals.enemy_vis then return false end
     if enemy_range == C.RANGE_FAR then
-        if self.attack_state ~= C.AS_STRAIGHT then self.attack_state = C.AS_STRAIGHT; wiz_run1(self) end
+        if self.attack_state ~= C.AS_STRAIGHT then self.attack_state = C.AS_STRAIGHT; wiz_run[1](self) end
         return false
     end
     local targ = assert(self.enemy, "monster has no enemy")
@@ -116,7 +117,7 @@ function M.check_attack(self)
     local trace = quake.trace_line(spot1, spot2, false, self)
     if trace.entity ~= targ then
         -- don't have a clear shot, so move to a side
-        if self.attack_state ~= C.AS_STRAIGHT then self.attack_state = C.AS_STRAIGHT; wiz_run1(self) end
+        if self.attack_state ~= C.AS_STRAIGHT then self.attack_state = C.AS_STRAIGHT; wiz_run[1](self) end
         return false
     end
     local chance
@@ -126,9 +127,9 @@ function M.check_attack(self)
     else chance = 0 end
     if quake.random() < chance then self.attack_state = C.AS_MISSILE; return true end
     if enemy_range == C.RANGE_MID then
-        if self.attack_state ~= C.AS_STRAIGHT then self.attack_state = C.AS_STRAIGHT; wiz_run1(self) end
+        if self.attack_state ~= C.AS_STRAIGHT then self.attack_state = C.AS_STRAIGHT; wiz_run[1](self) end
     else
-        if self.attack_state ~= C.AS_SLIDING then self.attack_state = C.AS_SLIDING; wiz_side1(self) end
+        if self.attack_state ~= C.AS_SLIDING then self.attack_state = C.AS_SLIDING; wiz_side[1](self) end
     end
     return false
 end
@@ -138,10 +139,10 @@ end
 local function wizard_attack_finished(self)
     if quake.globals.enemy_range >= C.RANGE_MID or not quake.globals.enemy_vis then
         self.attack_state = C.AS_STRAIGHT
-        self.think = wiz_run1
+        self.think = wiz_run[1]
     else
         self.attack_state = C.AS_SLIDING
-        self.think = wiz_side1
+        self.think = wiz_side[1]
     end
 end
 
@@ -210,86 +211,77 @@ local function wiz_idle_sound(self)
     return
 end
 
-local wiz_stand1, wiz_stand2, wiz_stand3, wiz_stand4, wiz_stand5, wiz_stand6, wiz_stand7, wiz_stand8
+local wiz_stand = {}
+wiz_stand[1] = animation.frame(f.hover1, function() return wiz_stand[2] end, ai.stand)
+wiz_stand[2] = animation.frame(f.hover2, function() return wiz_stand[3] end, ai.stand)
+wiz_stand[3] = animation.frame(f.hover3, function() return wiz_stand[4] end, ai.stand)
+wiz_stand[4] = animation.frame(f.hover4, function() return wiz_stand[5] end, ai.stand)
+wiz_stand[5] = animation.frame(f.hover5, function() return wiz_stand[6] end, ai.stand)
+wiz_stand[6] = animation.frame(f.hover6, function() return wiz_stand[7] end, ai.stand)
+wiz_stand[7] = animation.frame(f.hover7, function() return wiz_stand[8] end, ai.stand)
+wiz_stand[8] = animation.frame(f.hover8, function() return wiz_stand[1] end, ai.stand)
 
-wiz_stand1 = animation.frame(f.hover1, function() return wiz_stand2 end, ai.stand)
-wiz_stand2 = animation.frame(f.hover2, function() return wiz_stand3 end, ai.stand)
-wiz_stand3 = animation.frame(f.hover3, function() return wiz_stand4 end, ai.stand)
-wiz_stand4 = animation.frame(f.hover4, function() return wiz_stand5 end, ai.stand)
-wiz_stand5 = animation.frame(f.hover5, function() return wiz_stand6 end, ai.stand)
-wiz_stand6 = animation.frame(f.hover6, function() return wiz_stand7 end, ai.stand)
-wiz_stand7 = animation.frame(f.hover7, function() return wiz_stand8 end, ai.stand)
-wiz_stand8 = animation.frame(f.hover8, function() return wiz_stand1 end, ai.stand)
+local wiz_walk = {}
+wiz_walk[1] = animation.frame(f.hover1, function() return wiz_walk[2] end, function(self) ai.walk(self, 8); wiz_idle_sound(self) end)
+wiz_walk[2] = animation.frame(f.hover2, function() return wiz_walk[3] end, function(self) ai.walk(self, 8) end)
+wiz_walk[3] = animation.frame(f.hover3, function() return wiz_walk[4] end, function(self) ai.walk(self, 8) end)
+wiz_walk[4] = animation.frame(f.hover4, function() return wiz_walk[5] end, function(self) ai.walk(self, 8) end)
+wiz_walk[5] = animation.frame(f.hover5, function() return wiz_walk[6] end, function(self) ai.walk(self, 8) end)
+wiz_walk[6] = animation.frame(f.hover6, function() return wiz_walk[7] end, function(self) ai.walk(self, 8) end)
+wiz_walk[7] = animation.frame(f.hover7, function() return wiz_walk[8] end, function(self) ai.walk(self, 8) end)
+wiz_walk[8] = animation.frame(f.hover8, function() return wiz_walk[1] end, function(self) ai.walk(self, 8) end)
 
-local wiz_walk1, wiz_walk2, wiz_walk3, wiz_walk4, wiz_walk5, wiz_walk6, wiz_walk7, wiz_walk8
+wiz_side[1] = animation.frame(f.hover1, function() return wiz_side[2] end, function(self) ai.run(self, 8); wiz_idle_sound(self) end)
+wiz_side[2] = animation.frame(f.hover2, function() return wiz_side[3] end, function(self) ai.run(self, 8) end)
+wiz_side[3] = animation.frame(f.hover3, function() return wiz_side[4] end, function(self) ai.run(self, 8) end)
+wiz_side[4] = animation.frame(f.hover4, function() return wiz_side[5] end, function(self) ai.run(self, 8) end)
+wiz_side[5] = animation.frame(f.hover5, function() return wiz_side[6] end, function(self) ai.run(self, 8) end)
+wiz_side[6] = animation.frame(f.hover6, function() return wiz_side[7] end, function(self) ai.run(self, 8) end)
+wiz_side[7] = animation.frame(f.hover7, function() return wiz_side[8] end, function(self) ai.run(self, 8) end)
+wiz_side[8] = animation.frame(f.hover8, function() return wiz_side[1] end, function(self) ai.run(self, 8) end)
 
-wiz_walk1 = animation.frame(f.hover1, function() return wiz_walk2 end, function(self) ai.walk(self, 8); wiz_idle_sound(self) end)
-wiz_walk2 = animation.frame(f.hover2, function() return wiz_walk3 end, function(self) ai.walk(self, 8) end)
-wiz_walk3 = animation.frame(f.hover3, function() return wiz_walk4 end, function(self) ai.walk(self, 8) end)
-wiz_walk4 = animation.frame(f.hover4, function() return wiz_walk5 end, function(self) ai.walk(self, 8) end)
-wiz_walk5 = animation.frame(f.hover5, function() return wiz_walk6 end, function(self) ai.walk(self, 8) end)
-wiz_walk6 = animation.frame(f.hover6, function() return wiz_walk7 end, function(self) ai.walk(self, 8) end)
-wiz_walk7 = animation.frame(f.hover7, function() return wiz_walk8 end, function(self) ai.walk(self, 8) end)
-wiz_walk8 = animation.frame(f.hover8, function() return wiz_walk1 end, function(self) ai.walk(self, 8) end)
+wiz_run[1] = animation.frame(f.fly1, function() return wiz_run[2] end, function(self) ai.run(self, 16); wiz_idle_sound(self) end)
+wiz_run[2] = animation.frame(f.fly2, function() return wiz_run[3] end, function(self) ai.run(self, 16) end)
+wiz_run[3] = animation.frame(f.fly3, function() return wiz_run[4] end, function(self) ai.run(self, 16) end)
+wiz_run[4] = animation.frame(f.fly4, function() return wiz_run[5] end, function(self) ai.run(self, 16) end)
+wiz_run[5] = animation.frame(f.fly5, function() return wiz_run[6] end, function(self) ai.run(self, 16) end)
+wiz_run[6] = animation.frame(f.fly6, function() return wiz_run[7] end, function(self) ai.run(self, 16) end)
+wiz_run[7] = animation.frame(f.fly7, function() return wiz_run[8] end, function(self) ai.run(self, 16) end)
+wiz_run[8] = animation.frame(f.fly8, function() return wiz_run[9] end, function(self) ai.run(self, 16) end)
+wiz_run[9] = animation.frame(f.fly9, function() return wiz_run[10] end, function(self) ai.run(self, 16) end)
+wiz_run[10] = animation.frame(f.fly10, function() return wiz_run[11] end, function(self) ai.run(self, 16) end)
+wiz_run[11] = animation.frame(f.fly11, function() return wiz_run[12] end, function(self) ai.run(self, 16) end)
+wiz_run[12] = animation.frame(f.fly12, function() return wiz_run[13] end, function(self) ai.run(self, 16) end)
+wiz_run[13] = animation.frame(f.fly13, function() return wiz_run[14] end, function(self) ai.run(self, 16) end)
+wiz_run[14] = animation.frame(f.fly14, function() return wiz_run[1] end, function(self) ai.run(self, 16) end)
 
-local wiz_side2, wiz_side3, wiz_side4, wiz_side5, wiz_side6, wiz_side7, wiz_side8
+local wiz_fast = {}
+wiz_fast[1] = animation.frame(f.magatt1, function() return wiz_fast[2] end, function(self) fight.face(self); wiz_start_fast(self) end)
+wiz_fast[2] = animation.frame(f.magatt2, function() return wiz_fast[3] end, function(self) fight.face(self) end)
+wiz_fast[3] = animation.frame(f.magatt3, function() return wiz_fast[4] end, function(self) fight.face(self) end)
+wiz_fast[4] = animation.frame(f.magatt4, function() return wiz_fast[5] end, function(self) fight.face(self) end)
+wiz_fast[5] = animation.frame(f.magatt5, function() return wiz_fast[6] end, function(self) fight.face(self) end)
+wiz_fast[6] = animation.frame(f.magatt6, function() return wiz_fast[7] end, function(self) fight.face(self) end)
+wiz_fast[7] = animation.frame(f.magatt5, function() return wiz_fast[8] end, function(self) fight.face(self) end)
+wiz_fast[8] = animation.frame(f.magatt4, function() return wiz_fast[9] end, function(self) fight.face(self) end)
+wiz_fast[9] = animation.frame(f.magatt3, function() return wiz_fast[10] end, function(self) fight.face(self) end)
+wiz_fast[10] = animation.frame(f.magatt2, function() return wiz_run[1] end, function(self) fight.face(self); subs.attack_finished(self, 2); wizard_attack_finished(self) end)
 
-wiz_side1 = animation.frame(f.hover1, function() return wiz_side2 end, function(self) ai.run(self, 8); wiz_idle_sound(self) end)
-wiz_side2 = animation.frame(f.hover2, function() return wiz_side3 end, function(self) ai.run(self, 8) end)
-wiz_side3 = animation.frame(f.hover3, function() return wiz_side4 end, function(self) ai.run(self, 8) end)
-wiz_side4 = animation.frame(f.hover4, function() return wiz_side5 end, function(self) ai.run(self, 8) end)
-wiz_side5 = animation.frame(f.hover5, function() return wiz_side6 end, function(self) ai.run(self, 8) end)
-wiz_side6 = animation.frame(f.hover6, function() return wiz_side7 end, function(self) ai.run(self, 8) end)
-wiz_side7 = animation.frame(f.hover7, function() return wiz_side8 end, function(self) ai.run(self, 8) end)
-wiz_side8 = animation.frame(f.hover8, function() return wiz_side1 end, function(self) ai.run(self, 8) end)
+local wiz_pain = {}
+wiz_pain[1] = animation.frame(f.pain1, function() return wiz_pain[2] end)
+wiz_pain[2] = animation.frame(f.pain2, function() return wiz_pain[3] end)
+wiz_pain[3] = animation.frame(f.pain3, function() return wiz_pain[4] end)
+wiz_pain[4] = animation.frame(f.pain4, function() return wiz_run[1] end)
 
-local wiz_run2, wiz_run3, wiz_run4, wiz_run5, wiz_run6, wiz_run7, wiz_run8, wiz_run9, wiz_run10, wiz_run11, wiz_run12, wiz_run13, wiz_run14
-
-wiz_run1 = animation.frame(f.fly1, function() return wiz_run2 end, function(self) ai.run(self, 16); wiz_idle_sound(self) end)
-wiz_run2 = animation.frame(f.fly2, function() return wiz_run3 end, function(self) ai.run(self, 16) end)
-wiz_run3 = animation.frame(f.fly3, function() return wiz_run4 end, function(self) ai.run(self, 16) end)
-wiz_run4 = animation.frame(f.fly4, function() return wiz_run5 end, function(self) ai.run(self, 16) end)
-wiz_run5 = animation.frame(f.fly5, function() return wiz_run6 end, function(self) ai.run(self, 16) end)
-wiz_run6 = animation.frame(f.fly6, function() return wiz_run7 end, function(self) ai.run(self, 16) end)
-wiz_run7 = animation.frame(f.fly7, function() return wiz_run8 end, function(self) ai.run(self, 16) end)
-wiz_run8 = animation.frame(f.fly8, function() return wiz_run9 end, function(self) ai.run(self, 16) end)
-wiz_run9 = animation.frame(f.fly9, function() return wiz_run10 end, function(self) ai.run(self, 16) end)
-wiz_run10 = animation.frame(f.fly10, function() return wiz_run11 end, function(self) ai.run(self, 16) end)
-wiz_run11 = animation.frame(f.fly11, function() return wiz_run12 end, function(self) ai.run(self, 16) end)
-wiz_run12 = animation.frame(f.fly12, function() return wiz_run13 end, function(self) ai.run(self, 16) end)
-wiz_run13 = animation.frame(f.fly13, function() return wiz_run14 end, function(self) ai.run(self, 16) end)
-wiz_run14 = animation.frame(f.fly14, function() return wiz_run1 end, function(self) ai.run(self, 16) end)
-
-local wiz_fast1, wiz_fast2, wiz_fast3, wiz_fast4, wiz_fast5, wiz_fast6, wiz_fast7, wiz_fast8, wiz_fast9, wiz_fast10
-
-wiz_fast1 = animation.frame(f.magatt1, function() return wiz_fast2 end, function(self) fight.face(self); wiz_start_fast(self) end)
-wiz_fast2 = animation.frame(f.magatt2, function() return wiz_fast3 end, function(self) fight.face(self) end)
-wiz_fast3 = animation.frame(f.magatt3, function() return wiz_fast4 end, function(self) fight.face(self) end)
-wiz_fast4 = animation.frame(f.magatt4, function() return wiz_fast5 end, function(self) fight.face(self) end)
-wiz_fast5 = animation.frame(f.magatt5, function() return wiz_fast6 end, function(self) fight.face(self) end)
-wiz_fast6 = animation.frame(f.magatt6, function() return wiz_fast7 end, function(self) fight.face(self) end)
-wiz_fast7 = animation.frame(f.magatt5, function() return wiz_fast8 end, function(self) fight.face(self) end)
-wiz_fast8 = animation.frame(f.magatt4, function() return wiz_fast9 end, function(self) fight.face(self) end)
-wiz_fast9 = animation.frame(f.magatt3, function() return wiz_fast10 end, function(self) fight.face(self) end)
-wiz_fast10 = animation.frame(f.magatt2, function() return wiz_run1 end, function(self) fight.face(self); subs.attack_finished(self, 2); wizard_attack_finished(self) end)
-
-local wiz_pain1, wiz_pain2, wiz_pain3, wiz_pain4
-
-wiz_pain1 = animation.frame(f.pain1, function() return wiz_pain2 end)
-wiz_pain2 = animation.frame(f.pain2, function() return wiz_pain3 end)
-wiz_pain3 = animation.frame(f.pain3, function() return wiz_pain4 end)
-wiz_pain4 = animation.frame(f.pain4, function() return wiz_run1 end)
-
-local wiz_death1, wiz_death2, wiz_death3, wiz_death4, wiz_death5, wiz_death6, wiz_death7, wiz_death8
-
-wiz_death1 = animation.frame(f.death1, function() return wiz_death2 end, function(self) self.velocity = quake.vec3(-200 + 400 * quake.random(), -200 + 400 * quake.random(), 100 + 100 * quake.random()); self.flags = self.flags - (self.flags & C.FL_ONGROUND); quake.sound(self, C.CHAN_VOICE, "wizard/wdeath.wav", 1, C.ATTN_NORM) end)
-wiz_death2 = animation.frame(f.death2, function() return wiz_death3 end)
-wiz_death3 = animation.frame(f.death3, function() return wiz_death4 end, function(self) self.solid = C.SOLID_NOT end)
-wiz_death4 = animation.frame(f.death4, function() return wiz_death5 end)
-wiz_death5 = animation.frame(f.death5, function() return wiz_death6 end)
-wiz_death6 = animation.frame(f.death6, function() return wiz_death7 end)
-wiz_death7 = animation.frame(f.death7, function() return wiz_death8 end)
-wiz_death8 = animation.frame(f.death8, function() return wiz_death8 end)
+local wiz_death = {}
+wiz_death[1] = animation.frame(f.death1, function() return wiz_death[2] end, function(self) self.velocity = quake.vec3(-200 + 400 * quake.random(), -200 + 400 * quake.random(), 100 + 100 * quake.random()); self.flags = self.flags - (self.flags & C.FL_ONGROUND); quake.sound(self, C.CHAN_VOICE, "wizard/wdeath.wav", 1, C.ATTN_NORM) end)
+wiz_death[2] = animation.frame(f.death2, function() return wiz_death[3] end)
+wiz_death[3] = animation.frame(f.death3, function() return wiz_death[4] end, function(self) self.solid = C.SOLID_NOT end)
+wiz_death[4] = animation.frame(f.death4, function() return wiz_death[5] end)
+wiz_death[5] = animation.frame(f.death5, function() return wiz_death[6] end)
+wiz_death[6] = animation.frame(f.death6, function() return wiz_death[7] end)
+wiz_death[7] = animation.frame(f.death7, function() return wiz_death[8] end)
+wiz_death[8] = animation.frame(f.death8, function() return wiz_death[8] end)
 
 ---@param self entity
 ---@return nil
@@ -303,7 +295,7 @@ local function wiz_die(self)
         gibs.throw(self, "progs/gib2.mdl", self.health)
         return
     end
-    wiz_death1(self)
+    wiz_death[1](self)
 end
 
 ---@param self entity
@@ -313,12 +305,12 @@ end
 local function wiz_pain_callback(self, _attacker, damage)
     quake.sound(self, C.CHAN_VOICE, "wizard/wpain.wav", 1, C.ATTN_NORM)
     if quake.random() * 70 > damage then return end -- didn't flinch
-    wiz_pain1(self)
+    wiz_pain[1](self)
 end
 
 ---@param self entity
 ---@return nil
-local function wiz_missile(self) wiz_fast1(self) end
+local function wiz_missile(self) wiz_fast[1](self) end
 
 ---QUAKED monster_wizard (1 0 0) (-16 -16 -24) (16 16 40) Ambush
 ---@param self entity
@@ -341,9 +333,9 @@ function M.spawn(self)
     quake.set_model(self, "progs/wizard.mdl")
     quake.set_size(self, quake.vec3(-16, -16, -24), quake.vec3(16, 16, 40))
     self.health = 80
-    self.th_stand = wiz_stand1
-    self.th_walk = wiz_walk1
-    self.th_run = wiz_run1
+    self.th_stand = wiz_stand[1]
+    self.th_walk = wiz_walk[1]
+    self.th_run = wiz_run[1]
     self.th_missile = wiz_missile
     self.th_pain = wiz_pain_callback
     self.th_die = wiz_die

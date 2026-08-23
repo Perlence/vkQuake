@@ -329,14 +329,14 @@ ROCKETS
 ==============================================================================
 ]]
 
-local s_explode2, s_explode3, s_explode4, s_explode5, s_explode6
+local s_explode = {}
 
-local s_explode1 = animation.frame(0, function() return s_explode2 end)
-s_explode2 = animation.frame(1, function() return s_explode3 end)
-s_explode3 = animation.frame(2, function() return s_explode4 end)
-s_explode4 = animation.frame(3, function() return s_explode5 end)
-s_explode5 = animation.frame(4, function() return s_explode6 end)
-s_explode6 = animation.frame(5, function() return subs.remove end)
+s_explode[1] = animation.frame(0, function() return s_explode[2] end)
+s_explode[2] = animation.frame(1, function() return s_explode[3] end)
+s_explode[3] = animation.frame(2, function() return s_explode[4] end)
+s_explode[4] = animation.frame(3, function() return s_explode[5] end)
+s_explode[5] = animation.frame(4, function() return s_explode[6] end)
+s_explode[6] = animation.frame(5, function() return subs.remove end)
 
 ---@param self entity
 ---@return nil
@@ -346,7 +346,7 @@ function M.become_explosion(self)
     self.touch = subs.null
     quake.set_model(self, "progs/s_explod.spr")
     self.solid = SOLID_NOT
-    s_explode1(self)
+    s_explode[1](self)
 end
 
 ---@param self entity
@@ -1168,7 +1168,7 @@ Plays sound if needed
 ========
 ]]
 M.superspike_touch = superspike_touch
-M.explode = s_explode1
+M.explode = s_explode[1]
 
 ---@param self entity
 ---@return nil

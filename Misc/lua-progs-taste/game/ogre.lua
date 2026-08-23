@@ -164,152 +164,141 @@ local function chainsaw(self, side)
     end
 end
 
-local ogre_stand1, ogre_stand2, ogre_stand3, ogre_stand4, ogre_stand5, ogre_stand6, ogre_stand7, ogre_stand8, ogre_stand9
+local ogre_stand = {}
+ogre_stand[1] = animation.frame(f.stand1, function() return ogre_stand[2] end, function(self) ai.stand(self) end)
+ogre_stand[2] = animation.frame(f.stand2, function() return ogre_stand[3] end, function(self) ai.stand(self) end)
+ogre_stand[3] = animation.frame(f.stand3, function() return ogre_stand[4] end, function(self) ai.stand(self) end)
+ogre_stand[4] = animation.frame(f.stand4, function() return ogre_stand[5] end, function(self) ai.stand(self) end)
+ogre_stand[5] = animation.frame(f.stand5, function() return ogre_stand[6] end, function(self) if quake.random() < 0.2 then quake.sound(self, C.CHAN_VOICE, "ogre/ogidle.wav", 1, C.ATTN_IDLE) end; ai.stand(self) end)
+ogre_stand[6] = animation.frame(f.stand6, function() return ogre_stand[7] end, function(self) ai.stand(self) end)
+ogre_stand[7] = animation.frame(f.stand7, function() return ogre_stand[8] end, function(self) ai.stand(self) end)
+ogre_stand[8] = animation.frame(f.stand8, function() return ogre_stand[9] end, function(self) ai.stand(self) end)
+ogre_stand[9] = animation.frame(f.stand9, function() return ogre_stand[1] end, function(self) ai.stand(self) end)
 
-ogre_stand1 = animation.frame(f.stand1, function() return ogre_stand2 end, function(self) ai.stand(self) end)
-ogre_stand2 = animation.frame(f.stand2, function() return ogre_stand3 end, function(self) ai.stand(self) end)
-ogre_stand3 = animation.frame(f.stand3, function() return ogre_stand4 end, function(self) ai.stand(self) end)
-ogre_stand4 = animation.frame(f.stand4, function() return ogre_stand5 end, function(self) ai.stand(self) end)
-ogre_stand5 = animation.frame(f.stand5, function() return ogre_stand6 end, function(self) if quake.random() < 0.2 then quake.sound(self, C.CHAN_VOICE, "ogre/ogidle.wav", 1, C.ATTN_IDLE) end; ai.stand(self) end)
-ogre_stand6 = animation.frame(f.stand6, function() return ogre_stand7 end, function(self) ai.stand(self) end)
-ogre_stand7 = animation.frame(f.stand7, function() return ogre_stand8 end, function(self) ai.stand(self) end)
-ogre_stand8 = animation.frame(f.stand8, function() return ogre_stand9 end, function(self) ai.stand(self) end)
-ogre_stand9 = animation.frame(f.stand9, function() return ogre_stand1 end, function(self) ai.stand(self) end)
+local ogre_walk = {}
+ogre_walk[1] = animation.frame(f.walk1, function() return ogre_walk[2] end, function(self) ai.walk(self, 3) end)
+ogre_walk[2] = animation.frame(f.walk2, function() return ogre_walk[3] end, function(self) ai.walk(self, 2) end)
+ogre_walk[3] = animation.frame(f.walk3, function() return ogre_walk[4] end, function(self) ai.walk(self, 2); if quake.random() < 0.2 then quake.sound(self, C.CHAN_VOICE, "ogre/ogidle.wav", 1, C.ATTN_IDLE) end end)
+ogre_walk[4] = animation.frame(f.walk4, function() return ogre_walk[5] end, function(self) ai.walk(self, 2) end)
+ogre_walk[5] = animation.frame(f.walk5, function() return ogre_walk[6] end, function(self) ai.walk(self, 2) end)
+ogre_walk[6] = animation.frame(f.walk6, function() return ogre_walk[7] end, function(self) ai.walk(self, 5); if quake.random() < 0.1 then quake.sound(self, C.CHAN_VOICE, "ogre/ogdrag.wav", 1, C.ATTN_IDLE) end end)
+ogre_walk[7] = animation.frame(f.walk7, function() return ogre_walk[8] end, function(self) ai.walk(self, 3) end)
+ogre_walk[8] = animation.frame(f.walk8, function() return ogre_walk[9] end, function(self) ai.walk(self, 2) end)
+ogre_walk[9] = animation.frame(f.walk9, function() return ogre_walk[10] end, function(self) ai.walk(self, 3) end)
+ogre_walk[10] = animation.frame(f.walk10, function() return ogre_walk[11] end, function(self) ai.walk(self, 1) end)
+ogre_walk[11] = animation.frame(f.walk11, function() return ogre_walk[12] end, function(self) ai.walk(self, 2) end)
+ogre_walk[12] = animation.frame(f.walk12, function() return ogre_walk[13] end, function(self) ai.walk(self, 3) end)
+ogre_walk[13] = animation.frame(f.walk13, function() return ogre_walk[14] end, function(self) ai.walk(self, 3) end)
+ogre_walk[14] = animation.frame(f.walk14, function() return ogre_walk[15] end, function(self) ai.walk(self, 3) end)
+ogre_walk[15] = animation.frame(f.walk15, function() return ogre_walk[16] end, function(self) ai.walk(self, 3) end)
+ogre_walk[16] = animation.frame(f.walk16, function() return ogre_walk[1] end, function(self) ai.walk(self, 4) end)
 
-local ogre_walk1, ogre_walk2, ogre_walk3, ogre_walk4, ogre_walk5, ogre_walk6, ogre_walk7, ogre_walk8, ogre_walk9, ogre_walk10, ogre_walk11, ogre_walk12, ogre_walk13, ogre_walk14, ogre_walk15, ogre_walk16
+local ogre_run = {}
+ogre_run[1] = animation.frame(f.run1, function() return ogre_run[2] end, function(self) ai.run(self, 9); if quake.random() < 0.2 then quake.sound(self, C.CHAN_VOICE, "ogre/ogidle2.wav", 1, C.ATTN_IDLE) end end)
+ogre_run[2] = animation.frame(f.run2, function() return ogre_run[3] end, function(self) ai.run(self, 12) end)
+ogre_run[3] = animation.frame(f.run3, function() return ogre_run[4] end, function(self) ai.run(self, 8) end)
+ogre_run[4] = animation.frame(f.run4, function() return ogre_run[5] end, function(self) ai.run(self, 22) end)
+ogre_run[5] = animation.frame(f.run5, function() return ogre_run[6] end, function(self) ai.run(self, 16) end)
+ogre_run[6] = animation.frame(f.run6, function() return ogre_run[7] end, function(self) ai.run(self, 4) end)
+ogre_run[7] = animation.frame(f.run7, function() return ogre_run[8] end, function(self) ai.run(self, 13) end)
+ogre_run[8] = animation.frame(f.run8, function() return ogre_run[1] end, function(self) ai.run(self, 24) end)
 
-ogre_walk1 = animation.frame(f.walk1, function() return ogre_walk2 end, function(self) ai.walk(self, 3) end)
-ogre_walk2 = animation.frame(f.walk2, function() return ogre_walk3 end, function(self) ai.walk(self, 2) end)
-ogre_walk3 = animation.frame(f.walk3, function() return ogre_walk4 end, function(self) ai.walk(self, 2); if quake.random() < 0.2 then quake.sound(self, C.CHAN_VOICE, "ogre/ogidle.wav", 1, C.ATTN_IDLE) end end)
-ogre_walk4 = animation.frame(f.walk4, function() return ogre_walk5 end, function(self) ai.walk(self, 2) end)
-ogre_walk5 = animation.frame(f.walk5, function() return ogre_walk6 end, function(self) ai.walk(self, 2) end)
-ogre_walk6 = animation.frame(f.walk6, function() return ogre_walk7 end, function(self) ai.walk(self, 5); if quake.random() < 0.1 then quake.sound(self, C.CHAN_VOICE, "ogre/ogdrag.wav", 1, C.ATTN_IDLE) end end)
-ogre_walk7 = animation.frame(f.walk7, function() return ogre_walk8 end, function(self) ai.walk(self, 3) end)
-ogre_walk8 = animation.frame(f.walk8, function() return ogre_walk9 end, function(self) ai.walk(self, 2) end)
-ogre_walk9 = animation.frame(f.walk9, function() return ogre_walk10 end, function(self) ai.walk(self, 3) end)
-ogre_walk10 = animation.frame(f.walk10, function() return ogre_walk11 end, function(self) ai.walk(self, 1) end)
-ogre_walk11 = animation.frame(f.walk11, function() return ogre_walk12 end, function(self) ai.walk(self, 2) end)
-ogre_walk12 = animation.frame(f.walk12, function() return ogre_walk13 end, function(self) ai.walk(self, 3) end)
-ogre_walk13 = animation.frame(f.walk13, function() return ogre_walk14 end, function(self) ai.walk(self, 3) end)
-ogre_walk14 = animation.frame(f.walk14, function() return ogre_walk15 end, function(self) ai.walk(self, 3) end)
-ogre_walk15 = animation.frame(f.walk15, function() return ogre_walk16 end, function(self) ai.walk(self, 3) end)
-ogre_walk16 = animation.frame(f.walk16, function() return ogre_walk1 end, function(self) ai.walk(self, 4) end)
+local ogre_swing = {}
+ogre_swing[1] = animation.frame(f.swing1, function() return ogre_swing[2] end, function(self) fight.charge(self, 11); quake.sound(self, C.CHAN_WEAPON, "ogre/ogsawatk.wav", 1, C.ATTN_NORM) end)
+ogre_swing[2] = animation.frame(f.swing2, function() return ogre_swing[3] end, function(self) fight.charge(self, 1) end)
+ogre_swing[3] = animation.frame(f.swing3, function() return ogre_swing[4] end, function(self) fight.charge(self, 4) end)
+ogre_swing[4] = animation.frame(f.swing4, function() return ogre_swing[5] end, function(self) fight.charge(self, 13) end)
+ogre_swing[5] = animation.frame(f.swing5, function() return ogre_swing[6] end, function(self) fight.charge(self, 9); chainsaw(self, 0); self.angles = quake.vec3(self.angles.x, self.angles.y + quake.random() * 25, self.angles.z) end)
+ogre_swing[6] = animation.frame(f.swing6, function() return ogre_swing[7] end, function(self) chainsaw(self, 200); self.angles = quake.vec3(self.angles.x, self.angles.y + quake.random() * 25, self.angles.z) end)
+ogre_swing[7] = animation.frame(f.swing7, function() return ogre_swing[8] end, function(self) chainsaw(self, 0); self.angles = quake.vec3(self.angles.x, self.angles.y + quake.random() * 25, self.angles.z) end)
+ogre_swing[8] = animation.frame(f.swing8, function() return ogre_swing[9] end, function(self) chainsaw(self, 0); self.angles = quake.vec3(self.angles.x, self.angles.y + quake.random() * 25, self.angles.z) end)
+ogre_swing[9] = animation.frame(f.swing9, function() return ogre_swing[10] end, function(self) chainsaw(self, 0); self.angles = quake.vec3(self.angles.x, self.angles.y + quake.random() * 25, self.angles.z) end)
+ogre_swing[10] = animation.frame(f.swing10, function() return ogre_swing[11] end, function(self) chainsaw(self, -200); self.angles = quake.vec3(self.angles.x, self.angles.y + quake.random() * 25, self.angles.z) end)
+ogre_swing[11] = animation.frame(f.swing11, function() return ogre_swing[12] end, function(self) chainsaw(self, 0); self.angles = quake.vec3(self.angles.x, self.angles.y + quake.random() * 25, self.angles.z) end)
+ogre_swing[12] = animation.frame(f.swing12, function() return ogre_swing[13] end, function(self) fight.charge(self, 3) end)
+ogre_swing[13] = animation.frame(f.swing13, function() return ogre_swing[14] end, function(self) fight.charge(self, 8) end)
+ogre_swing[14] = animation.frame(f.swing14, function() return ogre_run[1] end, function(self) fight.charge(self, 9) end)
 
-local ogre_run1, ogre_run2, ogre_run3, ogre_run4, ogre_run5, ogre_run6, ogre_run7, ogre_run8
-
-ogre_run1 = animation.frame(f.run1, function() return ogre_run2 end, function(self) ai.run(self, 9); if quake.random() < 0.2 then quake.sound(self, C.CHAN_VOICE, "ogre/ogidle2.wav", 1, C.ATTN_IDLE) end end)
-ogre_run2 = animation.frame(f.run2, function() return ogre_run3 end, function(self) ai.run(self, 12) end)
-ogre_run3 = animation.frame(f.run3, function() return ogre_run4 end, function(self) ai.run(self, 8) end)
-ogre_run4 = animation.frame(f.run4, function() return ogre_run5 end, function(self) ai.run(self, 22) end)
-ogre_run5 = animation.frame(f.run5, function() return ogre_run6 end, function(self) ai.run(self, 16) end)
-ogre_run6 = animation.frame(f.run6, function() return ogre_run7 end, function(self) ai.run(self, 4) end)
-ogre_run7 = animation.frame(f.run7, function() return ogre_run8 end, function(self) ai.run(self, 13) end)
-ogre_run8 = animation.frame(f.run8, function() return ogre_run1 end, function(self) ai.run(self, 24) end)
-
-local ogre_swing1, ogre_swing2, ogre_swing3, ogre_swing4, ogre_swing5, ogre_swing6, ogre_swing7, ogre_swing8, ogre_swing9, ogre_swing10, ogre_swing11, ogre_swing12, ogre_swing13, ogre_swing14
-
-ogre_swing1 = animation.frame(f.swing1, function() return ogre_swing2 end, function(self) fight.charge(self, 11); quake.sound(self, C.CHAN_WEAPON, "ogre/ogsawatk.wav", 1, C.ATTN_NORM) end)
-ogre_swing2 = animation.frame(f.swing2, function() return ogre_swing3 end, function(self) fight.charge(self, 1) end)
-ogre_swing3 = animation.frame(f.swing3, function() return ogre_swing4 end, function(self) fight.charge(self, 4) end)
-ogre_swing4 = animation.frame(f.swing4, function() return ogre_swing5 end, function(self) fight.charge(self, 13) end)
-ogre_swing5 = animation.frame(f.swing5, function() return ogre_swing6 end, function(self) fight.charge(self, 9); chainsaw(self, 0); self.angles = quake.vec3(self.angles.x, self.angles.y + quake.random() * 25, self.angles.z) end)
-ogre_swing6 = animation.frame(f.swing6, function() return ogre_swing7 end, function(self) chainsaw(self, 200); self.angles = quake.vec3(self.angles.x, self.angles.y + quake.random() * 25, self.angles.z) end)
-ogre_swing7 = animation.frame(f.swing7, function() return ogre_swing8 end, function(self) chainsaw(self, 0); self.angles = quake.vec3(self.angles.x, self.angles.y + quake.random() * 25, self.angles.z) end)
-ogre_swing8 = animation.frame(f.swing8, function() return ogre_swing9 end, function(self) chainsaw(self, 0); self.angles = quake.vec3(self.angles.x, self.angles.y + quake.random() * 25, self.angles.z) end)
-ogre_swing9 = animation.frame(f.swing9, function() return ogre_swing10 end, function(self) chainsaw(self, 0); self.angles = quake.vec3(self.angles.x, self.angles.y + quake.random() * 25, self.angles.z) end)
-ogre_swing10 = animation.frame(f.swing10, function() return ogre_swing11 end, function(self) chainsaw(self, -200); self.angles = quake.vec3(self.angles.x, self.angles.y + quake.random() * 25, self.angles.z) end)
-ogre_swing11 = animation.frame(f.swing11, function() return ogre_swing12 end, function(self) chainsaw(self, 0); self.angles = quake.vec3(self.angles.x, self.angles.y + quake.random() * 25, self.angles.z) end)
-ogre_swing12 = animation.frame(f.swing12, function() return ogre_swing13 end, function(self) fight.charge(self, 3) end)
-ogre_swing13 = animation.frame(f.swing13, function() return ogre_swing14 end, function(self) fight.charge(self, 8) end)
-ogre_swing14 = animation.frame(f.swing14, function() return ogre_run1 end, function(self) fight.charge(self, 9) end)
-
-local ogre_smash1, ogre_smash2, ogre_smash3, ogre_smash4, ogre_smash5, ogre_smash6, ogre_smash7, ogre_smash8, ogre_smash9, ogre_smash10, ogre_smash11, ogre_smash12, ogre_smash13, ogre_smash14
-
-ogre_smash1 = animation.frame(f.smash1, function() return ogre_smash2 end, function(self) fight.charge(self, 6); quake.sound(self, C.CHAN_WEAPON, "ogre/ogsawatk.wav", 1, C.ATTN_NORM) end)
-ogre_smash2 = animation.frame(f.smash2, function() return ogre_smash3 end, function(self) fight.charge(self, 0) end)
-ogre_smash3 = animation.frame(f.smash3, function() return ogre_smash4 end, function(self) fight.charge(self, 0) end)
-ogre_smash4 = animation.frame(f.smash4, function() return ogre_smash5 end, function(self) fight.charge(self, 1) end)
-ogre_smash5 = animation.frame(f.smash5, function() return ogre_smash6 end, function(self) fight.charge(self, 4) end)
-ogre_smash6 = animation.frame(f.smash6, function() return ogre_smash7 end, function(self) fight.charge(self, 4); chainsaw(self, 0) end)
-ogre_smash7 = animation.frame(f.smash7, function() return ogre_smash8 end, function(self) fight.charge(self, 4); chainsaw(self, 0) end)
-ogre_smash8 = animation.frame(f.smash8, function() return ogre_smash9 end, function(self) fight.charge(self, 10); chainsaw(self, 0) end)
-ogre_smash9 = animation.frame(f.smash9, function() return ogre_smash10 end, function(self) fight.charge(self, 13); chainsaw(self, 0) end)
-ogre_smash10 = animation.frame(f.smash10, function() return ogre_smash11 end, function(self) chainsaw(self, 1) end)
-ogre_smash11 = animation.frame(f.smash11, function() return ogre_smash12 end, function(self) fight.charge(self, 2); chainsaw(self, 0); -- slight variation
+local ogre_smash = {}
+ogre_smash[1] = animation.frame(f.smash1, function() return ogre_smash[2] end, function(self) fight.charge(self, 6); quake.sound(self, C.CHAN_WEAPON, "ogre/ogsawatk.wav", 1, C.ATTN_NORM) end)
+ogre_smash[2] = animation.frame(f.smash2, function() return ogre_smash[3] end, function(self) fight.charge(self, 0) end)
+ogre_smash[3] = animation.frame(f.smash3, function() return ogre_smash[4] end, function(self) fight.charge(self, 0) end)
+ogre_smash[4] = animation.frame(f.smash4, function() return ogre_smash[5] end, function(self) fight.charge(self, 1) end)
+ogre_smash[5] = animation.frame(f.smash5, function() return ogre_smash[6] end, function(self) fight.charge(self, 4) end)
+ogre_smash[6] = animation.frame(f.smash6, function() return ogre_smash[7] end, function(self) fight.charge(self, 4); chainsaw(self, 0) end)
+ogre_smash[7] = animation.frame(f.smash7, function() return ogre_smash[8] end, function(self) fight.charge(self, 4); chainsaw(self, 0) end)
+ogre_smash[8] = animation.frame(f.smash8, function() return ogre_smash[9] end, function(self) fight.charge(self, 10); chainsaw(self, 0) end)
+ogre_smash[9] = animation.frame(f.smash9, function() return ogre_smash[10] end, function(self) fight.charge(self, 13); chainsaw(self, 0) end)
+ogre_smash[10] = animation.frame(f.smash10, function() return ogre_smash[11] end, function(self) chainsaw(self, 1) end)
+ogre_smash[11] = animation.frame(f.smash11, function() return ogre_smash[12] end, function(self) fight.charge(self, 2); chainsaw(self, 0); -- slight variation
         self.nextthink = self.nextthink + quake.random() * 0.2 end)
-ogre_smash12 = animation.frame(f.smash12, function() return ogre_smash13 end, function(self) fight.charge(self, 0) end)
-ogre_smash13 = animation.frame(f.smash13, function() return ogre_smash14 end, function(self) fight.charge(self, 4) end)
-ogre_smash14 = animation.frame(f.smash14, function() return ogre_run1 end, function(self) fight.charge(self, 12) end)
+ogre_smash[12] = animation.frame(f.smash12, function() return ogre_smash[13] end, function(self) fight.charge(self, 0) end)
+ogre_smash[13] = animation.frame(f.smash13, function() return ogre_smash[14] end, function(self) fight.charge(self, 4) end)
+ogre_smash[14] = animation.frame(f.smash14, function() return ogre_run[1] end, function(self) fight.charge(self, 12) end)
 
-local ogre_nail1, ogre_nail2, ogre_nail3, ogre_nail4, ogre_nail5, ogre_nail6, ogre_nail7
+local ogre_nail = {}
+ogre_nail[1] = animation.frame(f.shoot1, function() return ogre_nail[2] end, function(self) fight.face(self) end)
+ogre_nail[2] = animation.frame(f.shoot2, function() return ogre_nail[3] end, function(self) fight.face(self) end)
+ogre_nail[3] = animation.frame(f.shoot2, function() return ogre_nail[4] end, function(self) fight.face(self) end)
+ogre_nail[4] = animation.frame(f.shoot3, function() return ogre_nail[5] end, function(self) fight.face(self); ogre_fire_grenade(self) end)
+ogre_nail[5] = animation.frame(f.shoot4, function() return ogre_nail[6] end, function(self) fight.face(self) end)
+ogre_nail[6] = animation.frame(f.shoot5, function() return ogre_nail[7] end, function(self) fight.face(self) end)
+ogre_nail[7] = animation.frame(f.shoot6, function() return ogre_run[1] end, function(self) fight.face(self) end)
 
-ogre_nail1 = animation.frame(f.shoot1, function() return ogre_nail2 end, function(self) fight.face(self) end)
-ogre_nail2 = animation.frame(f.shoot2, function() return ogre_nail3 end, function(self) fight.face(self) end)
-ogre_nail3 = animation.frame(f.shoot2, function() return ogre_nail4 end, function(self) fight.face(self) end)
-ogre_nail4 = animation.frame(f.shoot3, function() return ogre_nail5 end, function(self) fight.face(self); ogre_fire_grenade(self) end)
-ogre_nail5 = animation.frame(f.shoot4, function() return ogre_nail6 end, function(self) fight.face(self) end)
-ogre_nail6 = animation.frame(f.shoot5, function() return ogre_nail7 end, function(self) fight.face(self) end)
-ogre_nail7 = animation.frame(f.shoot6, function() return ogre_run1 end, function(self) fight.face(self) end)
+local ogre_pain = {}
+ogre_pain[1] = animation.frame(f.pain1, function() return ogre_pain[2] end)
+ogre_pain[2] = animation.frame(f.pain2, function() return ogre_pain[3] end)
+ogre_pain[3] = animation.frame(f.pain3, function() return ogre_pain[4] end)
+ogre_pain[4] = animation.frame(f.pain4, function() return ogre_pain[5] end)
+ogre_pain[5] = animation.frame(f.pain5, function() return ogre_run[1] end)
 
-local ogre_pain1, ogre_pain2, ogre_pain3, ogre_pain4, ogre_pain5
+local ogre_painb = {}
+ogre_painb[1] = animation.frame(f.painb1, function() return ogre_painb[2] end)
+ogre_painb[2] = animation.frame(f.painb2, function() return ogre_painb[3] end)
+ogre_painb[3] = animation.frame(f.painb3, function() return ogre_run[1] end)
 
-ogre_pain1 = animation.frame(f.pain1, function() return ogre_pain2 end)
-ogre_pain2 = animation.frame(f.pain2, function() return ogre_pain3 end)
-ogre_pain3 = animation.frame(f.pain3, function() return ogre_pain4 end)
-ogre_pain4 = animation.frame(f.pain4, function() return ogre_pain5 end)
-ogre_pain5 = animation.frame(f.pain5, function() return ogre_run1 end)
+local ogre_painc = {}
+ogre_painc[1] = animation.frame(f.painc1, function() return ogre_painc[2] end)
+ogre_painc[2] = animation.frame(f.painc2, function() return ogre_painc[3] end)
+ogre_painc[3] = animation.frame(f.painc3, function() return ogre_painc[4] end)
+ogre_painc[4] = animation.frame(f.painc4, function() return ogre_painc[5] end)
+ogre_painc[5] = animation.frame(f.painc5, function() return ogre_painc[6] end)
+ogre_painc[6] = animation.frame(f.painc6, function() return ogre_run[1] end)
 
-local ogre_painb1, ogre_painb2, ogre_painb3
+local ogre_paind = {}
+ogre_paind[1] = animation.frame(f.paind1, function() return ogre_paind[2] end)
+ogre_paind[2] = animation.frame(f.paind2, function() return ogre_paind[3] end, function(self) ai.pain(self, 10) end)
+ogre_paind[3] = animation.frame(f.paind3, function() return ogre_paind[4] end, function(self) ai.pain(self, 9) end)
+ogre_paind[4] = animation.frame(f.paind4, function() return ogre_paind[5] end, function(self) ai.pain(self, 4) end)
+ogre_paind[5] = animation.frame(f.paind5, function() return ogre_paind[6] end)
+ogre_paind[6] = animation.frame(f.paind6, function() return ogre_paind[7] end)
+ogre_paind[7] = animation.frame(f.paind7, function() return ogre_paind[8] end)
+ogre_paind[8] = animation.frame(f.paind8, function() return ogre_paind[9] end)
+ogre_paind[9] = animation.frame(f.paind9, function() return ogre_paind[10] end)
+ogre_paind[10] = animation.frame(f.paind10, function() return ogre_paind[11] end)
+ogre_paind[11] = animation.frame(f.paind11, function() return ogre_paind[12] end)
+ogre_paind[12] = animation.frame(f.paind12, function() return ogre_paind[13] end)
+ogre_paind[13] = animation.frame(f.paind13, function() return ogre_paind[14] end)
+ogre_paind[14] = animation.frame(f.paind14, function() return ogre_paind[15] end)
+ogre_paind[15] = animation.frame(f.paind15, function() return ogre_paind[16] end)
+ogre_paind[16] = animation.frame(f.paind16, function() return ogre_run[1] end)
 
-ogre_painb1 = animation.frame(f.painb1, function() return ogre_painb2 end)
-ogre_painb2 = animation.frame(f.painb2, function() return ogre_painb3 end)
-ogre_painb3 = animation.frame(f.painb3, function() return ogre_run1 end)
-
-local ogre_painc1, ogre_painc2, ogre_painc3, ogre_painc4, ogre_painc5, ogre_painc6
-
-ogre_painc1 = animation.frame(f.painc1, function() return ogre_painc2 end)
-ogre_painc2 = animation.frame(f.painc2, function() return ogre_painc3 end)
-ogre_painc3 = animation.frame(f.painc3, function() return ogre_painc4 end)
-ogre_painc4 = animation.frame(f.painc4, function() return ogre_painc5 end)
-ogre_painc5 = animation.frame(f.painc5, function() return ogre_painc6 end)
-ogre_painc6 = animation.frame(f.painc6, function() return ogre_run1 end)
-
-local ogre_paind1, ogre_paind2, ogre_paind3, ogre_paind4, ogre_paind5, ogre_paind6, ogre_paind7, ogre_paind8, ogre_paind9, ogre_paind10, ogre_paind11, ogre_paind12, ogre_paind13, ogre_paind14, ogre_paind15, ogre_paind16
-
-ogre_paind1 = animation.frame(f.paind1, function() return ogre_paind2 end)
-ogre_paind2 = animation.frame(f.paind2, function() return ogre_paind3 end, function(self) ai.pain(self, 10) end)
-ogre_paind3 = animation.frame(f.paind3, function() return ogre_paind4 end, function(self) ai.pain(self, 9) end)
-ogre_paind4 = animation.frame(f.paind4, function() return ogre_paind5 end, function(self) ai.pain(self, 4) end)
-ogre_paind5 = animation.frame(f.paind5, function() return ogre_paind6 end)
-ogre_paind6 = animation.frame(f.paind6, function() return ogre_paind7 end)
-ogre_paind7 = animation.frame(f.paind7, function() return ogre_paind8 end)
-ogre_paind8 = animation.frame(f.paind8, function() return ogre_paind9 end)
-ogre_paind9 = animation.frame(f.paind9, function() return ogre_paind10 end)
-ogre_paind10 = animation.frame(f.paind10, function() return ogre_paind11 end)
-ogre_paind11 = animation.frame(f.paind11, function() return ogre_paind12 end)
-ogre_paind12 = animation.frame(f.paind12, function() return ogre_paind13 end)
-ogre_paind13 = animation.frame(f.paind13, function() return ogre_paind14 end)
-ogre_paind14 = animation.frame(f.paind14, function() return ogre_paind15 end)
-ogre_paind15 = animation.frame(f.paind15, function() return ogre_paind16 end)
-ogre_paind16 = animation.frame(f.paind16, function() return ogre_run1 end)
-
-local ogre_paine1, ogre_paine2, ogre_paine3, ogre_paine4, ogre_paine5, ogre_paine6, ogre_paine7, ogre_paine8, ogre_paine9, ogre_paine10, ogre_paine11, ogre_paine12, ogre_paine13, ogre_paine14, ogre_paine15
-
-ogre_paine1 = animation.frame(f.paine1, function() return ogre_paine2 end)
-ogre_paine2 = animation.frame(f.paine2, function() return ogre_paine3 end, function(self) ai.pain(self, 10) end)
-ogre_paine3 = animation.frame(f.paine3, function() return ogre_paine4 end, function(self) ai.pain(self, 9) end)
-ogre_paine4 = animation.frame(f.paine4, function() return ogre_paine5 end, function(self) ai.pain(self, 4) end)
-ogre_paine5 = animation.frame(f.paine5, function() return ogre_paine6 end)
-ogre_paine6 = animation.frame(f.paine6, function() return ogre_paine7 end)
-ogre_paine7 = animation.frame(f.paine7, function() return ogre_paine8 end)
-ogre_paine8 = animation.frame(f.paine8, function() return ogre_paine9 end)
-ogre_paine9 = animation.frame(f.paine9, function() return ogre_paine10 end)
-ogre_paine10 = animation.frame(f.paine10, function() return ogre_paine11 end)
-ogre_paine11 = animation.frame(f.paine11, function() return ogre_paine12 end)
-ogre_paine12 = animation.frame(f.paine12, function() return ogre_paine13 end)
-ogre_paine13 = animation.frame(f.paine13, function() return ogre_paine14 end)
-ogre_paine14 = animation.frame(f.paine14, function() return ogre_paine15 end)
-ogre_paine15 = animation.frame(f.paine15, function() return ogre_run1 end)
+local ogre_paine = {}
+ogre_paine[1] = animation.frame(f.paine1, function() return ogre_paine[2] end)
+ogre_paine[2] = animation.frame(f.paine2, function() return ogre_paine[3] end, function(self) ai.pain(self, 10) end)
+ogre_paine[3] = animation.frame(f.paine3, function() return ogre_paine[4] end, function(self) ai.pain(self, 9) end)
+ogre_paine[4] = animation.frame(f.paine4, function() return ogre_paine[5] end, function(self) ai.pain(self, 4) end)
+ogre_paine[5] = animation.frame(f.paine5, function() return ogre_paine[6] end)
+ogre_paine[6] = animation.frame(f.paine6, function() return ogre_paine[7] end)
+ogre_paine[7] = animation.frame(f.paine7, function() return ogre_paine[8] end)
+ogre_paine[8] = animation.frame(f.paine8, function() return ogre_paine[9] end)
+ogre_paine[9] = animation.frame(f.paine9, function() return ogre_paine[10] end)
+ogre_paine[10] = animation.frame(f.paine10, function() return ogre_paine[11] end)
+ogre_paine[11] = animation.frame(f.paine11, function() return ogre_paine[12] end)
+ogre_paine[12] = animation.frame(f.paine12, function() return ogre_paine[13] end)
+ogre_paine[13] = animation.frame(f.paine13, function() return ogre_paine[14] end)
+ogre_paine[14] = animation.frame(f.paine14, function() return ogre_paine[15] end)
+ogre_paine[15] = animation.frame(f.paine15, function() return ogre_run[1] end)
 
 ---@param self entity
 ---@param _attacker entity
@@ -320,42 +309,40 @@ local function ogre_pain_callback(self, _attacker, _damage)
     if self.pain_finished > quake.time() then return end
     quake.sound(self, C.CHAN_VOICE, "ogre/ogpain1.wav", 1, C.ATTN_NORM)
     local r = quake.random()
-    if r < 0.25 then ogre_pain1(self); self.pain_finished = quake.time() + 1
-    elseif r < 0.5 then ogre_painb1(self); self.pain_finished = quake.time() + 1
-    elseif r < 0.75 then ogre_painc1(self); self.pain_finished = quake.time() + 1
-    elseif r < 0.88 then ogre_paind1(self); self.pain_finished = quake.time() + 2
-    else ogre_paine1(self); self.pain_finished = quake.time() + 2 end
+    if r < 0.25 then ogre_pain[1](self); self.pain_finished = quake.time() + 1
+    elseif r < 0.5 then ogre_painb[1](self); self.pain_finished = quake.time() + 1
+    elseif r < 0.75 then ogre_painc[1](self); self.pain_finished = quake.time() + 1
+    elseif r < 0.88 then ogre_paind[1](self); self.pain_finished = quake.time() + 2
+    else ogre_paine[1](self); self.pain_finished = quake.time() + 2 end
 end
 
-local ogre_die1, ogre_die2, ogre_die3, ogre_die4, ogre_die5, ogre_die6, ogre_die7, ogre_die8, ogre_die9, ogre_die10, ogre_die11, ogre_die12, ogre_die13, ogre_die14
+local ogre_die = {}
+ogre_die[1] = animation.frame(f.death1, function() return ogre_die[2] end)
+ogre_die[2] = animation.frame(f.death2, function() return ogre_die[3] end)
+ogre_die[3] = animation.frame(f.death3, function() return ogre_die[4] end, function(self) self.solid = C.SOLID_NOT; self.ammo_rockets = 2; items.drop_backpack(self) end)
+ogre_die[4] = animation.frame(f.death4, function() return ogre_die[5] end)
+ogre_die[5] = animation.frame(f.death5, function() return ogre_die[6] end)
+ogre_die[6] = animation.frame(f.death6, function() return ogre_die[7] end)
+ogre_die[7] = animation.frame(f.death7, function() return ogre_die[8] end)
+ogre_die[8] = animation.frame(f.death8, function() return ogre_die[9] end)
+ogre_die[9] = animation.frame(f.death9, function() return ogre_die[10] end)
+ogre_die[10] = animation.frame(f.death10, function() return ogre_die[11] end)
+ogre_die[11] = animation.frame(f.death11, function() return ogre_die[12] end)
+ogre_die[12] = animation.frame(f.death12, function() return ogre_die[13] end)
+ogre_die[13] = animation.frame(f.death13, function() return ogre_die[14] end)
+ogre_die[14] = animation.frame(f.death14, function() return ogre_die[14] end)
 
-ogre_die1 = animation.frame(f.death1, function() return ogre_die2 end)
-ogre_die2 = animation.frame(f.death2, function() return ogre_die3 end)
-ogre_die3 = animation.frame(f.death3, function() return ogre_die4 end, function(self) self.solid = C.SOLID_NOT; self.ammo_rockets = 2; items.drop_backpack(self) end)
-ogre_die4 = animation.frame(f.death4, function() return ogre_die5 end)
-ogre_die5 = animation.frame(f.death5, function() return ogre_die6 end)
-ogre_die6 = animation.frame(f.death6, function() return ogre_die7 end)
-ogre_die7 = animation.frame(f.death7, function() return ogre_die8 end)
-ogre_die8 = animation.frame(f.death8, function() return ogre_die9 end)
-ogre_die9 = animation.frame(f.death9, function() return ogre_die10 end)
-ogre_die10 = animation.frame(f.death10, function() return ogre_die11 end)
-ogre_die11 = animation.frame(f.death11, function() return ogre_die12 end)
-ogre_die12 = animation.frame(f.death12, function() return ogre_die13 end)
-ogre_die13 = animation.frame(f.death13, function() return ogre_die14 end)
-ogre_die14 = animation.frame(f.death14, function() return ogre_die14 end)
-
-local ogre_bdie1, ogre_bdie2, ogre_bdie3, ogre_bdie4, ogre_bdie5, ogre_bdie6, ogre_bdie7, ogre_bdie8, ogre_bdie9, ogre_bdie10
-
-ogre_bdie1 = animation.frame(f.bdeath1, function() return ogre_bdie2 end)
-ogre_bdie2 = animation.frame(f.bdeath2, function() return ogre_bdie3 end, function(self) ai.forward(self, 5) end)
-ogre_bdie3 = animation.frame(f.bdeath3, function() return ogre_bdie4 end, function(self) self.solid = C.SOLID_NOT; self.ammo_rockets = 2; items.drop_backpack(self) end)
-ogre_bdie4 = animation.frame(f.bdeath4, function() return ogre_bdie5 end, function(self) ai.forward(self, 1) end)
-ogre_bdie5 = animation.frame(f.bdeath5, function() return ogre_bdie6 end, function(self) ai.forward(self, 3) end)
-ogre_bdie6 = animation.frame(f.bdeath6, function() return ogre_bdie7 end, function(self) ai.forward(self, 7) end)
-ogre_bdie7 = animation.frame(f.bdeath7, function() return ogre_bdie8 end, function(self) ai.forward(self, 25) end)
-ogre_bdie8 = animation.frame(f.bdeath8, function() return ogre_bdie9 end)
-ogre_bdie9 = animation.frame(f.bdeath9, function() return ogre_bdie10 end)
-ogre_bdie10 = animation.frame(f.bdeath10, function() return ogre_bdie10 end)
+local ogre_bdie = {}
+ogre_bdie[1] = animation.frame(f.bdeath1, function() return ogre_bdie[2] end)
+ogre_bdie[2] = animation.frame(f.bdeath2, function() return ogre_bdie[3] end, function(self) ai.forward(self, 5) end)
+ogre_bdie[3] = animation.frame(f.bdeath3, function() return ogre_bdie[4] end, function(self) self.solid = C.SOLID_NOT; self.ammo_rockets = 2; items.drop_backpack(self) end)
+ogre_bdie[4] = animation.frame(f.bdeath4, function() return ogre_bdie[5] end, function(self) ai.forward(self, 1) end)
+ogre_bdie[5] = animation.frame(f.bdeath5, function() return ogre_bdie[6] end, function(self) ai.forward(self, 3) end)
+ogre_bdie[6] = animation.frame(f.bdeath6, function() return ogre_bdie[7] end, function(self) ai.forward(self, 7) end)
+ogre_bdie[7] = animation.frame(f.bdeath7, function() return ogre_bdie[8] end, function(self) ai.forward(self, 25) end)
+ogre_bdie[8] = animation.frame(f.bdeath8, function() return ogre_bdie[9] end)
+ogre_bdie[9] = animation.frame(f.bdeath9, function() return ogre_bdie[10] end)
+ogre_bdie[10] = animation.frame(f.bdeath10, function() return ogre_bdie[10] end)
 
 ---@param self entity
 ---@return nil
@@ -370,13 +357,13 @@ local function ogre_die_callback(self)
         return
     end
     quake.sound(self, C.CHAN_VOICE, "ogre/ogdth.wav", 1, C.ATTN_NORM)
-    if quake.random() < 0.5 then ogre_die1(self) else ogre_bdie1(self) end
+    if quake.random() < 0.5 then ogre_die[1](self) else ogre_bdie[1](self) end
 end
 
 ---@param self entity
 ---@return nil
 local function ogre_melee(self)
-    if quake.random() > 0.5 then ogre_smash1(self) else ogre_swing1(self) end
+    if quake.random() > 0.5 then ogre_smash[1](self) else ogre_swing[1](self) end
 end
 
 ---QUAKED monster_ogre (1 0 0) (-32 -32 -24) (32 32 64) Ambush
@@ -399,12 +386,12 @@ function M.spawn(self)
     quake.set_model(self, "progs/ogre.mdl")
     quake.set_size(self, C.VEC_HULL2_MIN, C.VEC_HULL2_MAX)
     self.health = 200
-    self.th_stand = ogre_stand1
-    self.th_walk = ogre_walk1
-    self.th_run = ogre_run1
+    self.th_stand = ogre_stand[1]
+    self.th_walk = ogre_walk[1]
+    self.th_run = ogre_run[1]
     self.th_die = ogre_die_callback
     self.th_melee = ogre_melee
-    self.th_missile = ogre_nail1
+    self.th_missile = ogre_nail[1]
     self.th_pain = ogre_pain_callback
     monsters.walk_start(self)
 end

@@ -85,14 +85,14 @@ f.axattb1, f.axattb2, f.axattb3, f.axattb4, f.axattb5, f.axattb6 = count(6)
 f.axattc1, f.axattc2, f.axattc3, f.axattc4, f.axattc5, f.axattc6 = count(6)
 f.axattd1, f.axattd2, f.axattd3, f.axattd4, f.axattd5, f.axattd6 = count(6)
 
-local player_run
+local player_run1
 local player_stand1
 
 player_stand1 = animation.frame(f.axstnd1, function() return player_stand1 end, function(self)
     self.weaponframe = 0
     if self.velocity.x ~= 0 or self.velocity.y ~= 0 then
         self.walkframe = 0
-        player_run(self)
+        player_run1(self)
         return
     end
     if self.weapon == IT_AXE then
@@ -105,7 +105,7 @@ player_stand1 = animation.frame(f.axstnd1, function() return player_stand1 end, 
     self.walkframe = self.walkframe + 1
 end)
 
-player_run = animation.frame(f.rockrun1, function() return player_run end, function(self)
+player_run1 = animation.frame(f.rockrun1, function() return player_run1 end, function(self)
     self.weaponframe = 0
     if self.velocity.x == 0 and self.velocity.y == 0 then
         self.walkframe = 0
@@ -122,76 +122,76 @@ player_run = animation.frame(f.rockrun1, function() return player_run end, funct
     self.walkframe = self.walkframe + 1
 end)
 
-local player_shot1, player_shot2, player_shot3, player_shot4, player_shot5, player_shot6
-player_shot1 = animation.frame(f.shotatt1, function() return player_shot2 end, function(self) self.weaponframe = 1; self.effects = self.effects | EF_MUZZLEFLASH end)
-player_shot2 = animation.frame(f.shotatt2, function() return player_shot3 end, function(self) self.weaponframe = 2 end)
-player_shot3 = animation.frame(f.shotatt3, function() return player_shot4 end, function(self) self.weaponframe = 3 end)
-player_shot4 = animation.frame(f.shotatt4, function() return player_shot5 end, function(self) self.weaponframe = 4 end)
-player_shot5 = animation.frame(f.shotatt5, function() return player_shot6 end, function(self) self.weaponframe = 5 end)
-player_shot6 = animation.frame(f.shotatt6, function() return player_run end, function(self) self.weaponframe = 6 end)
+local player_shot = {}
+player_shot[1] = animation.frame(f.shotatt1, function() return player_shot[2] end, function(self) self.weaponframe = 1; self.effects = self.effects | EF_MUZZLEFLASH end)
+player_shot[2] = animation.frame(f.shotatt2, function() return player_shot[3] end, function(self) self.weaponframe = 2 end)
+player_shot[3] = animation.frame(f.shotatt3, function() return player_shot[4] end, function(self) self.weaponframe = 3 end)
+player_shot[4] = animation.frame(f.shotatt4, function() return player_shot[5] end, function(self) self.weaponframe = 4 end)
+player_shot[5] = animation.frame(f.shotatt5, function() return player_shot[6] end, function(self) self.weaponframe = 5 end)
+player_shot[6] = animation.frame(f.shotatt6, function() return player_run1 end, function(self) self.weaponframe = 6 end)
 
-local player_axe1, player_axe2, player_axe3, player_axe4
-player_axe1 = animation.frame(f.axatt1, function() return player_axe2 end, function(self) self.weaponframe = 1 end)
-player_axe2 = animation.frame(f.axatt2, function() return player_axe3 end, function(self) self.weaponframe = 2 end)
-player_axe3 = animation.frame(f.axatt3, function() return player_axe4 end, function(self)
+local player_axe = {}
+player_axe[1] = animation.frame(f.axatt1, function() return player_axe[2] end, function(self) self.weaponframe = 1 end)
+player_axe[2] = animation.frame(f.axatt2, function() return player_axe[3] end, function(self) self.weaponframe = 2 end)
+player_axe[3] = animation.frame(f.axatt3, function() return player_axe[4] end, function(self)
     local weapons = require("game.weapons")
 
     self.weaponframe = 3
     weapons.fire_axe(self)
 end)
-player_axe4 = animation.frame(f.axatt4, function() return player_run end, function(self) self.weaponframe = 4 end)
+player_axe[4] = animation.frame(f.axatt4, function() return player_run1 end, function(self) self.weaponframe = 4 end)
 
-local player_axeb1, player_axeb2, player_axeb3, player_axeb4
-player_axeb1 = animation.frame(f.axattb1, function() return player_axeb2 end, function(self) self.weaponframe = 5 end)
-player_axeb2 = animation.frame(f.axattb2, function() return player_axeb3 end, function(self) self.weaponframe = 6 end)
-player_axeb3 = animation.frame(f.axattb3, function() return player_axeb4 end, function(self)
+local player_axeb = {}
+player_axeb[1] = animation.frame(f.axattb1, function() return player_axeb[2] end, function(self) self.weaponframe = 5 end)
+player_axeb[2] = animation.frame(f.axattb2, function() return player_axeb[3] end, function(self) self.weaponframe = 6 end)
+player_axeb[3] = animation.frame(f.axattb3, function() return player_axeb[4] end, function(self)
     local weapons = require("game.weapons")
 
     self.weaponframe = 7
     weapons.fire_axe(self)
 end)
-player_axeb4 = animation.frame(f.axattb4, function() return player_run end, function(self) self.weaponframe = 8 end)
+player_axeb[4] = animation.frame(f.axattb4, function() return player_run1 end, function(self) self.weaponframe = 8 end)
 
-local player_axec1, player_axec2, player_axec3, player_axec4
-player_axec1 = animation.frame(f.axattc1, function() return player_axec2 end, function(self) self.weaponframe = 1 end)
-player_axec2 = animation.frame(f.axattc2, function() return player_axec3 end, function(self) self.weaponframe = 2 end)
-player_axec3 = animation.frame(f.axattc3, function() return player_axec4 end, function(self)
+local player_axec = {}
+player_axec[1] = animation.frame(f.axattc1, function() return player_axec[2] end, function(self) self.weaponframe = 1 end)
+player_axec[2] = animation.frame(f.axattc2, function() return player_axec[3] end, function(self) self.weaponframe = 2 end)
+player_axec[3] = animation.frame(f.axattc3, function() return player_axec[4] end, function(self)
     local weapons = require("game.weapons")
 
     self.weaponframe = 3
     weapons.fire_axe(self)
 end)
-player_axec4 = animation.frame(f.axattc4, function() return player_run end, function(self) self.weaponframe = 4 end)
+player_axec[4] = animation.frame(f.axattc4, function() return player_run1 end, function(self) self.weaponframe = 4 end)
 
-local player_axed1, player_axed2, player_axed3, player_axed4
-player_axed1 = animation.frame(f.axattd1, function() return player_axed2 end, function(self) self.weaponframe = 5 end)
-player_axed2 = animation.frame(f.axattd2, function() return player_axed3 end, function(self) self.weaponframe = 6 end)
-player_axed3 = animation.frame(f.axattd3, function() return player_axed4 end, function(self)
+local player_axed = {}
+player_axed[1] = animation.frame(f.axattd1, function() return player_axed[2] end, function(self) self.weaponframe = 5 end)
+player_axed[2] = animation.frame(f.axattd2, function() return player_axed[3] end, function(self) self.weaponframe = 6 end)
+player_axed[3] = animation.frame(f.axattd3, function() return player_axed[4] end, function(self)
     local weapons = require("game.weapons")
 
     self.weaponframe = 7
     weapons.fire_axe(self)
 end)
-player_axed4 = animation.frame(f.axattd4, function() return player_run end, function(self) self.weaponframe = 8 end)
+player_axed[4] = animation.frame(f.axattd4, function() return player_run1 end, function(self) self.weaponframe = 8 end)
 
 --============================================================================
-local player_nail1, player_nail2
-player_nail1 = animation.frame(f.nailatt1, function() return player_nail2 end, function(self)
+local player_nail = {}
+player_nail[1] = animation.frame(f.nailatt1, function() return player_nail[2] end, function(self)
     local weapons = require("game.weapons")
 
     self.effects = self.effects | EF_MUZZLEFLASH
-    if self.button0 == 0 then player_run(self); return end
+    if self.button0 == 0 then player_run1(self); return end
     self.weaponframe = self.weaponframe + 1
     if self.weaponframe == 9 then self.weaponframe = 1 end
     weapons.super_damage_sound(self)
     weapons.fire_spikes(self, 4)
     self.attack_finished = quake.time() + 0.2
 end)
-player_nail2 = animation.frame(f.nailatt2, function() return player_nail1 end, function(self)
+player_nail[2] = animation.frame(f.nailatt2, function() return player_nail[1] end, function(self)
     local weapons = require("game.weapons")
 
     self.effects = self.effects | EF_MUZZLEFLASH
-    if self.button0 == 0 then player_run(self); return end
+    if self.button0 == 0 then player_run1(self); return end
     self.weaponframe = self.weaponframe + 1
     if self.weaponframe == 9 then self.weaponframe = 1 end
     weapons.super_damage_sound(self)
@@ -200,23 +200,23 @@ player_nail2 = animation.frame(f.nailatt2, function() return player_nail1 end, f
 end)
 
 --============================================================================
-local player_light1, player_light2
-player_light1 = animation.frame(f.light1, function() return player_light2 end, function(self)
+local player_light = {}
+player_light[1] = animation.frame(f.light1, function() return player_light[2] end, function(self)
     local weapons = require("game.weapons")
 
     self.effects = self.effects | EF_MUZZLEFLASH
-    if self.button0 == 0 then player_run(self); return end
+    if self.button0 == 0 then player_run1(self); return end
     self.weaponframe = self.weaponframe + 1
     if self.weaponframe == 5 then self.weaponframe = 1 end
     weapons.super_damage_sound(self)
     weapons.fire_lightning(self)
     self.attack_finished = quake.time() + 0.2
 end)
-player_light2 = animation.frame(f.light2, function() return player_light1 end, function(self)
+player_light[2] = animation.frame(f.light2, function() return player_light[1] end, function(self)
     local weapons = require("game.weapons")
 
     self.effects = self.effects | EF_MUZZLEFLASH
-    if self.button0 == 0 then player_run(self); return end
+    if self.button0 == 0 then player_run1(self); return end
     self.weaponframe = self.weaponframe + 1
     if self.weaponframe == 5 then self.weaponframe = 1 end
     weapons.super_damage_sound(self)
@@ -225,13 +225,13 @@ player_light2 = animation.frame(f.light2, function() return player_light1 end, f
 end)
 
 --============================================================================
-local player_rocket1, player_rocket2, player_rocket3, player_rocket4, player_rocket5, player_rocket6
-player_rocket1 = animation.frame(f.rockatt1, function() return player_rocket2 end, function(self) self.weaponframe = 1; self.effects = self.effects | EF_MUZZLEFLASH end)
-player_rocket2 = animation.frame(f.rockatt2, function() return player_rocket3 end, function(self) self.weaponframe = 2 end)
-player_rocket3 = animation.frame(f.rockatt3, function() return player_rocket4 end, function(self) self.weaponframe = 3 end)
-player_rocket4 = animation.frame(f.rockatt4, function() return player_rocket5 end, function(self) self.weaponframe = 4 end)
-player_rocket5 = animation.frame(f.rockatt5, function() return player_rocket6 end, function(self) self.weaponframe = 5 end)
-player_rocket6 = animation.frame(f.rockatt6, function() return player_run end, function(self) self.weaponframe = 6 end)
+local player_rocket = {}
+player_rocket[1] = animation.frame(f.rockatt1, function() return player_rocket[2] end, function(self) self.weaponframe = 1; self.effects = self.effects | EF_MUZZLEFLASH end)
+player_rocket[2] = animation.frame(f.rockatt2, function() return player_rocket[3] end, function(self) self.weaponframe = 2 end)
+player_rocket[3] = animation.frame(f.rockatt3, function() return player_rocket[4] end, function(self) self.weaponframe = 3 end)
+player_rocket[4] = animation.frame(f.rockatt4, function() return player_rocket[5] end, function(self) self.weaponframe = 4 end)
+player_rocket[5] = animation.frame(f.rockatt5, function() return player_rocket[6] end, function(self) self.weaponframe = 5 end)
+player_rocket[6] = animation.frame(f.rockatt6, function() return player_run1 end, function(self) self.weaponframe = 6 end)
 
 local death_bubbles
 ---@param self entity
@@ -275,21 +275,21 @@ local function pain_sound(self)
     quake.sound(self, CHAN_VOICE, self.noise, 1, ATTN_NORM)
 end
 
-local player_pain1, player_pain2, player_pain3, player_pain4, player_pain5, player_pain6
-player_pain1 = animation.frame(f.pain1, function() return player_pain2 end, function(self) pain_sound(self); self.weaponframe = 0 end)
-player_pain2 = animation.frame(f.pain2, function() return player_pain3 end)
-player_pain3 = animation.frame(f.pain3, function() return player_pain4 end)
-player_pain4 = animation.frame(f.pain4, function() return player_pain5 end)
-player_pain5 = animation.frame(f.pain5, function() return player_pain6 end)
-player_pain6 = animation.frame(f.pain6, function() return player_run end)
+local player_pain = {}
+player_pain[1] = animation.frame(f.pain1, function() return player_pain[2] end, function(self) pain_sound(self); self.weaponframe = 0 end)
+player_pain[2] = animation.frame(f.pain2, function() return player_pain[3] end)
+player_pain[3] = animation.frame(f.pain3, function() return player_pain[4] end)
+player_pain[4] = animation.frame(f.pain4, function() return player_pain[5] end)
+player_pain[5] = animation.frame(f.pain5, function() return player_pain[6] end)
+player_pain[6] = animation.frame(f.pain6, function() return player_run1 end)
 
-local player_axpain1, player_axpain2, player_axpain3, player_axpain4, player_axpain5, player_axpain6
-player_axpain1 = animation.frame(f.axpain1, function() return player_axpain2 end, function(self) pain_sound(self); self.weaponframe = 0 end)
-player_axpain2 = animation.frame(f.axpain2, function() return player_axpain3 end)
-player_axpain3 = animation.frame(f.axpain3, function() return player_axpain4 end)
-player_axpain4 = animation.frame(f.axpain4, function() return player_axpain5 end)
-player_axpain5 = animation.frame(f.axpain5, function() return player_axpain6 end)
-player_axpain6 = animation.frame(f.axpain6, function() return player_run end)
+local player_axpain = {}
+player_axpain[1] = animation.frame(f.axpain1, function() return player_axpain[2] end, function(self) pain_sound(self); self.weaponframe = 0 end)
+player_axpain[2] = animation.frame(f.axpain2, function() return player_axpain[3] end)
+player_axpain[3] = animation.frame(f.axpain3, function() return player_axpain[4] end)
+player_axpain[4] = animation.frame(f.axpain4, function() return player_axpain[5] end)
+player_axpain[5] = animation.frame(f.axpain5, function() return player_axpain[6] end)
+player_axpain[6] = animation.frame(f.axpain6, function() return player_run1 end)
 
 ---@param self entity
 ---@param _attacker entity
@@ -298,10 +298,15 @@ player_axpain6 = animation.frame(f.axpain6, function() return player_run end)
 function M.player_pain(self, _attacker, _damage)
     if self.weaponframe ~= 0 then return end
     if self.invisible_finished > quake.time() then return end -- eyes don't have pain frames
-    if self.weapon == IT_AXE then player_axpain1(self) else player_pain1(self) end
+    if self.weapon == IT_AXE then player_axpain[1](self) else player_pain[1](self) end
 end
 
-local player_diea1, player_diea2, player_diea3, player_diea4, player_diea5, player_diea6, player_diea7, player_diea8, player_diea9, player_diea10, player_diea11, player_dieb1, player_dieb2, player_dieb3, player_dieb4, player_dieb5, player_dieb6, player_dieb7, player_dieb8, player_dieb9, player_diec1, player_diec2, player_diec3, player_diec4, player_diec5, player_diec6, player_diec7, player_diec8, player_diec9, player_diec10, player_diec11, player_diec12, player_diec13, player_diec14, player_diec15, player_died1, player_died2, player_died3, player_died4, player_died5, player_died6, player_died7, player_died8, player_died9, player_diee1, player_diee2, player_diee3, player_diee4, player_diee5, player_diee6, player_diee7, player_diee8, player_diee9, player_die_ax1, player_die_ax2, player_die_ax3, player_die_ax4, player_die_ax5, player_die_ax6, player_die_ax7, player_die_ax8, player_die_ax9
+local player_diea = {}
+local player_dieb = {}
+local player_diec = {}
+local player_died = {}
+local player_diee = {}
+local player_die_ax = {}
 
 ---@param self entity
 ---@return nil
@@ -460,14 +465,14 @@ function M.player_die(self)
     if self.health < -40 then gib_player(self); return end
     death_sound(self)
     self.angles = quake.vec3(0, self.angles.y, 0)
-    if self.weapon == IT_AXE then player_die_ax1(self); return end
+    if self.weapon == IT_AXE then player_die_ax[1](self); return end
     local i = quake.cvar("temp1")
     if i == 0 then i = 1 + math.floor(quake.random() * 6) end
-    if i == 1 then player_diea1(self)
-    elseif i == 2 then player_dieb1(self)
-    elseif i == 3 then player_diec1(self)
-    elseif i == 4 then player_died1(self)
-    else player_diee1(self) end
+    if i == 1 then player_diea[1](self)
+    elseif i == 2 then player_dieb[1](self)
+    elseif i == 3 then player_diec[1](self)
+    elseif i == 4 then player_died[1](self)
+    else player_diee[1](self) end
 end
 
 ---@param self entity
@@ -482,83 +487,83 @@ function M.set_suicide_frame(self)
     self.nextthink = -1
 end
 
-player_diea1 = animation.frame(f.deatha1, function() return player_diea2 end)
-player_diea2 = animation.frame(f.deatha2, function() return player_diea3 end)
-player_diea3 = animation.frame(f.deatha3, function() return player_diea4 end)
-player_diea4 = animation.frame(f.deatha4, function() return player_diea5 end)
-player_diea5 = animation.frame(f.deatha5, function() return player_diea6 end)
-player_diea6 = animation.frame(f.deatha6, function() return player_diea7 end)
-player_diea7 = animation.frame(f.deatha7, function() return player_diea8 end)
-player_diea8 = animation.frame(f.deatha8, function() return player_diea9 end)
-player_diea9 = animation.frame(f.deatha9, function() return player_diea10 end)
-player_diea10 = animation.frame(f.deatha10, function() return player_diea11 end)
-player_diea11 = animation.frame(f.deatha11, function() return player_diea11 end, player_dead)
+player_diea[1] = animation.frame(f.deatha1, function() return player_diea[2] end)
+player_diea[2] = animation.frame(f.deatha2, function() return player_diea[3] end)
+player_diea[3] = animation.frame(f.deatha3, function() return player_diea[4] end)
+player_diea[4] = animation.frame(f.deatha4, function() return player_diea[5] end)
+player_diea[5] = animation.frame(f.deatha5, function() return player_diea[6] end)
+player_diea[6] = animation.frame(f.deatha6, function() return player_diea[7] end)
+player_diea[7] = animation.frame(f.deatha7, function() return player_diea[8] end)
+player_diea[8] = animation.frame(f.deatha8, function() return player_diea[9] end)
+player_diea[9] = animation.frame(f.deatha9, function() return player_diea[10] end)
+player_diea[10] = animation.frame(f.deatha10, function() return player_diea[11] end)
+player_diea[11] = animation.frame(f.deatha11, function() return player_diea[11] end, player_dead)
 
-player_dieb1 = animation.frame(f.deathb1, function() return player_dieb2 end)
-player_dieb2 = animation.frame(f.deathb2, function() return player_dieb3 end)
-player_dieb3 = animation.frame(f.deathb3, function() return player_dieb4 end)
-player_dieb4 = animation.frame(f.deathb4, function() return player_dieb5 end)
-player_dieb5 = animation.frame(f.deathb5, function() return player_dieb6 end)
-player_dieb6 = animation.frame(f.deathb6, function() return player_dieb7 end)
-player_dieb7 = animation.frame(f.deathb7, function() return player_dieb8 end)
-player_dieb8 = animation.frame(f.deathb8, function() return player_dieb9 end)
-player_dieb9 = animation.frame(f.deathb9, function() return player_dieb9 end, player_dead)
+player_dieb[1] = animation.frame(f.deathb1, function() return player_dieb[2] end)
+player_dieb[2] = animation.frame(f.deathb2, function() return player_dieb[3] end)
+player_dieb[3] = animation.frame(f.deathb3, function() return player_dieb[4] end)
+player_dieb[4] = animation.frame(f.deathb4, function() return player_dieb[5] end)
+player_dieb[5] = animation.frame(f.deathb5, function() return player_dieb[6] end)
+player_dieb[6] = animation.frame(f.deathb6, function() return player_dieb[7] end)
+player_dieb[7] = animation.frame(f.deathb7, function() return player_dieb[8] end)
+player_dieb[8] = animation.frame(f.deathb8, function() return player_dieb[9] end)
+player_dieb[9] = animation.frame(f.deathb9, function() return player_dieb[9] end, player_dead)
 
-player_diec1 = animation.frame(f.deathc1, function() return player_diec2 end)
-player_diec2 = animation.frame(f.deathc2, function() return player_diec3 end)
-player_diec3 = animation.frame(f.deathc3, function() return player_diec4 end)
-player_diec4 = animation.frame(f.deathc4, function() return player_diec5 end)
-player_diec5 = animation.frame(f.deathc5, function() return player_diec6 end)
-player_diec6 = animation.frame(f.deathc6, function() return player_diec7 end)
-player_diec7 = animation.frame(f.deathc7, function() return player_diec8 end)
-player_diec8 = animation.frame(f.deathc8, function() return player_diec9 end)
-player_diec9 = animation.frame(f.deathc9, function() return player_diec10 end)
-player_diec10 = animation.frame(f.deathc10, function() return player_diec11 end)
-player_diec11 = animation.frame(f.deathc11, function() return player_diec12 end)
-player_diec12 = animation.frame(f.deathc12, function() return player_diec13 end)
-player_diec13 = animation.frame(f.deathc13, function() return player_diec14 end)
-player_diec14 = animation.frame(f.deathc14, function() return player_diec15 end)
-player_diec15 = animation.frame(f.deathc15, function() return player_diec15 end, player_dead)
+player_diec[1] = animation.frame(f.deathc1, function() return player_diec[2] end)
+player_diec[2] = animation.frame(f.deathc2, function() return player_diec[3] end)
+player_diec[3] = animation.frame(f.deathc3, function() return player_diec[4] end)
+player_diec[4] = animation.frame(f.deathc4, function() return player_diec[5] end)
+player_diec[5] = animation.frame(f.deathc5, function() return player_diec[6] end)
+player_diec[6] = animation.frame(f.deathc6, function() return player_diec[7] end)
+player_diec[7] = animation.frame(f.deathc7, function() return player_diec[8] end)
+player_diec[8] = animation.frame(f.deathc8, function() return player_diec[9] end)
+player_diec[9] = animation.frame(f.deathc9, function() return player_diec[10] end)
+player_diec[10] = animation.frame(f.deathc10, function() return player_diec[11] end)
+player_diec[11] = animation.frame(f.deathc11, function() return player_diec[12] end)
+player_diec[12] = animation.frame(f.deathc12, function() return player_diec[13] end)
+player_diec[13] = animation.frame(f.deathc13, function() return player_diec[14] end)
+player_diec[14] = animation.frame(f.deathc14, function() return player_diec[15] end)
+player_diec[15] = animation.frame(f.deathc15, function() return player_diec[15] end, player_dead)
 
-player_died1 = animation.frame(f.deathd1, function() return player_died2 end)
-player_died2 = animation.frame(f.deathd2, function() return player_died3 end)
-player_died3 = animation.frame(f.deathd3, function() return player_died4 end)
-player_died4 = animation.frame(f.deathd4, function() return player_died5 end)
-player_died5 = animation.frame(f.deathd5, function() return player_died6 end)
-player_died6 = animation.frame(f.deathd6, function() return player_died7 end)
-player_died7 = animation.frame(f.deathd7, function() return player_died8 end)
-player_died8 = animation.frame(f.deathd8, function() return player_died9 end)
-player_died9 = animation.frame(f.deathd9, function() return player_died9 end, player_dead)
+player_died[1] = animation.frame(f.deathd1, function() return player_died[2] end)
+player_died[2] = animation.frame(f.deathd2, function() return player_died[3] end)
+player_died[3] = animation.frame(f.deathd3, function() return player_died[4] end)
+player_died[4] = animation.frame(f.deathd4, function() return player_died[5] end)
+player_died[5] = animation.frame(f.deathd5, function() return player_died[6] end)
+player_died[6] = animation.frame(f.deathd6, function() return player_died[7] end)
+player_died[7] = animation.frame(f.deathd7, function() return player_died[8] end)
+player_died[8] = animation.frame(f.deathd8, function() return player_died[9] end)
+player_died[9] = animation.frame(f.deathd9, function() return player_died[9] end, player_dead)
 
-player_diee1 = animation.frame(f.deathe1, function() return player_diee2 end)
-player_diee2 = animation.frame(f.deathe2, function() return player_diee3 end)
-player_diee3 = animation.frame(f.deathe3, function() return player_diee4 end)
-player_diee4 = animation.frame(f.deathe4, function() return player_diee5 end)
-player_diee5 = animation.frame(f.deathe5, function() return player_diee6 end)
-player_diee6 = animation.frame(f.deathe6, function() return player_diee7 end)
-player_diee7 = animation.frame(f.deathe7, function() return player_diee8 end)
-player_diee8 = animation.frame(f.deathe8, function() return player_diee9 end)
-player_diee9 = animation.frame(f.deathe9, function() return player_diee9 end, player_dead)
+player_diee[1] = animation.frame(f.deathe1, function() return player_diee[2] end)
+player_diee[2] = animation.frame(f.deathe2, function() return player_diee[3] end)
+player_diee[3] = animation.frame(f.deathe3, function() return player_diee[4] end)
+player_diee[4] = animation.frame(f.deathe4, function() return player_diee[5] end)
+player_diee[5] = animation.frame(f.deathe5, function() return player_diee[6] end)
+player_diee[6] = animation.frame(f.deathe6, function() return player_diee[7] end)
+player_diee[7] = animation.frame(f.deathe7, function() return player_diee[8] end)
+player_diee[8] = animation.frame(f.deathe8, function() return player_diee[9] end)
+player_diee[9] = animation.frame(f.deathe9, function() return player_diee[9] end, player_dead)
 
-player_die_ax1 = animation.frame(f.axdeth1, function() return player_die_ax2 end)
-player_die_ax2 = animation.frame(f.axdeth2, function() return player_die_ax3 end)
-player_die_ax3 = animation.frame(f.axdeth3, function() return player_die_ax4 end)
-player_die_ax4 = animation.frame(f.axdeth4, function() return player_die_ax5 end)
-player_die_ax5 = animation.frame(f.axdeth5, function() return player_die_ax6 end)
-player_die_ax6 = animation.frame(f.axdeth6, function() return player_die_ax7 end)
-player_die_ax7 = animation.frame(f.axdeth7, function() return player_die_ax8 end)
-player_die_ax8 = animation.frame(f.axdeth8, function() return player_die_ax9 end)
-player_die_ax9 = animation.frame(f.axdeth9, function() return player_die_ax9 end, player_dead)
+player_die_ax[1] = animation.frame(f.axdeth1, function() return player_die_ax[2] end)
+player_die_ax[2] = animation.frame(f.axdeth2, function() return player_die_ax[3] end)
+player_die_ax[3] = animation.frame(f.axdeth3, function() return player_die_ax[4] end)
+player_die_ax[4] = animation.frame(f.axdeth4, function() return player_die_ax[5] end)
+player_die_ax[5] = animation.frame(f.axdeth5, function() return player_die_ax[6] end)
+player_die_ax[6] = animation.frame(f.axdeth6, function() return player_die_ax[7] end)
+player_die_ax[7] = animation.frame(f.axdeth7, function() return player_die_ax[8] end)
+player_die_ax[8] = animation.frame(f.axdeth8, function() return player_die_ax[9] end)
+player_die_ax[9] = animation.frame(f.axdeth9, function() return player_die_ax[9] end, player_dead)
 
 M.player_stand1 = player_stand1
-M.player_run = player_run
-M.player_shot1 = player_shot1
-M.player_axe1 = player_axe1
-M.player_axeb1 = player_axeb1
-M.player_axec1 = player_axec1
-M.player_axed1 = player_axed1
-M.player_nail1 = player_nail1
-M.player_light1 = player_light1
-M.player_rocket1 = player_rocket1
+M.player_run = player_run1
+M.player_shot1 = player_shot[1]
+M.player_axe1 = player_axe[1]
+M.player_axeb1 = player_axeb[1]
+M.player_axec1 = player_axec[1]
+M.player_axed1 = player_axed[1]
+M.player_nail1 = player_nail[1]
+M.player_light1 = player_light[1]
+M.player_rocket1 = player_rocket[1]
 
 return M
