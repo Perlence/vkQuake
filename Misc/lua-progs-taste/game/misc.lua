@@ -453,6 +453,8 @@ bubble_bob = function(self)
     self.think = bubble_bob
 end
 
+M.bubble_bob = bubble_bob
+
 ---QUAKED viewthing (0 .5 .8) (-8 -8 -8) (8 8 8)
 ---Just for the debugging level. Don't use
 ---@param self entity
