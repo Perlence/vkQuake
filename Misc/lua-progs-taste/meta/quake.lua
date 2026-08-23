@@ -29,57 +29,6 @@ function vec3:normalized() end
 function vec3:dot(other) end
 
 ---@class entity
----@field absmax vec3
----@field absmin vec3
----@field angles vec3
----@field armortype number
----@field armorvalue number
----@field avelocity vec3
----@field attack_finished number
----@field attack_state integer
----@field classname string
----@field dmg_inflictor entity?
----@field dmg_save number
----@field dmg_take number
----@field enemy entity?
----@field flags integer
----@field frame string|integer
----@field goalentity entity?
----@field health number
----@field ideal_yaw number
----@field invincible_finished number
----@field invincible_sound number
----@field items integer
----@field lefty integer
----@field ltime number
----@field movetarget entity?
----@field movetype integer
----@field nextthink number
----@field oldenemy entity?
----@field origin vec3
----@field pain_finished number
----@field pausetime number
----@field search_time number
----@field show_hostile number
----@field solid integer
----@field spawnflags integer
----@field super_damage_finished number
----@field takedamage integer
----@field target string
----@field team number
----@field th_die die_callback?
----@field th_melee think_callback?
----@field th_missile think_callback?
----@field th_pain pain_callback?
----@field th_run think_callback?
----@field th_stand think_callback?
----@field th_walk think_callback?
----@field think think_callback?
----@field touch touch_callback?
----@field use use_callback?
----@field velocity vec3
----@field view_ofs vec3
----@field yaw_speed number
 local entity = {}
 
 ---@class trace_result
@@ -87,6 +36,7 @@ local entity = {}
 ---@field fraction number
 ---@field in_open boolean
 ---@field in_water boolean
+---@field endpos vec3
 ---@field plane_normal vec3
 local trace_result = {}
 
@@ -97,12 +47,47 @@ local trace_result = {}
 local direction_vectors = {}
 
 ---@class quake_globals
----@field damage_attacker entity?
----@field damage_inflictor entity?
+---@field coop number
+---@field deathmatch number
+---@field force_retouch number
+---@field found_secrets number
+---@field frametime number
 ---@field killed_monsters number
----@field sight_entity entity?
----@field sight_entity_time number
+---@field mapname string
+---@field msg_entity entity?
+---@field other entity?
+---@field parm1 number
+---@field parm2 number
+---@field parm3 number
+---@field parm4 number
+---@field parm5 number
+---@field parm6 number
+---@field parm7 number
+---@field parm8 number
+---@field parm9 number
+---@field parm10 number
+---@field parm11 number
+---@field parm12 number
+---@field parm13 number
+---@field parm14 number
+---@field parm15 number
+---@field parm16 number
+---@field serverflags number
+---@field teamplay number
 ---@field total_monsters number
+---@field total_secrets number
+---@field trace_allsolid number
+---@field trace_endpos vec3
+---@field trace_ent entity?
+---@field trace_fraction number
+---@field trace_inopen number
+---@field trace_inwater number
+---@field trace_plane_dist number
+---@field trace_plane_normal vec3
+---@field trace_startsolid number
+---@field v_forward vec3
+---@field v_right vec3
+---@field v_up vec3
 local quake_globals = {}
 
 ---@class quake
@@ -130,7 +115,7 @@ function quake.cvar(name) end
 ---@param ... unknown
 function quake.dprint(...) end
 
----@param start entity
+---@param start entity?
 ---@param field string
 ---@param value string
 ---@return entity?

@@ -5,7 +5,6 @@ local M = {}
 
 -- Keep this list in progs.src order. Requiring a module performs its QuakeC
 -- entity registrations and exposes it here for callers that need the module.
-M.defs = require("game.defs")
 M.subs = require("game.subs")
 M.fight = require("game.fight")
 M.ai = require("game.ai")

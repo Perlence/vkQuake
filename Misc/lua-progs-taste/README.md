@@ -23,17 +23,17 @@ The engine passes `self` and `other` to Lua callbacks rather than emulating thei
 ## Layout
 
 - `game/init.lua` – loader in the original `progs.src` order
-- `game/defs.lua` – constants, globals, and entity-field declarations
 - `game/animation.lua` – Lua expansion of QuakeC frame-function declarations
 - `game/constants.lua` – constants shared by the initial supporting modules
 - `game/*.lua` – one complete port for every module listed by `progs.src`
 - `meta/quake.lua` – Lua Language Server definitions for the engine C module
+- `meta/id1lua.lua` – Lua Language Server definitions for id1lua entity and global fields
 
 Original comments, including entity documentation, remain next to the corresponding Lua code.
 
 ## Editor support
 
-Open this directory as the Lua workspace. `.luarc.json` adds `meta/` as a Lua Language Server library, providing completion and type information for `require("quake")`. The metadata file is for tooling only and must not be added to the runtime module path.
+Open this directory as the Lua workspace. `.luarc.json` adds `meta/` as a Lua Language Server library, providing completion and type information for `require("quake")`. The metadata files are for tooling only and must not be added to the runtime module path.
 
 ## Validation
 
