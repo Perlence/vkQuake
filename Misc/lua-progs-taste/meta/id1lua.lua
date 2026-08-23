@@ -23,8 +23,6 @@
 ---@field modelindex_eyes number
 ---@field modelindex_player number
 ---@field movedist number
----@field multi_damage number
----@field multi_ent entity?
 ---@field nextmap string
 ---@field shub entity?
 ---@field sight_entity entity?

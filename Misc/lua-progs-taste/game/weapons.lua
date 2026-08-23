@@ -189,37 +189,43 @@ Collects multiple small damages into a single damage
 ==============================================================================
 ]]
 
----@return nil
+---@class multi_damage_accumulator
+---@field entity entity?
+---@field damage number
+
+---@return multi_damage_accumulator
 function M.clear_multi_damage()
-    quake.globals.multi_ent = nil
-    quake.globals.multi_damage = 0
+    return { damage = 0 }
 end
 
 ---@param self entity
+---@param accumulator multi_damage_accumulator
 ---@return nil
-function M.apply_multi_damage(self)
-    if not quake.globals.multi_ent then
+function M.apply_multi_damage(self, accumulator)
+    if not accumulator.entity then
         return
     end
-    combat.damage(quake.globals.multi_ent, self, self, quake.globals.multi_damage)
+    combat.damage(accumulator.entity, self, self, accumulator.damage)
 end
 
 ---@param self entity
----@param hit entity
+---@param accumulator multi_damage_accumulator
+---@param hit entity?
 ---@param damage number
----@return nil
-function M.add_multi_damage(self, hit, damage)
+---@return multi_damage_accumulator
+function M.add_multi_damage(self, accumulator, hit, damage)
     if not hit then
-        return
+        return accumulator
     end
 
-    if hit ~= quake.globals.multi_ent then
-        M.apply_multi_damage(self)
-        quake.globals.multi_damage = damage
-        quake.globals.multi_ent = hit
+    if hit ~= accumulator.entity then
+        M.apply_multi_damage(self, accumulator)
+        accumulator.damage = damage
+        accumulator.entity = hit
     else
-        quake.globals.multi_damage = quake.globals.multi_damage + damage
+        accumulator.damage = accumulator.damage + damage
     end
+    return accumulator
 end
 
 --[[
@@ -235,8 +241,9 @@ BULLETS
 ---@param damage number
 ---@param dir vec3
 ---@param vectors direction_vectors
----@return nil
-function M.trace_attack(self, trace, damage, dir, vectors)
+---@param accumulator multi_damage_accumulator
+---@return multi_damage_accumulator
+function M.trace_attack(self, trace, damage, dir, vectors, accumulator)
     local vel = (dir + vectors.up * M.crandom() + vectors.right * M.crandom()):normalized()
     vel = vel + trace.plane_normal * 2
     vel = vel * 200
@@ -245,7 +252,7 @@ function M.trace_attack(self, trace, damage, dir, vectors)
 
     if trace.entity.takedamage ~= 0 then
         M.spawn_blood(org, vel * 0.2, damage)
-        M.add_multi_damage(self, trace.entity, damage)
+        accumulator = M.add_multi_damage(self, accumulator, trace.entity, damage)
     else
         quake.write_byte(MSG_BROADCAST, SVC_TEMPENTITY)
         quake.write_byte(MSG_BROADCAST, TE_GUNSHOT)
@@ -253,6 +260,7 @@ function M.trace_attack(self, trace, damage, dir, vectors)
         quake.write_coord(MSG_BROADCAST, org.y)
         quake.write_coord(MSG_BROADCAST, org.z)
     end
+    return accumulator
 end
 
 ---Used by shotgun, super shotgun, and enemy soldier firing
@@ -268,18 +276,18 @@ function M.fire_bullets(self, shotcount, dir, spread)
     local src = self.origin + vectors.forward * 10
     src.z = self.absmin.z + self.size.z * 0.7
 
-    M.clear_multi_damage()
+    local accumulator = M.clear_multi_damage()
     while shotcount > 0 do
         local direction = dir + vectors.right * (M.crandom() * spread.x) + vectors.up * (M.crandom() * spread.y)
 
         local trace = quake.trace_line(src, src + direction * 2048, false, self)
         if trace.fraction ~= 1.0 then
-            M.trace_attack(self, trace, 4, direction, vectors)
+            accumulator = M.trace_attack(self, trace, 4, direction, vectors, accumulator)
         end
 
         shotcount = shotcount - 1
     end
-    M.apply_multi_damage(self)
+    M.apply_multi_damage(self, accumulator)
 end
 
 ---@param self entity
