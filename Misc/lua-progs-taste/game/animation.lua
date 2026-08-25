@@ -31,35 +31,39 @@ end
 local compile_sequence
 
 ---Creates sequential animation frames followed by another state.
+---@param identifier string Stable identifier used to save frame callbacks
 ---@param frames animation.frame_descriptor[]
 ---@param next_state animation.next_state_resolver
 ---@return function first_frame
-function M.sequence(frames, next_state)
+function M.sequence(identifier, frames, next_state)
     assert(type(next_state) == "function", "an animation sequence needs a next-state resolver")
-    return compile_sequence(frames, next_state, debug.getinfo(2, "Sl"))
+    return compile_sequence(identifier, frames, next_state)
 end
 
 ---Creates sequential animation frames that restart after the final frame.
+---@param identifier string Stable identifier used to save frame callbacks
 ---@param frames animation.frame_descriptor[]
 ---@return function first_frame
-function M.loop(frames)
-    return compile_sequence(frames, "loop", debug.getinfo(2, "Sl"))
+function M.loop(identifier, frames)
+    return compile_sequence(identifier, frames, "loop")
 end
 
 ---Creates sequential animation frames that remain on the final frame.
+---@param identifier string Stable identifier used to save frame callbacks
 ---@param frames animation.frame_descriptor[]
 ---@return function first_frame
-function M.hold(frames)
-    return compile_sequence(frames, "hold", debug.getinfo(2, "Sl"))
+function M.hold(identifier, frames)
+    return compile_sequence(identifier, frames, "hold")
 end
 
 local create_frame
 
+---@param identifier string
 ---@param frames animation.frame_descriptor[]
 ---@param final_state animation.final_state
----@param caller table
 ---@return function first_frame
-function compile_sequence(frames, final_state, caller)
+function compile_sequence(identifier, frames, final_state)
+    assert(type(identifier) == "string" and identifier ~= "", "an animation needs a stable identifier")
     assert(type(frames) == "table" and #frames > 0, "an animation needs at least one frame")
 
     local compiled = {}
@@ -82,7 +86,7 @@ function compile_sequence(frames, final_state, caller)
         end
 
         compiled[index] = create_frame(frame, next_state, action,
-            ("%s:%d:%d:%s"):format(caller.source, caller.currentline, index, tostring(frame)))
+            ("%s:%d"):format(identifier, index))
     end
 
     return compiled[1]

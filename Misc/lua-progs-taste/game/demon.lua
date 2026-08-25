@@ -62,7 +62,7 @@ DEMON (Fiend)
 ==============================================================================
 ]]
 
-local demon1_stand = animation.loop({
+local demon1_stand = animation.loop("demon.demon1_stand", {
     { f.stand1, ai.stand },
     { f.stand2, ai.stand },
     { f.stand3, ai.stand },
@@ -78,7 +78,7 @@ local demon1_stand = animation.loop({
     { f.stand13, ai.stand },
 })
 
-local demon1_walk = animation.loop({
+local demon1_walk = animation.loop("demon.demon1_walk", {
     { f.walk1, function(self) if quake.random() < 0.2 then quake.sound(self, C.CHAN_VOICE, "demon/idle1.wav", 1, C.ATTN_IDLE) end; ai.walk(self, 8) end },
     { f.walk2, function(self) ai.walk(self, 6) end },
     { f.walk3, function(self) ai.walk(self, 6) end },
@@ -89,7 +89,7 @@ local demon1_walk = animation.loop({
     { f.walk8, function(self) ai.walk(self, 10) end },
 })
 
-local demon1_run = animation.loop({
+local demon1_run = animation.loop("demon.demon1_run", {
     { f.run1, function(self) if quake.random() < 0.2 then quake.sound(self, C.CHAN_VOICE, "demon/idle1.wav", 1, C.ATTN_IDLE) end; ai.run(self, 20) end },
     { f.run2, function(self) ai.run(self, 15) end },
     { f.run3, function(self) ai.run(self, 36) end },
@@ -99,7 +99,7 @@ local demon1_run = animation.loop({
 })
 
 local demon_jump_touch
-local demon1_jump = animation.loop({
+local demon1_jump = animation.loop("demon.demon1_jump", {
     { f.leap1, fight.face },
     { f.leap2, fight.face },
     { f.leap3, fight.face },
@@ -122,13 +122,13 @@ local demon1_jump = animation.loop({
     end },
 })
 
-local demon1_jump_land = animation.sequence({
+local demon1_jump_land = animation.sequence("demon.demon1_jump_land", {
     { f.leap11 },
     { f.leap12 },
 }, function() return demon1_run end)
 
 local demon_melee
-local demon1_atta = animation.sequence({
+local demon1_atta = animation.sequence("demon.demon1_atta", {
     { f.attacka1, function(self) fight.charge(self, 4) end },
     { f.attacka2, function(self) fight.charge(self, 0) end },
     { f.attacka3, function(self) fight.charge(self, 0) end },
@@ -146,7 +146,7 @@ local demon1_atta = animation.sequence({
     { f.attacka15, function(self) fight.charge(self, 4) end },
 }, function() return demon1_run end)
 
-local demon1_pain = animation.sequence({
+local demon1_pain = animation.sequence("demon.demon1_pain", {
     { f.pain1 },
     { f.pain2 },
     { f.pain3 },
@@ -168,7 +168,7 @@ local demon1_pain_handler = quake.register_callback("demon.demon1_pain_handler",
     demon1_pain(self)
 end)
 
-local demon1_die = animation.hold({
+local demon1_die = animation.hold("demon.demon1_die", {
     { f.death1, function(self) quake.sound(self, C.CHAN_VOICE, "demon/ddeath.wav", 1, C.ATTN_NORM) end },
     { f.death2 },
     { f.death3 },
@@ -196,10 +196,6 @@ local demon_die = quake.register_callback("demon.demon_die", function(self)
     demon1_die(self)
 end)
 
----@param self entity
----@return nil
-local demon_melee_attack = quake.register_callback("demon.demon_melee_attack", function(self) demon1_atta(self) end)
-
 local check_attack
 
 ---QUAKED monster_demon1 (1 0 0) (-32 -32 -24) (32 32 64) Ambush
@@ -224,7 +220,7 @@ local function spawn(self)
     self.th_walk = demon1_walk
     self.th_run = demon1_run
     self.th_die = demon_die
-    self.th_melee = demon_melee_attack -- one of two attacks
+    self.th_melee = demon1_atta -- one of two attacks
     self.th_missile = demon1_jump -- jump attack
     self.th_pain = demon1_pain_handler
     self.check_attack = check_attack

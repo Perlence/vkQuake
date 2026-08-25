@@ -86,7 +86,7 @@ f.axattc1, f.axattc2, f.axattc3, f.axattc4, f.axattc5, f.axattc6 = count(6)
 f.axattd1, f.axattd2, f.axattd3, f.axattd4, f.axattd5, f.axattd6 = count(6)
 
 local player_run1
-local player_stand1 = animation.loop({
+local player_stand1 = animation.loop("player.player_stand1", {
     { f.axstnd1, function(self)
         self.weaponframe = 0
         if self.velocity.x ~= 0 or self.velocity.y ~= 0 then
@@ -105,7 +105,7 @@ local player_stand1 = animation.loop({
     end },
 })
 
-player_run1 = animation.loop({
+player_run1 = animation.loop("player.player_run1", {
     { f.rockrun1, function(self)
         self.weaponframe = 0
         if self.velocity.x == 0 and self.velocity.y == 0 then
@@ -124,7 +124,7 @@ player_run1 = animation.loop({
     end },
 })
 
-local player_shot = animation.sequence({
+local player_shot = animation.sequence("player.player_shot", {
     { f.shotatt1, function(self) self.weaponframe = 1; self.effects = self.effects | EF_MUZZLEFLASH end },
     { f.shotatt2, function(self) self.weaponframe = 2 end },
     { f.shotatt3, function(self) self.weaponframe = 3 end },
@@ -133,7 +133,7 @@ local player_shot = animation.sequence({
     { f.shotatt6, function(self) self.weaponframe = 6 end },
 }, function() return player_run1 end)
 
-local player_axe = animation.sequence({
+local player_axe = animation.sequence("player.player_axe", {
     { f.axatt1, function(self) self.weaponframe = 1 end },
     { f.axatt2, function(self) self.weaponframe = 2 end },
     { f.axatt3, function(self)
@@ -145,7 +145,7 @@ local player_axe = animation.sequence({
     { f.axatt4, function(self) self.weaponframe = 4 end },
 }, function() return player_run1 end)
 
-local player_axeb = animation.sequence({
+local player_axeb = animation.sequence("player.player_axeb", {
     { f.axattb1, function(self) self.weaponframe = 5 end },
     { f.axattb2, function(self) self.weaponframe = 6 end },
     { f.axattb3, function(self)
@@ -157,7 +157,7 @@ local player_axeb = animation.sequence({
     { f.axattb4, function(self) self.weaponframe = 8 end },
 }, function() return player_run1 end)
 
-local player_axec = animation.sequence({
+local player_axec = animation.sequence("player.player_axec", {
     { f.axattc1, function(self) self.weaponframe = 1 end },
     { f.axattc2, function(self) self.weaponframe = 2 end },
     { f.axattc3, function(self)
@@ -169,7 +169,7 @@ local player_axec = animation.sequence({
     { f.axattc4, function(self) self.weaponframe = 4 end },
 }, function() return player_run1 end)
 
-local player_axed = animation.sequence({
+local player_axed = animation.sequence("player.player_axed", {
     { f.axattd1, function(self) self.weaponframe = 5 end },
     { f.axattd2, function(self) self.weaponframe = 6 end },
     { f.axattd3, function(self)
@@ -183,7 +183,7 @@ local player_axed = animation.sequence({
 
 --============================================================================
 
-local player_nail = animation.loop({
+local player_nail = animation.loop("player.player_nail", {
     { f.nailatt1, function(self)
         local weapons = require("game.weapons")
 
@@ -210,7 +210,7 @@ local player_nail = animation.loop({
 
 --============================================================================
 
-local player_light = animation.loop({
+local player_light = animation.loop("player.player_light", {
     { f.light1, function(self)
         local weapons = require("game.weapons")
 
@@ -237,7 +237,7 @@ local player_light = animation.loop({
 
 --============================================================================
 
-local player_rocket = animation.sequence({
+local player_rocket = animation.sequence("player.player_rocket", {
     { f.rockatt1, function(self) self.weaponframe = 1; self.effects = self.effects | EF_MUZZLEFLASH end },
     { f.rockatt2, function(self) self.weaponframe = 2 end },
     { f.rockatt3, function(self) self.weaponframe = 3 end },
@@ -288,7 +288,7 @@ local function pain_sound(self)
     quake.sound(self, CHAN_VOICE, self.noise, 1, ATTN_NORM)
 end
 
-local player_pain = animation.sequence({
+local player_pain = animation.sequence("player.player_pain", {
     { f.pain1, function(self) pain_sound(self); self.weaponframe = 0 end },
     { f.pain2 },
     { f.pain3 },
@@ -297,7 +297,7 @@ local player_pain = animation.sequence({
     { f.pain6 },
 }, function() return player_run1 end)
 
-local player_axpain = animation.sequence({
+local player_axpain = animation.sequence("player.player_axpain", {
     { f.axpain1, function(self) pain_sound(self); self.weaponframe = 0 end },
     { f.axpain2 },
     { f.axpain3 },
@@ -498,7 +498,7 @@ function M.set_suicide_frame(self)
     self.nextthink = -1
 end
 
-player_diea = animation.hold({
+player_diea = animation.hold("player.player_diea", {
     { f.deatha1 },
     { f.deatha2 },
     { f.deatha3 },
@@ -512,7 +512,7 @@ player_diea = animation.hold({
     { f.deatha11, player_dead },
 })
 
-player_dieb = animation.hold({
+player_dieb = animation.hold("player.player_dieb", {
     { f.deathb1 },
     { f.deathb2 },
     { f.deathb3 },
@@ -524,7 +524,7 @@ player_dieb = animation.hold({
     { f.deathb9, player_dead },
 })
 
-player_diec = animation.hold({
+player_diec = animation.hold("player.player_diec", {
     { f.deathc1 },
     { f.deathc2 },
     { f.deathc3 },
@@ -542,7 +542,7 @@ player_diec = animation.hold({
     { f.deathc15, player_dead },
 })
 
-player_died = animation.hold({
+player_died = animation.hold("player.player_died", {
     { f.deathd1 },
     { f.deathd2 },
     { f.deathd3 },
@@ -554,7 +554,7 @@ player_died = animation.hold({
     { f.deathd9, player_dead },
 })
 
-player_diee = animation.hold({
+player_diee = animation.hold("player.player_diee", {
     { f.deathe1 },
     { f.deathe2 },
     { f.deathe3 },
@@ -566,7 +566,7 @@ player_diee = animation.hold({
     { f.deathe9, player_dead },
 })
 
-player_die_ax = animation.hold({
+player_die_ax = animation.hold("player.player_die_ax", {
     { f.axdeth1 },
     { f.axdeth2 },
     { f.axdeth3 },

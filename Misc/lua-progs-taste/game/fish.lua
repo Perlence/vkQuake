@@ -56,7 +56,7 @@ FISH (Rotfish)
 ==============================================================================
 ]]
 
-local f_stand = animation.loop({
+local f_stand = animation.loop("fish.f_stand", {
     { f.swim1, ai.stand },
     { f.swim2, ai.stand },
     { f.swim3, ai.stand },
@@ -77,7 +77,7 @@ local f_stand = animation.loop({
     { f.swim18, ai.stand },
 })
 
-local f_walk = animation.loop({
+local f_walk = animation.loop("fish.f_walk", {
     { f.swim1, function(self) ai.walk(self, 8) end },
     { f.swim2, function(self) ai.walk(self, 8) end },
     { f.swim3, function(self) ai.walk(self, 8) end },
@@ -98,7 +98,7 @@ local f_walk = animation.loop({
     { f.swim18, function(self) ai.walk(self, 8) end },
 })
 
-local f_run = animation.loop({
+local f_run = animation.loop("fish.f_run", {
     { f.swim1, function(self)
         ai.run(self, 12)
         if quake.random() < 0.5 then
@@ -130,7 +130,7 @@ local function fish_melee(self)
     combat.damage(self.enemy, self, self, damage)
 end
 
-local f_attack = animation.sequence({
+local f_attack = animation.sequence("fish.f_attack", {
     { f.attack1, function(self) fight.charge(self, 10) end },
     { f.attack2, function(self) fight.charge(self, 10) end },
     { f.attack3, fish_melee },
@@ -151,7 +151,7 @@ local f_attack = animation.sequence({
     { f.attack18, function(self) fight.charge(self, 10) end },
 }, function() return f_run end)
 
-local f_death = animation.hold({
+local f_death = animation.hold("fish.f_death", {
     { f.death1, function(self)
         quake.sound(self, C.CHAN_VOICE, "fish/death.wav", 1, C.ATTN_NORM)
     end },
@@ -198,7 +198,7 @@ local fish_die = quake.register_callback("fish.fish_die", function(self)
     f_death(self)
 end)
 
-local f_pain = animation.sequence({
+local f_pain = animation.sequence("fish.f_pain", {
     { f.pain1 },
     { f.pain2, function(self) ai.pain(self, 6) end },
     { f.pain3, function(self) ai.pain(self, 6) end },

@@ -90,7 +90,7 @@ end
 
 local boss_missile
 
-local boss_rise = animation.sequence({
+local boss_rise = animation.sequence("boss.boss_rise", {
     { f.rise1, function(self) quake.sound(self, CHAN_WEAPON, "boss1/out1.wav", 1, C.ATTN_NORM) end },
     { f.rise2, function(self) quake.sound(self, C.CHAN_VOICE, "boss1/sight1.wav", 1, C.ATTN_NORM) end },
     { f.rise3 },
@@ -110,7 +110,7 @@ local boss_rise = animation.sequence({
     { f.rise17 },
 }, function() return boss_missile end)
 
-local boss_idle = animation.loop({
+local boss_idle = animation.loop("boss.boss_idle", {
     { f.walk1, function(_self)
         -- look for other players
     end },
@@ -148,7 +148,7 @@ local boss_idle = animation.loop({
 
 local boss_launch_missile
 
-boss_missile = animation.loop({
+boss_missile = animation.loop("boss.boss_missile", {
     { f.attack1, boss_face },
     { f.attack2, boss_face },
     { f.attack3, boss_face },
@@ -174,7 +174,7 @@ boss_missile = animation.loop({
     { f.attack23, boss_face },
 })
 
-local boss_shocka = animation.sequence({
+local boss_shocka = animation.sequence("boss.boss_shocka", {
     { f.shocka1 },
     { f.shocka2 },
     { f.shocka3 },
@@ -187,7 +187,7 @@ local boss_shocka = animation.sequence({
     { f.shocka10 },
 }, function() return boss_missile end)
 
-local boss_shockb = animation.sequence({
+local boss_shockb = animation.sequence("boss.boss_shockb", {
     { f.shockb1 },
     { f.shockb2 },
     { f.shockb3 },
@@ -202,7 +202,7 @@ local boss_shockb = animation.sequence({
 
 local boss_death
 
-local boss_shockc = animation.sequence({
+local boss_shockc = animation.sequence("boss.boss_shockc", {
     { f.shockc1 },
     { f.shockc2 },
     { f.shockc3 },
@@ -215,7 +215,7 @@ local boss_shockc = animation.sequence({
     { f.shockc10 },
 }, function() return boss_death end)
 
-boss_death = animation.hold({
+boss_death = animation.hold("boss.boss_death", {
     { f.death1, function(self) quake.sound(self, C.CHAN_VOICE, "boss1/death.wav", 1, C.ATTN_NORM) end },
     { f.death2 },
     { f.death3 },

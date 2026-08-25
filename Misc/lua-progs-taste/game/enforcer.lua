@@ -161,7 +161,7 @@ end
 
 --============================================================================
 
-local enf_stand = animation.loop({
+local enf_stand = animation.loop("enforcer.enf_stand", {
     { f.stand1, ai.stand },
     { f.stand2, ai.stand },
     { f.stand3, ai.stand },
@@ -171,7 +171,7 @@ local enf_stand = animation.loop({
     { f.stand7, ai.stand },
 })
 
-local enf_walk = animation.loop({
+local enf_walk = animation.loop("enforcer.enf_walk", {
     { f.walk1, function(self)
         if quake.random() < 0.2 then
             quake.sound(self, C.CHAN_VOICE, "enforcer/idle1.wav", 1, ATTN_IDLE)
@@ -195,7 +195,7 @@ local enf_walk = animation.loop({
     { f.walk16, function(self) ai.walk(self, 2) end },
 })
 
-local enf_run = animation.loop({
+local enf_run = animation.loop("enforcer.enf_run", {
     { f.run1, function(self)
         if quake.random() < 0.2 then
             quake.sound(self, C.CHAN_VOICE, "enforcer/idle1.wav", 1, ATTN_IDLE)
@@ -212,7 +212,7 @@ local enf_run = animation.loop({
 })
 
 local enf_atk
-enf_atk = animation.sequence({
+enf_atk = animation.sequence("enforcer.enf_atk", {
     { f.attack1, fight.face },
     { f.attack2, fight.face },
     { f.attack3, fight.face },
@@ -232,14 +232,14 @@ enf_atk = animation.sequence({
     end },
 }, function() return enf_run end)
 
-local enf_paina = animation.sequence({
+local enf_paina = animation.sequence("enforcer.enf_paina", {
     { f.paina1 },
     { f.paina2 },
     { f.paina3 },
     { f.paina4 },
 }, function() return enf_run end)
 
-local enf_painb = animation.sequence({
+local enf_painb = animation.sequence("enforcer.enf_painb", {
     { f.painb1 },
     { f.painb2 },
     { f.painb3 },
@@ -247,7 +247,7 @@ local enf_painb = animation.sequence({
     { f.painb5 },
 }, function() return enf_run end)
 
-local enf_painc = animation.sequence({
+local enf_painc = animation.sequence("enforcer.enf_painc", {
     { f.painc1 },
     { f.painc2 },
     { f.painc3 },
@@ -258,7 +258,7 @@ local enf_painc = animation.sequence({
     { f.painc8 },
 }, function() return enf_run end)
 
-local enf_paind = animation.sequence({
+local enf_paind = animation.sequence("enforcer.enf_paind", {
     { f.paind1 },
     { f.paind2 },
     { f.paind3 },
@@ -313,7 +313,7 @@ end)
 
 --============================================================================
 
-local enf_die = animation.hold({
+local enf_die = animation.hold("enforcer.enf_die", {
     { f.death1 },
     { f.death2 },
     { f.death3, function(self)
@@ -334,7 +334,7 @@ local enf_die = animation.hold({
     { f.death14 },
 })
 
-local enf_fdie = animation.hold({
+local enf_fdie = animation.hold("enforcer.enf_fdie", {
     { f.fdeath1 },
     { f.fdeath2 },
     { f.fdeath3, function(self)

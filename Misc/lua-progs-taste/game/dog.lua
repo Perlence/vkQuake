@@ -122,7 +122,7 @@ local dog_jump_touch = quake.register_callback("dog.dog_jump_touch", function(se
     self.nextthink = quake.time() + 0.1
 end)
 
-local dog_stand = animation.loop({
+local dog_stand = animation.loop("dog.dog_stand", {
     { f.stand1, ai.stand },
     { f.stand2, ai.stand },
     { f.stand3, ai.stand },
@@ -134,7 +134,7 @@ local dog_stand = animation.loop({
     { f.stand9, ai.stand },
 })
 
-local dog_walk = animation.loop({
+local dog_walk = animation.loop("dog.dog_walk", {
     { f.walk1, function(self)
         if quake.random() < 0.2 then
             quake.sound(self, C.CHAN_VOICE, "dog/idle.wav", 1, C.ATTN_IDLE)
@@ -150,7 +150,7 @@ local dog_walk = animation.loop({
     { f.walk8, function(self) ai.walk(self, 8) end },
 })
 
-dog_run = animation.loop({
+dog_run = animation.loop("dog.dog_run", {
     { f.run1, function(self)
         if quake.random() < 0.2 then
             quake.sound(self, C.CHAN_VOICE, "dog/idle.wav", 1, C.ATTN_IDLE)
@@ -170,7 +170,7 @@ dog_run = animation.loop({
     { f.run12, function(self) ai.run(self, 32) end },
 })
 
-local dog_atta = animation.sequence({
+local dog_atta = animation.sequence("dog.dog_atta", {
     { f.attack1, function(self) fight.charge(self, 10) end },
     { f.attack2, function(self) fight.charge(self, 10) end },
     { f.attack3, function(self) fight.charge(self, 10) end },
@@ -184,7 +184,7 @@ local dog_atta = animation.sequence({
     { f.attack8, function(self) fight.charge(self, 10) end },
 }, function() return dog_run end)
 
-dog_leap = animation.hold({
+dog_leap = animation.hold("dog.dog_leap", {
     { f.leap1, fight.face },
     { f.leap2, function(self)
         fight.face(self)
@@ -206,7 +206,7 @@ dog_leap = animation.hold({
     { f.leap9 },
 })
 
-local dog_pain = animation.sequence({
+local dog_pain = animation.sequence("dog.dog_pain", {
     { f.pain1 },
     { f.pain2 },
     { f.pain3 },
@@ -215,7 +215,7 @@ local dog_pain = animation.sequence({
     { f.pain6 },
 }, function() return dog_run end)
 
-local dog_painb = animation.sequence({
+local dog_painb = animation.sequence("dog.dog_painb", {
     { f.painb1 },
     { f.painb2 },
     { f.painb3, function(self) ai.pain(self, 4) end },
@@ -248,7 +248,7 @@ local dog_pain_handler = quake.register_callback("dog.dog_pain_handler", functio
     end
 end)
 
-local dog_die = animation.hold({
+local dog_die = animation.hold("dog.dog_die", {
     { f.death1 },
     { f.death2 },
     { f.death3 },
@@ -260,7 +260,7 @@ local dog_die = animation.hold({
     { f.death9 },
 })
 
-local dog_dieb = animation.hold({
+local dog_dieb = animation.hold("dog.dog_dieb", {
     { f.deathb1 },
     { f.deathb2 },
     { f.deathb3 },

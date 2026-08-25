@@ -158,7 +158,7 @@ end
 
 --===========================================================================
 
-local hknight_stand = animation.loop({
+local hknight_stand = animation.loop("hknight.hknight_stand", {
     { f.stand1, ai.stand },
     { f.stand2, ai.stand },
     { f.stand3, ai.stand },
@@ -173,7 +173,7 @@ local hknight_stand = animation.loop({
 --===========================================================================
 
 local hk_idle_sound
-local hknight_walk = animation.loop({
+local hknight_walk = animation.loop("hknight.hknight_walk", {
     { f.walk1, function(self)
         hk_idle_sound(self)
         ai.walk(self, 2)
@@ -201,7 +201,7 @@ local hknight_walk = animation.loop({
 
 --===========================================================================
 
-hknight_run = animation.loop({
+hknight_run = animation.loop("hknight.hknight_run", {
     { f.run1, function(self)
         hk_idle_sound(self)
         ai.run(self, 20)
@@ -218,7 +218,7 @@ hknight_run = animation.loop({
 
 --============================================================================
 
-local hknight_pain = animation.sequence({
+local hknight_pain = animation.sequence("hknight.hknight_pain", {
     { f.pain1, function(self) quake.sound(self, C.CHAN_VOICE, "hknight/pain1.wav", 1, C.ATTN_NORM) end },
     { f.pain2 },
     { f.pain3 },
@@ -228,7 +228,7 @@ local hknight_pain = animation.sequence({
 
 --============================================================================
 
-local hknight_die = animation.hold({
+local hknight_die = animation.hold("hknight.hknight_die", {
     { f.death1, function(self) quake.walk_move(self, self.angles.y, 10) end },
     { f.death2, function(self) quake.walk_move(self, self.angles.y, 8) end },
     { f.death3, function(self)
@@ -246,7 +246,7 @@ local hknight_die = animation.hold({
     { f.death12 },
 })
 
-local hknight_dieb = animation.hold({
+local hknight_dieb = animation.hold("hknight.hknight_dieb", {
     { f.deathb1 },
     { f.deathb2 },
     { f.deathb3, function(self) self.solid = C.SOLID_NOT end },
@@ -282,7 +282,7 @@ end)
 
 --============================================================================
 
-animation.sequence({
+animation.sequence("hknight.hknight_magica", {
     { f.magica1, fight.face },
     { f.magica2, fight.face },
     { f.magica3, fight.face },
@@ -301,7 +301,7 @@ animation.sequence({
 
 --============================================================================
 
-animation.sequence({
+animation.sequence("hknight.hknight_magicb", {
     { f.magicb1, fight.face },
     { f.magicb2, fight.face },
     { f.magicb3, fight.face },
@@ -319,7 +319,7 @@ animation.sequence({
 
 --============================================================================
 
-local hknight_magicc = animation.sequence({
+local hknight_magicc = animation.sequence("hknight.hknight_magicc", {
     { f.magicc1, fight.face },
     { f.magicc2, fight.face },
     { f.magicc3, fight.face },
@@ -335,7 +335,7 @@ local hknight_magicc = animation.sequence({
 
 --===========================================================================
 
-hknight_char_a = animation.sequence({
+hknight_char_a = animation.sequence("hknight.hknight_char_a", {
     { f.char_a1, function(self) fight.charge(self, 20) end },
     { f.char_a2, function(self) fight.charge(self, 25) end },
     { f.char_a3, function(self) fight.charge(self, 18) end },
@@ -356,7 +356,7 @@ hknight_char_a = animation.sequence({
 
 --===========================================================================
 
-animation.loop({
+animation.loop("hknight.hknight_char_b", {
     { f.char_b1, function(self)
         check_continue_charge(self)
         fight.charge(self, 23)
@@ -371,7 +371,7 @@ animation.loop({
 
 --===========================================================================
 
-local hknight_slice = animation.sequence({
+local hknight_slice = animation.sequence("hknight.hknight_slice", {
     { f.slice1, function(self) fight.charge(self, 9) end },
     { f.slice2, function(self) fight.charge(self, 6) end },
     { f.slice3, function(self) fight.charge(self, 13) end },
@@ -386,7 +386,7 @@ local hknight_slice = animation.sequence({
 
 --===========================================================================
 
-local hknight_smash = animation.sequence({
+local hknight_smash = animation.sequence("hknight.hknight_smash", {
     { f.smash1, function(self) fight.charge(self, 1) end },
     { f.smash2, function(self) fight.charge(self, 13) end },
     { f.smash3, function(self) fight.charge(self, 9) end },
@@ -402,7 +402,7 @@ local hknight_smash = animation.sequence({
 
 --============================================================================
 
-local hknight_watk = animation.sequence({
+local hknight_watk = animation.sequence("hknight.hknight_watk", {
     { f.w_attack1, function(self) fight.charge(self, 2) end },
     { f.w_attack2, function(self) fight.charge(self, 0) end },
     { f.w_attack3, function(self) fight.charge(self, 0) end },

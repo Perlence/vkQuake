@@ -162,7 +162,7 @@ local function chainsaw(self, side)
     end
 end
 
-local ogre_stand = animation.loop({
+local ogre_stand = animation.loop("ogre.ogre_stand", {
     { f.stand1, function(self) ai.stand(self) end },
     { f.stand2, function(self) ai.stand(self) end },
     { f.stand3, function(self) ai.stand(self) end },
@@ -174,7 +174,7 @@ local ogre_stand = animation.loop({
     { f.stand9, function(self) ai.stand(self) end },
 })
 
-local ogre_walk = animation.loop({
+local ogre_walk = animation.loop("ogre.ogre_walk", {
     { f.walk1, function(self) ai.walk(self, 3) end },
     { f.walk2, function(self) ai.walk(self, 2) end },
     { f.walk3, function(self) ai.walk(self, 2); if quake.random() < 0.2 then quake.sound(self, C.CHAN_VOICE, "ogre/ogidle.wav", 1, C.ATTN_IDLE) end end },
@@ -193,7 +193,7 @@ local ogre_walk = animation.loop({
     { f.walk16, function(self) ai.walk(self, 4) end },
 })
 
-local ogre_run = animation.loop({
+local ogre_run = animation.loop("ogre.ogre_run", {
     { f.run1, function(self) ai.run(self, 9); if quake.random() < 0.2 then quake.sound(self, C.CHAN_VOICE, "ogre/ogidle2.wav", 1, C.ATTN_IDLE) end end },
     { f.run2, function(self) ai.run(self, 12) end },
     { f.run3, function(self) ai.run(self, 8) end },
@@ -204,7 +204,7 @@ local ogre_run = animation.loop({
     { f.run8, function(self) ai.run(self, 24) end },
 })
 
-local ogre_swing = animation.sequence({
+local ogre_swing = animation.sequence("ogre.ogre_swing", {
     { f.swing1, function(self) fight.charge(self, 11); quake.sound(self, C.CHAN_WEAPON, "ogre/ogsawatk.wav", 1, C.ATTN_NORM) end },
     { f.swing2, function(self) fight.charge(self, 1) end },
     { f.swing3, function(self) fight.charge(self, 4) end },
@@ -221,7 +221,7 @@ local ogre_swing = animation.sequence({
     { f.swing14, function(self) fight.charge(self, 9) end },
 }, function() return ogre_run end)
 
-local ogre_smash = animation.sequence({
+local ogre_smash = animation.sequence("ogre.ogre_smash", {
     { f.smash1, function(self) fight.charge(self, 6); quake.sound(self, C.CHAN_WEAPON, "ogre/ogsawatk.wav", 1, C.ATTN_NORM) end },
     { f.smash2, function(self) fight.charge(self, 0) end },
     { f.smash3, function(self) fight.charge(self, 0) end },
@@ -239,7 +239,7 @@ local ogre_smash = animation.sequence({
     { f.smash14, function(self) fight.charge(self, 12) end },
 }, function() return ogre_run end)
 
-local ogre_nail = animation.sequence({
+local ogre_nail = animation.sequence("ogre.ogre_nail", {
     { f.shoot1, function(self) fight.face(self) end },
     { f.shoot2, function(self) fight.face(self) end },
     { f.shoot2, function(self) fight.face(self) end },
@@ -249,7 +249,7 @@ local ogre_nail = animation.sequence({
     { f.shoot6, function(self) fight.face(self) end },
 }, function() return ogre_run end)
 
-local ogre_pain = animation.sequence({
+local ogre_pain = animation.sequence("ogre.ogre_pain", {
     { f.pain1 },
     { f.pain2 },
     { f.pain3 },
@@ -257,13 +257,13 @@ local ogre_pain = animation.sequence({
     { f.pain5 },
 }, function() return ogre_run end)
 
-local ogre_painb = animation.sequence({
+local ogre_painb = animation.sequence("ogre.ogre_painb", {
     { f.painb1 },
     { f.painb2 },
     { f.painb3 },
 }, function() return ogre_run end)
 
-local ogre_painc = animation.sequence({
+local ogre_painc = animation.sequence("ogre.ogre_painc", {
     { f.painc1 },
     { f.painc2 },
     { f.painc3 },
@@ -272,7 +272,7 @@ local ogre_painc = animation.sequence({
     { f.painc6 },
 }, function() return ogre_run end)
 
-local ogre_paind = animation.sequence({
+local ogre_paind = animation.sequence("ogre.ogre_paind", {
     { f.paind1 },
     { f.paind2, function(self) ai.pain(self, 10) end },
     { f.paind3, function(self) ai.pain(self, 9) end },
@@ -291,7 +291,7 @@ local ogre_paind = animation.sequence({
     { f.paind16 },
 }, function() return ogre_run end)
 
-local ogre_paine = animation.sequence({
+local ogre_paine = animation.sequence("ogre.ogre_paine", {
     { f.paine1 },
     { f.paine2, function(self) ai.pain(self, 10) end },
     { f.paine3, function(self) ai.pain(self, 9) end },
@@ -325,7 +325,7 @@ local ogre_pain_callback = quake.register_callback("ogre.ogre_pain_callback", fu
     else ogre_paine(self); self.pain_finished = quake.time() + 2 end
 end)
 
-local ogre_die = animation.hold({
+local ogre_die = animation.hold("ogre.ogre_die", {
     { f.death1 },
     { f.death2 },
     { f.death3, function(self) self.solid = C.SOLID_NOT; self.ammo_rockets = 2; items.drop_backpack(self) end },
@@ -342,7 +342,7 @@ local ogre_die = animation.hold({
     { f.death14 },
 })
 
-local ogre_bdie = animation.hold({
+local ogre_bdie = animation.hold("ogre.ogre_bdie", {
     { f.bdeath1 },
     { f.bdeath2, function(self) ai.forward(self, 5) end },
     { f.bdeath3, function(self) self.solid = C.SOLID_NOT; self.ammo_rockets = 2; items.drop_backpack(self) end },

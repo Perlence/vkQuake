@@ -93,7 +93,7 @@ local SPAWN_CRUCIFIED = 1
 
 --=============================================================================
 
-local zombie_stand = animation.loop({
+local zombie_stand = animation.loop("zombie.zombie_stand", {
     { f.stand1, ai.stand },
     { f.stand2, ai.stand },
     { f.stand3, ai.stand },
@@ -111,7 +111,7 @@ local zombie_stand = animation.loop({
     { f.stand15, ai.stand },
 })
 
-local zombie_cruc = animation.loop({
+local zombie_cruc = animation.loop("zombie.zombie_cruc", {
     { f.cruc_1, function(self) if quake.random() < 0.1 then quake.sound(self, C.CHAN_VOICE, "zombie/idle_w2.wav", 1, C.ATTN_STATIC) end end },
     { f.cruc_2, function(self) self.nextthink = quake.time() + 0.1 + quake.random() * 0.1 end },
     { f.cruc_3, function(self) self.nextthink = quake.time() + 0.1 + quake.random() * 0.1 end },
@@ -120,7 +120,7 @@ local zombie_cruc = animation.loop({
     { f.cruc_6, function(self) self.nextthink = quake.time() + 0.1 + quake.random() * 0.1 end },
 })
 
-local zombie_walk = animation.loop({
+local zombie_walk = animation.loop("zombie.zombie_walk", {
     { f.walk1, function(self) ai.walk(self, 0) end },
     { f.walk2, function(self) ai.walk(self, 2) end },
     { f.walk3, function(self) ai.walk(self, 3) end },
@@ -142,7 +142,7 @@ local zombie_walk = animation.loop({
     { f.walk19, function(self) ai.walk(self, 0); if quake.random() < 0.2 then quake.sound(self, C.CHAN_VOICE, "zombie/z_idle.wav", 1, C.ATTN_IDLE) end end },
 })
 
-local zombie_run = animation.loop({
+local zombie_run = animation.loop("zombie.zombie_run", {
     { f.run1, function(self) ai.run(self, 1); self.inpain = 0 end },
     { f.run2, function(self) ai.run(self, 1) end },
     { f.run3, function(self) ai.run(self, 0) end },
@@ -216,7 +216,7 @@ local function zombie_fire_grenade(self, st)
     quake.set_origin(missile, org)
 end
 
-local zombie_atta = animation.sequence({
+local zombie_atta = animation.sequence("zombie.zombie_atta", {
     { f.atta1, function(self) fight.face(self) end },
     { f.atta2, function(self) fight.face(self) end },
     { f.atta3, function(self) fight.face(self) end },
@@ -232,7 +232,7 @@ local zombie_atta = animation.sequence({
     { f.atta13, function(self) fight.face(self); zombie_fire_grenade(self, quake.vec3(-10, -22, 30)) end },
 }, function() return zombie_run end)
 
-local zombie_attb = animation.sequence({
+local zombie_attb = animation.sequence("zombie.zombie_attb", {
     { f.attb1, function(self) fight.face(self) end },
     { f.attb2, function(self) fight.face(self) end },
     { f.attb3, function(self) fight.face(self) end },
@@ -249,7 +249,7 @@ local zombie_attb = animation.sequence({
     { f.attb13, function(self) fight.face(self); zombie_fire_grenade(self, quake.vec3(-10, -24, 29)) end },
 }, function() return zombie_run end)
 
-local zombie_attc = animation.sequence({
+local zombie_attc = animation.sequence("zombie.zombie_attc", {
     { f.attc1, function(self) fight.face(self) end },
     { f.attc2, function(self) fight.face(self) end },
     { f.attc3, function(self) fight.face(self) end },
@@ -281,7 +281,7 @@ PAIN
 =============================================================================
 ]]
 
-local zombie_paina = animation.sequence({
+local zombie_paina = animation.sequence("zombie.zombie_paina", {
     { f.paina1, function(self) quake.sound(self, C.CHAN_VOICE, "zombie/z_pain.wav", 1, C.ATTN_NORM) end },
     { f.paina2, function(self) ai.pain_forward(self, 3) end },
     { f.paina3, function(self) ai.pain_forward(self, 1) end },
@@ -296,7 +296,7 @@ local zombie_paina = animation.sequence({
     { f.paina12 },
 }, function() return zombie_run end)
 
-local zombie_painb = animation.sequence({
+local zombie_painb = animation.sequence("zombie.zombie_painb", {
     { f.painb1, function(self) quake.sound(self, C.CHAN_VOICE, "zombie/z_pain1.wav", 1, C.ATTN_NORM) end },
     { f.painb2, function(self) ai.pain(self, 2) end },
     { f.painb3, function(self) ai.pain(self, 8) end },
@@ -327,7 +327,7 @@ local zombie_painb = animation.sequence({
     { f.painb28 },
 }, function() return zombie_run end)
 
-local zombie_painc = animation.sequence({
+local zombie_painc = animation.sequence("zombie.zombie_painc", {
     { f.painc1, function(self) quake.sound(self, C.CHAN_VOICE, "zombie/z_pain1.wav", 1, C.ATTN_NORM) end },
     { f.painc2 },
     { f.painc3, function(self) ai.pain(self, 3) end },
@@ -348,7 +348,7 @@ local zombie_painc = animation.sequence({
     { f.painc18 },
 }, function() return zombie_run end)
 
-local zombie_paind = animation.sequence({
+local zombie_paind = animation.sequence("zombie.zombie_paind", {
     { f.paind1, function(self) quake.sound(self, C.CHAN_VOICE, "zombie/z_pain.wav", 1, C.ATTN_NORM) end },
     { f.paind2 },
     { f.paind3 },
@@ -365,7 +365,7 @@ local zombie_paind = animation.sequence({
 }, function() return zombie_run end)
 
 local zombie_paine_recover
-local zombie_paine = animation.sequence({
+local zombie_paine = animation.sequence("zombie.zombie_paine", {
     { f.paine1, function(self)
         quake.sound(self, C.CHAN_VOICE, "zombie/z_pain.wav", 1, C.ATTN_NORM)
         self.health = 60
@@ -399,7 +399,7 @@ local zombie_paine = animation.sequence({
         self.solid = C.SOLID_NOT
     end },
 }, function() return zombie_paine_recover end)
-zombie_paine_recover = animation.sequence({
+zombie_paine_recover = animation.sequence("zombie.zombie_paine_recover", {
     { f.paine11, function(self)
         self.nextthink = self.nextthink + 5
         self.health = 60

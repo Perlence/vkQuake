@@ -80,7 +80,7 @@ SOLDIER CODE
 ==============================================================================
 ]]
 
-local army_stand = animation.loop({
+local army_stand = animation.loop("soldier.army_stand", {
     { f.stand1, ai.stand },
     { f.stand2, ai.stand },
     { f.stand3, ai.stand },
@@ -91,7 +91,7 @@ local army_stand = animation.loop({
     { f.stand8, ai.stand },
 })
 
-local army_walk = animation.loop({
+local army_walk = animation.loop("soldier.army_walk", {
     { f.prowl_1, function(self) if quake.random() < 0.2 then quake.sound(self, C.CHAN_VOICE, "soldier/idle.wav", 1, C.ATTN_IDLE) end; ai.walk(self, 1) end },
     { f.prowl_2, function(self) ai.walk(self, 1) end },
     { f.prowl_3, function(self) ai.walk(self, 1) end },
@@ -118,7 +118,7 @@ local army_walk = animation.loop({
     { f.prowl_24, function(self) ai.walk(self, 1) end },
 })
 
-local army_run = animation.loop({
+local army_run = animation.loop("soldier.army_run", {
     { f.run1, function(self) if quake.random() < 0.2 then quake.sound(self, C.CHAN_VOICE, "soldier/idle.wav", 1, C.ATTN_IDLE) end; ai.run(self, 11) end },
     { f.run2, function(self) ai.run(self, 15) end },
     { f.run3, function(self) ai.run(self, 10) end },
@@ -130,7 +130,7 @@ local army_run = animation.loop({
 })
 
 local army_atk, army_fire
-army_atk = animation.sequence({
+army_atk = animation.sequence("soldier.army_atk", {
     { f.shoot1, function(self) fight.face(self) end },
     { f.shoot2, function(self) fight.face(self) end },
     { f.shoot3, function(self) fight.face(self) end },
@@ -142,7 +142,7 @@ army_atk = animation.sequence({
     { f.shoot9, function(self) fight.face(self) end },
 }, function() return army_run end)
 
-local army_pain = animation.sequence({
+local army_pain = animation.sequence("soldier.army_pain", {
     { f.pain1 },
     { f.pain2 },
     { f.pain3 },
@@ -151,7 +151,7 @@ local army_pain = animation.sequence({
     { f.pain6, function(self) ai.pain(self, 1) end },
 }, function() return army_run end)
 
-local army_painb = animation.sequence({
+local army_painb = animation.sequence("soldier.army_painb", {
     { f.painb1 },
     { f.painb2, function(self) ai.pain_forward(self, 13) end },
     { f.painb3, function(self) ai.pain_forward(self, 9) end },
@@ -168,7 +168,7 @@ local army_painb = animation.sequence({
     { f.painb14 },
 }, function() return army_run end)
 
-local army_painc = animation.sequence({
+local army_painc = animation.sequence("soldier.army_painc", {
     { f.painc1 },
     { f.painc2, function(self) ai.pain(self, 1) end },
     { f.painc3 },
@@ -218,7 +218,7 @@ function army_fire(self)
     weapons.fire_bullets(self, 4, dir, quake.vec3(0.1, 0.1, 0))
 end
 
-local army_die = animation.hold({
+local army_die = animation.hold("soldier.army_die", {
     { f.death1 },
     { f.death2 },
     { f.death3, function(self) self.solid = C.SOLID_NOT; self.ammo_shells = 5; items.drop_backpack(self) end },
@@ -231,7 +231,7 @@ local army_die = animation.hold({
     { f.death10 },
 })
 
-local army_cdie = animation.hold({
+local army_cdie = animation.hold("soldier.army_cdie", {
     { f.deathc1 },
     { f.deathc2, function(self) ai.back(self, 5) end },
     { f.deathc3, function(self) self.solid = C.SOLID_NOT; self.ammo_shells = 5; items.drop_backpack(self); ai.back(self, 4) end },

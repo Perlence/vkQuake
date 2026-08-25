@@ -72,7 +72,7 @@ KNIGHT
 ==============================================================================
 ]]
 
-local knight_stand = animation.loop({
+local knight_stand = animation.loop("knight.knight_stand", {
     { f.stand1, ai.stand },
     { f.stand2, ai.stand },
     { f.stand3, ai.stand },
@@ -84,7 +84,7 @@ local knight_stand = animation.loop({
     { f.stand9, ai.stand },
 })
 
-local knight_walk = animation.loop({
+local knight_walk = animation.loop("knight.knight_walk", {
     { f.walk1, function(self) if quake.random() < 0.2 then quake.sound(self, C.CHAN_VOICE, "knight/idle.wav", 1, C.ATTN_IDLE) end; ai.walk(self, 3) end },
     { f.walk2, function(self) ai.walk(self, 2) end },
     { f.walk3, function(self) ai.walk(self, 3) end },
@@ -101,7 +101,7 @@ local knight_walk = animation.loop({
     { f.walk14, function(self) ai.walk(self, 3) end },
 })
 
-local knight_run = animation.loop({
+local knight_run = animation.loop("knight.knight_run", {
     { f.runb1, function(self) if quake.random() < 0.2 then quake.sound(self, C.CHAN_VOICE, "knight/idle.wav", 1, C.ATTN_IDLE) end; ai.run(self, 16) end },
     { f.runb2, function(self) ai.run(self, 20) end },
     { f.runb3, function(self) ai.run(self, 13) end },
@@ -112,7 +112,7 @@ local knight_run = animation.loop({
     { f.runb8, function(self) ai.run(self, 6) end },
 })
 
-local knight_runatk = animation.sequence({
+local knight_runatk = animation.sequence("knight.knight_runatk", {
     { f.runattack1, function(self) if quake.random() > 0.5 then quake.sound(self, C.CHAN_WEAPON, "knight/sword2.wav", 1, C.ATTN_NORM) else quake.sound(self, C.CHAN_WEAPON, "knight/sword1.wav", 1, C.ATTN_NORM) end; fight.charge(self, 20) end },
     { f.runattack2, function(self) fight.charge_side(self) end },
     { f.runattack3, function(self) fight.charge_side(self) end },
@@ -126,7 +126,7 @@ local knight_runatk = animation.sequence({
     { f.runattack11, function(self) fight.charge(self, 10) end },
 }, function() return knight_run end)
 
-local knight_atk = animation.sequence({
+local knight_atk = animation.sequence("knight.knight_atk", {
     { f.attackb1, function(self) quake.sound(self, C.CHAN_WEAPON, "knight/sword1.wav", 1, C.ATTN_NORM); fight.charge(self, 0) end },
     { f.attackb2, function(self) fight.charge(self, 7) end },
     { f.attackb3, function(self) fight.charge(self, 4) end },
@@ -141,13 +141,13 @@ local knight_atk = animation.sequence({
 
 --===========================================================================
 
-local knight_pain = animation.sequence({
+local knight_pain = animation.sequence("knight.knight_pain", {
     { f.pain1 },
     { f.pain2 },
     { f.pain3 },
 }, function() return knight_run end)
 
-local knight_painb = animation.sequence({
+local knight_painb = animation.sequence("knight.knight_painb", {
     { f.painb1, function(self) ai.pain_forward(self, 0) end },
     { f.painb2, function(self) ai.pain_forward(self, 3) end },
     { f.painb3 },
@@ -180,7 +180,7 @@ end)
 
 --===========================================================================
 
-local knight_bow = animation.hold({
+local knight_bow = animation.hold("knight.knight_bow", {
     { f.kneel1, ai.turn },
     { f.kneel2, ai.turn },
     { f.kneel3, ai.turn },
@@ -188,7 +188,7 @@ local knight_bow = animation.hold({
     { f.kneel5, ai.turn },
 })
 
-local knight_bow_up = animation.sequence({
+local knight_bow_up = animation.sequence("knight.knight_bow_up", {
     { f.kneel4, ai.turn },
     { f.kneel3, ai.turn },
     { f.kneel2, ai.turn },
@@ -196,7 +196,7 @@ local knight_bow_up = animation.sequence({
     { f.walk1, ai.turn },
 }, function() return knight_walk end)
 
-local knight_die = animation.hold({
+local knight_die = animation.hold("knight.knight_die", {
     { f.death1 },
     { f.death2 },
     { f.death3, function(self) self.solid = C.SOLID_NOT end },
@@ -209,7 +209,7 @@ local knight_die = animation.hold({
     { f.death10 },
 })
 
-local knight_dieb = animation.hold({
+local knight_dieb = animation.hold("knight.knight_dieb", {
     { f.deathb1 },
     { f.deathb2 },
     { f.deathb3, function(self) self.solid = C.SOLID_NOT end },

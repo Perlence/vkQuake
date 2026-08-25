@@ -62,15 +62,15 @@ BLOB (Spawn)
 ==============================================================================
 ]]
 
-local tbaby_stand1 = animation.loop({
+local tbaby_stand1 = animation.loop("tarbaby.tbaby_stand1", {
     { f.walk1, ai.stand },
 })
 
-local tbaby_hang1 = animation.loop({
+local tbaby_hang1 = animation.loop("tarbaby.tbaby_hang1", {
     { f.walk1, ai.stand },
 })
 
-local tbaby_walk = animation.loop({
+local tbaby_walk = animation.loop("tarbaby.tbaby_walk", {
     { f.walk1, ai.turn },
     { f.walk2, ai.turn },
     { f.walk3, ai.turn },
@@ -98,7 +98,7 @@ local tbaby_walk = animation.loop({
     { f.walk25, function(self) ai.walk(self, 2) end },
 })
 
-local tbaby_run = animation.loop({
+local tbaby_run = animation.loop("tarbaby.tbaby_run", {
     { f.run1, fight.face },
     { f.run2, fight.face },
     { f.run3, fight.face },
@@ -160,7 +160,7 @@ local tar_jump_touch = quake.register_callback("tarbaby.tar_jump_touch", functio
     self.nextthink = quake.time() + 0.1
 end)
 
-local tbaby_fly = animation.loop({
+local tbaby_fly = animation.loop("tarbaby.tbaby_fly", {
     { f.fly1 },
     { f.fly2 },
     { f.fly3 },
@@ -172,13 +172,13 @@ local tbaby_fly = animation.loop({
     end },
 })
 
-tbaby_jump = animation.sequence({
+tbaby_jump = animation.sequence("tarbaby.tbaby_jump", {
     { f.jump1, fight.face },
     { f.jump2, fight.face },
     { f.jump3, fight.face },
     { f.jump4, fight.face },
 }, function() return tbaby_jump_air end)
-tbaby_jump_air = animation.sequence({
+tbaby_jump_air = animation.sequence("tarbaby.tbaby_jump_air", {
     { f.jump5, function(self)
         self.movetype = MOVETYPE_BOUNCE
         self.touch = tar_jump_touch
@@ -196,7 +196,7 @@ tbaby_jump_air = animation.sequence({
 
 --============================================================================
 
-local tbaby_die = animation.sequence({
+local tbaby_die = animation.sequence("tarbaby.tbaby_die", {
     { f.exp, function(self)
         self.takedamage = C.DAMAGE_NO
     end },

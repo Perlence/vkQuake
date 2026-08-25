@@ -209,7 +209,7 @@ local function wiz_idle_sound(self)
     return
 end
 
-local wiz_stand = animation.loop({
+local wiz_stand = animation.loop("wizard.wiz_stand", {
     { f.hover1, ai.stand },
     { f.hover2, ai.stand },
     { f.hover3, ai.stand },
@@ -220,7 +220,7 @@ local wiz_stand = animation.loop({
     { f.hover8, ai.stand },
 })
 
-local wiz_walk = animation.loop({
+local wiz_walk = animation.loop("wizard.wiz_walk", {
     { f.hover1, function(self) ai.walk(self, 8); wiz_idle_sound(self) end },
     { f.hover2, function(self) ai.walk(self, 8) end },
     { f.hover3, function(self) ai.walk(self, 8) end },
@@ -231,7 +231,7 @@ local wiz_walk = animation.loop({
     { f.hover8, function(self) ai.walk(self, 8) end },
 })
 
-wiz_side = animation.loop({
+wiz_side = animation.loop("wizard.wiz_side", {
     { f.hover1, function(self) ai.run(self, 8); wiz_idle_sound(self) end },
     { f.hover2, function(self) ai.run(self, 8) end },
     { f.hover3, function(self) ai.run(self, 8) end },
@@ -242,7 +242,7 @@ wiz_side = animation.loop({
     { f.hover8, function(self) ai.run(self, 8) end },
 })
 
-wiz_run = animation.loop({
+wiz_run = animation.loop("wizard.wiz_run", {
     { f.fly1, function(self) ai.run(self, 16); wiz_idle_sound(self) end },
     { f.fly2, function(self) ai.run(self, 16) end },
     { f.fly3, function(self) ai.run(self, 16) end },
@@ -259,7 +259,7 @@ wiz_run = animation.loop({
     { f.fly14, function(self) ai.run(self, 16) end },
 })
 
-local wiz_fast = animation.sequence({
+local wiz_fast = animation.sequence("wizard.wiz_fast", {
     { f.magatt1, function(self) fight.face(self); wiz_start_fast(self) end },
     { f.magatt2, function(self) fight.face(self) end },
     { f.magatt3, function(self) fight.face(self) end },
@@ -272,14 +272,14 @@ local wiz_fast = animation.sequence({
     { f.magatt2, function(self) fight.face(self); subs.attack_finished(self, 2); wizard_attack_finished(self) end },
 }, function() return wiz_run end)
 
-local wiz_pain = animation.sequence({
+local wiz_pain = animation.sequence("wizard.wiz_pain", {
     { f.pain1 },
     { f.pain2 },
     { f.pain3 },
     { f.pain4 },
 }, function() return wiz_run end)
 
-local wiz_death = animation.hold({
+local wiz_death = animation.hold("wizard.wiz_death", {
     { f.death1, function(self) self.velocity = quake.vec3(-200 + 400 * quake.random(), -200 + 400 * quake.random(), 100 + 100 * quake.random()); self.flags = self.flags - (self.flags & C.FL_ONGROUND); quake.sound(self, C.CHAN_VOICE, "wizard/wdeath.wav", 1, C.ATTN_NORM) end },
     { f.death2 },
     { f.death3, function(self) self.solid = C.SOLID_NOT end },

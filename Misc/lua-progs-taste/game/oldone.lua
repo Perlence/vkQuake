@@ -59,7 +59,7 @@ OLD ONE (Shub-Niggurath)
 ==============================================================================
 ]]
 
-local old_idle = animation.loop({
+local old_idle = animation.loop("oldone.old_idle", {
     { f.old1 },
     { f.old2 },
     { f.old3 },
@@ -109,7 +109,7 @@ local old_idle = animation.loop({
 })
 
 local old_thrash, finale_1, finale_2, finale_3, finale_4
-old_thrash = animation.hold({
+old_thrash = animation.hold("oldone.old_thrash", {
     { f.shake1, function() quake.light_style(0, "m") end },
     { f.shake2, function() quake.light_style(0, "k") end },
     { f.shake3, function() quake.light_style(0, "k") end },

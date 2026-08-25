@@ -60,11 +60,11 @@ SHAL-RATH (Vore)
 ==============================================================================
 ]]
 
-local shal_stand1 = animation.loop({
+local shal_stand1 = animation.loop("shalrath.shal_stand1", {
     { f.walk1, ai.stand },
 })
 
-local shal_walk = animation.loop({
+local shal_walk = animation.loop("shalrath.shal_walk", {
     { f.walk2, function(self)
         if quake.random() < 0.2 then
             quake.sound(self, C.CHAN_VOICE, "shalrath/idle.wav", 1, ATTN_IDLE)
@@ -84,7 +84,7 @@ local shal_walk = animation.loop({
     { f.walk1, function(self) ai.walk(self, 5) end },
 })
 
-local shal_run = animation.loop({
+local shal_run = animation.loop("shalrath.shal_run", {
     { f.walk2, function(self)
         if quake.random() < 0.2 then
             quake.sound(self, C.CHAN_VOICE, "shalrath/idle.wav", 1, ATTN_IDLE)
@@ -106,7 +106,7 @@ local shal_run = animation.loop({
 
 local shal_missile
 
-local shal_attack = animation.sequence({
+local shal_attack = animation.sequence("shalrath.shal_attack", {
     { f.attack1, function(self)
         quake.sound(self, C.CHAN_VOICE, "shalrath/attack.wav", 1, C.ATTN_NORM)
         fight.face(self)
@@ -123,7 +123,7 @@ local shal_attack = animation.sequence({
     { f.attack11 },
 }, function() return shal_run end)
 
-local shal_pain = animation.sequence({
+local shal_pain = animation.sequence("shalrath.shal_pain", {
     { f.pain1 },
     { f.pain2 },
     { f.pain3 },
@@ -131,7 +131,7 @@ local shal_pain = animation.sequence({
     { f.pain5 },
 }, function() return shal_run end)
 
-local shal_death = animation.hold({
+local shal_death = animation.hold("shalrath.shal_death", {
     { f.death1 },
     { f.death2 },
     { f.death3 },

@@ -67,7 +67,7 @@ SHAMBLER
 ==============================================================================
 ]]
 
-local sham_stand = animation.loop({
+local sham_stand = animation.loop("shambler.sham_stand", {
     { f.stand1, ai.stand },
     { f.stand2, ai.stand },
     { f.stand3, ai.stand },
@@ -87,7 +87,7 @@ local sham_stand = animation.loop({
     { f.stand17, ai.stand },
 })
 
-local sham_walk = animation.loop({
+local sham_walk = animation.loop("shambler.sham_walk", {
     { f.walk1, function(self) ai.walk(self, 10) end },
     { f.walk2, function(self) ai.walk(self, 9) end },
     { f.walk3, function(self) ai.walk(self, 9) end },
@@ -102,7 +102,7 @@ local sham_walk = animation.loop({
     { f.walk12, function(self) ai.walk(self, 7); if quake.random() > 0.8 then quake.sound(self, C.CHAN_VOICE, "shambler/sidle.wav", 1, C.ATTN_IDLE) end end },
 })
 
-local sham_run = animation.loop({
+local sham_run = animation.loop("shambler.sham_run", {
     { f.run1, function(self) ai.run(self, 20) end },
     { f.run2, function(self) ai.run(self, 24) end },
     { f.run3, function(self) ai.run(self, 20) end },
@@ -111,7 +111,7 @@ local sham_run = animation.loop({
     { f.run6, function(self) ai.run(self, 20); if quake.random() > 0.8 then quake.sound(self, C.CHAN_VOICE, "shambler/sidle.wav", 1, C.ATTN_IDLE) end end },
 })
 
-local sham_smash = animation.sequence({
+local sham_smash = animation.sequence("shambler.sham_smash", {
     { f.smash1, function(self) quake.sound(self, C.CHAN_VOICE, "shambler/melee1.wav", 1, C.ATTN_NORM); fight.charge(self, 2) end },
     { f.smash2, function(self) fight.charge(self, 6) end },
     { f.smash3, function(self) fight.charge(self, 6) end },
@@ -157,7 +157,7 @@ end
 
 local sham_swingr
 
-local sham_swingl = animation.sequence({
+local sham_swingl = animation.sequence("shambler.sham_swingl", {
     { f.swingl1, function(self) quake.sound(self, C.CHAN_VOICE, "shambler/melee2.wav", 1, C.ATTN_NORM); fight.charge(self, 5) end },
     { f.swingl2, function(self) fight.charge(self, 3) end },
     { f.swingl3, function(self) fight.charge(self, 7) end },
@@ -169,7 +169,7 @@ local sham_swingl = animation.sequence({
     { f.swingl9, function(self) fight.charge(self, 8); if quake.random() < 0.5 then self.think = sham_swingr end end },
 }, function() return sham_run end)
 
-sham_swingr = animation.sequence({
+sham_swingr = animation.sequence("shambler.sham_swingr", {
     { f.swingr1, function(self) quake.sound(self, C.CHAN_VOICE, "shambler/melee1.wav", 1, C.ATTN_NORM); fight.charge(self, 1) end },
     { f.swingr2, function(self) fight.charge(self, 8) end },
     { f.swingr3, function(self) fight.charge(self, 14) end },
@@ -212,7 +212,7 @@ local function cast_lightning(self)
     weapons.lightning_damage(self, org, trace.endpos, self, 10)
 end
 
-local sham_magic = animation.sequence({
+local sham_magic = animation.sequence("shambler.sham_magic", {
     { f.magic1, function(self) fight.face(self); quake.sound(self, C.CHAN_WEAPON, "shambler/sattck1.wav", 1, C.ATTN_NORM) end },
     { f.magic2, fight.face },
     { f.magic3, function(self)
@@ -237,7 +237,7 @@ local sham_magic = animation.sequence({
     { f.magic12 },
 }, function() return sham_run end)
 
-local sham_pain = animation.sequence({
+local sham_pain = animation.sequence("shambler.sham_pain", {
     { f.pain1 },
     { f.pain2 },
     { f.pain3 },
@@ -261,7 +261,7 @@ end)
 
 --============================================================================
 
-local sham_death = animation.hold({
+local sham_death = animation.hold("shambler.sham_death", {
     { f.death1 },
     { f.death2 },
     { f.death3, function(self) self.solid = C.SOLID_NOT end },

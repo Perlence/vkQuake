@@ -329,7 +329,7 @@ ROCKETS
 ==============================================================================
 ]]
 
-local s_explode = animation.sequence({
+local s_explode = animation.sequence("weapons.s_explode", {
     { 0 },
     { 1 },
     { 2 },
