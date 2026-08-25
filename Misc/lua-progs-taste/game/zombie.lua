@@ -174,7 +174,7 @@ ATTACKS
 ---@param self entity
 ---@param other entity
 ---@return nil
-local function zombie_grenade_touch(self, other)
+local zombie_grenade_touch = quake.register_callback("zombie.zombie_grenade_touch", function(self, other)
     if other == self.owner then return end -- don't explode on owner
     if other.takedamage ~= 0 then
         combat.damage(other, self, self.owner, 10)
@@ -187,7 +187,7 @@ local function zombie_grenade_touch(self, other)
     self.velocity = quake.vec3(0, 0, 0)
     self.avelocity = quake.vec3(0, 0, 0)
     self.touch = subs.remove
-end
+end)
 
 ---@param self entity
 ---@param st vec3
@@ -266,12 +266,12 @@ local zombie_attc = animation.sequence({
 
 ---@param self entity
 ---@return nil
-local function zombie_missile(self)
+local zombie_missile = quake.register_callback("zombie.zombie_missile", function(self)
     local r = quake.random()
     if r < 0.3 then zombie_atta(self)
     elseif r < 0.6 then zombie_attb(self)
     else zombie_attc(self) end
-end
+end)
 
 --[[
 =============================================================================
@@ -442,13 +442,13 @@ zombie_paine_recover = animation.sequence({
 
 ---@param self entity
 ---@return nil
-local function zombie_die(self)
+local zombie_die = quake.register_callback("zombie.zombie_die", function(self)
     quake.sound(self, C.CHAN_VOICE, "zombie/z_gib.wav", 1, C.ATTN_NORM)
     gibs.throw_head(self, "progs/h_zombie.mdl", self.health)
     gibs.throw(self, "progs/gib1.mdl", self.health)
     gibs.throw(self, "progs/gib2.mdl", self.health)
     gibs.throw(self, "progs/gib3.mdl", self.health)
-end
+end)
 
 ---Zombies can only be killed (gibbed) by doing 60 hit points of damage
 ---in a single frame (rockets, grenades, quad shotgun, quad nailgun).
@@ -467,7 +467,7 @@ end
 ---@param _attacker entity
 ---@param take number
 ---@return nil
-local function zombie_pain(self, _attacker, take)
+local zombie_pain = quake.register_callback("zombie.zombie_pain", function(self, _attacker, take)
     -- always reset health
     self.health = 60
     if take < 9 then return end -- totally ignore
@@ -493,7 +493,7 @@ local function zombie_pain(self, _attacker, take)
     elseif r < 0.5 then zombie_painb(self)
     elseif r < 0.75 then zombie_painc(self)
     else zombie_paind(self) end
-end
+end)
 
 --============================================================================
 

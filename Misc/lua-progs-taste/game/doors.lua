@@ -59,7 +59,7 @@ local door_go_down, door_go_up
 ---@param self entity
 ---@param other entity
 ---@return nil
-local function door_blocked(self, other)
+local door_blocked = quake.register_callback("doors.door_blocked", function(self, other)
     combat.damage(other, self, self, self.dmg)
 
     -- if a door has a negative wait, it would never come back if blocked,
@@ -67,11 +67,11 @@ local function door_blocked(self, other)
     if self.wait >= 0 then
         if self.state == STATE_DOWN then door_go_up(self) else door_go_down(self) end
     end
-end
+end)
 
 ---@param self entity
 ---@return nil
-local function door_hit_top(self)
+local door_hit_top = quake.register_callback("doors.door_hit_top", function(self)
     quake.sound(self, CHAN_VOICE, self.noise1, 1, ATTN_NORM)
     self.state = STATE_TOP
     if (self.spawnflags & DOOR_TOGGLE) ~= 0 then
@@ -79,18 +79,18 @@ local function door_hit_top(self)
     end
     self.think = door_go_down
     self.nextthink = self.ltime + self.wait
-end
+end)
 
 ---@param self entity
 ---@return nil
-local function door_hit_bottom(self)
+local door_hit_bottom = quake.register_callback("doors.door_hit_bottom", function(self)
     quake.sound(self, CHAN_VOICE, self.noise1, 1, ATTN_NORM)
     self.state = STATE_BOTTOM
-end
+end)
 
 ---@param self entity
 ---@return nil
-door_go_down = function(self)
+door_go_down = quake.register_callback("doors.door_go_down", function(self)
     quake.sound(self, CHAN_VOICE, self.noise2, 1, ATTN_NORM)
     if self.max_health ~= 0 then
         self.takedamage = DAMAGE_YES
@@ -98,7 +98,7 @@ door_go_down = function(self)
     end
     self.state = STATE_DOWN
     subs.calc_move(self, self.pos1, self.speed, door_hit_bottom)
-end
+end)
 
 ---@param self entity
 ---@return nil
@@ -157,39 +157,39 @@ end
 ---@param self entity
 ---@param activator entity
 ---@return nil
-local function door_use(self, activator)
+local door_use = quake.register_callback("doors.door_use", function(self, activator)
     -- door message are for touch only
     self.message = ""
     self.owner.message = ""
     self.enemy.message = ""
     door_fire(self.owner, activator)
-end
+end)
 
 ---@param self entity
 ---@param other entity
 ---@return nil
-local function door_trigger_touch(self, other)
+local door_trigger_touch = quake.register_callback("doors.door_trigger_touch", function(self, other)
     if other.health <= 0 then return end
     if quake.time() < self.attack_finished then return end
     self.attack_finished = quake.time() + 1
     door_use(self.owner, other)
-end
+end)
 
 ---@param self entity
 ---@return nil
-local function door_killed(self)
+local door_killed = quake.register_callback("doors.door_killed", function(self)
     local owner = assert(self.owner, "door has no owner")
     owner.health = owner.max_health
     -- will be reset upon return
     owner.takedamage = DAMAGE_NO
     door_use(owner, quake.globals.damage_attacker)
-end
+end)
 
 ---Prints messages and opens key doors
 ---@param self entity
 ---@param other entity
 ---@return nil
-local function door_touch(self, other)
+local door_touch = quake.register_callback("doors.door_touch", function(self, other)
     if other.classname ~= "player" then return end
     if self.owner.attack_finished > quake.time() then return end
     self.owner.attack_finished = quake.time() + 2
@@ -237,7 +237,7 @@ local function door_touch(self, other)
         self.enemy.touch = subs.null
     end
     door_use(self, other)
-end
+end)
 
 --[[
 =============================================================================
@@ -279,7 +279,7 @@ end
 
 ---@param self entity
 ---@return nil
-local function link_doors(self)
+local link_doors = quake.register_callback("doors.link_doors", function(self)
     if self.enemy then return end -- already linked by another door
     if (self.spawnflags & DOOR_DONT_LINK) ~= 0 then
         self.owner = self
@@ -322,7 +322,7 @@ local function link_doors(self)
             cmaxs = quake.vec3(math.max(t.maxs.x, cmaxs.x), math.max(t.maxs.y, cmaxs.y), math.max(t.maxs.z, cmaxs.z))
         end
     end
-end
+end)
 
 ---QUAKED func_door (0 .5 .8) ? START_OPEN x DOOR_DONT_LINK GOLD_KEY SILVER_KEY TOGGLE
 ---if two doors touch, they are assumed to be connected and operate as a unit.
@@ -458,13 +458,13 @@ local fd_secret_move1, fd_secret_move2, fd_secret_move3, fd_secret_move4,
 ---@param _attacker entity
 ---@param _damage number
 ---@return nil
-local function pain_empty(_self, _attacker, _damage)
-end
+local pain_empty = quake.register_callback("doors.pain_empty", function(_self, _attacker, _damage)
+end)
 
 ---@param self entity
 ---@param _activator entity
 ---@return nil
-local function fd_secret_use(self, _activator)
+local fd_secret_use = quake.register_callback("doors.fd_secret_use", function(self, _activator)
     self.health = 10000
 
     -- exit if still moving around...
@@ -507,72 +507,72 @@ local function fd_secret_use(self, _activator)
     self.dest2 = self.dest1 + vectors.forward * self.t_length
     subs.calc_move(self, self.dest1, self.speed, fd_secret_move1)
     quake.sound(self, CHAN_VOICE, self.noise2, 1, ATTN_NORM)
-end
+end)
 
 -- wrapper function for fd_secret_use for use with th_pain
 ---@param self entity
 ---@param _attacker entity
 ---@param _damage number
 ---@return nil
-local function fd_secret_pain(self, _attacker, _damage)
+local fd_secret_pain = quake.register_callback("doors.fd_secret_pain", function(self, _attacker, _damage)
     fd_secret_use(self, quake.globals.activator)
-end
+end)
 
 -- Wait after first movement...
 ---@param self entity
 ---@return nil
-fd_secret_move1 = function(self)
+fd_secret_move1 = quake.register_callback("doors.fd_secret_move1", function(self)
     self.nextthink = self.ltime + 1
     self.think = fd_secret_move2
     quake.sound(self, CHAN_VOICE, self.noise3, 1, ATTN_NORM)
-end
+end)
 
 -- Start moving sideways w/sound...
 ---@param self entity
 ---@return nil
-fd_secret_move2 = function(self)
+fd_secret_move2 = quake.register_callback("doors.fd_secret_move2", function(self)
     quake.sound(self, CHAN_VOICE, self.noise2, 1, ATTN_NORM)
     subs.calc_move(self, self.dest2, self.speed, fd_secret_move3)
-end
+end)
 
 -- Wait here until time to go back...
 ---@param self entity
 ---@return nil
-fd_secret_move3 = function(self)
+fd_secret_move3 = quake.register_callback("doors.fd_secret_move3", function(self)
     quake.sound(self, CHAN_VOICE, self.noise3, 1, ATTN_NORM)
     if (self.spawnflags & SECRET_OPEN_ONCE) == 0 then
         self.nextthink = self.ltime + self.wait
         self.think = fd_secret_move4
     end
-end
+end)
 
 -- Move backward...
 ---@param self entity
 ---@return nil
-fd_secret_move4 = function(self)
+fd_secret_move4 = quake.register_callback("doors.fd_secret_move4", function(self)
     quake.sound(self, CHAN_VOICE, self.noise2, 1, ATTN_NORM)
     subs.calc_move(self, self.dest1, self.speed, fd_secret_move5)
-end
+end)
 
 -- Wait 1 second...
 ---@param self entity
 ---@return nil
-fd_secret_move5 = function(self)
+fd_secret_move5 = quake.register_callback("doors.fd_secret_move5", function(self)
     self.nextthink = self.ltime + 1
     self.think = fd_secret_move6
     quake.sound(self, CHAN_VOICE, self.noise3, 1, ATTN_NORM)
-end
+end)
 
 ---@param self entity
 ---@return nil
-fd_secret_move6 = function(self)
+fd_secret_move6 = quake.register_callback("doors.fd_secret_move6", function(self)
     quake.sound(self, CHAN_VOICE, self.noise2, 1, ATTN_NORM)
     subs.calc_move(self, self.oldorigin, self.speed, fd_secret_done)
-end
+end)
 
 ---@param self entity
 ---@return nil
-fd_secret_done = function(self)
+fd_secret_done = quake.register_callback("doors.fd_secret_done", function(self)
     if self.targetname == "" or (self.spawnflags & SECRET_YES_SHOOT) ~= 0 then
         self.health = 10000
         self.takedamage = DAMAGE_YES
@@ -580,22 +580,22 @@ fd_secret_done = function(self)
         self.th_die = fd_secret_use
     end
     quake.sound(self, CHAN_VOICE, self.noise3, 1, ATTN_NORM)
-end
+end)
 
 ---@param self entity
 ---@param other entity
 ---@return nil
-local function secret_blocked(self, other)
+local secret_blocked = quake.register_callback("doors.secret_blocked", function(self, other)
     if quake.time() < self.attack_finished then return end
     self.attack_finished = quake.time() + 0.5
     combat.damage(other, self, self, self.dmg)
-end
+end)
 
 ---Prints messages
 ---@param self entity
 ---@param other entity
 ---@return nil
-local function secret_touch(self, other)
+local secret_touch = quake.register_callback("doors.secret_touch", function(self, other)
     if other.classname ~= "player" then return end
     if self.attack_finished > quake.time() then return end
     self.attack_finished = quake.time() + 2
@@ -603,7 +603,7 @@ local function secret_touch(self, other)
         quake.center_print(other, self.message)
         quake.sound(other, CHAN_BODY, "misc/talk.wav", 1, ATTN_NORM)
     end
-end
+end)
 
 ---QUAKED func_door_secret (0 .5 .8) ? open_once 1st_left 1st_down no_shoot always_shoot
 ---Basic secret door. Slides back, then to the side. Angle determines direction.

@@ -352,7 +352,7 @@ end
 ---@param self entity
 ---@param other entity
 ---@return nil
-function M.missile_touch(self, other)
+M.missile_touch = quake.register_callback("weapons.missile_touch", function(self, other)
     if other == self.owner then
         -- don't explode on owner
         return
@@ -386,7 +386,7 @@ function M.missile_touch(self, other)
     quake.write_coord(MSG_BROADCAST, self.origin.z)
 
     M.become_explosion(self)
-end
+end)
 
 ---@param self entity
 ---@return nil
@@ -520,7 +520,7 @@ end
 
 ---@param self entity
 ---@return nil
-local function grenade_explode(self)
+local grenade_explode = quake.register_callback("weapons.grenade_explode", function(self)
     combat.radius_damage(self, self.owner, 120, quake.world)
 
     quake.write_byte(MSG_BROADCAST, SVC_TEMPENTITY)
@@ -530,12 +530,12 @@ local function grenade_explode(self)
     quake.write_coord(MSG_BROADCAST, self.origin.z)
 
     M.become_explosion(self)
-end
+end)
 
 ---@param self entity
 ---@param other entity
 ---@return nil
-local function grenade_touch(self, other)
+local grenade_touch = quake.register_callback("weapons.grenade_touch", function(self, other)
     if other == self.owner then
         -- don't explode on owner
         return
@@ -549,7 +549,7 @@ local function grenade_touch(self, other)
     if self.velocity == quake.vec3(0, 0, 0) then
         self.avelocity = quake.vec3(0, 0, 0)
     end
-end
+end)
 
 ---@param self entity
 ---@return nil
@@ -668,7 +668,7 @@ end
 ---@param self entity
 ---@param other entity
 ---@return nil
-spike_touch = function(self, other)
+spike_touch = quake.register_callback("weapons.spike_touch", function(self, other)
     if other == self.owner then
         return
     end
@@ -703,12 +703,12 @@ spike_touch = function(self, other)
     end
 
     quake.remove(self)
-end
+end)
 
 ---@param self entity
 ---@param other entity
 ---@return nil
-superspike_touch = function(self, other)
+superspike_touch = quake.register_callback("weapons.superspike_touch", function(self, other)
     if other == self.owner then
         return
     end
@@ -736,7 +736,7 @@ superspike_touch = function(self, other)
     end
 
     quake.remove(self)
-end
+end)
 
 --[[
 ===============================================================================

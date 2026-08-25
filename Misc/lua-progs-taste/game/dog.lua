@@ -97,7 +97,7 @@ end
 ---@param self entity
 ---@param other entity
 ---@return nil
-function dog_jump_touch(self, other)
+dog_jump_touch = quake.register_callback("dog.dog_jump_touch", function(self, other)
     if self.health <= 0 then
         return
     end
@@ -122,7 +122,7 @@ function dog_jump_touch(self, other)
     self.touch = subs.null
     self.think = dog_run
     self.nextthink = quake.time() + 0.1
-end
+end)
 
 local dog_stand = animation.loop({
     { f.stand1, ai.stand },
@@ -240,7 +240,7 @@ local dog_painb = animation.sequence({
 ---@param _attacker entity
 ---@param _damage number
 ---@return nil
-local function dog_pain_handler(self, _attacker, _damage)
+local dog_pain_handler = quake.register_callback("dog.dog_pain_handler", function(self, _attacker, _damage)
     quake.sound(self, C.CHAN_VOICE, "dog/dpain1.wav", 1, C.ATTN_NORM)
 
     if quake.random() > 0.5 then
@@ -248,7 +248,7 @@ local function dog_pain_handler(self, _attacker, _damage)
     else
         dog_painb(self)
     end
-end
+end)
 
 local dog_die = animation.hold({
     { f.death1 },
@@ -276,7 +276,7 @@ local dog_dieb = animation.hold({
 
 ---@param self entity
 ---@return nil
-local function dog_die_handler(self)
+local dog_die_handler = quake.register_callback("dog.dog_die_handler", function(self)
     -- check for gib
     if self.health < -35 then
         quake.sound(self, C.CHAN_VOICE, "player/udeath.wav", 1, C.ATTN_NORM)
@@ -296,7 +296,7 @@ local function dog_die_handler(self)
     else
         dog_dieb(self)
     end
-end
+end)
 
 --============================================================================
 
@@ -341,7 +341,7 @@ end
 
 ---@param self entity
 ---@return boolean
-local function check_attack(self)
+local check_attack = quake.register_callback("dog.check_attack", function(self)
     -- if close enough for slashing, go for it
     if check_dog_melee(self) then
         self.attack_state = C.AS_MELEE
@@ -354,7 +354,7 @@ local function check_attack(self)
     end
 
     return false
-end
+end)
 
 --===========================================================================
 

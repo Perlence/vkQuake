@@ -33,38 +33,38 @@ local button_return
 
 ---@param self entity
 ---@return nil
-local button_wait = function(self)
+local button_wait = quake.register_callback("buttons.button_wait", function(self)
     self.state = STATE_TOP
     self.nextthink = self.ltime + self.wait
     self.think = button_return
     local activator = assert(self.enemy, "button has no activator")
     subs.use_targets(self, activator)
     self.frame = 1 -- use alternate textures
-end
+end)
 
 ---@param self entity
 ---@return nil
-local function button_done(self)
+local button_done = quake.register_callback("buttons.button_done", function(self)
     self.state = STATE_BOTTOM
-end
+end)
 
 ---@param self entity
 ---@return nil
-button_return = function(self)
+button_return = quake.register_callback("buttons.button_return", function(self)
     self.state = STATE_DOWN
     subs.calc_move(self, self.pos1, self.speed, button_done)
     self.frame = 0 -- use normal textures
     if self.health ~= 0 then
         self.takedamage = DAMAGE_YES -- can be shot again
     end
-end
+end)
 
 -- do nothing, just don't ome all the way back out
 ---@param _self entity
 ---@param _other entity
 ---@return nil
-local function button_blocked(_self, _other)
-end
+local button_blocked = quake.register_callback("buttons.button_blocked", function(_self, _other)
+end)
 
 ---@param self entity
 ---@return nil
@@ -82,30 +82,30 @@ end
 ---@param self entity
 ---@param activator entity
 ---@return nil
-local function button_use(self, activator)
+local button_use = quake.register_callback("buttons.button_use", function(self, activator)
     self.enemy = activator
     button_fire(self)
-end
+end)
 
 ---@param self entity
 ---@param other entity
 ---@return nil
-local function button_touch(self, other)
+local button_touch = quake.register_callback("buttons.button_touch", function(self, other)
     if other.classname ~= "player" then
         return
     end
     self.enemy = other
     button_fire(self)
-end
+end)
 
 ---@param self entity
 ---@return nil
-local function button_killed(self)
+local button_killed = quake.register_callback("buttons.button_killed", function(self)
     self.enemy = quake.globals.damage_attacker
     self.health = self.max_health
     self.takedamage = DAMAGE_NO -- wil be reset upon return
     button_fire(self)
-end
+end)
 
 ---QUAKED func_button (0 .5 .8) ?
 ---When a button is touched, it moves some distance in the direction of it's angle, triggers all of it's targets, waits some time, then returns to it's original position where it can be triggered again.

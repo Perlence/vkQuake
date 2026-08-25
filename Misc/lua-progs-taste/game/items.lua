@@ -42,7 +42,7 @@ BE .8 .3 .4 IN COLOR ]]
 
 ---@param self entity
 ---@return nil
-local function regen(self)
+local regen = quake.register_callback("items.regen", function(self)
     -- restore original model
     quake.set_model(self, self.mdl)
     -- allow it to be touched again
@@ -51,7 +51,7 @@ local function regen(self)
     -- play respawn sound
     quake.sound(self, C.CHAN_VOICE, "items/itembk2.wav", 1, C.ATTN_NORM)
     quake.set_origin(self, self.origin)
-end
+end)
 
 ---QUAKED noclass (0 0 0) (-8 -8 -8) (8 8 8)
 ---prints a warning message when spawned
@@ -67,7 +67,7 @@ end
 ---plants the object on the floor
 ---@param self entity
 ---@return nil
-local function place_item(self)
+local place_item = quake.register_callback("items.place_item", function(self)
     -- so it can be restored on respawn
     self.mdl = self.model
     -- make extra wide
@@ -84,7 +84,7 @@ local function place_item(self)
         quake.remove(self)
         return
     end
-end
+end)
 
 ---Sets the clipping size and plants the object on the floor
 ---@param self entity
@@ -178,7 +178,7 @@ end
 ---@param self entity
 ---@param other entity
 ---@return nil
-health_touch = function(self, other)
+health_touch = quake.register_callback("items.health_touch", function(self, other)
 
     if other.classname ~= "player" then
         return
@@ -228,11 +228,11 @@ health_touch = function(self, other)
 
     -- fire all targets / killtargets
     subs.use_targets(self, other)
-end
+end)
 
 ---@param self entity
 ---@return nil
-item_megahealth_rot = function(self)
+item_megahealth_rot = quake.register_callback("items.item_megahealth_rot", function(self)
     local other = assert(self.owner, "megahealth has no owner")
 
     if other.health > other.max_health then
@@ -250,7 +250,7 @@ item_megahealth_rot = function(self)
         self.nextthink = quake.time() + 20
         self.think = regen
     end
-end
+end)
 
 --[[
 ===============================================================================
@@ -263,7 +263,7 @@ ARMOR
 ---@param self entity
 ---@param other entity
 ---@return nil
-local function armor_touch(self, other)
+local armor_touch = quake.register_callback("items.armor_touch", function(self, other)
     -- initialize variables
     local type = 0
     local bit = 0
@@ -312,7 +312,7 @@ local function armor_touch(self, other)
 
     -- fire all targets / killtargets
     subs.use_targets(self, other)
-end
+end)
 
 ---QUAKED item_armor1 (0 .5 .8) (-16 -16 0) (16 16 32)
 ---@param self entity
@@ -418,7 +418,7 @@ end
 ---@param self entity
 ---@param other entity
 ---@return nil
-local function weapon_touch(self, other)
+local weapon_touch = quake.register_callback("items.weapon_touch", function(self, other)
     local leave
 
     if (other.flags & C.FL_CLIENT) == 0 then
@@ -506,7 +506,7 @@ local function weapon_touch(self, other)
     self.think = regen
 
     subs.use_targets(self, other) -- fire all targets / killtargets
-end
+end)
 
 ---QUAKED weapon_supershotgun (0 .5 .8) (-16 -16 0) (16 16 32)
 ---@param self entity
@@ -597,7 +597,7 @@ AMMO
 ---@param self entity
 ---@param other entity
 ---@return nil
-local function ammo_touch(self, other)
+local ammo_touch = quake.register_callback("items.ammo_touch", function(self, other)
     if other.classname ~= "player" then
         return
     end
@@ -668,7 +668,7 @@ local function ammo_touch(self, other)
 
     -- fire all targets / killtargets
     subs.use_targets(self, other)
-end
+end)
 
 local WEAPON_BIG2 = 1
 
@@ -827,7 +827,7 @@ KEYS
 ---@param self entity
 ---@param other entity
 ---@return nil
-local function key_touch(self, other)
+local key_touch = quake.register_callback("items.key_touch", function(self, other)
     if other.classname ~= "player" then
         return
     end
@@ -852,7 +852,7 @@ local function key_touch(self, other)
 
     -- fire all targets / killtargets
     subs.use_targets(self, other)
-end
+end)
 
 ---@param self entity
 ---@return nil
@@ -948,7 +948,7 @@ END OF LEVEL RUNES
 ---@param self entity
 ---@param other entity
 ---@return nil
-local function sigil_touch(self, other)
+local sigil_touch = quake.register_callback("items.sigil_touch", function(self, other)
     if other.classname ~= "player" then
         return
     end
@@ -967,7 +967,7 @@ local function sigil_touch(self, other)
 
     -- fire all targets / killtargets
     subs.use_targets(self, other)
-end
+end)
 
 ---QUAKED item_sigil (0 .5 .8) (-16 -16 -24) (16 16 32) E1 E2 E3 E4
 ---End of level sigil, pick up to end episode and return to jrstart.
@@ -1014,7 +1014,7 @@ POWERUPS
 ---@param self entity
 ---@param other entity
 ---@return nil
-local function powerup_touch(self, other)
+local powerup_touch = quake.register_callback("items.powerup_touch", function(self, other)
     if other.classname ~= "player" then
         return
     end
@@ -1067,7 +1067,7 @@ local function powerup_touch(self, other)
 
     -- fire all targets / killtargets
     subs.use_targets(self, other)
-end
+end)
 
 ---QUAKED item_artifact_invulnerability (0 .5 .8) (-16 -16 -24) (16 16 32)
 ---Player is invulnerable for 30 seconds
@@ -1155,7 +1155,7 @@ PLAYER BACKPACKS
 ---@param self entity
 ---@param other entity
 ---@return nil
-local function backpack_touch(self, other)
+local backpack_touch = quake.register_callback("items.backpack_touch", function(self, other)
     if other.classname ~= "player" then
         return
     end
@@ -1249,7 +1249,7 @@ local function backpack_touch(self, other)
     end
 
     weapons.set_current_ammo(other)
-end
+end)
 
 ---@param self entity
 ---@return nil

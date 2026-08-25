@@ -68,7 +68,7 @@ local function info_intermission(_self) end
 
 ---@param self entity
 ---@return nil
-function M.set_change_parms(self)
+M.set_change_parms = quake.register_callback("client.set_change_parms", function(self)
     if self.health <= 0 then M.set_new_parms(); return end
     -- remove items
     self.items = self.items - (self.items & (IT_KEY1 | IT_KEY2 | IT_INVISIBILITY | IT_INVULNERABILITY | IT_SUIT | IT_QUAD))
@@ -84,15 +84,15 @@ function M.set_change_parms(self)
     g.parm7 = self.ammo_cells
     g.parm8 = self.weapon
     g.parm9 = self.armortype * 100
-end
+end)
 
 ---@return nil
-function M.set_new_parms()
+M.set_new_parms = quake.register_callback("client.set_new_parms", function()
     g.parm1 = IT_SHOTGUN | IT_AXE
     g.parm2, g.parm3, g.parm4 = 100, 0, 25
     g.parm5, g.parm6, g.parm7 = 0, 0, 0
     g.parm8, g.parm9 = 1, 0
-end
+end)
 
 ---@param self entity
 ---@return nil
@@ -201,7 +201,7 @@ end
 
 ---@param _self entity
 ---@return nil
-local function execute_changelevel(_self)
+local execute_changelevel = quake.register_callback("client.execute_changelevel", function(_self)
     g.intermission_running = 1
     -- enforce a wait time before allowing changelevel
     if g.deathmatch ~= 0 then g.intermission_exittime = quake.time() + 5
@@ -223,12 +223,12 @@ local function execute_changelevel(_self)
         other = quake.find(other, "classname", "player")
     end
     quake.write_byte(MSG_ALL, SVC_INTERMISSION)
-end
+end)
 
 ---@param self entity
 ---@param other entity
 ---@return nil
-local function changelevel_touch(self, other)
+local changelevel_touch = quake.register_callback("client.changelevel_touch", function(self, other)
     if other.classname ~= "player" then return end
     if quake.cvar("noexit") == 1 or (quake.cvar("noexit") == 2 and g.mapname ~= "start") then
         combat.damage(other, self, self, 50000)
@@ -248,7 +248,7 @@ local function changelevel_touch(self, other)
     -- in the middle of C movement code, so set a think time to do it
     self.think = execute_changelevel
     self.nextthink = quake.time() + 0.1
-end
+end)
 
 ---QUAKED trigger_changelevel (0.5 0.5 0.5) ? NO_INTERMISSION
 ---When the player touches this, he gets sent to the map listed in the "map" variable.  Unless the NO_INTERMISSION flag is set, the view will go to the info_intermission spot and display stats.
@@ -294,13 +294,13 @@ end
 ---Player entered the suicide command
 ---@param self entity
 ---@return nil
-function M.client_kill(self)
+M.client_kill = quake.register_callback("client.client_kill", function(self)
     quake.bprint(self.netname); quake.bprint(" suicides\n")
     player.set_suicide_frame(self)
     self.modelindex = g.modelindex_player
     self.frags = self.frags - 2 -- extra penalty
     respawn(self)
-end
+end)
 
 ---@param _v vec3
 ---@return boolean
@@ -354,7 +354,7 @@ end
 ---called each time a player is spawned
 ---@param self entity
 ---@return nil
-function M.put_client_in_server(self)
+M.put_client_in_server = quake.register_callback("client.put_client_in_server", function(self)
     local spot = select_spawn_point()
     self.classname = "player"
     self.health = 100
@@ -396,7 +396,7 @@ function M.put_client_in_server(self)
         triggers.spawn_tfog(self.origin + vectors.forward * 20)
     end
     triggers.spawn_tdeath(self.origin, self)
-end
+end)
 
 --[[
 =============================================================================
@@ -600,7 +600,7 @@ end
 ---Called every frame before physics are run
 ---@param self entity
 ---@return nil
-function M.player_pre_think(self)
+M.player_pre_think = quake.register_callback("client.player_pre_think", function(self)
     if g.intermission_running ~= 0 then
         -- otherwise a button could be missed between the think tics
         intermission_think(self)
@@ -623,7 +623,7 @@ function M.player_pre_think(self)
         self.weapon = weapons.best_weapon(self)
         weapons.set_current_ammo(self)
     end
-end
+end)
 
 ---@param self entity
 ---@param message string
@@ -713,7 +713,7 @@ end
 ---Called every frame after physics are run
 ---@param self entity
 ---@return nil
-function M.player_post_think(self)
+M.player_post_think = quake.register_callback("client.player_post_think", function(self)
     -- intermission or finale
     if self.view_ofs == quake.vec3(0, 0, 0) then return end
     if self.deadflag ~= 0 then return end
@@ -731,21 +731,21 @@ function M.player_post_think(self)
     end
     if (self.flags & FL_ONGROUND) == 0 then self.jump_flag = self.velocity.z end
     check_powerups(self)
-end
+end)
 
 ---called when a player connects to a server
 ---@param self entity
 ---@return nil
-function M.client_connect(self)
+M.client_connect = quake.register_callback("client.client_connect", function(self)
     quake.bprint(self.netname); quake.bprint(" entered the game\n")
     -- a client connecting during an intermission can cause problems
     if g.intermission_running ~= 0 then exit_intermission() end
-end
+end)
 
 ---called when a player disconnects from a server
 ---@param self entity
 ---@return nil
-function M.client_disconnect(self)
+M.client_disconnect = quake.register_callback("client.client_disconnect", function(self)
     if g.gameover ~= 0 then return end
     -- if the level end trigger has been activated, just return
     -- since they aren't *really* leaving
@@ -753,7 +753,7 @@ function M.client_disconnect(self)
     quake.bprint(self.netname); quake.bprint(" left the game with "); quake.bprint(tostring(self.frags)); quake.bprint(" frags\n")
     quake.sound(self, CHAN_BODY, "player/tornoff2.wav", 1, ATTN_NONE)
     player.set_suicide_frame(self)
-end
+end)
 
 ---called when a player dies
 ---@param targ entity

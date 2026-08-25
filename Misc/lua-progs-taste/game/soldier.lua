@@ -190,7 +190,7 @@ local army_painc = animation.sequence({
 ---@param _attacker entity
 ---@param _damage number
 ---@return nil
-local function army_pain_handler(self, _attacker, _damage)
+local army_pain_handler = quake.register_callback("soldier.army_pain_handler", function(self, _attacker, _damage)
     if self.pain_finished > quake.time() then return end
     local r = quake.random()
     if r < 0.2 then
@@ -206,7 +206,7 @@ local function army_pain_handler(self, _attacker, _damage)
         army_painc(self)
         quake.sound(self, C.CHAN_VOICE, "soldier/pain2.wav", 1, C.ATTN_NORM)
     end
-end
+end)
 
 ---@param self entity
 ---@return nil
@@ -249,7 +249,7 @@ local army_cdie = animation.hold({
 
 ---@param self entity
 ---@return nil
-local function army_die_handler(self)
+local army_die_handler = quake.register_callback("soldier.army_die_handler", function(self)
     -- check for gib
     if self.health < -35 then
         quake.sound(self, C.CHAN_VOICE, "player/udeath.wav", 1, C.ATTN_NORM)
@@ -262,7 +262,7 @@ local function army_die_handler(self)
     -- regular death
     quake.sound(self, C.CHAN_VOICE, "soldier/death1.wav", 1, C.ATTN_NORM)
     if quake.random() < 0.5 then army_die(self) else army_cdie(self) end
-end
+end)
 
 ---QUAKED monster_army (1 0 0) (-16 -16 -24) (16 16 40) Ambush
 ---@param self entity

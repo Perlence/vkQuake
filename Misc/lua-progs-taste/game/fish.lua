@@ -180,7 +180,7 @@ local f_death = animation.hold({
 -- Handle fish death, either die animation or gib.
 ---@param self entity
 ---@return nil
-local function fish_die(self)
+local fish_die = quake.register_callback("fish.fish_die", function(self)
     -- Check for gib death.
     if self.health < -20 then
         quake.sound(self, C.CHAN_VOICE, "player/udeath.wav", 1, C.ATTN_NORM)
@@ -196,7 +196,7 @@ local function fish_die(self)
 
     -- Run normal death animation.
     f_death(self)
-end
+end)
 
 local f_pain = animation.sequence({
     { f.pain1 },
@@ -214,10 +214,10 @@ local f_pain = animation.sequence({
 ---@param _attacker entity
 ---@param _damage number
 ---@return nil
-local function fish_pain(self, _attacker, _damage)
+local fish_pain = quake.register_callback("fish.fish_pain", function(self, _attacker, _damage)
     -- Fish always do pain frames.
     f_pain(self)
-end
+end)
 
 ---QUAKED monster_fish (1 0 0) (-16 -16 -24) (16 16 24) Ambush
 ---@param self entity

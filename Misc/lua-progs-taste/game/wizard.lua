@@ -100,7 +100,7 @@ local wiz_side
 
 ---@param self entity
 ---@return boolean
-local function check_attack(self)
+local check_attack = quake.register_callback("wizard.check_attack", function(self)
     local enemy_range = quake.globals.enemy_range
     if quake.time() < self.attack_finished then return false end
     if not quake.globals.enemy_vis then return false end
@@ -130,7 +130,7 @@ local function check_attack(self)
         if self.attack_state ~= C.AS_SLIDING then self.attack_state = C.AS_SLIDING; wiz_side(self) end
     end
     return false
-end
+end)
 
 ---@param self entity
 ---@return nil
@@ -154,7 +154,7 @@ FAST ATTACKS
 
 ---@param self entity
 ---@return nil
-local function wiz_fast_fire(self)
+local wiz_fast_fire = quake.register_callback("wizard.wiz_fast_fire", function(self)
     if self.owner.health > 0 then
         self.owner.effects = self.owner.effects | C.EF_MUZZLEFLASH
         quake.make_vectors(self.enemy.angles)
@@ -169,7 +169,7 @@ local function wiz_fast_fire(self)
         quake.set_size(newmis, C.VEC_ORIGIN, C.VEC_ORIGIN)
     end
     quake.remove(self)
-end
+end)
 
 ---@param self entity
 ---@return nil
@@ -292,7 +292,7 @@ local wiz_death = animation.hold({
 
 ---@param self entity
 ---@return nil
-local function wiz_die(self)
+local wiz_die = quake.register_callback("wizard.wiz_die", function(self)
     -- check for gib
     if self.health < -40 then
         quake.sound(self, C.CHAN_VOICE, "player/udeath.wav", 1, C.ATTN_NORM)
@@ -303,21 +303,21 @@ local function wiz_die(self)
         return
     end
     wiz_death(self)
-end
+end)
 
 ---@param self entity
 ---@param _attacker entity
 ---@param damage number
 ---@return nil
-local function wiz_pain_callback(self, _attacker, damage)
+local wiz_pain_callback = quake.register_callback("wizard.wiz_pain_callback", function(self, _attacker, damage)
     quake.sound(self, C.CHAN_VOICE, "wizard/wpain.wav", 1, C.ATTN_NORM)
     if quake.random() * 70 > damage then return end -- didn't flinch
     wiz_pain(self)
-end
+end)
 
 ---@param self entity
 ---@return nil
-local function wiz_missile(self) wiz_fast(self) end
+local wiz_missile = quake.register_callback("wizard.wiz_missile", function(self) wiz_fast(self) end)
 
 ---QUAKED monster_wizard (1 0 0) (-16 -16 -24) (16 16 40) Ambush
 ---@param self entity

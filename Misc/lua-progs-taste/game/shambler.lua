@@ -183,12 +183,12 @@ sham_swingr = animation.sequence({
 
 ---@param self entity
 ---@return nil
-local function sham_melee(self)
+local sham_melee = quake.register_callback("shambler.sham_melee", function(self)
     local chance = quake.random()
     if chance > 0.6 or self.health == 600 then sham_smash(self)
     elseif chance > 0.3 then sham_swingr(self)
     else sham_swingl(self) end
-end
+end)
 
 --============================================================================
 
@@ -250,14 +250,14 @@ local sham_pain = animation.sequence({
 ---@param _attacker entity
 ---@param damage number
 ---@return nil
-local function sham_pain_callback(self, _attacker, damage)
+local sham_pain_callback = quake.register_callback("shambler.sham_pain_callback", function(self, _attacker, damage)
     quake.sound(self, C.CHAN_VOICE, "shambler/shurt2.wav", 1, C.ATTN_NORM)
     if self.health <= 0 then return end -- already dying, don't go into pain frame
     if quake.random() * 400 > damage then return end -- didn't flinch
     if self.pain_finished > quake.time() then return end
     self.pain_finished = quake.time() + 2
     sham_pain(self)
-end
+end)
 
 --============================================================================
 
@@ -277,7 +277,7 @@ local sham_death = animation.hold({
 
 ---@param self entity
 ---@return nil
-local function sham_die(self)
+local sham_die = quake.register_callback("shambler.sham_die", function(self)
     -- check for gib
     if self.health < -60 then
         quake.sound(self, C.CHAN_VOICE, "player/udeath.wav", 1, C.ATTN_NORM)
@@ -290,7 +290,7 @@ local function sham_die(self)
     -- regular death
     quake.sound(self, C.CHAN_VOICE, "shambler/sdeath.wav", 1, C.ATTN_NORM)
     sham_death(self)
-end
+end)
 
 --============================================================================
 

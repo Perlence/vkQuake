@@ -90,7 +90,7 @@ OGRE
 
 ---@param self entity
 ---@return nil
-local function ogre_grenade_explode(self)
+local ogre_grenade_explode = quake.register_callback("ogre.ogre_grenade_explode", function(self)
     combat.radius_damage(self, self.owner, 40, quake.world)
     quake.sound(self, C.CHAN_VOICE, "weapons/r_exp3.wav", 1, C.ATTN_NORM)
     quake.write_byte(C.MSG_BROADCAST, C.SVC_TEMPENTITY)
@@ -103,18 +103,18 @@ local function ogre_grenade_explode(self)
     quake.set_model(self, "progs/s_explod.spr")
     self.solid = C.SOLID_NOT
     weapons.explode(self)
-end
+end)
 
 ---@param self entity
 ---@param other entity
 ---@return nil
-local function ogre_grenade_touch(self, other)
+local ogre_grenade_touch = quake.register_callback("ogre.ogre_grenade_touch", function(self, other)
     if other == self.owner then return end -- don't explode on owner
     if other.takedamage == C.DAMAGE_AIM then ogre_grenade_explode(self); return end
     -- bounce sound
     quake.sound(self, C.CHAN_VOICE, "weapons/bounce.wav", 1, C.ATTN_NORM)
     if self.velocity == quake.vec3(0, 0, 0) then self.avelocity = quake.vec3(0, 0, 0) end
-end
+end)
 
 ---@param self entity
 ---@return nil
@@ -313,7 +313,7 @@ local ogre_paine = animation.sequence({
 ---@param _attacker entity
 ---@param _damage number
 ---@return nil
-local function ogre_pain_callback(self, _attacker, _damage)
+local ogre_pain_callback = quake.register_callback("ogre.ogre_pain_callback", function(self, _attacker, _damage)
     -- don't make multiple pain sounds right after each other
     if self.pain_finished > quake.time() then return end
     quake.sound(self, C.CHAN_VOICE, "ogre/ogpain1.wav", 1, C.ATTN_NORM)
@@ -323,7 +323,7 @@ local function ogre_pain_callback(self, _attacker, _damage)
     elseif r < 0.75 then ogre_painc(self); self.pain_finished = quake.time() + 1
     elseif r < 0.88 then ogre_paind(self); self.pain_finished = quake.time() + 2
     else ogre_paine(self); self.pain_finished = quake.time() + 2 end
-end
+end)
 
 local ogre_die = animation.hold({
     { f.death1 },
@@ -357,7 +357,7 @@ local ogre_bdie = animation.hold({
 
 ---@param self entity
 ---@return nil
-local function ogre_die_callback(self)
+local ogre_die_callback = quake.register_callback("ogre.ogre_die_callback", function(self)
     -- check for gib
     if self.health < -80 then
         quake.sound(self, C.CHAN_VOICE, "player/udeath.wav", 1, C.ATTN_NORM)
@@ -369,13 +369,13 @@ local function ogre_die_callback(self)
     end
     quake.sound(self, C.CHAN_VOICE, "ogre/ogdth.wav", 1, C.ATTN_NORM)
     if quake.random() < 0.5 then ogre_die(self) else ogre_bdie(self) end
-end
+end)
 
 ---@param self entity
 ---@return nil
-local function ogre_melee(self)
+local ogre_melee = quake.register_callback("ogre.ogre_melee", function(self)
     if quake.random() > 0.5 then ogre_smash(self) else ogre_swing(self) end
-end
+end)
 
 ---QUAKED monster_ogre (1 0 0) (-32 -32 -24) (32 32 64) Ambush
 ---@param self entity

@@ -122,7 +122,7 @@ end
 ---@param self entity
 ---@param other entity
 ---@return nil
-t_movetarget = function(self, other)
+t_movetarget = quake.register_callback("ai.t_movetarget", function(self, other)
     if other.movetarget ~= self then
         return
     end
@@ -147,7 +147,7 @@ t_movetarget = function(self, other)
         self.th_stand(self)
         return
     end
-end
+end)
 
 quake.register_entity("path_corner", path_corner)
 
@@ -265,7 +265,7 @@ end
 
 ---@param self entity
 ---@return nil
-function M.found_target(self)
+M.found_target = quake.register_callback("ai.found_target", function(self)
     if self.enemy.classname == "player" then
         -- let other monsters see this monster for a while
         quake.globals.sight_entity = self
@@ -276,7 +276,7 @@ function M.found_target(self)
 
     sight_sound(self)
     hunt_target(self)
-end
+end)
 
 ---Self is currently not attacking anything, so try to find a target
 ---

@@ -31,14 +31,14 @@ local calc_angle_move
 
 ---@param _self entity
 ---@return nil
-function M.null(_self)
-end
+M.null = quake.register_callback("subs.null", function(_self)
+end)
 
 ---@param self entity
 ---@return nil
-function M.remove(self)
+M.remove = quake.register_callback("subs.remove", function(self)
     quake.remove(self)
-end
+end)
 
 ---QuakeEd only writes a single float for angles (bad idea), so up and down are
 ---just constant angles.
@@ -137,14 +137,14 @@ end
 ---After moving, set origin to exact final destination
 ---@param self entity
 ---@return nil
-calc_move_done = function(self)
+calc_move_done = quake.register_callback("subs.calc_move_done", function(self)
     quake.set_origin(self, self.finaldest)
     self.velocity = quake.vec3(0, 0, 0)
     self.nextthink = -1
     if self.think1 then
         self.think1(self)
     end
-end
+end)
 
 --[[
 =============
@@ -200,14 +200,14 @@ end
 ---After rotating, set angle to exact final angle
 ---@param self entity
 ---@return nil
-calc_angle_move_done = function(self)
+calc_angle_move_done = quake.register_callback("subs.calc_angle_move_done", function(self)
     self.angles = self.finalangle
     self.avelocity = quake.vec3(0, 0, 0)
     self.nextthink = -1
     if self.think1 then
         self.think1(self)
     end
-end
+end)
 
 --=============================================================================
 
@@ -215,10 +215,10 @@ local delay_think
 
 ---@param self entity
 ---@return nil
-delay_think = function(self)
+delay_think = quake.register_callback("subs.delay_think", function(self)
     M.use_targets(self, self.enemy)
     quake.remove(self)
-end
+end)
 
 ---the global "activator" should be set to the entity that initiated the firing.
 ---
@@ -235,7 +235,7 @@ end
 ---@param self entity
 ---@param activator entity
 ---@return nil
-function M.use_targets(self, activator)
+M.use_targets = quake.register_callback("subs.use_targets", function(self, activator)
     -- check for a delay
     if self.delay ~= 0 then
         -- create a temp object to fire at a later time
@@ -285,7 +285,7 @@ function M.use_targets(self, activator)
             end
         end
     end
-end
+end)
 
 ---in nightmare mode, all attack_finished times become 0
 ---some monsters refire twice automatically

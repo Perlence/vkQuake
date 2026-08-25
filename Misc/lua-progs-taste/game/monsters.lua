@@ -43,7 +43,7 @@ local M = {}
 ---@param self entity
 ---@param activator entity
 ---@return nil
-local function use(self, activator)
+local use = quake.register_callback("monsters.use", function(self, activator)
     if self.enemy then
         return
     end
@@ -65,7 +65,7 @@ local function use(self, activator)
     self.enemy = activator
     self.nextthink = quake.time() + 0.1
     self.think = ai.found_target
-end
+end)
 
 ---When a mosnter dies, it fires all of its targets with the current
 ---enemy as activator.
@@ -91,7 +91,7 @@ end
 
 ---@param self entity
 ---@return nil
-local function walk_start_go(self)
+local walk_start_go = quake.register_callback("monsters.walk_start_go", function(self)
     -- raise off floor a bit
     self.origin = quake.vec3(self.origin.x, self.origin.y, self.origin.z + 1)
     quake.drop_to_floor(self)
@@ -136,21 +136,21 @@ local function walk_start_go(self)
 
     -- spread think times so they don't all happen at same time
     self.nextthink = self.nextthink + quake.random() * 0.5
-end
+end)
 
 ---@param self entity
 ---@return nil
-function M.walk_start(self)
+M.walk_start = quake.register_callback("monsters.walk_start", function(self)
     -- delay drop to floor to make sure all doors have been spawned
     -- spread think times so they don't all happen at same time
     self.nextthink = self.nextthink + quake.random() * 0.5
     self.think = walk_start_go
     quake.globals.total_monsters = quake.globals.total_monsters + 1
-end
+end)
 
 ---@param self entity
 ---@return nil
-local function fly_start_go(self)
+local fly_start_go = quake.register_callback("monsters.fly_start_go", function(self)
     self.takedamage = C.DAMAGE_AIM
 
     self.ideal_yaw = self.angles.y
@@ -188,7 +188,7 @@ local function fly_start_go(self)
         self.pausetime = 99999999
         self.th_stand(self)
     end
-end
+end)
 
 ---@param self entity
 ---@return nil
@@ -201,7 +201,7 @@ end
 
 ---@param self entity
 ---@return nil
-local function swim_start_go(self)
+local swim_start_go = quake.register_callback("monsters.swim_start_go", function(self)
     if quake.cvar("deathmatch") ~= 0 then
         quake.remove(self)
         return
@@ -237,7 +237,7 @@ local function swim_start_go(self)
 
     -- spread think times so they don't all happen at same time
     self.nextthink = self.nextthink + quake.random() * 0.5
-end
+end)
 
 ---@param self entity
 ---@return nil

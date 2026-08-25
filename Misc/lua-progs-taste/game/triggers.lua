@@ -48,13 +48,13 @@ local SPAWNFLAG_NOTOUCH = 1
 -- the wait time has passed, so set back up for another activation
 ---@param self entity
 ---@return nil
-local function multi_wait(self)
+local multi_wait = quake.register_callback("triggers.multi_wait", function(self)
     if self.max_health ~= 0 then
         self.health = self.max_health
         self.takedamage = DAMAGE_YES
         self.solid = SOLID_BBOX
     end
-end
+end)
 
 -- the trigger was just touched/killed/used
 -- self.enemy should be set to the activator so it can be held through a delay
@@ -95,23 +95,23 @@ end
 
 ---@param self entity
 ---@return nil
-local function multi_killed(self)
+local multi_killed = quake.register_callback("triggers.multi_killed", function(self)
     self.enemy = quake.globals.damage_attacker
     multi_trigger(self)
-end
+end)
 
 ---@param self entity
 ---@param activator entity
 ---@return nil
-local function multi_use(self, activator)
+local multi_use = quake.register_callback("triggers.multi_use", function(self, activator)
     self.enemy = activator
     multi_trigger(self)
-end
+end)
 
 ---@param self entity
 ---@param other entity
 ---@return nil
-local function multi_touch(self, other)
+local multi_touch = quake.register_callback("triggers.multi_touch", function(self, other)
     if other.classname ~= "player" then return end
 
     -- if the trigger has an angles field, check player's facing direction
@@ -125,7 +125,7 @@ local function multi_touch(self, other)
 
     self.enemy = other
     multi_trigger(self)
-end
+end)
 
 ---QUAKED trigger_multiple (.5 .5 .5) ? notouch
 ---Variable sized repeatable trigger. Must be targeted at one or more entities. If "health" is set, the trigger must be killed to activate each time.
@@ -229,7 +229,7 @@ end
 ---@param self entity
 ---@param activator entity
 ---@return nil
-local function counter_use(self, activator)
+local counter_use = quake.register_callback("triggers.counter_use", function(self, activator)
     self.count = self.count - 1
     if self.count < 0 then return end
 
@@ -248,7 +248,7 @@ local function counter_use(self, activator)
     end
     self.enemy = activator
     multi_trigger(self)
-end
+end)
 
 ---QUAKED trigger_counter (.5 .5 .5) ? nomessage
 ---Acts as an intermediary for an action that takes multiple inputs.
@@ -276,7 +276,7 @@ local PLAYER_ONLY, SILENT = 1, 2
 
 ---@param self entity
 ---@return nil
-local function play_teleport(self)
+local play_teleport = quake.register_callback("triggers.play_teleport", function(self)
     local v = quake.random() * 5
     local tmpstr
     if v < 1 then tmpstr = "misc/r_tele1.wav"
@@ -286,7 +286,7 @@ local function play_teleport(self)
     else tmpstr = "misc/r_tele5.wav" end
     quake.sound(self, CHAN_VOICE, tmpstr, 1, ATTN_NORM)
     quake.remove(self)
-end
+end)
 
 ---@param org vec3
 ---@return nil
@@ -306,7 +306,7 @@ end
 ---@param self entity
 ---@param other entity
 ---@return nil
-local function tdeath_touch(self, other)
+local tdeath_touch = quake.register_callback("triggers.tdeath_touch", function(self, other)
     if other == self.owner then return end
 
     -- frag anyone who teleports in on top of an invincible player
@@ -319,7 +319,7 @@ local function tdeath_touch(self, other)
         end
     end
     if other.health ~= 0 then combat.damage(other, self, self, 50000) end
-end
+end)
 
 ---@param org vec3
 ---@param death_owner entity
@@ -343,7 +343,7 @@ end
 ---@param self entity
 ---@param other entity
 ---@return nil
-local function teleport_touch(self, other)
+local teleport_touch = quake.register_callback("triggers.teleport_touch", function(self, other)
     if self.targetname ~= "" then
         if self.nextthink < quake.time() then return end -- not fired yet
     end
@@ -386,7 +386,7 @@ local function teleport_touch(self, other)
         other.velocity = vectors.forward * 300
     end
     other.flags = other.flags - (other.flags & FL_ONGROUND)
-end
+end)
 
 ---QUAKED info_teleport_destination (.5 .5 .5) (-8 -8 -8) (8 8 32)
 ---This is the destination marker for a teleporter. It should have a "targetname" field with the same value as a teleporter's "target" field.
@@ -404,11 +404,11 @@ end
 ---@param self entity
 ---@param _activator entity
 ---@return nil
-local function teleport_use(self, _activator)
+local teleport_use = quake.register_callback("triggers.teleport_use", function(self, _activator)
     self.nextthink = quake.time() + 0.2
     quake.globals.force_retouch = 2 -- make sure even still objects get hit
     self.think = subs.null
-end
+end)
 
 ---QUAKED trigger_teleport (.5 .5 .5) ? PLAYER_ONLY SILENT
 ---Any object touching this will be transported to the corresponding info_teleport_destination entity. You must set the "target" field, and create an object with a "targetname" field that matches.
@@ -441,11 +441,11 @@ trigger_setskill
 ---@param self entity
 ---@param other entity
 ---@return nil
-local function trigger_skill_touch(self, other)
+local trigger_skill_touch = quake.register_callback("triggers.trigger_skill_touch", function(self, other)
     if other.classname ~= "player" then return end
     quake.cvar_set("skill", self.message)
     quake.globals.skill = tonumber(self.message) or 0
-end
+end)
 
 ---QUAKED trigger_setskill (.5 .5 .5) ?
 ---sets skill level to the value of "message".
@@ -468,7 +468,7 @@ ONLY REGISTERED TRIGGERS
 ---@param self entity
 ---@param other entity
 ---@return nil
-local function trigger_onlyregistered_touch(self, other)
+local trigger_onlyregistered_touch = quake.register_callback("triggers.trigger_onlyregistered_touch", function(self, other)
     if other.classname ~= "player" then return end
     if self.attack_finished > quake.time() then return end
 
@@ -481,7 +481,7 @@ local function trigger_onlyregistered_touch(self, other)
         quake.center_print(other, self.message)
         quake.sound(other, CHAN_BODY, "misc/talk.wav", 1, ATTN_NORM)
     end
-end
+end)
 
 ---QUAKED trigger_onlyregistered (.5 .5 .5) ?
 ---Only fires if playing the registered version, otherwise prints the message
@@ -497,22 +497,22 @@ end
 
 ---@param self entity
 ---@return nil
-local function hurt_on(self)
+local hurt_on = quake.register_callback("triggers.hurt_on", function(self)
     self.solid = SOLID_TRIGGER
     self.nextthink = -1
-end
+end)
 
 ---@param self entity
 ---@param other entity
 ---@return nil
-local function hurt_touch(self, other)
+local hurt_touch = quake.register_callback("triggers.hurt_touch", function(self, other)
     if other.takedamage ~= 0 then
         self.solid = SOLID_NOT
         combat.damage(other, self, self, self.dmg)
         self.think = hurt_on
         self.nextthink = quake.time() + 1
     end
-end
+end)
 
 ---QUAKED trigger_hurt (.5 .5 .5) ?
 ---Any object touching this will be hurt
@@ -533,7 +533,7 @@ local PUSH_ONCE = 1
 ---@param self entity
 ---@param other entity
 ---@return nil
-local function trigger_push_touch(self, other)
+local trigger_push_touch = quake.register_callback("triggers.trigger_push_touch", function(self, other)
     if other.classname == "grenade" then
         other.velocity = self.movedir * self.speed * 10
     elseif other.health > 0 then
@@ -544,7 +544,7 @@ local function trigger_push_touch(self, other)
         end
     end
     if (self.spawnflags & PUSH_ONCE) ~= 0 then quake.remove(self) end
-end
+end)
 
 ---QUAKED trigger_push (.5 .5 .5) ? PUSH_ONCE
 ---Pushes the player
@@ -562,7 +562,7 @@ end
 ---@param self entity
 ---@param other entity
 ---@return nil
-local function trigger_monsterjump_touch(self, other)
+local trigger_monsterjump_touch = quake.register_callback("triggers.trigger_monsterjump_touch", function(self, other)
     if (other.flags & (FL_MONSTER | FL_FLY | FL_SWIM)) ~= FL_MONSTER then return end
 
     -- set XY even if not on ground, so the jump will clear lips
@@ -570,7 +570,7 @@ local function trigger_monsterjump_touch(self, other)
     if (other.flags & FL_ONGROUND) == 0 then return end
     other.flags = other.flags - FL_ONGROUND
     other.velocity = quake.vec3(other.velocity.x, other.velocity.y, self.height)
-end
+end)
 
 ---QUAKED trigger_monsterjump (.5 .5 .5) ?
 ---Walking monsters that touch this will jump in the direction of the trigger's angle

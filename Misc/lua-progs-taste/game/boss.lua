@@ -279,7 +279,7 @@ end
 ---@param self entity
 ---@param activator entity
 ---@return nil
-local function boss_awake(self, activator)
+local boss_awake = quake.register_callback("boss.boss_awake", function(self, activator)
     self.solid = C.SOLID_SLIDEBOX
     self.movetype = C.MOVETYPE_STEP
     self.takedamage = C.DAMAGE_NO
@@ -303,7 +303,7 @@ local function boss_awake(self, activator)
 
     self.yaw_speed = 20
     boss_rise(self)
-end
+end)
 
 ---QUAKED monster_boss (1 0 0) (-128 -128 -24) (128 128 256)
 ---@param self entity
@@ -365,11 +365,12 @@ local function lightning_fire(self)
     quake.write_coord(C.MSG_ALL, p2.y)
     quake.write_coord(C.MSG_ALL, p2.z)
 end
+quake.register_callback("boss.lightning_fire", lightning_fire)
 
 ---@param self entity
 ---@param activator entity
 ---@return nil
-local function lightning_use(self, activator)
+local lightning_use = quake.register_callback("boss.lightning_use", function(self, activator)
     if quake.globals.lightning_end >= quake.time() + 1 then
         return
     end
@@ -414,7 +415,7 @@ local function lightning_use(self, activator)
             boss_shockc(boss)
         end
     end
-end
+end)
 
 ---QUAKED event_lightning (0 1 1) (-16 -16 -16) (16 16 16)
 ---Just for boss level.

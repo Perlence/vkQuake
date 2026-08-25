@@ -63,27 +63,27 @@ end
 
 ---@param self entity
 ---@return nil
-local function plat_hit_top(self)
+local plat_hit_top = quake.register_callback("plats.plat_hit_top", function(self)
     quake.sound(self, CHAN_VOICE, self.noise1, 1, ATTN_NORM)
     self.state = STATE_TOP
     self.think = plat_go_down
     self.nextthink = self.ltime + 3
-end
+end)
 
 ---@param self entity
 ---@return nil
-local function plat_hit_bottom(self)
+local plat_hit_bottom = quake.register_callback("plats.plat_hit_bottom", function(self)
     quake.sound(self, CHAN_VOICE, self.noise1, 1, ATTN_NORM)
     self.state = STATE_BOTTOM
-end
+end)
 
 ---@param self entity
 ---@return nil
-plat_go_down = function(self)
+plat_go_down = quake.register_callback("plats.plat_go_down", function(self)
     quake.sound(self, CHAN_VOICE, self.noise, 1, ATTN_NORM)
     self.state = STATE_DOWN
     subs.calc_move(self, self.pos2, self.speed, plat_hit_bottom)
-end
+end)
 
 ---@param self entity
 ---@return nil
@@ -96,7 +96,7 @@ end
 ---@param self entity
 ---@param other entity
 ---@return nil
-plat_center_touch = function(self, other)
+plat_center_touch = quake.register_callback("plats.plat_center_touch", function(self, other)
     if other.classname ~= "player" then
         return
     end
@@ -112,7 +112,7 @@ plat_center_touch = function(self, other)
         -- delay going down
         self.nextthink = self.ltime + 1
     end
-end
+end)
 
 ---@param self entity
 ---@param other entity
@@ -135,18 +135,18 @@ end
 ---@param self entity
 ---@param _activator entity
 ---@return nil
-local plat_trigger_use = function(self, _activator)
+local plat_trigger_use = quake.register_callback("plats.plat_trigger_use", function(self, _activator)
     if self.think then
         -- allready activated
         return
     end
     plat_go_down(self)
-end
+end)
 
 ---@param self entity
 ---@param other entity
 ---@return nil
-local plat_crush = function(self, other)
+local plat_crush = quake.register_callback("plats.plat_crush", function(self, other)
     combat.damage(other, self, self, 1)
 
     if self.state == STATE_UP then
@@ -156,18 +156,18 @@ local plat_crush = function(self, other)
     else
         quake.object_error(self, "plat_crush: bad self.state\n")
     end
-end
+end)
 
 ---@param self entity
 ---@param _activator entity
 ---@return nil
-local function plat_use(self, _activator)
+local plat_use = quake.register_callback("plats.plat_use", function(self, _activator)
     self.use = subs.null
     if self.state ~= STATE_UP then
         quake.object_error(self, "plat_use: not in up state")
     end
     plat_go_down(self)
-end
+end)
 
 ---QUAKED func_plat (0 .5 .8) ? PLAT_LOW_TRIGGER
 ---speed default 150
@@ -254,28 +254,28 @@ local train_next, func_train_find
 ---@param self entity
 ---@param other entity
 ---@return nil
-local function train_blocked(self, other)
+local train_blocked = quake.register_callback("plats.train_blocked", function(self, other)
     if quake.time() < self.attack_finished then
         return
     end
     self.attack_finished = quake.time() + 0.5
     combat.damage(other, self, self, self.dmg)
-end
+end)
 
 ---@param self entity
 ---@param _activator entity
 ---@return nil
-local function train_use(self, _activator)
+local train_use = quake.register_callback("plats.train_use", function(self, _activator)
     if self.think ~= func_train_find then
         -- already activated
         return
     end
     train_next(self)
-end
+end)
 
 ---@param self entity
 ---@return nil
-local function train_wait(self)
+local train_wait = quake.register_callback("plats.train_wait", function(self)
     if self.wait ~= 0 then
         self.nextthink = self.ltime + self.wait
         quake.sound(self, CHAN_VOICE, self.noise, 1, ATTN_NORM)
@@ -284,11 +284,11 @@ local function train_wait(self)
     end
 
     self.think = train_next
-end
+end)
 
 ---@param self entity
 ---@return nil
-train_next = function(self)
+train_next = quake.register_callback("plats.train_next", function(self)
     local targ = quake.find(quake.world, "targetname", self.target)
     if not targ then
         quake.object_error(self, "train_next: no next target")
@@ -305,11 +305,11 @@ train_next = function(self)
     end
     quake.sound(self, CHAN_VOICE, self.noise1, 1, ATTN_NORM)
     subs.calc_move(self, targ.origin - self.mins, self.speed, train_wait)
-end
+end)
 
 ---@param self entity
 ---@return nil
-func_train_find = function(self)
+func_train_find = quake.register_callback("plats.func_train_find", function(self)
     local targ = assert(quake.find(quake.world, "targetname", self.target), "train has no initial target")
     self.target = targ.target
     quake.set_origin(self, targ.origin - self.mins)
@@ -318,7 +318,7 @@ func_train_find = function(self)
         self.nextthink = self.ltime + 0.1
         self.think = train_next
     end
-end
+end)
 
 ---QUAKED func_train (0 .5 .8) ?
 ---Trains are moving platforms that players can ride.

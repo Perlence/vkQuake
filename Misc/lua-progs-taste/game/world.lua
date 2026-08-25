@@ -41,7 +41,7 @@ local function init_body_que()
 end
 
 ---@return nil
-function M.main()
+M.main = quake.register_callback("world.main", function()
     quake.dprint("main function\n")
 
     -- these are just commands the the prog compiler to copy these files
@@ -94,7 +94,7 @@ function M.main()
     for map = 1, 8 do quake.precache_file2("maps/e4m" .. map .. ".bsp") end
     quake.precache_file2("maps/end.bsp")
     for map = 1, 6 do quake.precache_file2("maps/dm" .. map .. ".bsp") end
-end
+end)
 
 --=======================
 --[[QUAKED worldspawn (0 0 0) ?
@@ -204,11 +204,11 @@ local function worldspawn(self)
 end
 
 ---@return nil
-function M.start_frame()
+M.start_frame = quake.register_callback("world.start_frame", function()
     g.teamplay = quake.cvar("teamplay")
     g.skill = quake.cvar("skill")
     g.framecount = g.framecount + 1
-end
+end)
 
 --[[
 ==============================================================================

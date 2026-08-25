@@ -151,9 +151,11 @@ function quake.precache_sound(path) end
 ---@return number
 function quake.random() end
 
----@param callback function
+---@generic T: function
 ---@param identifier string
-function quake.register_callback(callback, identifier) end
+---@param callback T
+---@return T callback
+function quake.register_callback(identifier, callback) end
 
 ---@param classname string
 ---@param spawn_function fun(self: entity)

@@ -162,14 +162,14 @@ local demon1_pain = animation.sequence({
 ---@param _attacker entity
 ---@param damage number
 ---@return nil
-local function demon1_pain_handler(self, _attacker, damage)
+local demon1_pain_handler = quake.register_callback("demon.demon1_pain_handler", function(self, _attacker, damage)
     if self.touch == demon_jump_touch then return end
     if self.pain_finished > quake.time() then return end
     self.pain_finished = quake.time() + 1
     quake.sound(self, C.CHAN_VOICE, "demon/dpain1.wav", 1, C.ATTN_NORM)
     if quake.random() * 200 > damage then return end -- didn't flinch
     demon1_pain(self)
-end
+end)
 
 local demon1_die = animation.hold({
     { f.death1, function(self) quake.sound(self, C.CHAN_VOICE, "demon/ddeath.wav", 1, C.ATTN_NORM) end },
@@ -185,7 +185,7 @@ local demon1_die = animation.hold({
 
 ---@param self entity
 ---@return nil
-local function demon_die(self)
+local demon_die = quake.register_callback("demon.demon_die", function(self)
     -- check for gib
     if self.health < -80 then
         quake.sound(self, C.CHAN_VOICE, "player/udeath.wav", 1, C.ATTN_NORM)
@@ -197,11 +197,11 @@ local function demon_die(self)
     end
     -- regular death
     demon1_die(self)
-end
+end)
 
 ---@param self entity
 ---@return nil
-local function demon_melee_attack(self) demon1_atta(self) end
+local demon_melee_attack = quake.register_callback("demon.demon_melee_attack", function(self) demon1_atta(self) end)
 
 ---QUAKED monster_demon1 (1 0 0) (-32 -32 -24) (32 32 64) Ambush
 ---@param self entity
@@ -267,7 +267,7 @@ end
 
 ---@param self entity
 ---@return boolean
-check_attack = function(self)
+check_attack = quake.register_callback("demon.check_attack", function(self)
     -- if close enough for slashing, go for it
     if check_demon_melee(self) then self.attack_state = C.AS_MELEE; return true end
     if check_demon_jump(self) then
@@ -276,7 +276,7 @@ check_attack = function(self)
         return true
     end
     return false
-end
+end)
 
 --===========================================================================
 
@@ -299,7 +299,7 @@ end
 ---@param self entity
 ---@param other entity
 ---@return nil
-function demon_jump_touch(self, other)
+demon_jump_touch = quake.register_callback("demon.demon_jump_touch", function(self, other)
     if self.health <= 0 then return end
     if other.takedamage ~= 0 and self.velocity:length() > 400 then
         local ldmg = 40 + 10 * quake.random()
@@ -317,6 +317,6 @@ function demon_jump_touch(self, other)
     self.touch = subs.null
     self.think = demon1_jump_land
     self.nextthink = quake.time() + 0.1
-end
+end)
 
 quake.register_entity("monster_demon1", spawn)

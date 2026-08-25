@@ -90,51 +90,36 @@ static void LP_RegisterFunction (lua_State *L, int index)
 
 static int LP_RegisterCallback (lua_State *L)
 {
-	const char *identifier;
+	const char *identifier = luaL_checkstring (L, 1);
 	char		name[1024];
-	luaL_checktype (L, 1, LUA_TFUNCTION);
-	identifier = luaL_checkstring (L, 2);
-	q_snprintf (name, sizeof (name), "lua:callback:%s", identifier);
+	luaL_checktype (L, 2, LUA_TFUNCTION);
+	q_snprintf (name, sizeof (name), "lua:%s", identifier);
 
 	lua_rawgeti (L, LUA_REGISTRYINDEX, lp_functions_ref);
 	lua_pushstring (L, name);
-	lua_pushvalue (L, 1);
+	lua_pushvalue (L, 2);
 	lua_settable (L, -3);
 	lua_pop (L, 1);
 
 	lua_rawgeti (L, LUA_REGISTRYINDEX, lp_function_names_ref);
-	lua_pushvalue (L, 1);
+	lua_pushvalue (L, 2);
 	lua_pushstring (L, name);
 	lua_settable (L, -3);
 	lua_pop (L, 1);
-	return 0;
+	lua_pushvalue (L, 2);
+	return 1;
 }
 
-static void LP_RegisterTableFunctions (lua_State *L, int index)
+static qboolean LP_IsRegisteredCallback (lua_State *L, int index)
 {
+	qboolean registered;
 	index = lua_absindex (L, index);
-	lua_pushnil (L);
-	while (lua_next (L, index))
-	{
-		if (lua_isfunction (L, -1))
-			LP_RegisterFunction (L, -1);
-		lua_pop (L, 1);
-	}
-}
-
-static void LP_ModuleReturnHook (lua_State *L, lua_Debug *info)
-{
-	int i;
-	if (info->event != LUA_HOOKRET || !lua_getinfo (L, "S", info) || !strstr (info->source, "lua/"))
-		return;
-	for (i = 1; lua_getlocal (L, info, i); ++i)
-	{
-		if (lua_isfunction (L, -1))
-			LP_RegisterFunction (L, -1);
-		else if (lua_istable (L, -1))
-			LP_RegisterTableFunctions (L, -1);
-		lua_pop (L, 1);
-	}
+	lua_rawgeti (L, LUA_REGISTRYINDEX, lp_function_names_ref);
+	lua_pushvalue (L, index);
+	lua_gettable (L, -2);
+	registered = lua_isstring (L, -1);
+	lua_pop (L, 2);
+	return registered;
 }
 
 const char *LP_GetFunctionName (func_t function)
@@ -431,6 +416,8 @@ static void LP_SetValue (lua_State *L, int index, int type, eval_t *value)
 		else
 		{
 			luaL_checktype (L, index, LUA_TFUNCTION);
+			if ((!lua_iscfunction (L, index) || lua_tocfunction (L, index) != LP_CallQC) && !LP_IsRegisteredCallback (L, index))
+				luaL_error (L, "cannot store an unregistered Lua callback");
 			value->function = LP_StoreFunction (L, index);
 		}
 		break;
@@ -1174,12 +1161,10 @@ qboolean LP_Init (void)
 	lp_functions_ref = luaL_ref (lp_state, LUA_REGISTRYINDEX);
 	lua_newtable (lp_state);
 	lp_function_names_ref = luaL_ref (lp_state, LUA_REGISTRYINDEX);
-	lua_sethook (lp_state, LP_ModuleReturnHook, LUA_MASKRET, 0);
 	lua_getglobal (lp_state, "require");
 	lua_pushstring (lp_state, "game.init");
 	if (lua_pcall (lp_state, 1, 1, 0) != LUA_OK)
 		LP_Error ("loading game.init");
-	lua_sethook (lp_state, NULL, 0, 0);
 
 	lua_pop (lp_state, 1);
 	lp_active = true;

@@ -145,7 +145,7 @@ local shal_death = animation.hold({
 ---@param _attacker entity
 ---@param _damage number
 ---@return nil
-local function shalrath_pain(self, _attacker, _damage)
+local shalrath_pain = quake.register_callback("shalrath.shalrath_pain", function(self, _attacker, _damage)
     if self.pain_finished > quake.time() then
         return
     end
@@ -153,11 +153,11 @@ local function shalrath_pain(self, _attacker, _damage)
     quake.sound(self, C.CHAN_VOICE, "shalrath/pain.wav", 1, C.ATTN_NORM)
     shal_pain(self)
     self.pain_finished = quake.time() + 3
-end
+end)
 
 ---@param self entity
 ---@return nil
-local function shalrath_die(self)
+local shalrath_die = quake.register_callback("shalrath.shalrath_die", function(self)
     -- check for gib
     if self.health < -90 then
         quake.sound(self, C.CHAN_VOICE, "player/udeath.wav", 1, C.ATTN_NORM)
@@ -171,7 +171,7 @@ local function shalrath_die(self)
     quake.sound(self, C.CHAN_VOICE, "shalrath/death.wav", 1, C.ATTN_NORM)
     shal_death(self)
     self.solid = C.SOLID_NOT
-end
+end)
 
 --[[
 ================
@@ -214,7 +214,7 @@ end
 
 ---@param self entity
 ---@return nil
-shal_home = function(self)
+shal_home = quake.register_callback("shalrath.shal_home", function(self)
     local vtemp = self.enemy.origin + quake.vec3(0, 0, 10)
     if self.enemy.health < 1 then
         quake.remove(self)
@@ -228,12 +228,12 @@ shal_home = function(self)
     end
     self.nextthink = quake.time() + 0.2
     self.think = shal_home
-end
+end)
 
 ---@param self entity
 ---@param other entity
 ---@return nil
-shal_missile_touch = function(self, other)
+shal_missile_touch = quake.register_callback("shalrath.shal_missile_touch", function(self, other)
     if other == self.owner then
         -- don't explode on owner
         return
@@ -256,7 +256,7 @@ shal_missile_touch = function(self, other)
     quake.set_model(self, "progs/s_explod.spr")
     self.solid = C.SOLID_NOT
     weapons.explode(self)
-end
+end)
 
 --=================================================================
 
