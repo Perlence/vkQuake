@@ -4,7 +4,8 @@
 local quake = require("quake")
 
 ---@alias animation.frame_descriptor [integer, fun(self: entity)?]
----@alias animation.next_state_resolver fun(): function
+---@alias animation.frame_function fun(self: entity)
+---@alias animation.next_state_resolver fun(): animation.frame_function
 ---@alias animation.final_state animation.next_state_resolver|"loop"|"hold"
 
 local M = {}
@@ -34,7 +35,7 @@ local compile_sequence
 ---@param identifier string Stable identifier used to save frame callbacks
 ---@param frames animation.frame_descriptor[]
 ---@param next_state animation.next_state_resolver
----@return function first_frame
+---@return animation.frame_function first_frame
 function M.sequence(identifier, frames, next_state)
     assert(type(next_state) == "function", "an animation sequence needs a next-state resolver")
     return compile_sequence(identifier, frames, next_state)
@@ -43,7 +44,7 @@ end
 ---Creates sequential animation frames that restart after the final frame.
 ---@param identifier string Stable identifier used to save frame callbacks
 ---@param frames animation.frame_descriptor[]
----@return function first_frame
+---@return animation.frame_function first_frame
 function M.loop(identifier, frames)
     return compile_sequence(identifier, frames, "loop")
 end
@@ -51,7 +52,7 @@ end
 ---Creates sequential animation frames that remain on the final frame.
 ---@param identifier string Stable identifier used to save frame callbacks
 ---@param frames animation.frame_descriptor[]
----@return function first_frame
+---@return animation.frame_function first_frame
 function M.hold(identifier, frames)
     return compile_sequence(identifier, frames, "hold")
 end
@@ -61,7 +62,7 @@ local create_frame
 ---@param identifier string
 ---@param frames animation.frame_descriptor[]
 ---@param final_state animation.final_state
----@return function first_frame
+---@return animation.frame_function first_frame
 function compile_sequence(identifier, frames, final_state)
     assert(type(identifier) == "string" and identifier ~= "", "an animation needs a stable identifier")
     assert(type(frames) == "table" and #frames > 0, "an animation needs at least one frame")
@@ -96,7 +97,7 @@ end
 ---@param next_state animation.next_state_resolver
 ---@param action fun(self: entity)|nil
 ---@param identifier string
----@return function frame_function
+---@return animation.frame_function frame_function
 function create_frame(frame, next_state, action, identifier)
     assert(math.type(frame) == "integer", "animation frame must be an integer")
     assert(type(next_state) == "function", "an animation frame needs a next-state resolver")
