@@ -23,6 +23,7 @@
 local quake = require("quake")
 local weapons = require("game.weapons")
 
+---@class game_world
 local M = {}
 local g = quake.globals
 

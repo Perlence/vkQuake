@@ -1,18 +1,18 @@
 -- Loader for the Lua ports of GPL-licensed CleanFixedQuakeC modules.
 -- SPDX-License-Identifier: GPL-2.0-or-later
 
-local M = {}
+local quake = require("quake")
 
 -- Keep this list in progs.src order. Requiring a module performs its QuakeC
--- entity registrations. Only the entry-point modules are exported.
+-- entity registrations.
 require("game.subs")
 require("game.fight")
 require("game.ai")
 require("game.combat")
 require("game.items")
 require("game.weapons")
-M.world = require("game.world")
-M.client = require("game.client")
+local world = require("game.world")
+local client = require("game.client")
 require("game.player")
 require("game.monsters")
 require("game.doors")
@@ -38,4 +38,13 @@ require("game.shalrath")
 require("game.enforcer")
 require("game.oldone")
 
-return M
+quake.globals.main = world.main
+quake.globals.StartFrame = world.start_frame
+quake.globals.PlayerPreThink = client.player_pre_think
+quake.globals.PlayerPostThink = client.player_post_think
+quake.globals.ClientKill = client.client_kill
+quake.globals.ClientConnect = client.client_connect
+quake.globals.PutClientInServer = client.put_client_in_server
+quake.globals.ClientDisconnect = client.client_disconnect
+quake.globals.SetNewParms = client.set_new_parms
+quake.globals.SetChangeParms = client.set_change_parms

@@ -1144,20 +1144,6 @@ static void LP_CreateMetatables (lua_State *L)
 	lua_pop (L, 1);
 }
 
-static void LP_AssignEntry (lua_State *L, int modules, const char *module, const char *member, const char *global_name)
-{
-	ddef_t *global = ED_FindGlobal (global_name);
-	modules = lua_absindex (L, modules);
-	if (!global)
-		return;
-	lua_getfield (L, modules, module);
-	lua_getfield (L, -1, member);
-	if (!lua_isfunction (L, -1))
-		Host_Error ("Lua progs: game.%s.%s is not a function", module, member);
-	((eval_t *)&qcvm->globals[global->ofs])->function = LP_StoreFunction (L, -1);
-	lua_pop (L, 2);
-}
-
 qboolean LP_Init (void)
 {
 	int searchers;
@@ -1195,16 +1181,6 @@ qboolean LP_Init (void)
 		LP_Error ("loading game.init");
 	lua_sethook (lp_state, NULL, 0, 0);
 
-	LP_AssignEntry (lp_state, -1, "world", "main", "main");
-	LP_AssignEntry (lp_state, -1, "world", "start_frame", "StartFrame");
-	LP_AssignEntry (lp_state, -1, "client", "player_pre_think", "PlayerPreThink");
-	LP_AssignEntry (lp_state, -1, "client", "player_post_think", "PlayerPostThink");
-	LP_AssignEntry (lp_state, -1, "client", "client_kill", "ClientKill");
-	LP_AssignEntry (lp_state, -1, "client", "client_connect", "ClientConnect");
-	LP_AssignEntry (lp_state, -1, "client", "put_client_in_server", "PutClientInServer");
-	LP_AssignEntry (lp_state, -1, "client", "client_disconnect", "ClientDisconnect");
-	LP_AssignEntry (lp_state, -1, "client", "set_new_parms", "SetNewParms");
-	LP_AssignEntry (lp_state, -1, "client", "set_change_parms", "SetChangeParms");
 	lua_pop (lp_state, 1);
 	lp_active = true;
 	Con_Printf ("Lua progs initialized\n");

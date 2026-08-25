@@ -50,6 +50,16 @@ local trace_result = {}
 local direction_vectors = {}
 
 ---@class quake_globals
+---@field main fun()
+---@field StartFrame fun()
+---@field PlayerPreThink fun(self: entity)
+---@field PlayerPostThink fun(self: entity)
+---@field ClientKill fun(self: entity)
+---@field ClientConnect fun(self: entity)
+---@field PutClientInServer fun(self: entity)
+---@field ClientDisconnect fun(self: entity)
+---@field SetNewParms fun()
+---@field SetChangeParms fun(self: entity)
 ---@field coop number
 ---@field deathmatch number
 ---@field force_retouch number

@@ -28,6 +28,7 @@ local triggers = require("game.triggers")
 local weapons = require("game.weapons")
 local world = require("game.world")
 
+---@class game_client
 local M = {}
 local g = quake.globals
 
