@@ -43,12 +43,16 @@ static void LP_SetParmFloat (int parm, float value);
 static void LP_SetParmString (lua_State *L, int parm, int index);
 static void LP_RunBuiltin (int number, int argc);
 
+// Reports the Lua error at the top of the global state and does not return.
 static void LP_Error (const char *context)
 {
 	const char *message = lua_tostring (lp_state, -1);
 	Host_Error ("Lua progs %s: %s", context, message ? message : "unknown error");
 }
 
+// Registers and stores the function at index, returning its negative registry
+// reference.
+// [-0, +0]
 static int LP_StoreFunction (lua_State *L, int index)
 {
 	LP_RegisterFunction (L, index);
@@ -56,6 +60,9 @@ static int LP_StoreFunction (lua_State *L, int index)
 	return -luaL_ref (L, LUA_REGISTRYINDEX);
 }
 
+// Pushes the registered or debug-derived function name, returning whether a
+// name was found.
+// [-0, +0 or 1]
 static qboolean LP_PushFunctionName (lua_State *L, int index)
 {
 	lua_Debug info;
@@ -88,6 +95,8 @@ static void LP_RegisterFunction (lua_State *L, int index)
 	lua_pop (L, 1);
 }
 
+// Registers a named Lua callback, pushes the callback.
+// [-0, +1]
 static int LP_RegisterCallback (lua_State *L)
 {
 	const char *identifier = luaL_checkstring (L, 1);
@@ -110,6 +119,8 @@ static int LP_RegisterCallback (lua_State *L)
 	return 1;
 }
 
+// Checks whether the function at index is registered, returning the result.
+// [-0, +0]
 static qboolean LP_IsRegisteredCallback (lua_State *L, int index)
 {
 	qboolean registered;
@@ -122,6 +133,7 @@ static qboolean LP_IsRegisteredCallback (lua_State *L, int index)
 	return registered;
 }
 
+// Looks up a Lua function by the reference, returning its name or NULL.
 const char *LP_GetFunctionName (func_t function)
 {
 	static char name[1024];
@@ -138,6 +150,7 @@ const char *LP_GetFunctionName (func_t function)
 	return name;
 }
 
+// Looks up and stores a named Lua function, returning whether it was found.
 qboolean LP_FindFunction (const char *name, func_t *function)
 {
 	if (!lp_active || strncmp (name, "lua:", 4))
@@ -154,6 +167,8 @@ qboolean LP_FindFunction (const char *name, func_t *function)
 	return true;
 }
 
+// Pushes the numbered entity userdata or nil.
+// [-0, +1]
 static void LP_PushEntityNumber (lua_State *L, int number, qboolean allow_world)
 {
 	lp_entity_t *value;
@@ -174,11 +189,15 @@ static void LP_PushEntityNumber (lua_State *L, int number, qboolean allow_world)
 	luaL_setmetatable (L, LP_ENTITY_META);
 }
 
+// Pushes entity userdata or nil.
+// [-0, +1]
 static void LP_PushEntity (lua_State *L, edict_t *entity, qboolean allow_world)
 {
 	LP_PushEntityNumber (L, NUM_FOR_EDICT (entity), allow_world);
 }
 
+// Checks and returns the entity at index.
+// [-0, +0]
 static edict_t *LP_CheckEntity (lua_State *L, int index)
 {
 	lp_entity_t *value = luaL_checkudata (L, index, LP_ENTITY_META);
@@ -187,6 +206,8 @@ static edict_t *LP_CheckEntity (lua_State *L, int index)
 	return EDICT_NUM (value->number);
 }
 
+// Pushes vector userdata referencing existing storage.
+// [-0, +1]
 static void LP_PushVector (lua_State *L, float *value)
 {
 	lp_vector_t *vector = lua_newuserdatauv (L, sizeof (*vector), 0);
@@ -194,6 +215,8 @@ static void LP_PushVector (lua_State *L, float *value)
 	luaL_setmetatable (L, LP_VECTOR_META);
 }
 
+// Pushes vector userdata owning the given components.
+// [-0, +1]
 static void LP_PushOwnedVector (lua_State *L, float x, float y, float z)
 {
 	lp_vector_t *vector = lua_newuserdatauv (L, sizeof (*vector), 0);
@@ -204,17 +227,23 @@ static void LP_PushOwnedVector (lua_State *L, float x, float y, float z)
 	luaL_setmetatable (L, LP_VECTOR_META);
 }
 
+// Checks and returns the vector userdata at index.
+// [-0, +0]
 static lp_vector_t *LP_CheckVector (lua_State *L, int index)
 {
 	return luaL_checkudata (L, index, LP_VECTOR_META);
 }
 
+// Copies the vector at index into native storage.
+// [-0, +0]
 static void LP_CopyVector (lua_State *L, int index, float *destination)
 {
 	lp_vector_t *vector = LP_CheckVector (L, index);
 	VectorCopy (vector->value, destination);
 }
 
+// Looks up a vector component or method, pushes it.
+// [-0, +1]
 static int LP_VectorIndex (lua_State *L)
 {
 	lp_vector_t *vector = LP_CheckVector (L, 1);
@@ -235,6 +264,8 @@ static int LP_VectorIndex (lua_State *L)
 	return 1;
 }
 
+// Sets a vector component, pushes nothing.
+// [-0, +0]
 static int LP_VectorNewIndex (lua_State *L)
 {
 	lp_vector_t *vector = LP_CheckVector (L, 1);
@@ -252,6 +283,8 @@ static int LP_VectorNewIndex (lua_State *L)
 	return 0;
 }
 
+// Adds or subtracts two vectors, pushes the resulting vector.
+// [-0, +1]
 static int LP_VectorBinary (lua_State *L, int operation)
 {
 	lp_vector_t *a = LP_CheckVector (L, 1);
@@ -263,15 +296,21 @@ static int LP_VectorBinary (lua_State *L, int operation)
 	return 1;
 }
 
+// Adds two vectors, pushes the resulting vector.
+// [-0, +1]
 static int LP_VectorAdd (lua_State *L)
 {
 	return LP_VectorBinary (L, 0);
 }
+// Subtracts two vectors, pushes the resulting vector.
+// [-0, +1]
 static int LP_VectorSub (lua_State *L)
 {
 	return LP_VectorBinary (L, 1);
 }
 
+// Scales a vector, pushes the resulting vector.
+// [-0, +1]
 static int LP_VectorMul (lua_State *L)
 {
 	lp_vector_t *vector;
@@ -290,6 +329,8 @@ static int LP_VectorMul (lua_State *L)
 	return 1;
 }
 
+// Negates a vector, pushes the resulting vector.
+// [-0, +1]
 static int LP_VectorUnm (lua_State *L)
 {
 	lp_vector_t *vector = LP_CheckVector (L, 1);
@@ -297,6 +338,8 @@ static int LP_VectorUnm (lua_State *L)
 	return 1;
 }
 
+// Compares two vectors, pushes their equality.
+// [-0, +1]
 static int LP_VectorEq (lua_State *L)
 {
 	lp_vector_t *a = LP_CheckVector (L, 1), *b = LP_CheckVector (L, 2);
@@ -304,12 +347,16 @@ static int LP_VectorEq (lua_State *L)
 	return 1;
 }
 
+// Computes a vector length, pushes it.
+// [-0, +1]
 static int LP_VectorLength (lua_State *L)
 {
 	lua_pushnumber (L, VectorLength (LP_CheckVector (L, 1)->value));
 	return 1;
 }
 
+// Normalizes a vector, pushes the resulting vector.
+// [-0, +1]
 static int LP_VectorNormalized (lua_State *L)
 {
 	vec3_t value;
@@ -319,6 +366,8 @@ static int LP_VectorNormalized (lua_State *L)
 	return 1;
 }
 
+// Computes a vector dot product, pushes it.
+// [-0, +1]
 static int LP_VectorDot (lua_State *L)
 {
 	lp_vector_t *a = LP_CheckVector (L, 1), *b = LP_CheckVector (L, 2);
@@ -326,6 +375,8 @@ static int LP_VectorDot (lua_State *L)
 	return 1;
 }
 
+// Formats a vector, pushes the string.
+// [-0, +1]
 static int LP_VectorToString (lua_State *L)
 {
 	lp_vector_t *vector = LP_CheckVector (L, 1);
@@ -333,6 +384,8 @@ static int LP_VectorToString (lua_State *L)
 	return 1;
 }
 
+// Compares two entities, pushes their equality.
+// [-0, +1]
 static int LP_EntityEq (lua_State *L)
 {
 	lp_entity_t *a = luaL_checkudata (L, 1, LP_ENTITY_META), *b = luaL_checkudata (L, 2, LP_ENTITY_META);
@@ -340,6 +393,8 @@ static int LP_EntityEq (lua_State *L)
 	return 1;
 }
 
+// Formats an entity, pushes the string.
+// [-0, +1]
 static int LP_EntityToString (lua_State *L)
 {
 	lp_entity_t *entity = luaL_checkudata (L, 1, LP_ENTITY_META);
@@ -347,6 +402,8 @@ static int LP_EntityToString (lua_State *L)
 	return 1;
 }
 
+// Pushes nil, a stored Lua function, or a QuakeC closure.
+// [-0, +1]
 static void LP_PushFunction (lua_State *L, func_t function)
 {
 	if (!function)
@@ -360,6 +417,8 @@ static void LP_PushFunction (lua_State *L, func_t function)
 	}
 }
 
+// Converts a QuakeC value, pushes its Lua representation.
+// [-0, +1]
 static void LP_PushValue (lua_State *L, int type, eval_t *value, qboolean allow_world)
 {
 	switch (type & ~DEF_SAVEGLOBAL)
@@ -385,6 +444,8 @@ static void LP_PushValue (lua_State *L, int type, eval_t *value, qboolean allow_
 	}
 }
 
+// Copies the string at index into QuakeC storage, returning its offset.
+// [-0, +0]
 static int LP_CopyString (lua_State *L, int index)
 {
 	const char *source = luaL_checkstring (L, index);
@@ -394,6 +455,8 @@ static int LP_CopyString (lua_State *L, int index)
 	return result;
 }
 
+// Copies the value at index into QuakeC storage.
+// [-0, +0]
 static void LP_SetValue (lua_State *L, int index, int type, eval_t *value)
 {
 	switch (type & ~DEF_SAVEGLOBAL)
@@ -427,6 +490,8 @@ static void LP_SetValue (lua_State *L, int index, int type, eval_t *value)
 	}
 }
 
+// Copies Lua arguments into QuakeC parameters, executes the closure target.
+// [-0, +0]
 static int LP_CallQC (lua_State *L)
 {
 	const func_t function = lua_tointeger (L, lua_upvalueindex (1));
@@ -450,6 +515,8 @@ static int LP_CallQC (lua_State *L)
 	return 0;
 }
 
+// Pushes the Lua-only value table for an entity.
+// [-0, +1]
 static void LP_PushEntityValues (lua_State *L, int number)
 {
 	lua_rawgeti (L, LUA_REGISTRYINDEX, lp_entity_values_ref);
@@ -464,6 +531,8 @@ static void LP_PushEntityValues (lua_State *L, int number)
 	lua_remove (L, -2);
 }
 
+// Looks up an entity field, pushes its value.
+// [-0, +1]
 static int LP_EntityIndex (lua_State *L)
 {
 	edict_t	   *entity = LP_CheckEntity (L, 1);
@@ -480,6 +549,8 @@ static int LP_EntityIndex (lua_State *L)
 	return 1;
 }
 
+// Sets an entity field, leaves a Lua-only field table when needed.
+// [-0, +0 or 1]
 static int LP_EntityNewIndex (lua_State *L)
 {
 	edict_t	   *entity = LP_CheckEntity (L, 1);
@@ -496,6 +567,8 @@ static int LP_EntityNewIndex (lua_State *L)
 	return 0;
 }
 
+// Looks up a global, pushes its value when found.
+// [-0, +0 or 1]
 static int LP_GlobalsIndex (lua_State *L)
 {
 	const char *name = luaL_checkstring (L, 2);
@@ -517,6 +590,8 @@ static int LP_GlobalsIndex (lua_State *L)
 	return 1;
 }
 
+// Sets a global, leaves its shadow table.
+// [-0, +1]
 static int LP_GlobalsNewIndex (lua_State *L)
 {
 	const char *name = luaL_checkstring (L, 2);
@@ -654,6 +729,8 @@ static int LP_CheckClient (lua_State *L)
 	return 1;
 }
 
+// Traces a line, pushes a table of trace results.
+// [-0, +1]
 static int LP_TraceLine (lua_State *L)
 {
 	LP_SetParmVector (L, 0, 1);
@@ -683,6 +760,8 @@ static int LP_TraceLine (lua_State *L)
 	return 1;
 }
 
+// Finds and pushes the next matching entity.
+// [-0, +1]
 static int LP_Find (lua_State *L)
 {
 	ddef_t	*field;
@@ -700,6 +779,8 @@ static int LP_Find (lua_State *L)
 	return 1;
 }
 
+// Runs a string builtin, pushes its string result.
+// [-0, +1]
 static int LP_StringBuiltin (lua_State *L, int number)
 {
 	LP_SetParmString (L, 0, 1);
@@ -752,6 +833,8 @@ static int LP_CenterPrint (lua_State *L)
 	return LP_EntityStringBuiltin (L, 73);
 }
 
+// Stringifies and prints all arguments, discarding temporary strings.
+// [-0, +0]
 static int LP_PrintBuiltin (lua_State *L, int number)
 {
 	int i;
@@ -796,6 +879,8 @@ static int LP_VectorToStringBuiltin (lua_State *L)
 	return 1;
 }
 
+// Runs a builtin with a temporary self entity, pushes nothing.
+// [-0, +0]
 static int LP_SelfBuiltin (lua_State *L, int number, int has_float)
 {
 	int previous = pr_global_struct->self;
@@ -963,6 +1048,8 @@ static int LP_AmbientSound (lua_State *L)
 	return 0;
 }
 
+// Computes direction vectors, pushes them in a table.
+// [-0, +1]
 static int LP_MakeVectors (lua_State *L)
 {
 	LP_SetParmVector (L, 0, 1);
@@ -977,6 +1064,8 @@ static int LP_MakeVectors (lua_State *L)
 	return 1;
 }
 
+// Registers an entity spawn function, leaves the registry table.
+// [-0, +1]
 static int LP_RegisterEntity (lua_State *L)
 {
 	const char *name = luaL_checkstring (L, 1);
@@ -987,6 +1076,8 @@ static int LP_RegisterEntity (lua_State *L)
 	return 0;
 }
 
+// Raises an object error without returning or changing the stack first.
+// [-0, +0]
 static int LP_ObjectError (lua_State *L)
 {
 	const char *message = luaL_checkstring (L, -1);
@@ -1049,6 +1140,8 @@ static const luaL_Reg lp_quake_functions[] = {
 	{"write_string", LP_WriteString},
 	{NULL, NULL}};
 
+// Creates and pushes the quake module.
+// [-0, +1]
 static int LP_OpenQuake (lua_State *L)
 {
 	luaL_newlib (L, lp_quake_functions);
@@ -1067,6 +1160,8 @@ static int LP_OpenQuake (lua_State *L)
 	return 1;
 }
 
+// Loads a game module, pushes its chunk or an error message.
+// [-0, +1]
 static int LP_ModuleSearcher (lua_State *L)
 {
 	const char *module = luaL_checkstring (L, 1);
@@ -1092,6 +1187,8 @@ static int LP_ModuleSearcher (lua_State *L)
 	return 1;
 }
 
+// Creates the entity and vector metatables.
+// [-0, +0]
 static void LP_CreateMetatables (lua_State *L)
 {
 	luaL_newmetatable (L, LP_ENTITY_META);
@@ -1131,6 +1228,7 @@ static void LP_CreateMetatables (lua_State *L)
 	lua_pop (L, 1);
 }
 
+// Creates and initializes the global Lua state, returning success with its stack unchanged.
 qboolean LP_Init (void)
 {
 	int searchers;
@@ -1172,6 +1270,7 @@ qboolean LP_Init (void)
 	return true;
 }
 
+// Closes the global Lua state.
 void LP_Shutdown (void)
 {
 	if (lp_state)
@@ -1185,6 +1284,8 @@ void LP_Shutdown (void)
 	lp_active = false;
 }
 
+// Calls a stored Lua callback, returning whether it handled the function with
+// the global stack unchanged.
 qboolean LP_ExecuteProgram (func_t function)
 {
 	if (!lp_active || (int)function >= 0)
@@ -1197,6 +1298,8 @@ qboolean LP_ExecuteProgram (func_t function)
 	return true;
 }
 
+// Calls a registered Lua spawn function, returning whether one was found with
+// the global stack unchanged.
 qboolean LP_CallSpawn (const char *classname, edict_t *entity)
 {
 	if (!lp_active)
