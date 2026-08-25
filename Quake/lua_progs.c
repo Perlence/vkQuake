@@ -674,7 +674,11 @@ static int LP_TraceLine (lua_State *L)
 	LP_SetParmFloat (2, lua_toboolean (L, 3));
 	LP_SetParmEntity (3, LP_CheckEntity (L, 4));
 	LP_RunBuiltin (16, 4);
-	lua_createtable (L, 0, 8);
+	lua_createtable (L, 0, 9);
+	lua_pushboolean (L, pr_global_struct->trace_allsolid);
+	lua_setfield (L, -2, "all_solid");
+	lua_pushboolean (L, pr_global_struct->trace_startsolid);
+	lua_setfield (L, -2, "start_solid");
 	lua_pushnumber (L, pr_global_struct->trace_fraction);
 	lua_setfield (L, -2, "fraction");
 	lua_pushboolean (L, pr_global_struct->trace_inopen);
@@ -687,6 +691,8 @@ static int LP_TraceLine (lua_State *L)
 	lua_setfield (L, -2, "endpos");
 	LP_PushVector (L, pr_global_struct->trace_plane_normal);
 	lua_setfield (L, -2, "plane_normal");
+	lua_pushnumber (L, pr_global_struct->trace_plane_dist);
+	lua_setfield (L, -2, "plane_dist");
 	return 1;
 }
 

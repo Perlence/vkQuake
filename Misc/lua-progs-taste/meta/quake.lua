@@ -32,12 +32,15 @@ function vec3:dot(other) end
 local entity = {}
 
 ---@class trace_result
+---@field all_solid boolean
+---@field start_solid boolean
 ---@field entity entity?
 ---@field fraction number
 ---@field in_open boolean
 ---@field in_water boolean
 ---@field endpos vec3
 ---@field plane_normal vec3
+---@field plane_dist number
 local trace_result = {}
 
 ---@class direction_vectors
