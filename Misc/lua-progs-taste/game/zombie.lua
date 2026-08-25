@@ -364,9 +364,8 @@ local zombie_paind = animation.sequence({
     { f.paind13 },
 }, function() return zombie_run end)
 
-local zombie_paine
 local zombie_paine_recover
-zombie_paine = animation.sequence({
+local zombie_paine = animation.sequence({
     { f.paine1, function(self)
         quake.sound(self, C.CHAN_VOICE, "zombie/z_pain.wav", 1, C.ATTN_NORM)
         self.health = 60

@@ -30,7 +30,6 @@ local CHAN_VOICE, ATTN_NORM = 2, 1
 local PLAT_LOW_TRIGGER = 1
 
 local plat_center_touch
-local plat_go_down
 
 ---@param self entity
 ---@return nil
@@ -60,6 +59,8 @@ local function plat_spawn_inside_trigger(self)
 
     quake.set_size(trigger, tmin, tmax)
 end
+
+local plat_go_down
 
 ---@param self entity
 ---@return nil

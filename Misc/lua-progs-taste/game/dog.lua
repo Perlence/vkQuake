@@ -67,10 +67,6 @@ DOG (Rottweiler)
 ==============================================================================
 ]]
 
-local dog_leap
-local dog_run
-local dog_jump_touch
-
 ---@param self entity
 ---@return nil
 local function dog_bite(self)
@@ -94,10 +90,12 @@ local function dog_bite(self)
     combat.damage(self.enemy, self, self, ldmg)
 end
 
+local dog_leap, dog_run
+
 ---@param self entity
 ---@param other entity
 ---@return nil
-dog_jump_touch = quake.register_callback("dog.dog_jump_touch", function(self, other)
+local dog_jump_touch = quake.register_callback("dog.dog_jump_touch", function(self, other)
     if self.health <= 0 then
         return
     end

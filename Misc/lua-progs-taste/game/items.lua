@@ -141,7 +141,7 @@ one point per second.
 local H_ROTTEN = 1
 local H_MEGA = 2
 
-local health_touch, item_megahealth_rot
+local health_touch
 
 ---@param self entity
 ---@return nil
@@ -174,6 +174,8 @@ local function item_health(self)
     quake.set_size(self, quake.vec3(0, 0, 0), quake.vec3(32, 32, 56))
     start_item(self)
 end
+
+local item_megahealth_rot
 
 ---@param self entity
 ---@param other entity

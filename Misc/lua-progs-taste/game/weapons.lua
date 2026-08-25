@@ -596,7 +596,7 @@ end
 
 --=============================================================================
 
-local spike_touch, superspike_touch
+local spike_touch
 
 ---Used for both the player and the ogre
 ---@param self entity
@@ -622,6 +622,8 @@ function M.launch_spike(self, org, dir)
     newmis.velocity = dir * 1000
     return newmis
 end
+
+local superspike_touch
 
 ---@param self entity
 ---@return nil

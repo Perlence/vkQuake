@@ -189,7 +189,7 @@ end
 Lava Balls
 ]]
 
-local fire_fly, fire_touch
+local fire_fly
 
 ---@param self entity
 ---@return nil
@@ -200,6 +200,8 @@ local function misc_fireball(self)
     self.think = fire_fly
     if self.speed == 0 then self.speed = 1000 end
 end
+
+local fire_touch
 
 ---@param self entity
 ---@return nil
@@ -364,7 +366,7 @@ end
 ===============================================================================
 ]]
 
-local make_bubbles, bubble_remove, bubble_bob
+local make_bubbles
 
 ---QUAKED air_bubbles (0 .5 .8) (-8 -8 -8) (8 8 8)
 ---
@@ -380,6 +382,8 @@ local function air_bubbles(self)
     self.nextthink = quake.time() + 1
     self.think = make_bubbles
 end
+
+local bubble_remove, bubble_bob
 
 ---@param self entity
 ---@return nil

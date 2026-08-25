@@ -450,9 +450,6 @@ local SECRET_1ST_DOWN = 4 -- 1st move is down from arrow
 local SECRET_NO_SHOOT = 8 -- only opened by trigger
 local SECRET_YES_SHOOT = 16 -- shootable even if targeted
 
-local fd_secret_move1, fd_secret_move2, fd_secret_move3, fd_secret_move4,
-    fd_secret_move5, fd_secret_move6, fd_secret_done
-
 -- empty pain function
 ---@param _self entity
 ---@param _attacker entity
@@ -460,6 +457,9 @@ local fd_secret_move1, fd_secret_move2, fd_secret_move3, fd_secret_move4,
 ---@return nil
 local pain_empty = quake.register_callback("doors.pain_empty", function(_self, _attacker, _damage)
 end)
+
+local fd_secret_move1, fd_secret_move2, fd_secret_move3, fd_secret_move4,
+    fd_secret_move5, fd_secret_move6, fd_secret_done
 
 ---@param self entity
 ---@param _activator entity

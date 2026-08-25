@@ -80,8 +80,6 @@ SOLDIER CODE
 ==============================================================================
 ]]
 
-local army_fire
-
 local army_stand = animation.loop({
     { f.stand1, ai.stand },
     { f.stand2, ai.stand },
@@ -131,7 +129,7 @@ local army_run = animation.loop({
     { f.run8, function(self) ai.run(self, 8) end },
 })
 
-local army_atk
+local army_atk, army_fire
 army_atk = animation.sequence({
     { f.shoot1, function(self) fight.face(self) end },
     { f.shoot2, function(self) fight.face(self) end },

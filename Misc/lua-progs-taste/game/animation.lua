@@ -9,9 +9,6 @@ local quake = require("quake")
 
 local M = {}
 
-local compile_sequence
-local create_frame
-
 ---Creates a zero-based sequential counter.
 ---@return fun(amount: integer): (...: integer)
 function M.counter()
@@ -30,6 +27,8 @@ function M.counter()
         return table.unpack(values, 1, amount)
     end
 end
+
+local compile_sequence
 
 ---Creates sequential animation frames followed by another state.
 ---@param frames animation.frame_descriptor[]
@@ -53,6 +52,8 @@ end
 function M.hold(frames)
     return compile_sequence(frames, "hold", debug.getinfo(2, "Sl"))
 end
+
+local create_frame
 
 ---@param frames animation.frame_descriptor[]
 ---@param final_state animation.final_state

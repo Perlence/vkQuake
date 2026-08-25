@@ -90,10 +90,6 @@ KNIGHT (Hell Knight)
 ==============================================================================
 ]]
 
-local hknight_char_a
-local hknight_run
-local hk_idle_sound
-
 ---@param self entity
 ---@param offset number
 ---@return nil
@@ -116,6 +112,8 @@ local function hknight_shot(self, offset)
     newmis.velocity = vec * 300
     quake.sound(self, CHAN_WEAPON, "hknight/attack1.wav", 1, C.ATTN_NORM)
 end
+
+local hknight_char_a
 
 ---@param self entity
 ---@return nil
@@ -140,6 +138,8 @@ local function check_for_charge(self)
     subs.attack_finished(self, 2)
     hknight_char_a(self)
 end
+
+local hknight_run
 
 ---@param self entity
 ---@return nil
@@ -172,6 +172,7 @@ local hknight_stand = animation.loop({
 
 --===========================================================================
 
+local hk_idle_sound
 local hknight_walk = animation.loop({
     { f.walk1, function(self)
         hk_idle_sound(self)
@@ -281,7 +282,7 @@ end)
 
 --============================================================================
 
-local hknight_magica = animation.sequence({
+animation.sequence({
     { f.magica1, fight.face },
     { f.magica2, fight.face },
     { f.magica3, fight.face },
@@ -300,7 +301,7 @@ local hknight_magica = animation.sequence({
 
 --============================================================================
 
-local hknight_magicb = animation.sequence({
+animation.sequence({
     { f.magicb1, fight.face },
     { f.magicb2, fight.face },
     { f.magicb3, fight.face },
@@ -355,7 +356,7 @@ hknight_char_a = animation.sequence({
 
 --===========================================================================
 
-local hknight_char_b = animation.loop({
+animation.loop({
     { f.char_b1, function(self)
         check_continue_charge(self)
         fight.charge(self, 23)

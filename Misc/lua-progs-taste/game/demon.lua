@@ -30,8 +30,6 @@ local monsters = require("game.monsters")
 local subs = require("game.subs")
 local weapons = require("game.weapons")
 
-local check_attack
-
 local count = animation.counter()
 local f = {}
 
@@ -63,8 +61,6 @@ DEMON (Fiend)
 
 ==============================================================================
 ]]
-
-local demon_jump_touch, demon_melee
 
 local demon1_stand = animation.loop({
     { f.stand1, ai.stand },
@@ -102,9 +98,8 @@ local demon1_run = animation.loop({
     { f.run6, function(self) ai.run(self, 36) end },
 })
 
-local demon1_jump
-local demon1_jump_land
-demon1_jump = animation.loop({
+local demon_jump_touch
+local demon1_jump = animation.loop({
     { f.leap1, fight.face },
     { f.leap2, fight.face },
     { f.leap3, fight.face },
@@ -126,11 +121,13 @@ demon1_jump = animation.loop({
         -- if three seconds pass, assume demon is stuck and jump again
     end },
 })
-demon1_jump_land = animation.sequence({
+
+local demon1_jump_land = animation.sequence({
     { f.leap11 },
     { f.leap12 },
 }, function() return demon1_run end)
 
+local demon_melee
 local demon1_atta = animation.sequence({
     { f.attacka1, function(self) fight.charge(self, 4) end },
     { f.attacka2, function(self) fight.charge(self, 0) end },
@@ -202,6 +199,8 @@ end)
 ---@param self entity
 ---@return nil
 local demon_melee_attack = quake.register_callback("demon.demon_melee_attack", function(self) demon1_atta(self) end)
+
+local check_attack
 
 ---QUAKED monster_demon1 (1 0 0) (-32 -32 -24) (32 32 64) Ambush
 ---@param self entity

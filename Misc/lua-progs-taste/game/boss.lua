@@ -75,8 +75,6 @@ BOSS-ONE (Chthon)
 ==============================================================================
 ]]
 
-local boss_launch_missile
-
 ---@param self entity
 ---@return nil
 local function boss_face(self)
@@ -147,6 +145,8 @@ local boss_idle = animation.loop({
     { f.walk30, boss_face },
     { f.walk31, boss_face },
 })
+
+local boss_launch_missile
 
 boss_missile = animation.loop({
     { f.attack1, boss_face },

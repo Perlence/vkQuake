@@ -86,9 +86,7 @@ f.axattc1, f.axattc2, f.axattc3, f.axattc4, f.axattc5, f.axattc6 = count(6)
 f.axattd1, f.axattd2, f.axattd3, f.axattd4, f.axattd5, f.axattd6 = count(6)
 
 local player_run1
-local player_stand1
-
-player_stand1 = animation.loop({
+local player_stand1 = animation.loop({
     { f.axstnd1, function(self)
         self.weaponframe = 0
         if self.velocity.x ~= 0 or self.velocity.y ~= 0 then
@@ -318,12 +316,6 @@ M.player_pain = quake.register_callback("player.player_pain", function(self, _at
     if self.weapon == IT_AXE then player_axpain(self) else player_pain(self) end
 end)
 
-local player_diea
-local player_dieb
-local player_diec
-local player_died
-local player_diee
-local player_die_ax
 ---@param self entity
 ---@return nil
 local function death_bubbles_spawn(self)
@@ -457,6 +449,8 @@ local function gib_player(self)
     if quake.random() < 0.5 then quake.sound(self, CHAN_VOICE, "player/gib.wav", 1, ATTN_NONE)
     else quake.sound(self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NONE) end
 end
+
+local player_diea, player_dieb, player_diec, player_died, player_diee, player_die_ax
 
 ---@param self entity
 ---@return nil

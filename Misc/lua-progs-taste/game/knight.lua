@@ -180,16 +180,15 @@ end)
 
 --===========================================================================
 
-local knight_bow
-local knight_bow_up
-knight_bow = animation.hold({
+local knight_bow = animation.hold({
     { f.kneel1, ai.turn },
     { f.kneel2, ai.turn },
     { f.kneel3, ai.turn },
     { f.kneel4, ai.turn },
     { f.kneel5, ai.turn },
 })
-knight_bow_up = animation.sequence({
+
+local knight_bow_up = animation.sequence({
     { f.kneel4, ai.turn },
     { f.kneel3, ai.turn },
     { f.kneel2, ai.turn },

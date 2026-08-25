@@ -27,8 +27,6 @@ local SOLID_TRIGGER = 1
 
 local M = {}
 
-local calc_angle_move
-
 ---@param _self entity
 ---@return nil
 M.null = quake.register_callback("subs.null", function(_self)
@@ -156,7 +154,7 @@ self.angles rotating
 The calling function should make sure self.think is valid
 ===============
 ]]
-local calc_angle_move_done
+local calc_angle_move, calc_angle_move_done
 
 ---@param ent entity
 ---@param destangle vec3
@@ -211,11 +209,9 @@ end)
 
 --=============================================================================
 
-local delay_think
-
 ---@param self entity
 ---@return nil
-delay_think = quake.register_callback("subs.delay_think", function(self)
+local delay_think = quake.register_callback("subs.delay_think", function(self)
     M.use_targets(self, self.enemy)
     quake.remove(self)
 end)
