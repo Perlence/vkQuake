@@ -1341,6 +1341,7 @@ qboolean ED_ParseEpair (void *base, ddef_t *key, const char *s, qboolean zoned)
 	char		*end;
 	void		*d;
 	dfunction_t *func;
+	func_t		 lua_function;
 
 	d = (void *)((int *)base + key->ofs);
 
@@ -1458,8 +1459,12 @@ qboolean ED_ParseEpair (void *base, ddef_t *key, const char *s, qboolean zoned)
 		break;
 
 	case ev_function:
-		if (LP_FindFunction (s, (func_t *)d))
+		lua_function = LP_FindFunction (s);
+		if (lua_function)
+		{
+			*(func_t *)d = lua_function;
 			break;
+		}
 		func = ED_FindFunction (s);
 		if (!func)
 		{

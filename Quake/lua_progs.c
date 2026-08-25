@@ -29,6 +29,11 @@ static lua_State *lp_state;
 static int		  lp_spawns_ref = LUA_NOREF;
 static int		  lp_entity_values_ref = LUA_NOREF;
 static int		  lp_global_values_ref = LUA_NOREF;
+// Registered functions are mapped in both directions: lp_functions_ref maps
+// names to func_t values, lp_function_names_ref maps Lua functions to names,
+// and the Lua registry maps the negated func_t values to Lua functions. Valid
+// QuakeC function indexes are below the signed dprograms_t.numfunctions, so
+// negated positive Lua references cannot collide with them.
 static int		  lp_functions_ref = LUA_NOREF;
 static int		  lp_function_names_ref = LUA_NOREF;
 static qboolean	  lp_active;
@@ -38,7 +43,6 @@ static int	LP_EntityNewIndex (lua_State *L);
 static int	LP_CallQC (lua_State *L);
 static int	LP_GlobalsIndex (lua_State *L);
 static int	LP_GlobalsNewIndex (lua_State *L);
-static void LP_RegisterFunction (lua_State *L, int index);
 static void LP_SetParmFloat (int parm, float value);
 static void LP_SetParmString (lua_State *L, int parm, int index);
 static void LP_RunBuiltin (int number, int argc);
@@ -50,63 +54,60 @@ static void LP_Error (const char *context)
 	Host_Error ("Lua progs %s: %s", context, message ? message : "unknown error");
 }
 
-// Registers and stores the function at index, returning its negative registry
-// reference.
+// Returns the function's registered name, or NULL if none was found.
 // [-0, +0]
-static int LP_StoreFunction (lua_State *L, int index)
+static const char *LP_GetRegisteredFunctionName (lua_State *L, int index)
 {
-	LP_RegisterFunction (L, index);
-	lua_pushvalue (L, index);
-	return -luaL_ref (L, LUA_REGISTRYINDEX);
-}
-
-// Pushes the registered or debug-derived function name, returning whether a
-// name was found.
-// [-0, +0 or 1]
-static qboolean LP_PushFunctionName (lua_State *L, int index)
-{
-	lua_Debug info;
+	const char *name;
 	index = lua_absindex (L, index);
 	lua_rawgeti (L, LUA_REGISTRYINDEX, lp_function_names_ref);
 	lua_pushvalue (L, index);
 	lua_gettable (L, -2);
-	if (!lua_isnil (L, -1))
-	{
-		lua_remove (L, -2);
-		return true;
-	}
+	name = lua_isstring (L, -1) ? lua_tostring (L, -1) : NULL;
 	lua_pop (L, 2);
-	lua_pushvalue (L, index);
-	if (!lua_getinfo (L, ">S", &info) || info.what[0] == 'C')
-		return false;
-	lua_pushfstring (L, "lua:%s:%d:%d", info.source, info.linedefined, info.lastlinedefined);
-	return true;
+	return name;
 }
 
-static void LP_RegisterFunction (lua_State *L, int index)
+// Looks up the function's stable reference, returning it or 0.
+// [-0, +0]
+static func_t LP_GetRegisteredFunctionRef (lua_State *L, int index)
 {
-	index = lua_absindex (L, index);
-	if (!LP_PushFunctionName (L, index))
-		return;
+	const char *name = LP_GetRegisteredFunctionName (L, index);
+	func_t		function = 0;
+	if (!name)
+		return 0;
 	lua_rawgeti (L, LUA_REGISTRYINDEX, lp_functions_ref);
-	lua_insert (L, -2);
-	lua_pushvalue (L, index);
-	lua_settable (L, -3);
-	lua_pop (L, 1);
+	lua_getfield (L, -1, name);
+	if (lua_isinteger (L, -1))
+		function = lua_tointeger (L, -1);
+	lua_pop (L, 2);
+	return function;
 }
 
-// Registers a named Lua callback, pushes the callback.
+// Registers a named Lua callback, pushes it onto the stack.
 // [-0, +1]
 static int LP_RegisterCallback (lua_State *L)
 {
 	const char *identifier = luaL_checkstring (L, 1);
 	char		name[1024];
+	func_t		function;
 	luaL_checktype (L, 2, LUA_TFUNCTION);
 	q_snprintf (name, sizeof (name), "lua:%s", identifier);
 
 	lua_rawgeti (L, LUA_REGISTRYINDEX, lp_functions_ref);
+	lua_getfield (L, -1, name);
+	if (!lua_isnil (L, -1))
+		return luaL_error (L, "function '%s' is already registered", identifier);
+	lua_pop (L, 1);
+
+	function = LP_GetRegisteredFunctionRef (L, 2);
+	if (!function)
+	{
+		lua_pushvalue (L, 2);
+		function = -luaL_ref (L, LUA_REGISTRYINDEX);
+	}
 	lua_pushstring (L, name);
-	lua_pushvalue (L, 2);
+	lua_pushinteger (L, function);
 	lua_settable (L, -3);
 	lua_pop (L, 1);
 
@@ -119,52 +120,30 @@ static int LP_RegisterCallback (lua_State *L)
 	return 1;
 }
 
-// Checks whether the function at index is registered, returning the result.
-// [-0, +0]
-static qboolean LP_IsRegisteredCallback (lua_State *L, int index)
-{
-	qboolean registered;
-	index = lua_absindex (L, index);
-	lua_rawgeti (L, LUA_REGISTRYINDEX, lp_function_names_ref);
-	lua_pushvalue (L, index);
-	lua_gettable (L, -2);
-	registered = lua_isstring (L, -1);
-	lua_pop (L, 2);
-	return registered;
-}
-
 // Looks up a Lua function by the reference, returning its name or NULL.
 const char *LP_GetFunctionName (func_t function)
 {
-	static char name[1024];
+	const char *name;
 	if (!lp_active || (int)function >= 0)
 		return NULL;
 	lua_rawgeti (lp_state, LUA_REGISTRYINDEX, -(int)function);
-	if (!lua_isfunction (lp_state, -1) || !LP_PushFunctionName (lp_state, -1))
-	{
-		lua_pop (lp_state, 1);
-		return NULL;
-	}
-	q_strlcpy (name, lua_tostring (lp_state, -1), sizeof (name));
-	lua_pop (lp_state, 2);
+	name = lua_isfunction (lp_state, -1) ? LP_GetRegisteredFunctionName (lp_state, -1) : NULL;
+	lua_pop (lp_state, 1);
 	return name;
 }
 
-// Looks up and stores a named Lua function, returning whether it was found.
-qboolean LP_FindFunction (const char *name, func_t *function)
+// Looks up a named Lua function, returning its reference or 0.
+func_t LP_FindFunction (const char *name)
 {
+	func_t function = 0;
 	if (!lp_active || strncmp (name, "lua:", 4))
-		return false;
+		return 0;
 	lua_rawgeti (lp_state, LUA_REGISTRYINDEX, lp_functions_ref);
 	lua_getfield (lp_state, -1, name);
-	if (!lua_isfunction (lp_state, -1))
-	{
-		lua_pop (lp_state, 2);
-		return false;
-	}
-	*function = LP_StoreFunction (lp_state, -1);
+	if (lua_isinteger (lp_state, -1))
+		function = lua_tointeger (lp_state, -1);
 	lua_pop (lp_state, 2);
-	return true;
+	return function;
 }
 
 // Pushes the numbered entity userdata or nil.
@@ -479,9 +458,19 @@ static void LP_SetValue (lua_State *L, int index, int type, eval_t *value)
 		else
 		{
 			luaL_checktype (L, index, LUA_TFUNCTION);
-			if ((!lua_iscfunction (L, index) || lua_tocfunction (L, index) != LP_CallQC) && !LP_IsRegisteredCallback (L, index))
-				luaL_error (L, "cannot store an unregistered Lua callback");
-			value->function = LP_StoreFunction (L, index);
+			if (lua_iscfunction (L, index) && lua_tocfunction (L, index) == LP_CallQC)
+			{
+				lua_getupvalue (L, index, 1);
+				value->function = lua_tointeger (L, -1);
+				lua_pop (L, 1);
+			}
+			else
+			{
+				const func_t function = LP_GetRegisteredFunctionRef (L, index);
+				if (!function)
+					luaL_error (L, "cannot store an unregistered Lua callback");
+				value->function = function;
+			}
 		}
 		break;
 	default:
