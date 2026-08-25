@@ -55,7 +55,7 @@ local START_OFF = 1
 ---@param self entity
 ---@param _activator entity
 ---@return nil
-local light_use = quake.register_callback("misc.light_use", function(self, _activator)
+local light_use = quake.register_function("misc.light_use", function(self, _activator)
     if (self.spawnflags & START_OFF) ~= 0 then
         quake.light_style(self.style, "m")
         self.spawnflags = self.spawnflags - START_OFF
@@ -205,7 +205,7 @@ local fire_touch
 
 ---@param self entity
 ---@return nil
-fire_fly = quake.register_callback("misc.fire_fly", function(self)
+fire_fly = quake.register_function("misc.fire_fly", function(self)
     local fireball = quake.spawn()
     fireball.solid = SOLID_TRIGGER
     fireball.movetype = MOVETYPE_TOSS
@@ -228,7 +228,7 @@ end)
 ---@param self entity
 ---@param other entity
 ---@return nil
-fire_touch = quake.register_callback("misc.fire_touch", function(self, other)
+fire_touch = quake.register_function("misc.fire_touch", function(self, other)
     combat.damage(other, self, self, 20)
     quake.remove(self)
 end)
@@ -237,7 +237,7 @@ end)
 
 ---@param self entity
 ---@return nil
-local barrel_explode = quake.register_callback("misc.barrel_explode", function(self)
+local barrel_explode = quake.register_function("misc.barrel_explode", function(self)
     self.takedamage = DAMAGE_NO
     self.classname = "explo_box"
     -- did say self.owner
@@ -305,7 +305,7 @@ local SPAWNFLAG_SUPERSPIKE, SPAWNFLAG_LASER = 1, 2
 ---@param self entity
 ---@param _activator? entity
 ---@return entity
-local spikeshooter_use = quake.register_callback("misc.spikeshooter_use", function(self, _activator)
+local spikeshooter_use = quake.register_function("misc.spikeshooter_use", function(self, _activator)
     local missile
     if (self.spawnflags & SPAWNFLAG_LASER) ~= 0 then
         quake.sound(self, CHAN_VOICE, "enforcer/enfire.wav", 1, ATTN_NORM)
@@ -323,7 +323,7 @@ end)
 
 ---@param self entity
 ---@return nil
-local shooter_think = quake.register_callback("misc.shooter_think", function(self)
+local shooter_think = quake.register_function("misc.shooter_think", function(self)
     local missile = spikeshooter_use(self)
     self.nextthink = quake.time() + self.wait
     missile.velocity = self.movedir * 500
@@ -387,7 +387,7 @@ local bubble_remove, bubble_bob
 
 ---@param self entity
 ---@return nil
-make_bubbles = quake.register_callback("misc.make_bubbles", function(self)
+make_bubbles = quake.register_function("misc.make_bubbles", function(self)
     local bubble = quake.spawn()
     quake.set_model(bubble, "progs/s_bubble.spr")
     quake.set_origin(bubble, self.origin)
@@ -429,14 +429,14 @@ end
 ---@param self entity
 ---@param other entity
 ---@return nil
-bubble_remove = quake.register_callback("misc.bubble_remove", function(self, other)
+bubble_remove = quake.register_function("misc.bubble_remove", function(self, other)
     if other.classname == self.classname then return end
     quake.remove(self)
 end)
 
 ---@param self entity
 ---@return nil
-bubble_bob = quake.register_callback("misc.bubble_bob", function(self)
+bubble_bob = quake.register_function("misc.bubble_bob", function(self)
     self.cnt = self.cnt + 1
     if self.cnt == 4 then bubble_split(self) end
     if self.cnt == 20 then quake.remove(self) end
@@ -481,7 +481,7 @@ SIMPLE BMODELS
 ---@param self entity
 ---@param _activator entity
 ---@return nil
-local func_wall_use = quake.register_callback("misc.func_wall_use", function(self, _activator)
+local func_wall_use = quake.register_function("misc.func_wall_use", function(self, _activator)
     -- change to alternate textures
     self.frame = 1 - self.frame
 end)
@@ -620,7 +620,7 @@ end
 
 ---@param self entity
 ---@return nil
-local noise_think = quake.register_callback("misc.noise_think", function(self)
+local noise_think = quake.register_function("misc.noise_think", function(self)
     self.nextthink = quake.time() + 0.5
     quake.sound(self, 1, "enforcer/enfire.wav", 1, ATTN_NORM)
     quake.sound(self, 2, "enforcer/enfstop.wav", 1, ATTN_NORM)

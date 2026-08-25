@@ -43,7 +43,7 @@ local M = {}
 ---@param self entity
 ---@param activator entity
 ---@return nil
-local use = quake.register_callback("monsters.use", function(self, activator)
+local use = quake.register_function("monsters.use", function(self, activator)
     if self.enemy then
         return
     end
@@ -91,7 +91,7 @@ end
 
 ---@param self entity
 ---@return nil
-local walk_start_go = quake.register_callback("monsters.walk_start_go", function(self)
+local walk_start_go = quake.register_function("monsters.walk_start_go", function(self)
     -- raise off floor a bit
     self.origin = quake.vec3(self.origin.x, self.origin.y, self.origin.z + 1)
     quake.drop_to_floor(self)
@@ -140,7 +140,7 @@ end)
 
 ---@param self entity
 ---@return nil
-M.walk_start = quake.register_callback("monsters.walk_start", function(self)
+M.walk_start = quake.register_function("monsters.walk_start", function(self)
     -- delay drop to floor to make sure all doors have been spawned
     -- spread think times so they don't all happen at same time
     self.nextthink = self.nextthink + quake.random() * 0.5
@@ -150,7 +150,7 @@ end)
 
 ---@param self entity
 ---@return nil
-local fly_start_go = quake.register_callback("monsters.fly_start_go", function(self)
+local fly_start_go = quake.register_function("monsters.fly_start_go", function(self)
     self.takedamage = C.DAMAGE_AIM
 
     self.ideal_yaw = self.angles.y
@@ -201,7 +201,7 @@ end
 
 ---@param self entity
 ---@return nil
-local swim_start_go = quake.register_callback("monsters.swim_start_go", function(self)
+local swim_start_go = quake.register_function("monsters.swim_start_go", function(self)
     if quake.cvar("deathmatch") ~= 0 then
         quake.remove(self)
         return

@@ -95,7 +95,7 @@ local dog_leap, dog_run
 ---@param self entity
 ---@param other entity
 ---@return nil
-local dog_jump_touch = quake.register_callback("dog.dog_jump_touch", function(self, other)
+local dog_jump_touch = quake.register_function("dog.dog_jump_touch", function(self, other)
     if self.health <= 0 then
         return
     end
@@ -238,7 +238,7 @@ local dog_painb = animation.sequence("dog.dog_painb", {
 ---@param _attacker entity
 ---@param _damage number
 ---@return nil
-local dog_pain_handler = quake.register_callback("dog.dog_pain_handler", function(self, _attacker, _damage)
+local dog_pain_handler = quake.register_function("dog.dog_pain_handler", function(self, _attacker, _damage)
     quake.sound(self, C.CHAN_VOICE, "dog/dpain1.wav", 1, C.ATTN_NORM)
 
     if quake.random() > 0.5 then
@@ -274,7 +274,7 @@ local dog_dieb = animation.hold("dog.dog_dieb", {
 
 ---@param self entity
 ---@return nil
-local dog_die_handler = quake.register_callback("dog.dog_die_handler", function(self)
+local dog_die_handler = quake.register_function("dog.dog_die_handler", function(self)
     -- check for gib
     if self.health < -35 then
         quake.sound(self, C.CHAN_VOICE, "player/udeath.wav", 1, C.ATTN_NORM)
@@ -339,7 +339,7 @@ end
 
 ---@param self entity
 ---@return boolean
-local check_attack = quake.register_callback("dog.check_attack", function(self)
+local check_attack = quake.register_function("dog.check_attack", function(self)
     -- if close enough for slashing, go for it
     if check_dog_melee(self) then
         self.attack_state = C.AS_MELEE

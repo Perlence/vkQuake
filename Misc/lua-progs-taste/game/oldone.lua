@@ -142,7 +142,7 @@ old_thrash = animation.hold("oldone.old_thrash", {
 
 ---@param self entity
 ---@return nil
-finale_1 = quake.register_callback("oldone.finale_1", function(self)
+finale_1 = quake.register_function("oldone.finale_1", function(self)
     quake.globals.intermission_exittime = quake.time() + 10000000 -- never allow exit
     quake.globals.intermission_running = 1
 
@@ -187,7 +187,7 @@ end)
 
 ---@param self entity
 ---@return nil
-finale_2 = quake.register_callback("oldone.finale_2", function(self)
+finale_2 = quake.register_function("oldone.finale_2", function(self)
     -- start a teleport splash inside shub
     local shub = assert(quake.globals.shub, "finale has no shub")
     local o = shub.origin - quake.vec3(0, 100, 0)
@@ -205,7 +205,7 @@ end)
 
 ---@param _self entity
 ---@return nil
-finale_3 = quake.register_callback("oldone.finale_3", function(_self)
+finale_3 = quake.register_function("oldone.finale_3", function(_self)
     -- start shub thrashing wildly
     local shub = assert(quake.globals.shub, "finale has no shub")
     shub.think = old_thrash
@@ -270,7 +270,7 @@ end
 ---@param _attacker entity
 ---@param _damage number
 ---@return nil
-local oldone_pain = quake.register_callback("oldone.oldone_pain", function(self, _attacker, _damage)
+local oldone_pain = quake.register_function("oldone.oldone_pain", function(self, _attacker, _damage)
     self.health = 40000
 end)
 

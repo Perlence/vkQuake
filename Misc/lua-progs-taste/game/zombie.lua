@@ -174,7 +174,7 @@ ATTACKS
 ---@param self entity
 ---@param other entity
 ---@return nil
-local zombie_grenade_touch = quake.register_callback("zombie.zombie_grenade_touch", function(self, other)
+local zombie_grenade_touch = quake.register_function("zombie.zombie_grenade_touch", function(self, other)
     if other == self.owner then return end -- don't explode on owner
     if other.takedamage ~= 0 then
         combat.damage(other, self, self.owner, 10)
@@ -266,7 +266,7 @@ local zombie_attc = animation.sequence("zombie.zombie_attc", {
 
 ---@param self entity
 ---@return nil
-local zombie_missile = quake.register_callback("zombie.zombie_missile", function(self)
+local zombie_missile = quake.register_function("zombie.zombie_missile", function(self)
     local r = quake.random()
     if r < 0.3 then zombie_atta(self)
     elseif r < 0.6 then zombie_attb(self)
@@ -441,7 +441,7 @@ zombie_paine_recover = animation.sequence("zombie.zombie_paine_recover", {
 
 ---@param self entity
 ---@return nil
-local zombie_die = quake.register_callback("zombie.zombie_die", function(self)
+local zombie_die = quake.register_function("zombie.zombie_die", function(self)
     quake.sound(self, C.CHAN_VOICE, "zombie/z_gib.wav", 1, C.ATTN_NORM)
     gibs.throw_head(self, "progs/h_zombie.mdl", self.health)
     gibs.throw(self, "progs/gib1.mdl", self.health)
@@ -466,7 +466,7 @@ end)
 ---@param _attacker entity
 ---@param take number
 ---@return nil
-local zombie_pain = quake.register_callback("zombie.zombie_pain", function(self, _attacker, take)
+local zombie_pain = quake.register_function("zombie.zombie_pain", function(self, _attacker, take)
     -- always reset health
     self.health = 60
     if take < 9 then return end -- totally ignore

@@ -29,12 +29,12 @@ local M = {}
 
 ---@param _self entity
 ---@return nil
-M.null = quake.register_callback("subs.null", function(_self)
+M.null = quake.register_function("subs.null", function(_self)
 end)
 
 ---@param self entity
 ---@return nil
-M.remove = quake.register_callback("subs.remove", function(self)
+M.remove = quake.register_function("subs.remove", function(self)
     quake.remove(self)
 end)
 
@@ -135,7 +135,7 @@ end
 ---After moving, set origin to exact final destination
 ---@param self entity
 ---@return nil
-calc_move_done = quake.register_callback("subs.calc_move_done", function(self)
+calc_move_done = quake.register_function("subs.calc_move_done", function(self)
     quake.set_origin(self, self.finaldest)
     self.velocity = quake.vec3(0, 0, 0)
     self.nextthink = -1
@@ -198,7 +198,7 @@ end
 ---After rotating, set angle to exact final angle
 ---@param self entity
 ---@return nil
-calc_angle_move_done = quake.register_callback("subs.calc_angle_move_done", function(self)
+calc_angle_move_done = quake.register_function("subs.calc_angle_move_done", function(self)
     self.angles = self.finalangle
     self.avelocity = quake.vec3(0, 0, 0)
     self.nextthink = -1
@@ -211,7 +211,7 @@ end)
 
 ---@param self entity
 ---@return nil
-local delay_think = quake.register_callback("subs.delay_think", function(self)
+local delay_think = quake.register_function("subs.delay_think", function(self)
     M.use_targets(self, self.enemy)
     quake.remove(self)
 end)
@@ -231,7 +231,7 @@ end)
 ---@param self entity
 ---@param activator entity
 ---@return nil
-M.use_targets = quake.register_callback("subs.use_targets", function(self, activator)
+M.use_targets = quake.register_function("subs.use_targets", function(self, activator)
     -- check for a delay
     if self.delay ~= 0 then
         -- create a temp object to fire at a later time

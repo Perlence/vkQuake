@@ -145,7 +145,7 @@ local shal_death = animation.hold("shalrath.shal_death", {
 ---@param _attacker entity
 ---@param _damage number
 ---@return nil
-local shalrath_pain = quake.register_callback("shalrath.shalrath_pain", function(self, _attacker, _damage)
+local shalrath_pain = quake.register_function("shalrath.shalrath_pain", function(self, _attacker, _damage)
     if self.pain_finished > quake.time() then
         return
     end
@@ -157,7 +157,7 @@ end)
 
 ---@param self entity
 ---@return nil
-local shalrath_die = quake.register_callback("shalrath.shalrath_die", function(self)
+local shalrath_die = quake.register_function("shalrath.shalrath_die", function(self)
     -- check for gib
     if self.health < -90 then
         quake.sound(self, C.CHAN_VOICE, "player/udeath.wav", 1, C.ATTN_NORM)
@@ -214,7 +214,7 @@ end
 
 ---@param self entity
 ---@return nil
-shal_home = quake.register_callback("shalrath.shal_home", function(self)
+shal_home = quake.register_function("shalrath.shal_home", function(self)
     local vtemp = self.enemy.origin + quake.vec3(0, 0, 10)
     if self.enemy.health < 1 then
         quake.remove(self)
@@ -233,7 +233,7 @@ end)
 ---@param self entity
 ---@param other entity
 ---@return nil
-shal_missile_touch = quake.register_callback("shalrath.shal_missile_touch", function(self, other)
+shal_missile_touch = quake.register_function("shalrath.shal_missile_touch", function(self, other)
     if other == self.owner then
         -- don't explode on owner
         return

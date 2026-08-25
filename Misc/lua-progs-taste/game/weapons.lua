@@ -352,7 +352,7 @@ end
 ---@param self entity
 ---@param other entity
 ---@return nil
-M.missile_touch = quake.register_callback("weapons.missile_touch", function(self, other)
+M.missile_touch = quake.register_function("weapons.missile_touch", function(self, other)
     if other == self.owner then
         -- don't explode on owner
         return
@@ -520,7 +520,7 @@ end
 
 ---@param self entity
 ---@return nil
-local grenade_explode = quake.register_callback("weapons.grenade_explode", function(self)
+local grenade_explode = quake.register_function("weapons.grenade_explode", function(self)
     combat.radius_damage(self, self.owner, 120, quake.world)
 
     quake.write_byte(MSG_BROADCAST, SVC_TEMPENTITY)
@@ -535,7 +535,7 @@ end)
 ---@param self entity
 ---@param other entity
 ---@return nil
-local grenade_touch = quake.register_callback("weapons.grenade_touch", function(self, other)
+local grenade_touch = quake.register_function("weapons.grenade_touch", function(self, other)
     if other == self.owner then
         -- don't explode on owner
         return
@@ -670,7 +670,7 @@ end
 ---@param self entity
 ---@param other entity
 ---@return nil
-spike_touch = quake.register_callback("weapons.spike_touch", function(self, other)
+spike_touch = quake.register_function("weapons.spike_touch", function(self, other)
     if other == self.owner then
         return
     end
@@ -710,7 +710,7 @@ end)
 ---@param self entity
 ---@param other entity
 ---@return nil
-superspike_touch = quake.register_callback("weapons.superspike_touch", function(self, other)
+superspike_touch = quake.register_function("weapons.superspike_touch", function(self, other)
     if other == self.owner then
         return
     end

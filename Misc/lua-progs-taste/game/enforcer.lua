@@ -89,7 +89,7 @@ SOLDIER / PLAYER (Enforcer)
 ---@param self entity
 ---@param other entity
 ---@return nil
-local laser_touch = quake.register_callback("enforcer.laser_touch", function(self, other)
+local laser_touch = quake.register_function("enforcer.laser_touch", function(self, other)
     if other == self.owner then
         -- don't explode on owner
         return
@@ -284,7 +284,7 @@ local enf_paind = animation.sequence("enforcer.enf_paind", {
 ---@param _attacker entity
 ---@param _damage number
 ---@return nil
-local enf_pain = quake.register_callback("enforcer.enf_pain", function(self, _attacker, _damage)
+local enf_pain = quake.register_function("enforcer.enf_pain", function(self, _attacker, _damage)
     local r = quake.random()
     if self.pain_finished > quake.time() then
         return
@@ -354,7 +354,7 @@ local enf_fdie = animation.hold("enforcer.enf_fdie", {
 
 ---@param self entity
 ---@return nil
-local enf_die_handler = quake.register_callback("enforcer.enf_die_handler", function(self)
+local enf_die_handler = quake.register_function("enforcer.enf_die_handler", function(self)
     -- check for gib
     if self.health < -35 then
         quake.sound(self, C.CHAN_VOICE, "player/udeath.wav", 1, C.ATTN_NORM)

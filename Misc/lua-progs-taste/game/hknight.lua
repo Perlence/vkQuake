@@ -260,7 +260,7 @@ local hknight_dieb = animation.hold("hknight.hknight_dieb", {
 
 ---@param self entity
 ---@return nil
-local hknight_die_handler = quake.register_callback("hknight.hknight_die_handler", function(self)
+local hknight_die_handler = quake.register_function("hknight.hknight_die_handler", function(self)
     -- check for gib
     if self.health < -40 then
         quake.sound(self, C.CHAN_VOICE, "player/udeath.wav", 1, C.ATTN_NORM)
@@ -441,7 +441,7 @@ end
 ---@param _attacker entity
 ---@param damage number
 ---@return nil
-local hknight_pain_handler = quake.register_callback("hknight.hknight_pain_handler", function(self, _attacker, damage)
+local hknight_pain_handler = quake.register_function("hknight.hknight_pain_handler", function(self, _attacker, damage)
     if self.pain_finished > quake.time() then
         return
     end
@@ -466,7 +466,7 @@ end)
 
 ---@param self entity
 ---@return nil
-local hknight_melee = quake.register_callback("hknight.hknight_melee", function(self)
+local hknight_melee = quake.register_function("hknight.hknight_melee", function(self)
     quake.globals.hknight_type = quake.globals.hknight_type + 1
 
     quake.sound(self, CHAN_WEAPON, "hknight/slash1.wav", 1, C.ATTN_NORM)

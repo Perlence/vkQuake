@@ -165,7 +165,7 @@ local knight_painb = animation.sequence("knight.knight_painb", {
 ---@param _attacker entity
 ---@param _damage number
 ---@return nil
-local knight_pain_handler = quake.register_callback("knight.knight_pain_handler", function(self, _attacker, _damage)
+local knight_pain_handler = quake.register_function("knight.knight_pain_handler", function(self, _attacker, _damage)
     if self.pain_finished > quake.time() then return end
     local r = quake.random()
     quake.sound(self, C.CHAN_VOICE, "knight/khurt.wav", 1, C.ATTN_NORM)
@@ -225,7 +225,7 @@ local knight_dieb = animation.hold("knight.knight_dieb", {
 
 ---@param self entity
 ---@return nil
-local knight_die_handler = quake.register_callback("knight.knight_die_handler", function(self)
+local knight_die_handler = quake.register_function("knight.knight_die_handler", function(self)
     -- check for gib
     if self.health < -40 then
         quake.sound(self, C.CHAN_VOICE, "player/udeath.wav", 1, C.ATTN_NORM)

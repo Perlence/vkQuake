@@ -310,7 +310,7 @@ local player_axpain = animation.sequence("player.player_axpain", {
 ---@param _attacker entity
 ---@param _damage number
 ---@return nil
-M.player_pain = quake.register_callback("player.player_pain", function(self, _attacker, _damage)
+M.player_pain = quake.register_function("player.player_pain", function(self, _attacker, _damage)
     if self.weaponframe ~= 0 then return end
     if self.invisible_finished > quake.time() then return end -- eyes don't have pain frames
     if self.weapon == IT_AXE then player_axpain(self) else player_pain(self) end
@@ -339,7 +339,7 @@ local function death_bubbles_spawn(self)
     self.air_finished = self.air_finished + 1
     if self.air_finished >= self.bubble_count then quake.remove(self) end
 end
-quake.register_callback("player.death_bubbles_spawn", death_bubbles_spawn)
+quake.register_function("player.death_bubbles_spawn", death_bubbles_spawn)
 
 ---@param self entity
 ---@param num_bubbles integer
@@ -454,7 +454,7 @@ local player_diea, player_dieb, player_diec, player_died, player_diee, player_di
 
 ---@param self entity
 ---@return nil
-M.player_die = quake.register_callback("player.player_die", function(self)
+M.player_die = quake.register_function("player.player_die", function(self)
     local items = require("game.items")
 
     self.items = self.items - (self.items & IT_INVISIBILITY)

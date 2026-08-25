@@ -84,9 +84,9 @@ static func_t LP_GetRegisteredFunctionRef (lua_State *L, int index)
 	return function;
 }
 
-// Registers a named Lua callback, pushes it onto the stack.
+// Registers a named Lua function, pushes it onto the stack.
 // [-0, +1]
-static int LP_RegisterCallback (lua_State *L)
+static int LP_RegisterFunction (lua_State *L)
 {
 	const char *identifier = luaL_checkstring (L, 1);
 	char		name[1024];
@@ -468,7 +468,7 @@ static void LP_SetValue (lua_State *L, int index, int type, eval_t *value)
 			{
 				const func_t function = LP_GetRegisteredFunctionRef (L, index);
 				if (!function)
-					luaL_error (L, "cannot store an unregistered Lua callback");
+					luaL_error (L, "cannot store an unregistered Lua function");
 				value->function = function;
 			}
 		}
@@ -1105,7 +1105,7 @@ static const luaL_Reg lp_quake_functions[] = {
 	{"precache_sound", LP_PrecacheSound},
 	{"precache_sound2", LP_PrecacheSound2},
 	{"random", LP_Random},
-	{"register_callback", LP_RegisterCallback},
+	{"register_function", LP_RegisterFunction},
 	{"register_entity", LP_RegisterEntity},
 	{"remove", LP_Remove},
 	{"set_model", LP_SetModel},
@@ -1273,7 +1273,7 @@ void LP_Shutdown (void)
 	lp_active = false;
 }
 
-// Calls a stored Lua callback, returning whether it handled the function with
+// Calls a stored Lua function, returning whether it handled the function with
 // the global stack unchanged.
 qboolean LP_ExecuteProgram (func_t function)
 {
@@ -1283,7 +1283,7 @@ qboolean LP_ExecuteProgram (func_t function)
 	LP_PushEntity (lp_state, PROG_TO_EDICT (pr_global_struct->self), true);
 	LP_PushEntity (lp_state, PROG_TO_EDICT (pr_global_struct->other), true);
 	if (lua_pcall (lp_state, 2, 0, 0) != LUA_OK)
-		LP_Error ("executing callback");
+		LP_Error ("executing function");
 	return true;
 }
 

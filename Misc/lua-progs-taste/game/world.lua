@@ -41,7 +41,7 @@ local function init_body_que()
 end
 
 ---@return nil
-M.main = quake.register_callback("world.main", function()
+M.main = quake.register_function("world.main", function()
     quake.dprint("main function\n")
 
     -- these are just commands the the prog compiler to copy these files
@@ -204,7 +204,7 @@ local function worldspawn(self)
 end
 
 ---@return nil
-M.start_frame = quake.register_callback("world.start_frame", function()
+M.start_frame = quake.register_function("world.start_frame", function()
     g.teamplay = quake.cvar("teamplay")
     g.skill = quake.cvar("skill")
     g.framecount = g.framecount + 1

@@ -122,7 +122,7 @@ end
 ---@param self entity
 ---@param other entity
 ---@return nil
-t_movetarget = quake.register_callback("ai.t_movetarget", function(self, other)
+t_movetarget = quake.register_function("ai.t_movetarget", function(self, other)
     if other.movetarget ~= self then
         return
     end
@@ -265,7 +265,7 @@ end
 
 ---@param self entity
 ---@return nil
-M.found_target = quake.register_callback("ai.found_target", function(self)
+M.found_target = quake.register_function("ai.found_target", function(self)
     if self.enemy.classname == "player" then
         -- let other monsters see this monster for a while
         quake.globals.sight_entity = self

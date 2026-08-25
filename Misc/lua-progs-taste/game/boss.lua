@@ -279,7 +279,7 @@ end
 ---@param self entity
 ---@param activator entity
 ---@return nil
-local boss_awake = quake.register_callback("boss.boss_awake", function(self, activator)
+local boss_awake = quake.register_function("boss.boss_awake", function(self, activator)
     self.solid = C.SOLID_SLIDEBOX
     self.movetype = C.MOVETYPE_STEP
     self.takedamage = C.DAMAGE_NO
@@ -365,12 +365,12 @@ local function lightning_fire(self)
     quake.write_coord(C.MSG_ALL, p2.y)
     quake.write_coord(C.MSG_ALL, p2.z)
 end
-quake.register_callback("boss.lightning_fire", lightning_fire)
+quake.register_function("boss.lightning_fire", lightning_fire)
 
 ---@param self entity
 ---@param activator entity
 ---@return nil
-local lightning_use = quake.register_callback("boss.lightning_use", function(self, activator)
+local lightning_use = quake.register_function("boss.lightning_use", function(self, activator)
     if quake.globals.lightning_end >= quake.time() + 1 then
         return
     end

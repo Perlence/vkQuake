@@ -90,7 +90,7 @@ OGRE
 
 ---@param self entity
 ---@return nil
-local ogre_grenade_explode = quake.register_callback("ogre.ogre_grenade_explode", function(self)
+local ogre_grenade_explode = quake.register_function("ogre.ogre_grenade_explode", function(self)
     combat.radius_damage(self, self.owner, 40, quake.world)
     quake.sound(self, C.CHAN_VOICE, "weapons/r_exp3.wav", 1, C.ATTN_NORM)
     quake.write_byte(C.MSG_BROADCAST, C.SVC_TEMPENTITY)
@@ -108,7 +108,7 @@ end)
 ---@param self entity
 ---@param other entity
 ---@return nil
-local ogre_grenade_touch = quake.register_callback("ogre.ogre_grenade_touch", function(self, other)
+local ogre_grenade_touch = quake.register_function("ogre.ogre_grenade_touch", function(self, other)
     if other == self.owner then return end -- don't explode on owner
     if other.takedamage == C.DAMAGE_AIM then ogre_grenade_explode(self); return end
     -- bounce sound
@@ -313,7 +313,7 @@ local ogre_paine = animation.sequence("ogre.ogre_paine", {
 ---@param _attacker entity
 ---@param _damage number
 ---@return nil
-local ogre_pain_callback = quake.register_callback("ogre.ogre_pain_callback", function(self, _attacker, _damage)
+local ogre_pain_callback = quake.register_function("ogre.ogre_pain_callback", function(self, _attacker, _damage)
     -- don't make multiple pain sounds right after each other
     if self.pain_finished > quake.time() then return end
     quake.sound(self, C.CHAN_VOICE, "ogre/ogpain1.wav", 1, C.ATTN_NORM)
@@ -357,7 +357,7 @@ local ogre_bdie = animation.hold("ogre.ogre_bdie", {
 
 ---@param self entity
 ---@return nil
-local ogre_die_callback = quake.register_callback("ogre.ogre_die_callback", function(self)
+local ogre_die_callback = quake.register_function("ogre.ogre_die_callback", function(self)
     -- check for gib
     if self.health < -80 then
         quake.sound(self, C.CHAN_VOICE, "player/udeath.wav", 1, C.ATTN_NORM)
@@ -373,7 +373,7 @@ end)
 
 ---@param self entity
 ---@return nil
-local ogre_melee = quake.register_callback("ogre.ogre_melee", function(self)
+local ogre_melee = quake.register_function("ogre.ogre_melee", function(self)
     if quake.random() > 0.5 then ogre_smash(self) else ogre_swing(self) end
 end)
 

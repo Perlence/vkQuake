@@ -113,7 +113,7 @@ function create_frame(frame, next_state, action, identifier)
         end
     end
 
-    return quake.register_callback(identifier, callback)
+    return quake.register_function(identifier, callback)
 end
 
 return M

@@ -33,7 +33,7 @@ local button_return
 
 ---@param self entity
 ---@return nil
-local button_wait = quake.register_callback("buttons.button_wait", function(self)
+local button_wait = quake.register_function("buttons.button_wait", function(self)
     self.state = STATE_TOP
     self.nextthink = self.ltime + self.wait
     self.think = button_return
@@ -44,13 +44,13 @@ end)
 
 ---@param self entity
 ---@return nil
-local button_done = quake.register_callback("buttons.button_done", function(self)
+local button_done = quake.register_function("buttons.button_done", function(self)
     self.state = STATE_BOTTOM
 end)
 
 ---@param self entity
 ---@return nil
-button_return = quake.register_callback("buttons.button_return", function(self)
+button_return = quake.register_function("buttons.button_return", function(self)
     self.state = STATE_DOWN
     subs.calc_move(self, self.pos1, self.speed, button_done)
     self.frame = 0 -- use normal textures
@@ -63,7 +63,7 @@ end)
 ---@param _self entity
 ---@param _other entity
 ---@return nil
-local button_blocked = quake.register_callback("buttons.button_blocked", function(_self, _other)
+local button_blocked = quake.register_function("buttons.button_blocked", function(_self, _other)
 end)
 
 ---@param self entity
@@ -82,7 +82,7 @@ end
 ---@param self entity
 ---@param activator entity
 ---@return nil
-local button_use = quake.register_callback("buttons.button_use", function(self, activator)
+local button_use = quake.register_function("buttons.button_use", function(self, activator)
     self.enemy = activator
     button_fire(self)
 end)
@@ -90,7 +90,7 @@ end)
 ---@param self entity
 ---@param other entity
 ---@return nil
-local button_touch = quake.register_callback("buttons.button_touch", function(self, other)
+local button_touch = quake.register_function("buttons.button_touch", function(self, other)
     if other.classname ~= "player" then
         return
     end
@@ -100,7 +100,7 @@ end)
 
 ---@param self entity
 ---@return nil
-local button_killed = quake.register_callback("buttons.button_killed", function(self)
+local button_killed = quake.register_function("buttons.button_killed", function(self)
     self.enemy = quake.globals.damage_attacker
     self.health = self.max_health
     self.takedamage = DAMAGE_NO -- wil be reset upon return

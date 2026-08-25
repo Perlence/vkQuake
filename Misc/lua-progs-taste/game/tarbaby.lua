@@ -133,7 +133,7 @@ local tbaby_jump_air
 ---@param self entity
 ---@param other entity
 ---@return nil
-local tar_jump_touch = quake.register_callback("tarbaby.tar_jump_touch", function(self, other)
+local tar_jump_touch = quake.register_function("tarbaby.tar_jump_touch", function(self, other)
     if other.takedamage ~= 0 and other.classname ~= self.classname then
         if self.velocity:length() > 400 then
             local ldmg = 10 + 10 * quake.random()

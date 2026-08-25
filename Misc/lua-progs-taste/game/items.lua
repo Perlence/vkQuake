@@ -42,7 +42,7 @@ BE .8 .3 .4 IN COLOR ]]
 
 ---@param self entity
 ---@return nil
-local regen = quake.register_callback("items.regen", function(self)
+local regen = quake.register_function("items.regen", function(self)
     -- restore original model
     quake.set_model(self, self.mdl)
     -- allow it to be touched again
@@ -67,7 +67,7 @@ end
 ---plants the object on the floor
 ---@param self entity
 ---@return nil
-local place_item = quake.register_callback("items.place_item", function(self)
+local place_item = quake.register_function("items.place_item", function(self)
     -- so it can be restored on respawn
     self.mdl = self.model
     -- make extra wide
@@ -180,7 +180,7 @@ local item_megahealth_rot
 ---@param self entity
 ---@param other entity
 ---@return nil
-health_touch = quake.register_callback("items.health_touch", function(self, other)
+health_touch = quake.register_function("items.health_touch", function(self, other)
 
     if other.classname ~= "player" then
         return
@@ -234,7 +234,7 @@ end)
 
 ---@param self entity
 ---@return nil
-item_megahealth_rot = quake.register_callback("items.item_megahealth_rot", function(self)
+item_megahealth_rot = quake.register_function("items.item_megahealth_rot", function(self)
     local other = assert(self.owner, "megahealth has no owner")
 
     if other.health > other.max_health then
@@ -265,7 +265,7 @@ ARMOR
 ---@param self entity
 ---@param other entity
 ---@return nil
-local armor_touch = quake.register_callback("items.armor_touch", function(self, other)
+local armor_touch = quake.register_function("items.armor_touch", function(self, other)
     -- initialize variables
     local type = 0
     local bit = 0
@@ -420,7 +420,7 @@ end
 ---@param self entity
 ---@param other entity
 ---@return nil
-local weapon_touch = quake.register_callback("items.weapon_touch", function(self, other)
+local weapon_touch = quake.register_function("items.weapon_touch", function(self, other)
     local leave
 
     if (other.flags & C.FL_CLIENT) == 0 then
@@ -599,7 +599,7 @@ AMMO
 ---@param self entity
 ---@param other entity
 ---@return nil
-local ammo_touch = quake.register_callback("items.ammo_touch", function(self, other)
+local ammo_touch = quake.register_function("items.ammo_touch", function(self, other)
     if other.classname ~= "player" then
         return
     end
@@ -829,7 +829,7 @@ KEYS
 ---@param self entity
 ---@param other entity
 ---@return nil
-local key_touch = quake.register_callback("items.key_touch", function(self, other)
+local key_touch = quake.register_function("items.key_touch", function(self, other)
     if other.classname ~= "player" then
         return
     end
@@ -950,7 +950,7 @@ END OF LEVEL RUNES
 ---@param self entity
 ---@param other entity
 ---@return nil
-local sigil_touch = quake.register_callback("items.sigil_touch", function(self, other)
+local sigil_touch = quake.register_function("items.sigil_touch", function(self, other)
     if other.classname ~= "player" then
         return
     end
@@ -1016,7 +1016,7 @@ POWERUPS
 ---@param self entity
 ---@param other entity
 ---@return nil
-local powerup_touch = quake.register_callback("items.powerup_touch", function(self, other)
+local powerup_touch = quake.register_function("items.powerup_touch", function(self, other)
     if other.classname ~= "player" then
         return
     end
@@ -1157,7 +1157,7 @@ PLAYER BACKPACKS
 ---@param self entity
 ---@param other entity
 ---@return nil
-local backpack_touch = quake.register_callback("items.backpack_touch", function(self, other)
+local backpack_touch = quake.register_function("items.backpack_touch", function(self, other)
     if other.classname ~= "player" then
         return
     end

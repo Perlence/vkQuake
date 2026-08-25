@@ -153,9 +153,9 @@ function quake.random() end
 
 ---@generic T: function
 ---@param identifier string
----@param callback T
----@return T callback
-function quake.register_callback(identifier, callback) end
+---@param func T
+---@return T func
+function quake.register_function(identifier, func) end
 
 ---@param classname string
 ---@param spawn_function fun(self: entity)
