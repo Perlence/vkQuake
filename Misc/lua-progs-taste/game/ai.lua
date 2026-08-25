@@ -131,9 +131,7 @@ t_movetarget = quake.register_function("ai.t_movetarget", function(self, other)
         return -- fighting, not following a path
     end
 
-    local temp = self
-    self = other
-    other = temp
+    self, other = other, self
 
     if self.classname == "monster_ogre" then
         quake.sound(self, C.CHAN_VOICE, "ogre/ogdrag.wav", 1, ATTN_IDLE) -- play chainsaw drag sound
