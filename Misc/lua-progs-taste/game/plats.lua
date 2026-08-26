@@ -116,24 +116,6 @@ plat_center_touch = quake.register_function("plats.plat_center_touch", function(
 end)
 
 ---@param self entity
----@param other entity
----@return nil
-local function plat_outside_touch(self, other)
-    if other.classname ~= "player" then
-        return
-    end
-
-    if other.health <= 0 then
-        return
-    end
-
-    self = assert(self.enemy, "platform trigger has no platform")
-    if self.state == STATE_TOP then
-        plat_go_down(self)
-    end
-end
-
----@param self entity
 ---@param _activator entity
 ---@return nil
 local plat_trigger_use = quake.register_function("plats.plat_trigger_use", function(self, _activator)

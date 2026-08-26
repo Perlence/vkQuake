@@ -68,33 +68,6 @@ will duck back out and catch it.
 ==============================================================================
 ]]
 
----Sets the given entities velocity and angles so that it will hit self.enemy
----if self.enemy maintains it's current velocity
----0.1 is moderately accurate, 0.0 is totally accurate
----@param self entity
----@param missile entity
----@param mspeed number
----@param accuracy number
----@return nil
-local function launch_missile(self, missile, mspeed, accuracy)
-    local vectors = quake.make_vectors(self.angles)
-    -- set missile speed
-    local vec = self.enemy.origin + self.enemy.mins + self.enemy.size * 0.7 - missile.origin
-    -- calc approximate time for missile to reach vec
-    local fly = vec:length() / mspeed
-    -- get the entities xy velocity
-    local move = quake.vec3(self.enemy.velocity.x, self.enemy.velocity.y, 0)
-    -- project the target forward in time
-    vec = vec + move * fly
-    vec = vec:normalized()
-    vec = vec + accuracy * vectors.up * (quake.random() - 0.5) + accuracy * vectors.right * (quake.random() - 0.5)
-    missile.velocity = vec * mspeed
-    missile.angles = quake.vec3(0, quake.vector_to_yaw(missile.velocity), 0)
-    -- set missile duration
-    missile.nextthink = quake.time() + 5
-    missile.think = subs.remove
-end
-
 local wiz_run
 local wiz_side
 

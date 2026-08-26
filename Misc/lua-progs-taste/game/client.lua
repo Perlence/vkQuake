@@ -302,12 +302,6 @@ M.client_kill = quake.register_function("client.client_kill", function(self)
     respawn(self)
 end)
 
----@param _v vec3
----@return boolean
-local function check_spawn_point(_v)
-    return false
-end
-
 ---Returns the entity to spawn at
 ---@return entity
 local function select_spawn_point()

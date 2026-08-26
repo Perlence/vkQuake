@@ -239,34 +239,4 @@ function M.radius_damage(inflictor, attacker, damage, ignore)
     end
 end
 
----@param attacker entity
----@param damage number
----@return nil
-local function beam_damage(attacker, damage)
-    local head = quake.find_radius(attacker.origin, damage + 40)
-
-    while head do
-        if head.takedamage ~= 0 then
-            local points = 0.5 * (attacker.origin - head.origin):length()
-            if points < 0 then
-                points = 0
-            end
-            points = damage - points
-            if head == attacker then
-                points = points * 0.5
-            end
-            if points > 0 then
-                if M.can_damage(head, attacker) then
-                    if head.classname == "monster_shambler" then
-                        M.damage(head, attacker, attacker, points * 0.5)
-                    else
-                        M.damage(head, attacker, attacker, points)
-                    end
-                end
-            end
-        end
-        head = head.chain
-    end
-end
-
 return M

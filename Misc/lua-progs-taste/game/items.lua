@@ -76,7 +76,6 @@ local place_item = quake.register_function("items.place_item", function(self)
     self.movetype = 6 -- MOVETYPE_TOSS
     self.velocity = quake.vec3(0, 0, 0)
     self.origin.z = self.origin.z + 6
-    local oldz = self.origin.z
     if not quake.drop_to_floor(self) then
         quake.dprint("Bonus item fell out of level at ")
         quake.dprint(quake.vector_to_string(self.origin))
@@ -405,10 +404,10 @@ end
 ---
 ---.float		ammo_shells, ammo_nails, ammo_rockets, ammo_cells;
 ---@param self entity
----@param old integer
+---@param _old integer
 ---@param new integer
 ---@return nil
-local function deathmatch_weapon(self, old, new)
+local function deathmatch_weapon(self, _old, new)
     -- change self.weapon if desired
     local old_rank = rank_for_weapon(self.weapon)
     local new_rank = rank_for_weapon(new)
@@ -1175,9 +1174,6 @@ local backpack_touch = quake.register_function("items.backpack_touch", function(
             quake.sprint(other, self.netname)
         end
     end
-
-    -- if the player was using his best weapon, change up to the new one if better
-    local best = weapons.best_weapon(other)
 
     -- change weapons
     other.ammo_shells = other.ammo_shells + self.ammo_shells

@@ -66,7 +66,7 @@ local tbaby_stand1 = animation.loop("tarbaby.tbaby_stand1", {
     { f.walk1, ai.stand },
 })
 
-local tbaby_hang1 = animation.loop("tarbaby.tbaby_hang1", {
+animation.loop("tarbaby.tbaby_hang1", {
     { f.walk1, ai.stand },
 })
 

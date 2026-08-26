@@ -363,15 +363,6 @@ function M.ogre_check_attack(self, enemy_range, enemy_vis)
         return false
     end
 
-    local chance
-    if enemy_range == C.RANGE_NEAR then
-        chance = 0.10
-    elseif enemy_range == C.RANGE_MID then
-        chance = 0.05
-    else
-        chance = 0
-    end
-
     self.attack_state = C.AS_MISSILE
     subs.attack_finished(self, 1 + 2 * quake.random())
     return true

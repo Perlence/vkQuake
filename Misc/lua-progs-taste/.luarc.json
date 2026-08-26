@@ -2,5 +2,8 @@
   "workspace.library": [
     "./meta"
   ],
-  "workspace.checkThirdParty": false
+  "workspace.checkThirdParty": false,
+  "diagnostics.unusedLocalExclude": [
+    "_*"
+  ]
 }

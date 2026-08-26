@@ -432,23 +432,6 @@ end
 --=============================================================================
 
 ---@param self entity
----@param dest3 vec3
----@return nil
-local function choose_turn(self, dest3)
-    local dir = self.origin - dest3
-    local normal = quake.globals.trace_plane_normal
-    local newdir = quake.vec3(normal.y, 0 - normal.x, 0)
-
-    if dir:dot(newdir) > 0 then
-        dir = quake.vec3(0 - normal.y, normal.x, 0)
-    else
-        dir = quake.vec3(normal.y, 0 - normal.x, 0)
-    end
-
-    self.ideal_yaw = quake.vector_to_yaw(dir)
-end
-
----@param self entity
 ---@return boolean
 local function facing_ideal(self)
     local delta = angle_mod(self.angles.y - self.ideal_yaw)

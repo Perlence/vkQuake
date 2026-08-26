@@ -44,7 +44,6 @@ local IT_KEY1 = 131072
 local IT_KEY2 = 262144
 local IT_QUAD = 4194304
 
-local FL_INWATER = 16
 local MOVETYPE_NONE = 0
 local MOVETYPE_FLYMISSILE = 9
 local MOVETYPE_BOUNCE = 10
@@ -170,13 +169,6 @@ end
 local function spawn_touchblood(self, damage)
     local vel = wall_velocity(self) * 0.2
     M.spawn_blood(self.origin + vel * 0.01, vel, damage)
-end
-
----@param org vec3
----@param vel vec3
----@return nil
-local function spawn_chunk(org, vel)
-    quake.particle(org, vel * 0.02, 0, 10)
 end
 
 --[[
@@ -899,7 +891,6 @@ end
 ---@param self entity
 ---@return nil
 local function change_weapon(self)
-    local it = self.items
     local am = 0
     local fl = 0
 
@@ -993,7 +984,6 @@ end
 ---@param self entity
 ---@return nil
 local function cycle_weapon_command(self)
-    local it = self.items
     self.impulse = 0
 
     while true do

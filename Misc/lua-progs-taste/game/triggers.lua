@@ -34,12 +34,6 @@ local MSG_BROADCAST, MSG_ALL = 0, 2
 local SVC_TEMPENTITY, SVC_FOUNDSECRET, TE_TELEPORT = 23, 28, 11
 local FL_FLY, FL_SWIM, FL_ONGROUND, FL_MONSTER = 1, 2, 512, 32
 
----@param self entity
----@return nil
-local function trigger_reactivate(self)
-    self.solid = SOLID_TRIGGER
-end
-
 --=============================================================================
 
 local SPAWNFLAG_NOMESSAGE = 1

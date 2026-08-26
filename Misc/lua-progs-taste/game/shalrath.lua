@@ -47,7 +47,6 @@ f.walk1, f.walk2, f.walk3, f.walk4, f.walk5, f.walk6,
 
 local ATTN_IDLE = 2
 local CHAN_WEAPON = 1
-local DAMAGE_YES = 1
 local EF_MUZZLEFLASH = 2
 local MOVETYPE_FLYMISSILE = 9
 local SOLID_BBOX = 2

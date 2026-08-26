@@ -26,7 +26,6 @@ local animation = require("game.animation")
 local fight = require("game.fight")
 local gibs = require("game.gibs")
 local monsters = require("game.monsters")
-local subs = require("game.subs")
 
 local M = {}
 
@@ -180,7 +179,7 @@ end)
 
 --===========================================================================
 
-local knight_bow = animation.hold("knight.knight_bow", {
+animation.hold("knight.knight_bow", {
     { f.kneel1, ai.turn },
     { f.kneel2, ai.turn },
     { f.kneel3, ai.turn },
@@ -188,7 +187,7 @@ local knight_bow = animation.hold("knight.knight_bow", {
     { f.kneel5, ai.turn },
 })
 
-local knight_bow_up = animation.sequence("knight.knight_bow_up", {
+animation.sequence("knight.knight_bow_up", {
     { f.kneel4, ai.turn },
     { f.kneel3, ai.turn },
     { f.kneel2, ai.turn },
