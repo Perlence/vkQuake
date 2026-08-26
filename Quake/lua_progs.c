@@ -54,6 +54,33 @@ static void LP_Error (const char *context)
 	Host_Error ("Lua progs %s: %s", context, message ? message : "unknown error");
 }
 
+// Adds a traceback to an error while its Lua call stack is still available.
+// [-0, +1]
+static int LP_Traceback (lua_State *L)
+{
+	const char *message = lua_tostring (L, 1);
+
+	if (!message)
+		message = "unknown error";
+	luaL_traceback (L, L, message, 1);
+	return 1;
+}
+
+// Calls a Lua function in protected mode with a traceback-producing message
+// handler.
+// [-(nargs + 1), +(nresults|1)]
+static int LP_PCall (lua_State *L, int arguments, int results)
+{
+	const int function = lua_gettop (L) - arguments;
+	int		  status;
+
+	lua_pushcfunction (L, LP_Traceback);
+	lua_insert (L, function);
+	status = lua_pcall (L, arguments, results, function);
+	lua_remove (L, function);
+	return status;
+}
+
 // Returns the function's registered name, or NULL if none was found.
 // [-0, +0]
 static const char *LP_GetRegisteredFunctionName (lua_State *L, int index)
@@ -1256,7 +1283,7 @@ qboolean LP_Init (void)
 	lp_function_names_ref = luaL_ref (lp_state, LUA_REGISTRYINDEX);
 	lua_getglobal (lp_state, "require");
 	lua_pushstring (lp_state, "game.init");
-	if (lua_pcall (lp_state, 1, 1, 0) != LUA_OK)
+	if (LP_PCall (lp_state, 1, 1) != LUA_OK)
 		LP_Error ("loading game.init");
 
 	lua_pop (lp_state, 1);
@@ -1288,7 +1315,7 @@ qboolean LP_ExecuteProgram (func_t function)
 	lua_rawgeti (lp_state, LUA_REGISTRYINDEX, -(int)function);
 	LP_PushEntity (lp_state, PROG_TO_EDICT (pr_global_struct->self), true);
 	LP_PushEntity (lp_state, PROG_TO_EDICT (pr_global_struct->other), true);
-	if (lua_pcall (lp_state, 2, 0, 0) != LUA_OK)
+	if (LP_PCall (lp_state, 2, 0) != LUA_OK)
 		LP_Error ("executing function");
 	return true;
 }
@@ -1308,7 +1335,7 @@ qboolean LP_CallSpawn (const char *classname, edict_t *entity)
 		return false;
 	}
 	LP_PushEntity (lp_state, entity, true);
-	if (lua_pcall (lp_state, 1, 0, 0) != LUA_OK)
+	if (LP_PCall (lp_state, 1, 0) != LUA_OK)
 		LP_Error ("spawning entity");
 	return true;
 }
