@@ -179,7 +179,6 @@ local function wiz_idle_sound(self)
         if wr > 4.5 then quake.sound(self, C.CHAN_VOICE, "wizard/widle1.wav", 1, C.ATTN_IDLE) end
         if wr < 1.5 then quake.sound(self, C.CHAN_VOICE, "wizard/widle2.wav", 1, C.ATTN_IDLE) end
     end
-    return
 end
 
 local wiz_stand = animation.loop("wizard.wiz_stand", {

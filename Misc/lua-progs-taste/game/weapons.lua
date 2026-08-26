@@ -1171,7 +1171,6 @@ function M.super_damage_sound(self)
             quake.sound(self, CHAN_BODY, "items/damage3.wav", 1, ATTN_NORM)
         end
     end
-    return
 end
 
 return M
