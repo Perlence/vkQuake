@@ -1053,15 +1053,21 @@ static int LP_MakeVectors (lua_State *L)
 	return 1;
 }
 
-// Registers an entity spawn function, leaves the registry table.
-// [-0, +1]
+// Registers an entity spawn function.
+// [-0, +0]
 static int LP_RegisterEntity (lua_State *L)
 {
 	const char *name = luaL_checkstring (L, 1);
 	luaL_checktype (L, 2, LUA_TFUNCTION);
 	lua_rawgeti (L, LUA_REGISTRYINDEX, lp_spawns_ref);
+	lua_getfield (L, -1, name);
+	if (!lua_isnil (L, -1))
+		return luaL_error (L, "entity '%s' is already registered", name);
+	lua_pop (L, 1);
+
 	lua_pushvalue (L, 2);
 	lua_setfield (L, -2, name);
+	lua_pop (L, 1);
 	return 0;
 }
 
