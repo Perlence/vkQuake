@@ -185,10 +185,7 @@ static void LP_PushEntityNumber (lua_State *L, int number, qboolean allow_world)
 		return;
 	}
 	if (number < 0 || number >= qcvm->num_edicts)
-	{
-		lua_pushnil (L);
-		return;
-	}
+		Host_Error ("LP_PushEntityNumber: bad entity number %d", number);
 
 	value = lua_newuserdatauv (L, sizeof (*value), 0);
 	value->number = number;
