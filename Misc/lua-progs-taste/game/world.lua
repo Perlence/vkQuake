@@ -44,17 +44,6 @@ end
 M.main = quake.register_function("world.main", function()
     quake.dprint("main function\n")
 
-    -- these are just commands the the prog compiler to copy these files
-    quake.precache_file("progs.dat")
-    quake.precache_file("gfx.wad")
-    quake.precache_file("quake.rc")
-    quake.precache_file("default.cfg")
-    quake.precache_file("end1.bin")
-    quake.precache_file2("end2.bin")
-    quake.precache_file("demo1.dem")
-    quake.precache_file("demo2.dem")
-    quake.precache_file("demo3.dem")
-
     -- these are all of the lumps from the cached.ls files
     local files = {
         "gfx/palette.lmp", "gfx/colormap.lmp", "gfx/complete.lmp", "gfx/inter.lmp",
