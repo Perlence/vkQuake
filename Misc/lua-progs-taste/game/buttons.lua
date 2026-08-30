@@ -37,8 +37,7 @@ local button_wait = quake.register_function("buttons.button_wait", function(self
     self.state = STATE_TOP
     self.nextthink = self.ltime + self.wait
     self.think = button_return
-    local activator = assert(self.enemy, "button has no activator")
-    subs.use_targets(self, activator)
+    subs.use_targets(self, self.enemy or quake.world)
     self.frame = 1 -- use alternate textures
 end)
 

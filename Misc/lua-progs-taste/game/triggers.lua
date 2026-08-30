@@ -56,13 +56,14 @@ end)
 ---@param self entity
 ---@return nil
 local function multi_trigger(self)
+    local activator = self.enemy or quake.world
     if self.nextthink > quake.time() then
         -- already been triggered
         return
     end
 
     if self.classname == "trigger_secret" then
-        if self.enemy.classname ~= "player" then return end
+        if activator.classname ~= "player" then return end
         quake.globals.found_secrets = quake.globals.found_secrets + 1
         quake.write_byte(MSG_ALL, SVC_FOUNDSECRET)
     end
@@ -72,7 +73,6 @@ local function multi_trigger(self)
     -- don't trigger again until reset
     self.takedamage = DAMAGE_NO
 
-    local activator = assert(self.enemy, "trigger has no activator")
     subs.use_targets(self, activator)
 
     if self.wait > 0 then

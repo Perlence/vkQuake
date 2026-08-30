@@ -35,8 +35,6 @@ typedef struct
 
 static lua_State *lp_state;
 static int		  lp_spawns_ref = LUA_NOREF;
-static int		  lp_entity_values_ref = LUA_NOREF;
-static int		  lp_global_values_ref = LUA_NOREF;
 static int		  lp_boolean_defs_ref = LUA_NOREF;
 // Registered functions are mapped in both directions: lp_functions_ref maps
 // names to func_t values, lp_function_names_ref maps Lua functions to names,
@@ -563,22 +561,6 @@ static int LP_CallQC (lua_State *L)
 	return 0;
 }
 
-// Pushes the Lua-only value table for an entity.
-// [-0, +1]
-static void LP_PushEntityValues (lua_State *L, int number)
-{
-	lua_rawgeti (L, LUA_REGISTRYINDEX, lp_entity_values_ref);
-	lua_rawgeti (L, -1, number + 1);
-	if (lua_isnil (L, -1))
-	{
-		lua_pop (L, 1);
-		lua_newtable (L);
-		lua_pushvalue (L, -1);
-		lua_rawseti (L, -3, number + 1);
-	}
-	lua_remove (L, -2);
-}
-
 // Looks up an entity field, pushes its value.
 // [-0, +1]
 static int LP_EntityIndex (lua_State *L)
@@ -587,93 +569,45 @@ static int LP_EntityIndex (lua_State *L)
 	const char *name = luaL_checkstring (L, 2);
 	ddef_t	   *field = ED_FindField (name);
 	if (!field)
-	{
-		LP_PushEntityValues (L, NUM_FOR_EDICT (entity));
-		lua_getfield (L, -1, name);
-		lua_remove (L, -2);
-		return 1;
-	}
+		return luaL_error (L, "unknown entity field '%s'", name);
 	LP_PushValue (L, field->type, (eval_t *)((float *)&entity->v + field->ofs), LP_IsBooleanDef (L, field), false);
 	return 1;
 }
 
-// Sets an entity field, leaves a Lua-only field table when needed.
-// [-0, +0 or 1]
+// Sets an entity field.
+// [-0, +0]
 static int LP_EntityNewIndex (lua_State *L)
 {
 	edict_t	   *entity = LP_CheckEntity (L, 1);
 	const char *name = luaL_checkstring (L, 2);
 	ddef_t	   *field = ED_FindField (name);
 	if (!field)
-	{
-		LP_PushEntityValues (L, NUM_FOR_EDICT (entity));
-		lua_pushvalue (L, 3);
-		lua_setfield (L, -2, name);
-		return 0;
-	}
+		return luaL_error (L, "unknown entity field '%s'", name);
 	LP_SetValue (L, 3, field->type, (eval_t *)((float *)&entity->v + field->ofs), LP_IsBooleanDef (L, field));
 	return 0;
 }
 
-// Looks up a global, pushes its value when found.
-// [-0, +0 or 1]
+// Looks up a global, pushes its value.
+// [-0, +1]
 static int LP_GlobalsIndex (lua_State *L)
 {
 	const char *name = luaL_checkstring (L, 2);
-	ddef_t	   *global;
-
-	lua_rawgeti (L, LUA_REGISTRYINDEX, lp_global_values_ref);
-	lua_getfield (L, -1, name);
-	if (!lua_isnil (L, -1))
-	{
-		lua_remove (L, -2);
-		return 1;
-	}
-	lua_pop (L, 2);
-
-	global = ED_FindGlobal (name);
+	ddef_t	   *global = ED_FindGlobal (name);
 	if (!global)
-		return 0;
+		return luaL_error (L, "unknown global '%s'", name);
 	LP_PushValue (L, global->type, (eval_t *)&qcvm->globals[global->ofs], LP_IsBooleanDef (L, global), false);
 	return 1;
 }
 
-// Sets a global, leaves its shadow table.
-// [-0, +1]
+// Sets a global.
+// [-0, +0]
 static int LP_GlobalsNewIndex (lua_State *L)
 {
 	const char *name = luaL_checkstring (L, 2);
 	ddef_t	   *global = ED_FindGlobal (name);
 	if (!global)
-	{
-		lua_rawgeti (L, LUA_REGISTRYINDEX, lp_global_values_ref);
-		lua_pushvalue (L, 3);
-		lua_setfield (L, -2, name);
-		return 0;
-	}
-	if (LP_IsBooleanDef (L, global))
-	{
-		LP_SetValue (L, 3, global->type, (eval_t *)&qcvm->globals[global->ofs], true);
-		return 0;
-	}
-	{
-		const int	   type = global->type & ~DEF_SAVEGLOBAL;
-		lp_entity_t	  *entity = type == ev_entity ? luaL_testudata (L, 3, LP_ENTITY_META) : NULL;
-		const qboolean shadow = (type == ev_float && lua_isboolean (L, 3)) || (entity && entity->number == 0);
-
-		if (type == ev_float && lua_isboolean (L, 3))
-			qcvm->globals[global->ofs] = lua_toboolean (L, 3);
-		else
-			LP_SetValue (L, 3, global->type, (eval_t *)&qcvm->globals[global->ofs], false);
-
-		lua_rawgeti (L, LUA_REGISTRYINDEX, lp_global_values_ref);
-		if (shadow)
-			lua_pushvalue (L, 3);
-		else
-			lua_pushnil (L);
-		lua_setfield (L, -2, name);
-	}
-
+		return luaL_error (L, "unknown global '%s'", name);
+	LP_SetValue (L, 3, global->type, (eval_t *)&qcvm->globals[global->ofs], LP_IsBooleanDef (L, global));
 	return 0;
 }
 
@@ -1612,10 +1546,6 @@ qboolean LP_Init (void)
 	lua_newtable (lp_state);
 	lp_spawns_ref = luaL_ref (lp_state, LUA_REGISTRYINDEX);
 	lua_newtable (lp_state);
-	lp_entity_values_ref = luaL_ref (lp_state, LUA_REGISTRYINDEX);
-	lua_newtable (lp_state);
-	lp_global_values_ref = luaL_ref (lp_state, LUA_REGISTRYINDEX);
-	lua_newtable (lp_state);
 	lp_functions_ref = luaL_ref (lp_state, LUA_REGISTRYINDEX);
 	lua_newtable (lp_state);
 	lp_function_names_ref = luaL_ref (lp_state, LUA_REGISTRYINDEX);
@@ -1637,8 +1567,6 @@ void LP_Shutdown (void)
 		lua_close (lp_state);
 	lp_state = NULL;
 	lp_spawns_ref = LUA_NOREF;
-	lp_entity_values_ref = LUA_NOREF;
-	lp_global_values_ref = LUA_NOREF;
 	lp_boolean_defs_ref = LUA_NOREF;
 	lp_functions_ref = LUA_NOREF;
 	lp_function_names_ref = LUA_NOREF;

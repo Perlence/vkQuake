@@ -162,9 +162,10 @@ finale_1 = quake.register_function("oldone.finale_1", function(self)
 
     pl = quake.find(quake.world, "classname", "player")
     while pl do
+        local other = quake.globals.other or quake.world
         pl.view_ofs = quake.vec3(0, 0, 0)
-        quake.globals.other.v_angle = pos.mangle
-        pl.angles = quake.globals.other.v_angle
+        other.v_angle = pos.mangle
+        pl.angles = other.v_angle
         pl.fixangle = 1 -- turn this way immediately
         pl.map = self.map
         pl.nextthink = quake.time() + 0.5

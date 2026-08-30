@@ -443,7 +443,8 @@ function M.lightning_damage(self, p1, p2, from, damage)
         quake.particle(trace.endpos, quake.vec3(0, 0, 100), 225, damage * 4)
         combat.damage(trace.entity, from, from, damage)
         if self.classname == "player" then
-            if quake.globals.other.classname == "player" then
+            local other = quake.globals.other or quake.world
+            if other.classname == "player" then
                 trace.entity.velocity.z = trace.entity.velocity.z + 400
             end
         end

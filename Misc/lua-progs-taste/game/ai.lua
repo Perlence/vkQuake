@@ -347,7 +347,7 @@ local function find_target(self)
     if self.enemy.classname ~= "player" then
         self.enemy = self.enemy.enemy
         if not self.enemy or self.enemy.classname ~= "player" then
-            self.enemy = quake.world
+            self.enemy = nil
             return false
         end
     end
@@ -531,7 +531,7 @@ function M.run(self, dist)
     quake.globals.movedist = dist
     -- see if the enemy is dead
     if not self.enemy or self.enemy.health <= 0 then
-        self.enemy = quake.world
+        self.enemy = nil
         -- FIXME: look all around for other targets
         if self.oldenemy and self.oldenemy.health > 0 then
             self.enemy = self.oldenemy

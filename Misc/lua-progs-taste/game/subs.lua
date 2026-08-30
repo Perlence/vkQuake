@@ -157,9 +157,11 @@ end)
 ---Search for (string)targetname in all entities that
 ---match (string)self.target and call their .use function
 ---@param self entity
----@param activator entity
+---@param activator entity?
 ---@return nil
 M.use_targets = quake.register_function("subs.use_targets", function(self, activator)
+    activator = activator or quake.world
+
     -- check for a delay
     if self.delay ~= 0 then
         -- create a temp object to fire at a later time

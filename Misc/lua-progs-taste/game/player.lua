@@ -250,8 +250,9 @@ local death_bubbles
 ---@param self entity
 ---@return nil
 local function pain_sound(self)
+    local attacker = g.damage_attacker or quake.world
     if self.health < 0 then return end
-    if g.damage_attacker.classname == "teledeath" then quake.sound(self, CHAN_VOICE, "player/teledth1.wav", 1, ATTN_NONE); return end
+    if attacker.classname == "teledeath" then quake.sound(self, CHAN_VOICE, "player/teledth1.wav", 1, ATTN_NONE); return end
 
     -- water pain sounds
     if self.watertype == CONTENT_WATER and self.waterlevel == 3 then
@@ -382,12 +383,13 @@ end
 ---@param dm number
 ---@return vec3
 local function velocity_for_damage(self, dm)
+    local inflictor = g.damage_inflictor or quake.world
     local v
     -- check if the inflictor had velocity, e.g. like a rocket or explode box
-    if g.damage_inflictor.velocity:length() > 0 then
+    if inflictor.velocity:length() > 0 then
         -- impact some of inflictor's velocity on the gibs
-        v = g.damage_inflictor.velocity * 0.5
-        v = v + (self.origin - g.damage_inflictor.origin):normalized() * 25
+        v = inflictor.velocity * 0.5
+        v = v + (self.origin - inflictor.origin):normalized() * 25
         v = quake.vec3(v.x + 50 * quake.crandom(), v.y + 50 * quake.crandom(), 100 + 100 * quake.random())
     else
         -- use a random velocity for the gibs
@@ -439,13 +441,14 @@ end
 ---@param self entity
 ---@return nil
 local function gib_player(self)
+    local attacker = g.damage_attacker or quake.world
     throw_head(self, "progs/h_player.mdl", self.health)
     throw_gib(self, "progs/gib1.mdl", self.health)
     throw_gib(self, "progs/gib2.mdl", self.health)
     throw_gib(self, "progs/gib3.mdl", self.health)
     self.deadflag = DEAD_DEAD
-    if g.damage_attacker.classname == "teledeath" then quake.sound(self, CHAN_VOICE, "player/teledth1.wav", 1, ATTN_NONE); return end
-    if g.damage_attacker.classname == "teledeath2" then quake.sound(self, CHAN_VOICE, "player/teledth1.wav", 1, ATTN_NONE); return end
+    if attacker.classname == "teledeath" then quake.sound(self, CHAN_VOICE, "player/teledth1.wav", 1, ATTN_NONE); return end
+    if attacker.classname == "teledeath2" then quake.sound(self, CHAN_VOICE, "player/teledth1.wav", 1, ATTN_NONE); return end
     if quake.random() < 0.5 then quake.sound(self, CHAN_VOICE, "player/gib.wav", 1, ATTN_NONE)
     else quake.sound(self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NONE) end
 end

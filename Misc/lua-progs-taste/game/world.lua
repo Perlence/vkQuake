@@ -100,7 +100,7 @@ World Types:
 ---@param self entity
 ---@return nil
 local function worldspawn(self)
-    g.lastspawn = quake.world
+    g.lastspawn = nil
     init_body_que()
 
     -- custom map attributes
