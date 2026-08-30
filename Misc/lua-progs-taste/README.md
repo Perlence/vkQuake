@@ -2,9 +2,9 @@
 
 This directory sketches what a Lua replacement for QuakeC could look like. It ports the complete `progs.src` from [CleanFixedQuakeC](https://github.com/Jason2Brownlee/CleanFixedQuakeC) at `dacc69ef13d2c961776b708f33ad2be8e87da224`.
 
-vkQuake activates the Lua game when the selected game directory is named `id1lua`. The engine loads modules from `id1lua/lua/`, exposes the `quake` C module, registers Lua map-spawn functions, and dispatches entity and lifecycle callbacks to Lua.
+vkQuake activates Lua game logic when the search path contains `lua/init.lua`. The engine loads modules from `lua/`, exposes the `quake` C module, registers Lua map-spawn functions, and dispatches entity and lifecycle callbacks to Lua.
 
-The first integration retains the original `progs.dat` as an ABI schema for QuakeC globals and entity fields. Gameplay spawn functions and callbacks execute in Lua; the bytecode VM remains available for compatibility and schema-backed operations.
+The schema-only `progs.dat` generated from `dummy/` contains the standard engine ABI and empty lifecycle functions. Placing it beside `lua/` masks inherited QuakeC game logic through Quake's normal union filesystem semantics. Omitting it instead lets Lua extend the resolved `progs.dat`.
 
 The `quake` module provides:
 
@@ -32,6 +32,7 @@ A Lua callback must be passed through `quake.register_function()` before it can 
 - `game/animation.lua` – Lua expansion of QuakeC frame-function declarations
 - `game/constants.lua` – constants shared by the initial supporting modules
 - `game/*.lua` – one complete port for every module listed by `progs.src`
+- `dummy/*.qc` – source for the schema-only `progs.dat`
 - `meta/quake.lua` – Lua Language Server definitions for the engine C module and schema types
 
 Original comments, including entity documentation, remain next to the corresponding Lua code.
@@ -56,6 +57,7 @@ From the repository root, symlink the prototype into the game directory, then bu
 ```sh
 mkdir -p ~/Games/Quake/id1lua
 ln -s "$(pwd)/Misc/lua-progs-taste/game" ~/Games/Quake/id1lua/lua
+ln -s "$(pwd)/Misc/lua-progs-taste/progs.dat" ~/Games/Quake/id1lua/progs.dat
 ninja -C build
 build/vkquake -basedir ~/Games/Quake -game id1lua
 ```

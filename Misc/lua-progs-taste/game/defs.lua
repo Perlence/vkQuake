@@ -2,371 +2,239 @@
 -- This is not a requireable Lua module.
 
 ---@class quake_globals
+---@field movedist number
+---@field gameover number
+---@field string_null string
 ---@field activator entity?
----@field bodyque_head entity?
 ---@field damage_attacker entity?
 ---@field damage_inflictor entity?
----@field enemy_infront boolean
----@field enemy_range number
----@field enemy_vis boolean
----@field enemy_yaw number
 ---@field framecount number
----@field gameover number
----@field hknight_type number
----@field intermission_exittime number
----@field intermission_running number
----@field lastspawn entity?
+---@field skill number
+---@field sight_entity entity?
+---@field sight_entity_time number
 ---@field le1 entity?
 ---@field le2 entity?
 ---@field lightning_end number
 ---@field modelindex_eyes number
 ---@field modelindex_player number
----@field movedist number
+---@field intermission_running number
+---@field intermission_exittime number
 ---@field nextmap string
+---@field enemy_vis boolean
+---@field enemy_infront boolean
+---@field enemy_range number
+---@field enemy_yaw number
+---@field hknight_type number
 ---@field shub entity?
----@field sight_entity entity?
----@field sight_entity_time number
----@field skill number
----@field string_null string
+---@field lastspawn entity?
+---@field bodyque_head entity?
 
 ---@type quake_defs
 local globals = {
+    movedist = "float",
+    gameover = "float",
+    string_null = "string",
     activator = "entity",
-    bodyque_head = "entity",
     damage_attacker = "entity",
     damage_inflictor = "entity",
-    enemy_infront = "bool",
-    enemy_range = "float",
-    enemy_vis = "bool",
-    enemy_yaw = "float",
     framecount = "float",
-    gameover = "float",
-    hknight_type = "float",
-    intermission_exittime = "float",
-    intermission_running = "float",
-    lastspawn = "entity",
+    skill = "float",
+
+    -- ai
+    sight_entity = "entity",
+    sight_entity_time = "float",
+
+    -- boss
     le1 = "entity",
     le2 = "entity",
     lightning_end = "float",
+
+    -- client
     modelindex_eyes = "float",
     modelindex_player = "float",
-    movedist = "float",
+    intermission_running = "float",
+    intermission_exittime = "float",
     nextmap = "string",
+
+    -- fight
+    enemy_vis = "bool",
+    enemy_infront = "bool",
+    enemy_range = "float",
+    enemy_yaw = "float",
+
+    -- hknight
+    hknight_type = "float",
+
+    -- oldone
     shub = "entity",
-    sight_entity = "entity",
-    sight_entity_time = "float",
-    skill = "float",
-    string_null = "string",
+
+    -- world
+    lastspawn = "entity",
+    bodyque_head = "entity",
 }
 
 ---@class entity
----@field absmax vec3
----@field absmin vec3
----@field aflag number
----@field aiment entity?
----@field air_finished number
----@field ammo_cells number
----@field ammo_nails number
----@field ammo_rockets number
----@field ammo_shells number
----@field angles vec3
----@field armortype number
----@field armorvalue number
----@field attack_finished number
+---@field wad string
+---@field map string
+---@field worldtype number
+---@field killtarget string
+---@field light_lev number
+---@field style number
+---@field th_stand think_callback?
+---@field th_walk think_callback?
+---@field th_run think_callback?
+---@field th_missile think_callback?
+---@field th_melee think_callback?
+---@field th_pain pain_callback?
+---@field th_die die_callback?
+---@field oldenemy entity?
+---@field speed number
+---@field lefty number
+---@field search_time number
 ---@field attack_state number
----@field avelocity vec3
+---@field walkframe number
+---@field attack_finished number
+---@field pain_finished number
+---@field invincible_finished number
+---@field invisible_finished number
+---@field super_damage_finished number
+---@field radsuit_finished number
+---@field invincible_time number
+---@field invincible_sound number
+---@field invisible_time number
+---@field invisible_sound number
+---@field super_time number
+---@field super_sound number
+---@field rad_time number
+---@field fly_sound number
 ---@field axhitme number
----@field blocked touch_callback?
+---@field show_hostile number
+---@field jump_flag number
+---@field swim_flag number
+---@field air_finished number
 ---@field bubble_count number
----@field button0 number
----@field button1 number
----@field button2 number
----@field chain entity?
----@field check_attack fun(self: entity): boolean
----@field classname string
----@field cnt number
----@field colormap number
----@field count number
----@field currentammo number
----@field deadflag number
 ---@field deathtype string
----@field delay number
+---@field mdl string
+---@field mangle vec3
+---@field t_length number
+---@field t_width number
 ---@field dest vec3
 ---@field dest1 vec3
 ---@field dest2 vec3
----@field distance number
----@field dmg number
----@field dmg_inflictor entity?
----@field dmg_save number
----@field dmg_take number
----@field dmgtime number
----@field effects number
----@field enemy entity?
----@field finalangle vec3
----@field finaldest vec3
----@field flags number
----@field fixangle number
----@field fly_sound number
----@field frame integer
----@field frags number
----@field goalentity entity?
----@field groundentity entity?
----@field healamount number
----@field healtype number
----@field health number
----@field height number
----@field ideal_yaw number
----@field idealpitch number
----@field impulse number
----@field inpain number
----@field invincible_finished number
----@field invincible_sound number
----@field invincible_time number
----@field invisible_finished number
----@field invisible_sound number
----@field invisible_time number
----@field items number
----@field jump_flag number
----@field killtarget string
----@field lefty number
----@field light_lev number
----@field lip number
----@field ltime number
----@field mangle vec3
----@field map string
----@field max_health number
----@field maxs vec3
----@field mdl string
----@field message string
----@field mins vec3
----@field model string
----@field modelindex number
----@field movedir vec3
----@field movetarget entity?
----@field movetype number
----@field netname string
----@field nextthink number
----@field noise string
----@field noise1 string
----@field noise2 string
----@field noise3 string
+---@field wait number
+---@field delay number
+---@field trigger_field entity?
 ---@field noise4 string
----@field oldenemy entity?
----@field oldorigin vec3
----@field origin vec3
----@field owner entity?
----@field pain_finished number
 ---@field pausetime number
----@field pickup_touch touch_callback?
+---@field movetarget entity?
+---@field aflag number
+---@field dmg number
+---@field cnt number
+---@field think1 think_callback?
+---@field finaldest vec3
+---@field finalangle vec3
+---@field count number
+---@field lip number
+---@field state number
 ---@field pos1 vec3
 ---@field pos2 vec3
----@field punchangle vec3
----@field rad_time number
----@field radsuit_finished number
----@field search_time number
----@field show_hostile number
----@field size vec3
----@field skin number
----@field solid number
----@field sounds number
----@field spawnflags number
----@field speed number
----@field state number
----@field style number
----@field super_damage_finished number
----@field super_sound number
----@field super_time number
----@field swim_flag number
----@field t_length number
----@field t_width number
----@field takedamage number
----@field target string
----@field targetname string
----@field team number
----@field teleport_time number
----@field th_die die_callback?
----@field th_melee think_callback?
----@field th_missile think_callback?
----@field th_pain pain_callback?
----@field th_run think_callback?
----@field th_stand think_callback?
----@field th_walk think_callback?
----@field think think_callback?
----@field think1 think_callback?
----@field touch touch_callback?
----@field trigger_field entity?
----@field use use_callback?
----@field v_angle vec3
----@field velocity vec3
----@field view_ofs vec3
----@field volume number
----@field wad string
----@field wait number
----@field waitmax number
+---@field height number
 ---@field waitmin number
----@field walkframe number
----@field waterlevel number
----@field watertype number
----@field weapon number
----@field weaponframe number
----@field weaponmodel string
----@field worldtype number
----@field yaw_speed number
+---@field waitmax number
+---@field distance number
+---@field volume number
+---@field dmgtime number
+---@field healamount number
+---@field healtype number
+---@field inpain number
+---@field check_attack fun(self: entity): boolean
+---@field pickup_touch touch_callback?
 
 ---@type quake_defs
 local entity_fields = {
-    absmax = "vector",
-    absmin = "vector",
-    aflag = "float",
-    aiment = "entity",
-    air_finished = "float",
-    ammo_cells = "float",
-    ammo_nails = "float",
-    ammo_rockets = "float",
-    ammo_shells = "float",
-    angles = "vector",
-    armortype = "float",
-    armorvalue = "float",
-    attack_finished = "float",
+    wad = "string",
+    map = "string",
+    worldtype = "float",
+    killtarget = "string",
+    light_lev = "float",
+    style = "float",
+    th_stand = "function",
+    th_walk = "function",
+    th_run = "function",
+    th_missile = "function",
+    th_melee = "function",
+    th_pain = "function",
+    th_die = "function",
+    oldenemy = "entity",
+    speed = "float",
+    lefty = "float",
+    search_time = "float",
     attack_state = "float",
-    avelocity = "vector",
+    walkframe = "float",
+    attack_finished = "float",
+    pain_finished = "float",
+    invincible_finished = "float",
+    invisible_finished = "float",
+    super_damage_finished = "float",
+    radsuit_finished = "float",
+    invincible_time = "float",
+    invincible_sound = "float",
+    invisible_time = "float",
+    invisible_sound = "float",
+    super_time = "float",
+    super_sound = "float",
+    rad_time = "float",
+    fly_sound = "float",
     axhitme = "float",
-    blocked = "function",
+    show_hostile = "float",
+    jump_flag = "float",
+    swim_flag = "float",
+    air_finished = "float",
     bubble_count = "float",
-    button0 = "float",
-    button1 = "float",
-    button2 = "float",
-    chain = "entity",
-    check_attack = "function",
-    classname = "string",
-    cnt = "float",
-    colormap = "float",
-    count = "float",
-    currentammo = "float",
-    deadflag = "float",
     deathtype = "string",
-    delay = "float",
+    mdl = "string",
+    mangle = "vector",
+    t_length = "float",
+    t_width = "float",
     dest = "vector",
     dest1 = "vector",
     dest2 = "vector",
-    distance = "float",
-    dmg = "float",
-    dmg_inflictor = "entity",
-    dmg_save = "float",
-    dmg_take = "float",
-    dmgtime = "float",
-    effects = "float",
-    enemy = "entity",
-    finalangle = "vector",
-    finaldest = "vector",
-    flags = "float",
-    fixangle = "float",
-    fly_sound = "float",
-    frame = "float",
-    frags = "float",
-    goalentity = "entity",
-    groundentity = "entity",
-    healamount = "float",
-    healtype = "float",
-    health = "float",
-    height = "float",
-    ideal_yaw = "float",
-    idealpitch = "float",
-    impulse = "float",
-    inpain = "float",
-    invincible_finished = "float",
-    invincible_sound = "float",
-    invincible_time = "float",
-    invisible_finished = "float",
-    invisible_sound = "float",
-    invisible_time = "float",
-    items = "float",
-    jump_flag = "float",
-    killtarget = "string",
-    lefty = "float",
-    light_lev = "float",
-    lip = "float",
-    ltime = "float",
-    mangle = "vector",
-    map = "string",
-    max_health = "float",
-    maxs = "vector",
-    mdl = "string",
-    message = "string",
-    mins = "vector",
-    model = "string",
-    modelindex = "float",
-    movedir = "vector",
-    movetarget = "entity",
-    movetype = "float",
-    netname = "string",
-    nextthink = "float",
-    noise = "string",
-    noise1 = "string",
-    noise2 = "string",
-    noise3 = "string",
+    wait = "float",
+    delay = "float",
+    trigger_field = "entity",
     noise4 = "string",
-    oldenemy = "entity",
-    oldorigin = "vector",
-    origin = "vector",
-    owner = "entity",
-    pain_finished = "float",
     pausetime = "float",
-    pickup_touch = "function",
+    movetarget = "entity",
+    aflag = "float",
+    dmg = "float",
+    cnt = "float",
+    think1 = "function",
+    finaldest = "vector",
+    finalangle = "vector",
+    count = "float",
+    lip = "float",
+    state = "float",
     pos1 = "vector",
     pos2 = "vector",
-    punchangle = "vector",
-    rad_time = "float",
-    radsuit_finished = "float",
-    search_time = "float",
-    show_hostile = "float",
-    size = "vector",
-    skin = "float",
-    solid = "float",
-    sounds = "float",
-    spawnflags = "float",
-    speed = "float",
-    state = "float",
-    style = "float",
-    super_damage_finished = "float",
-    super_sound = "float",
-    super_time = "float",
-    swim_flag = "float",
-    t_length = "float",
-    t_width = "float",
-    takedamage = "float",
-    target = "string",
-    targetname = "string",
-    team = "float",
-    teleport_time = "float",
-    th_die = "function",
-    th_melee = "function",
-    th_missile = "function",
-    th_pain = "function",
-    th_run = "function",
-    th_stand = "function",
-    th_walk = "function",
-    think = "function",
-    think1 = "function",
-    touch = "function",
-    trigger_field = "entity",
-    use = "function",
-    v_angle = "vector",
-    velocity = "vector",
-    view_ofs = "vector",
-    volume = "float",
-    wad = "string",
-    wait = "float",
-    waitmax = "float",
+    height = "float",
     waitmin = "float",
-    walkframe = "float",
-    waterlevel = "float",
-    watertype = "float",
-    weapon = "float",
-    weaponframe = "float",
-    weaponmodel = "string",
-    worldtype = "float",
-    yaw_speed = "float",
+    waitmax = "float",
+    distance = "float",
+    volume = "float",
+
+    -- client
+    dmgtime = "float",
+
+    -- items
+    healamount = "float",
+    healtype = "float",
+
+    -- zombie
+    inpain = "float",
+
+    -- Lua-specific
+    check_attack = "function",
+    pickup_touch = "function",
 }
 
 return globals, entity_fields

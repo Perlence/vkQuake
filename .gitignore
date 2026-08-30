@@ -29,6 +29,7 @@ Packaging/Windows/vkQuake*.zip
 Misc/vq_pak/mkpak
 Misc/vq_pak/*.exe
 Misc/vq_pak/*.dSYM
+Misc/lua-progs-taste/progs.lno
 build/
 .settings
 .project
