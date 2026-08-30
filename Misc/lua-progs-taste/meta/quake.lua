@@ -7,6 +7,7 @@
 ---@alias use_callback fun(self: entity, activator: entity)
 ---@alias pain_callback fun(self: entity, attacker: entity, damage: number)
 ---@alias die_callback fun(self: entity)
+---@alias quake_defs { [string]: "bool" | "float" | "string" | "vector" | "entity" | "function" }
 
 ---@class vec3
 ---@field x number

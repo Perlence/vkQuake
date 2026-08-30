@@ -101,10 +101,12 @@ void	 PR_ExecuteProgram (func_t fnum);
 void	 PR_ClearProgs (qcvm_t *vm);
 qboolean PR_LoadProgs (const char *filename, qboolean fatal, unsigned int needcrc, const builtin_t *builtins, size_t numbuiltins);
 
-qboolean LP_Init (void);
+qboolean	LP_Init (void);
+qboolean	LP_LoadDefs (void);
+void		LP_SupplementProgs (void);
 void		LP_Shutdown (void);
-qboolean LP_ExecuteProgram (func_t function);
-qboolean LP_CallSpawn (const char *classname, edict_t *entity);
+qboolean	LP_ExecuteProgram (func_t function);
+qboolean	LP_CallSpawn (const char *classname, edict_t *entity);
 const char *LP_GetFunctionName (func_t function);
 func_t		LP_FindFunction (const char *name);
 

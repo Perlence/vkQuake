@@ -3355,6 +3355,7 @@ void SV_SpawnServer (const char *server)
 		sv.protocolflags = 0;
 
 	PR_SwitchQCVM (vm);
+	LP_LoadDefs ();
 	// load progs to get entity field count
 	PR_LoadProgs ("progs.dat", true, PROGHEADER_CRC, pr_ssqcbuiltins, pr_ssqcnumbuiltins);
 
@@ -3462,8 +3463,7 @@ void SV_SpawnServer (const char *server)
 	// serverflags are for cross level information (sigils)
 	pr_global_struct->serverflags = svs.serverflags;
 
-	if (!strcmp (COM_SkipPath (com_gamedir), "id1lua"))
-		LP_Init ();
+	LP_Init ();
 
 	ED_LoadFromFile (qcvm->worldmodel->entities);
 

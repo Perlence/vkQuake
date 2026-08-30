@@ -7,6 +7,7 @@ modify it under the terms of the GNU General Public License.
 
 #include "quakedef.h"
 
+#include <limits.h>
 #include <lauxlib.h>
 #include <lua.h>
 #include <lualib.h>
@@ -25,10 +26,18 @@ typedef struct
 	int number;
 } lp_entity_t;
 
+typedef struct
+{
+	char	*name;
+	etype_t	 type;
+	qboolean boolean;
+} lp_def_t;
+
 static lua_State *lp_state;
 static int		  lp_spawns_ref = LUA_NOREF;
 static int		  lp_entity_values_ref = LUA_NOREF;
 static int		  lp_global_values_ref = LUA_NOREF;
+static int		  lp_boolean_defs_ref = LUA_NOREF;
 // Registered functions are mapped in both directions: lp_functions_ref maps
 // names to func_t values, lp_function_names_ref maps Lua functions to names,
 // and the Lua registry maps the negated func_t values to Lua functions. Valid
@@ -37,15 +46,28 @@ static int		  lp_global_values_ref = LUA_NOREF;
 static int		  lp_functions_ref = LUA_NOREF;
 static int		  lp_function_names_ref = LUA_NOREF;
 static qboolean	  lp_active;
+static lp_def_t	 *lp_global_defs;
+static size_t	  lp_num_global_defs;
+static lp_def_t	 *lp_field_defs;
+static size_t	  lp_num_field_defs;
 
-static int	LP_EntityIndex (lua_State *L);
-static int	LP_EntityNewIndex (lua_State *L);
-static int	LP_CallQC (lua_State *L);
-static int	LP_GlobalsIndex (lua_State *L);
-static int	LP_GlobalsNewIndex (lua_State *L);
-static void LP_SetParmFloat (int parm, float value);
-static void LP_SetParmString (lua_State *L, int parm, int index);
-static void LP_RunBuiltin (int number, int argc);
+static int		LP_EntityIndex (lua_State *L);
+static int		LP_EntityNewIndex (lua_State *L);
+static int		LP_CallQC (lua_State *L);
+static int		LP_GlobalsIndex (lua_State *L);
+static int		LP_GlobalsNewIndex (lua_State *L);
+static void		LP_ClearDefs (void);
+static int		LP_CompareDefs (const void *left, const void *right);
+static qboolean LP_IsBooleanDef (lua_State *L, const ddef_t *definition);
+static void		LP_ReadDefsTable (lua_State *L, int index, const char *description, lp_def_t **defs, size_t *numdefs);
+static etype_t	LP_ReadDefType (const char *name, const char *type, qboolean *boolean);
+static void		LP_ResolveBooleanDefs (lua_State *L);
+static ddef_t  *LP_FindFileDef (dprograms_t *progs, int lumpofs, int count, const char *name);
+static qboolean LP_HasDef (const lp_def_t *definitions, size_t count, const char *name);
+static int		LP_AppendString (dprograms_t *progs, const char *name);
+static void		LP_SetParmFloat (int parm, float value);
+static void		LP_SetParmString (lua_State *L, int parm, int index);
+static void		LP_RunBuiltin (int number, int argc);
 
 // Reports the Lua error at the top of the global state and does not return.
 static void LP_Error (const char *context)
@@ -422,8 +444,14 @@ static void LP_PushFunction (lua_State *L, func_t function)
 
 // Converts a QuakeC value, pushes its Lua representation.
 // [-0, +1]
-static void LP_PushValue (lua_State *L, int type, eval_t *value, qboolean allow_world)
+static void LP_PushValue (lua_State *L, int type, eval_t *value, qboolean boolean, qboolean allow_world)
 {
+	if (boolean)
+	{
+		assert ((type & ~DEF_SAVEGLOBAL) == ev_float);
+		lua_pushboolean (L, value->_float != 0);
+		return;
+	}
 	switch (type & ~DEF_SAVEGLOBAL)
 	{
 	case ev_string:
@@ -460,8 +488,15 @@ static int LP_CopyString (lua_State *L, int index)
 
 // Copies the value at index into QuakeC storage.
 // [-0, +0]
-static void LP_SetValue (lua_State *L, int index, int type, eval_t *value)
+static void LP_SetValue (lua_State *L, int index, int type, eval_t *value, qboolean boolean)
 {
+	if (boolean)
+	{
+		assert ((type & ~DEF_SAVEGLOBAL) == ev_float);
+		luaL_checktype (L, index, LUA_TBOOLEAN);
+		value->_float = lua_toboolean (L, index);
+		return;
+	}
 	switch (type & ~DEF_SAVEGLOBAL)
 	{
 	case ev_string:
@@ -558,7 +593,7 @@ static int LP_EntityIndex (lua_State *L)
 		lua_remove (L, -2);
 		return 1;
 	}
-	LP_PushValue (L, field->type, (eval_t *)((float *)&entity->v + field->ofs), false);
+	LP_PushValue (L, field->type, (eval_t *)((float *)&entity->v + field->ofs), LP_IsBooleanDef (L, field), false);
 	return 1;
 }
 
@@ -576,7 +611,7 @@ static int LP_EntityNewIndex (lua_State *L)
 		lua_setfield (L, -2, name);
 		return 0;
 	}
-	LP_SetValue (L, 3, field->type, (eval_t *)((float *)&entity->v + field->ofs));
+	LP_SetValue (L, 3, field->type, (eval_t *)((float *)&entity->v + field->ofs), LP_IsBooleanDef (L, field));
 	return 0;
 }
 
@@ -599,7 +634,7 @@ static int LP_GlobalsIndex (lua_State *L)
 	global = ED_FindGlobal (name);
 	if (!global)
 		return 0;
-	LP_PushValue (L, global->type, (eval_t *)&qcvm->globals[global->ofs], false);
+	LP_PushValue (L, global->type, (eval_t *)&qcvm->globals[global->ofs], LP_IsBooleanDef (L, global), false);
 	return 1;
 }
 
@@ -616,6 +651,11 @@ static int LP_GlobalsNewIndex (lua_State *L)
 		lua_setfield (L, -2, name);
 		return 0;
 	}
+	if (LP_IsBooleanDef (L, global))
+	{
+		LP_SetValue (L, 3, global->type, (eval_t *)&qcvm->globals[global->ofs], true);
+		return 0;
+	}
 	{
 		const int	   type = global->type & ~DEF_SAVEGLOBAL;
 		lp_entity_t	  *entity = type == ev_entity ? luaL_testudata (L, 3, LP_ENTITY_META) : NULL;
@@ -624,7 +664,7 @@ static int LP_GlobalsNewIndex (lua_State *L)
 		if (type == ev_float && lua_isboolean (L, 3))
 			qcvm->globals[global->ofs] = lua_toboolean (L, 3);
 		else
-			LP_SetValue (L, 3, global->type, (eval_t *)&qcvm->globals[global->ofs]);
+			LP_SetValue (L, 3, global->type, (eval_t *)&qcvm->globals[global->ofs], false);
 
 		lua_rawgeti (L, LUA_REGISTRYINDEX, lp_global_values_ref);
 		if (shadow)
@@ -633,6 +673,7 @@ static int LP_GlobalsNewIndex (lua_State *L)
 			lua_pushnil (L);
 		lua_setfield (L, -2, name);
 	}
+
 	return 0;
 }
 
@@ -1247,17 +1288,317 @@ static void LP_CreateMetatables (lua_State *L)
 	lua_pop (L, 1);
 }
 
+// Loads the game definition schema, returning whether one exists.
+qboolean LP_LoadDefs (void)
+{
+	static const char path[] = "lua/defs.lua";
+	lua_State		 *L;
+	byte			 *source;
+	int				  status;
+
+	LP_ClearDefs ();
+	source = COM_LoadFile (path, NULL);
+	if (!source)
+		return false;
+
+	L = luaL_newstate ();
+	if (!L)
+		Host_Error ("Could not create Lua state for %s", path);
+	status = luaL_loadbuffer (L, (const char *)source, com_filesize, path);
+	Mem_Free (source);
+	if (status == LUA_OK)
+		status = lua_pcall (L, 0, 2, 0);
+	if (status != LUA_OK)
+		Host_Error ("Lua progs loading %s: %s", path, lua_tostring (L, -1));
+	if (!lua_istable (L, 1) || !lua_istable (L, 2))
+		Host_Error ("Lua progs %s must return global and entity field tables", path);
+
+	LP_ReadDefsTable (L, 1, "global", &lp_global_defs, &lp_num_global_defs);
+	LP_ReadDefsTable (L, 2, "entity field", &lp_field_defs, &lp_num_field_defs);
+	lua_close (L);
+
+	// Lua does not specify table iteration order. Sort for stable VM offsets.
+	if (lp_num_global_defs > 1)
+		qsort (lp_global_defs, lp_num_global_defs, sizeof (*lp_global_defs), LP_CompareDefs);
+	if (lp_num_field_defs > 1)
+		qsort (lp_field_defs, lp_num_field_defs, sizeof (*lp_field_defs), LP_CompareDefs);
+	Con_DPrintf ("Loaded %s (%u globals, %u entity fields)\n", path, (unsigned)lp_num_global_defs, (unsigned)lp_num_field_defs);
+	return true;
+}
+
+static void LP_ClearDefs (void)
+{
+	size_t i;
+	for (i = 0; i < lp_num_global_defs; ++i)
+		Mem_Free (lp_global_defs[i].name);
+	for (i = 0; i < lp_num_field_defs; ++i)
+		Mem_Free (lp_field_defs[i].name);
+	Mem_Free (lp_global_defs);
+	Mem_Free (lp_field_defs);
+	lp_global_defs = NULL;
+	lp_num_global_defs = 0;
+	lp_field_defs = NULL;
+	lp_num_field_defs = 0;
+}
+
+static int LP_CompareDefs (const void *left, const void *right)
+{
+	const lp_def_t *a = left, *b = right;
+	return strcmp (a->name, b->name);
+}
+
+static qboolean LP_IsBooleanDef (lua_State *L, const ddef_t *definition)
+{
+	qboolean boolean;
+	lua_rawgeti (L, LUA_REGISTRYINDEX, lp_boolean_defs_ref);
+	lua_pushlightuserdata (L, (void *)definition);
+	lua_rawget (L, -2);
+	boolean = lua_toboolean (L, -1);
+	lua_pop (L, 2);
+	return boolean;
+}
+
+static void LP_ReadDefsTable (lua_State *L, int index, const char *description, lp_def_t **defs, size_t *numdefs)
+{
+	index = lua_absindex (L, index);
+	lua_pushnil (L);
+	while (lua_next (L, index))
+	{
+		const char *name, *type;
+		qboolean	boolean;
+		if (lua_type (L, -2) != LUA_TSTRING || lua_type (L, -1) != LUA_TSTRING)
+			Host_Error ("Lua progs %s definitions must map names to type strings", description);
+		name = lua_tostring (L, -2);
+		type = lua_tostring (L, -1);
+		if (!name[0])
+			Host_Error ("Lua progs %s definition has an empty name", description);
+		*defs = Mem_Realloc (*defs, (*numdefs + 1) * sizeof (**defs));
+		(*defs)[*numdefs].name = q_strdup (name);
+		(*defs)[*numdefs].type = LP_ReadDefType (name, type, &boolean);
+		(*defs)[*numdefs].boolean = boolean;
+		(*numdefs)++;
+		lua_pop (L, 1);
+	}
+}
+
+static etype_t LP_ReadDefType (const char *name, const char *type, qboolean *boolean)
+{
+	*boolean = false;
+	if (!strcmp (type, "bool"))
+	{
+		*boolean = true;
+		return ev_float;
+	}
+	if (!strcmp (type, "float"))
+		return ev_float;
+	if (!strcmp (type, "string"))
+		return ev_string;
+	if (!strcmp (type, "vector"))
+		return ev_vector;
+	if (!strcmp (type, "entity"))
+		return ev_entity;
+	if (!strcmp (type, "function"))
+		return ev_function;
+	Host_Error ("Lua progs definition '%s' has unknown type '%s'", name, type);
+	return ev_bad;
+}
+
+static void LP_ResolveBooleanDefs (lua_State *L)
+{
+	size_t i;
+	lua_newtable (L);
+	for (i = 0; i < lp_num_global_defs; ++i)
+	{
+		ddef_t *definition;
+		if (!lp_global_defs[i].boolean)
+			continue;
+		definition = ED_FindGlobal (lp_global_defs[i].name);
+		if (!definition)
+			Host_Error ("Lua progs global '%s' was not added to progs.dat", lp_global_defs[i].name);
+		lua_pushlightuserdata (L, definition);
+		lua_pushboolean (L, true);
+		lua_rawset (L, -3);
+	}
+	for (i = 0; i < lp_num_field_defs; ++i)
+	{
+		ddef_t *definition;
+		if (!lp_field_defs[i].boolean)
+			continue;
+		definition = ED_FindField (lp_field_defs[i].name);
+		if (!definition)
+			Host_Error ("Lua progs entity field '%s' was not added to progs.dat", lp_field_defs[i].name);
+		lua_pushlightuserdata (L, definition);
+		lua_pushboolean (L, true);
+		lua_rawset (L, -3);
+	}
+	lp_boolean_defs_ref = luaL_ref (L, LUA_REGISTRYINDEX);
+}
+
+// Rewrites the loaded progs.dat image to include the Lua definitions, leaving
+// it indistinguishable from an image compiled with them. Runs before the engine
+// byte-swaps the lumps or derives any state from them, so appended records are
+// written in file (little-endian) byte order.
+void LP_SupplementProgs (void)
+{
+	dprograms_t *oldprogs = qcvm->progs, *progs;
+	ddef_t		*newglobaldefs, *newfielddefs, *definition;
+	int			 ofs_globaldefs, ofs_fielddefs, ofs_strings, ofs_globals, size;
+	int			 addedglobaldefs = 0, addedglobals = 0, addedfielddefs = 0, addedfields = 0, addedstrings = 0;
+	size_t		 i;
+
+	if (qcvm != &sv.qcvm || (!lp_num_global_defs && !lp_num_field_defs))
+		return;
+
+	// Validate the definitions against the original image, mark pre-existing
+	// globals for saving, and count the records to append.
+	for (i = 0; i < lp_num_global_defs; ++i)
+	{
+		definition = LP_FindFileDef (oldprogs, oldprogs->ofs_globaldefs, oldprogs->numglobaldefs, lp_global_defs[i].name);
+		if (definition)
+		{
+			if (((unsigned short)LittleShort (definition->type) & ~DEF_SAVEGLOBAL) != lp_global_defs[i].type)
+				Host_Error ("Global '%s' is already defined with a different type", lp_global_defs[i].name);
+			definition->type = LittleShort ((unsigned short)LittleShort (definition->type) | DEF_SAVEGLOBAL);
+			continue;
+		}
+		addedglobaldefs++;
+		addedglobals += type_size[lp_global_defs[i].type];
+		addedstrings += strlen (lp_global_defs[i].name) + 1;
+	}
+	for (i = 0; i < lp_num_field_defs; ++i)
+	{
+		unsigned int component;
+		definition = LP_FindFileDef (oldprogs, oldprogs->ofs_fielddefs, oldprogs->numfielddefs, lp_field_defs[i].name);
+		if (definition)
+		{
+			if (((unsigned short)LittleShort (definition->type) & ~DEF_SAVEGLOBAL) != lp_field_defs[i].type)
+				Host_Error ("Entity field '%s' is already defined with a different type", lp_field_defs[i].name);
+			continue;
+		}
+		addedfielddefs++;
+		addedfields += type_size[lp_field_defs[i].type];
+		addedstrings += strlen (lp_field_defs[i].name) + 1;
+		if (lp_field_defs[i].type == ev_vector)
+		{
+			for (component = 0; component < 3; ++component)
+			{
+				const char *name = va ("%s_%c", lp_field_defs[i].name, 'x' + component);
+				if (LP_FindFileDef (oldprogs, oldprogs->ofs_fielddefs, oldprogs->numfielddefs, name) || LP_HasDef (lp_field_defs, lp_num_field_defs, name))
+					Host_Error ("Entity field '%s' conflicts with vector '%s'", name, lp_field_defs[i].name);
+				addedfielddefs++;
+				addedstrings += strlen (name) + 1;
+			}
+		}
+	}
+	if (!addedglobaldefs && !addedfielddefs)
+		return;
+	if (addedglobals > USHRT_MAX + 1 - oldprogs->numglobals || addedfields > USHRT_MAX + 1 - oldprogs->entityfields)
+		Host_Error ("Lua progs definitions exceed progs.dat limits");
+
+	// Extended copies of the affected lumps go after the original image, whose
+	// stale lump bytes become dead space. The globals lump comes last so that
+	// the strings lump ends strictly inside the image.
+	ofs_globaldefs = (qcvm->progssize + 3) & ~3;
+	ofs_fielddefs = ofs_globaldefs + (oldprogs->numglobaldefs + addedglobaldefs) * sizeof (ddef_t);
+	ofs_strings = ofs_fielddefs + (oldprogs->numfielddefs + addedfielddefs) * sizeof (ddef_t);
+	ofs_globals = (ofs_strings + oldprogs->numstrings + addedstrings + 3) & ~3;
+	size = ofs_globals + (oldprogs->numglobals + addedglobals) * sizeof (float);
+
+	progs = Mem_Alloc (size); // zero-initialized: the appended globals read as zero
+	memcpy (progs, oldprogs, qcvm->progssize);
+	memcpy ((byte *)progs + ofs_globaldefs, (byte *)oldprogs + oldprogs->ofs_globaldefs, oldprogs->numglobaldefs * sizeof (ddef_t));
+	memcpy ((byte *)progs + ofs_fielddefs, (byte *)oldprogs + oldprogs->ofs_fielddefs, oldprogs->numfielddefs * sizeof (ddef_t));
+	memcpy ((byte *)progs + ofs_strings, (byte *)oldprogs + oldprogs->ofs_strings, oldprogs->numstrings);
+	memcpy ((byte *)progs + ofs_globals, (byte *)oldprogs + oldprogs->ofs_globals, oldprogs->numglobals * sizeof (float));
+	progs->ofs_globaldefs = ofs_globaldefs;
+	progs->ofs_fielddefs = ofs_fielddefs;
+	progs->ofs_strings = ofs_strings;
+	progs->ofs_globals = ofs_globals;
+
+	newglobaldefs = (ddef_t *)((byte *)progs + ofs_globaldefs);
+	for (i = 0; i < lp_num_global_defs; ++i)
+	{
+		if (LP_FindFileDef (progs, ofs_globaldefs, progs->numglobaldefs, lp_global_defs[i].name))
+			continue;
+		definition = &newglobaldefs[progs->numglobaldefs++];
+		definition->type = LittleShort (lp_global_defs[i].type | DEF_SAVEGLOBAL);
+		definition->ofs = LittleShort (progs->numglobals);
+		definition->s_name = LittleLong (LP_AppendString (progs, lp_global_defs[i].name));
+		progs->numglobals += type_size[lp_global_defs[i].type];
+	}
+
+	newfielddefs = (ddef_t *)((byte *)progs + ofs_fielddefs);
+	for (i = 0; i < lp_num_field_defs; ++i)
+	{
+		unsigned int component;
+		const int	 offset = progs->entityfields;
+		if (LP_FindFileDef (progs, ofs_fielddefs, progs->numfielddefs, lp_field_defs[i].name))
+			continue;
+		definition = &newfielddefs[progs->numfielddefs++];
+		definition->type = LittleShort (lp_field_defs[i].type);
+		definition->ofs = LittleShort (offset);
+		definition->s_name = LittleLong (LP_AppendString (progs, lp_field_defs[i].name));
+		progs->entityfields += type_size[lp_field_defs[i].type];
+		for (component = 0; lp_field_defs[i].type == ev_vector && component < 3; ++component)
+		{
+			definition = &newfielddefs[progs->numfielddefs++];
+			definition->type = LittleShort (ev_float);
+			definition->ofs = LittleShort (offset + component);
+			definition->s_name = LittleLong (LP_AppendString (progs, va ("%s_%c", lp_field_defs[i].name, 'x' + component)));
+		}
+	}
+
+	Mem_Free (oldprogs);
+	qcvm->progs = progs;
+	qcvm->progssize = size;
+	Con_DPrintf ("Lua progs extended progs.dat (%d globals, %d entity fields)\n", addedglobaldefs, addedfielddefs);
+}
+
+// Finds a definition by name in a file-endian lump of the progs image.
+static ddef_t *LP_FindFileDef (dprograms_t *progs, int lumpofs, int count, const char *name)
+{
+	ddef_t	   *definitions = (ddef_t *)((byte *)progs + lumpofs);
+	const char *strings = (const char *)progs + progs->ofs_strings;
+	int			i;
+	for (i = 0; i < count; ++i)
+		if (!strcmp (strings + LittleLong (definitions[i].s_name), name))
+			return &definitions[i];
+	return NULL;
+}
+
+static qboolean LP_HasDef (const lp_def_t *definitions, size_t count, const char *name)
+{
+	size_t i;
+	for (i = 0; i < count; ++i)
+		if (!strcmp (definitions[i].name, name))
+			return true;
+	return false;
+}
+
+// Appends a name to the strings lump of the extended image, returning its offset.
+static int LP_AppendString (dprograms_t *progs, const char *name)
+{
+	const int ofs = progs->numstrings;
+	const int length = strlen (name) + 1;
+	memcpy ((byte *)progs + progs->ofs_strings + ofs, name, length);
+	progs->numstrings += length;
+	return ofs;
+}
+
 // Creates and initializes the global Lua state, returning success with its stack unchanged.
 qboolean LP_Init (void)
 {
 	int searchers;
 	if (lp_state)
 		LP_Shutdown ();
+	if (!COM_FileExists ("lua/init.lua", NULL))
+		return false;
 	lp_state = luaL_newstate ();
 	if (!lp_state)
 		Host_Error ("Could not create Lua state");
 	luaL_openlibs (lp_state);
 	LP_CreateMetatables (lp_state);
+	LP_ResolveBooleanDefs (lp_state);
 	luaL_requiref (lp_state, "quake", LP_OpenQuake, 1);
 	lua_pop (lp_state, 1);
 
@@ -1298,9 +1639,11 @@ void LP_Shutdown (void)
 	lp_spawns_ref = LUA_NOREF;
 	lp_entity_values_ref = LUA_NOREF;
 	lp_global_values_ref = LUA_NOREF;
+	lp_boolean_defs_ref = LUA_NOREF;
 	lp_functions_ref = LUA_NOREF;
 	lp_function_names_ref = LUA_NOREF;
 	lp_active = false;
+	LP_ClearDefs ();
 }
 
 // Calls a stored Lua function, returning whether it handled the function with
