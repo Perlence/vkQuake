@@ -2,7 +2,7 @@
 
 This directory sketches what a Lua replacement for QuakeC could look like. It ports the complete `progs.src` from [CleanFixedQuakeC](https://github.com/Jason2Brownlee/CleanFixedQuakeC) at `dacc69ef13d2c961776b708f33ad2be8e87da224`.
 
-vkQuake activates Lua game logic when the search path contains `lua/init.lua`. The engine loads modules from `lua/`, exposes the `quake` C module, registers Lua map-spawn functions, and dispatches entity and lifecycle callbacks to Lua.
+vkQuake activates Lua game logic when the search path contains `lua/init.lua`. The engine loads modules from `lua/`, exposes the global `quake` C module, registers Lua map-spawn functions, and dispatches entity and lifecycle callbacks to Lua.
 
 The schema-only `progs.dat` generated from `dummy/` contains the standard engine ABI and empty lifecycle functions. Placing it beside `lua/` masks inherited QuakeC game logic through Quake's normal union filesystem semantics. Omitting it instead lets Lua extend the resolved `progs.dat`.
 
@@ -39,7 +39,7 @@ Original comments, including entity documentation, remain next to the correspond
 
 ## Editor support
 
-Open this directory as the Lua workspace. `.luarc.json` adds `meta/` as a Lua Language Server library, providing completion and type information for `require("quake")`. Files under `meta/` are for tooling only and must not be added to the runtime module path. Game-owned global and entity annotations live beside their runtime schema in `game/defs.lua`.
+Open this directory as the Lua workspace. `.luarc.json` adds `meta/` as a Lua Language Server library, providing completion and type information for the global `quake` API. Files under `meta/` are for tooling only and must not be added to the runtime module path. Game-owned global and entity annotations live beside their runtime schema in `game/defs.lua`.
 
 ## Validation
 

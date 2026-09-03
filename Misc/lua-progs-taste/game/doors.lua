@@ -19,7 +19,6 @@ See file, 'COPYING', for details.
 -- Port of doors.qc from GPL-licensed CleanFixedQuakeC.
 -- SPDX-License-Identifier: GPL-2.0-or-later
 
-local quake = require("quake")
 local combat = require("game.combat")
 local subs = require("game.subs")
 

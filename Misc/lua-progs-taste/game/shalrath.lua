@@ -20,7 +20,6 @@
     See file, 'COPYING', for details.
 ]]
 
-local quake = require("quake")
 local C = require("game.constants")
 local ai = require("game.ai")
 local animation = require("game.animation")

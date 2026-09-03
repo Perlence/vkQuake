@@ -184,7 +184,7 @@ local quake_globals = {}
 ---@class quake
 ---@field globals quake_globals
 ---@field world entity
-local quake = {}
+quake = {}
 
 ---@param ent entity
 function quake.change_yaw(ent) end

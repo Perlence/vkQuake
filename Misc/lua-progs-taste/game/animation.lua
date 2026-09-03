@@ -1,8 +1,6 @@
 -- Derived from GPL-licensed Quake game code in CleanFixedQuakeC.
 -- SPDX-License-Identifier: GPL-2.0-or-later
 
-local quake = require("quake")
-
 ---@alias animation.frame_descriptor [integer, fun(self: entity)?]
 ---@alias animation.frame_function fun(self: entity)
 ---@alias animation.next_state_resolver fun(): animation.frame_function

@@ -1,8 +1,6 @@
 -- Derived from GPL-licensed Quake game code in CleanFixedQuakeC.
 -- SPDX-License-Identifier: GPL-2.0-or-later
 
-local quake = require("quake")
-
 local M = {
     AS_STRAIGHT = 1,
     AS_SLIDING = 2,

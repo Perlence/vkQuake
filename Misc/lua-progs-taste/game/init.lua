@@ -1,8 +1,6 @@
 -- Loader for the Lua ports of GPL-licensed CleanFixedQuakeC modules.
 -- SPDX-License-Identifier: GPL-2.0-or-later
 
-local quake = require("quake")
-
 -- Keep this list in progs.src order. Requiring a module performs its QuakeC
 -- entity registrations.
 require("game.subs")

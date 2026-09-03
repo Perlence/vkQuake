@@ -20,7 +20,6 @@
     See file, 'COPYING', for details.
 ]]
 
-local quake = require("quake")
 local combat = require("game.combat")
 local player = require("game.player")
 local subs = require("game.subs")

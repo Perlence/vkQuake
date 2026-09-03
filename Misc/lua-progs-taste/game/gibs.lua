@@ -1,7 +1,6 @@
 -- Derived from GPL-licensed Quake game code in CleanFixedQuakeC.
 -- SPDX-License-Identifier: GPL-2.0-or-later
 
-local quake = require("quake")
 local C = require("game.constants")
 local subs = require("game.subs")
 

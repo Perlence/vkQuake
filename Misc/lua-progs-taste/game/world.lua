@@ -20,7 +20,6 @@
     See file, 'COPYING', for details.
 ]]
 
-local quake = require("quake")
 local weapons = require("game.weapons")
 
 ---@class game_world

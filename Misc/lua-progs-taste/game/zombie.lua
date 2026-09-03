@@ -19,7 +19,6 @@ See file, 'COPYING', for details.
 -- Port of zombie.qc from GPL-licensed CleanFixedQuakeC.
 -- SPDX-License-Identifier: GPL-2.0-or-later
 
-local quake = require("quake")
 local C = require("game.constants")
 local ai = require("game.ai")
 local animation = require("game.animation")

@@ -21,7 +21,6 @@ See file, 'COPYING', for details.
 
 -- button and multiple button
 
-local quake = require("quake")
 local subs = require("game.subs")
 
 local STATE_TOP, STATE_BOTTOM, STATE_UP, STATE_DOWN = 0, 1, 2, 3
