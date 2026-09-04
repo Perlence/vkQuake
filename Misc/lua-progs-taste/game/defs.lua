@@ -147,7 +147,6 @@ local globals = {
 ---@field healamount number
 ---@field healtype number
 ---@field inpain number
----@field check_attack fun(self: entity): boolean
 ---@field pickup_touch touch_callback?
 
 ---@type quake_defs
@@ -233,7 +232,6 @@ local entity_fields = {
     inpain = "float",
 
     -- Lua-specific
-    check_attack = "function",
     pickup_touch = "function",
 }
 

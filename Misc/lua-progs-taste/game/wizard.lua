@@ -28,6 +28,8 @@ local monsters = require("game.monsters")
 local subs = require("game.subs")
 local weapons = require("game.weapons")
 
+local M = {}
+
 local count = animation.counter()
 local f = {}
 
@@ -72,7 +74,7 @@ local wiz_side
 
 ---@param self entity
 ---@return boolean
-local check_attack = quake.register_function("wizard.check_attack", function(self)
+function M.check_attack(self)
     local enemy_range = quake.globals.enemy_range
     if quake.time() < self.attack_finished then return false end
     if not quake.globals.enemy_vis then return false end
@@ -102,7 +104,7 @@ local check_attack = quake.register_function("wizard.check_attack", function(sel
         if self.attack_state ~= C.AS_SLIDING then self.attack_state = C.AS_SLIDING; wiz_side(self) end
     end
     return false
-end)
+end
 
 ---@param self entity
 ---@return nil
@@ -317,8 +319,9 @@ local function spawn(self)
     self.th_missile = wiz_missile
     self.th_pain = wiz_pain_callback
     self.th_die = wiz_die
-    self.check_attack = check_attack
     monsters.fly_start(self)
 end
 
 quake.register_entity("monster_wizard", spawn)
+
+return M

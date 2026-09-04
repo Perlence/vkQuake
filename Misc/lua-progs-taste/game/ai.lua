@@ -460,13 +460,13 @@ local function check_any_attack(self, enemy_vis, enemy_range)
         return fight.sham_check_attack(self, enemy_range, enemy_vis)
     end
     if self.classname == "monster_demon1" then
-        return self.check_attack(self)
+        return require("game.demon").check_attack(self)
     end
     if self.classname == "monster_dog" then
-        return self.check_attack(self)
+        return require("game.dog").check_attack(self)
     end
     if self.classname == "monster_wizard" then
-        return self.check_attack(self)
+        return require("game.wizard").check_attack(self)
     end
     return fight.check_attack(self, enemy_range)
 end

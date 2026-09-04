@@ -29,6 +29,8 @@ local monsters = require("game.monsters")
 local subs = require("game.subs")
 local weapons = require("game.weapons")
 
+local M = {}
+
 local count = animation.counter()
 local f = {}
 
@@ -195,8 +197,6 @@ local demon_die = quake.register_function("demon.demon_die", function(self)
     demon1_die(self)
 end)
 
-local check_attack
-
 ---QUAKED monster_demon1 (1 0 0) (-32 -32 -24) (32 32 64) Ambush
 ---@param self entity
 ---@return nil
@@ -222,7 +222,6 @@ local function spawn(self)
     self.th_melee = demon1_atta -- one of two attacks
     self.th_missile = demon1_jump -- jump attack
     self.th_pain = demon1_pain_handler
-    self.check_attack = check_attack
     monsters.walk_start(self)
 end
 
@@ -261,7 +260,7 @@ end
 
 ---@param self entity
 ---@return boolean
-check_attack = quake.register_function("demon.check_attack", function(self)
+function M.check_attack(self)
     -- if close enough for slashing, go for it
     if check_demon_melee(self) then self.attack_state = C.AS_MELEE; return true end
     if check_demon_jump(self) then
@@ -270,7 +269,7 @@ check_attack = quake.register_function("demon.check_attack", function(self)
         return true
     end
     return false
-end)
+end
 
 --===========================================================================
 
@@ -314,3 +313,5 @@ demon_jump_touch = quake.register_function("demon.demon_jump_touch", function(se
 end)
 
 quake.register_entity("monster_demon1", spawn)
+
+return M
