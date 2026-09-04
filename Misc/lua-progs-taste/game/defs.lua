@@ -147,7 +147,6 @@ local globals = {
 ---@field healamount number
 ---@field healtype number
 ---@field inpain number
----@field pickup_touch touch_callback?
 
 ---@type quake_defs
 local entity_fields = {
@@ -230,9 +229,6 @@ local entity_fields = {
 
     -- zombie
     inpain = "float",
-
-    -- Lua-specific
-    pickup_touch = "function",
 }
 
 return globals, entity_fields

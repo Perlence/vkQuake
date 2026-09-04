@@ -31,7 +31,6 @@ local M = {}
 local function hide_item(self)
     quake.set_model(self, "")
     self.solid = C.SOLID_NOT
-    self.touch = subs.null
     self.nextthink = 0
     self.think = subs.null
 end
@@ -46,7 +45,6 @@ local regen = quake.register_function("items.regen", function(self)
     quake.set_model(self, self.mdl)
     -- allow it to be touched again
     self.solid = 1 -- SOLID_TRIGGER
-    self.touch = self.pickup_touch
     -- play respawn sound
     quake.sound(self, C.CHAN_VOICE, "items/itembk2.wav", 1, C.ATTN_NORM)
     quake.set_origin(self, self.origin)
@@ -88,7 +86,6 @@ end)
 ---@param self entity
 ---@return nil
 local function start_item(self)
-    self.pickup_touch = self.touch
     self.nextthink = quake.time() + 0.2 -- items start after other solids
     self.think = place_item
 end
