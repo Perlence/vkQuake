@@ -33,6 +33,21 @@ typedef struct
 	qboolean boolean;
 } lp_def_t;
 
+typedef struct
+{
+	etype_t	 type;
+	qboolean boolean;
+	qboolean field;
+} lp_builtin_value_t;
+
+typedef struct
+{
+	int				   number;
+	int				   argc;
+	lp_builtin_value_t parameters[MAX_PARMS];
+	lp_builtin_value_t result;
+} lp_builtin_t;
+
 static lua_State *lp_state;
 static int		  lp_spawns_ref = LUA_NOREF;
 static int		  lp_boolean_defs_ref = LUA_NOREF;
@@ -603,30 +618,147 @@ static int LP_GlobalsNewIndex (lua_State *L)
 	return 0;
 }
 
-static void LP_SetParmEntity (int parm, edict_t *entity)
+// Parses the builtin type at index.
+// [-0, +0]
+static lp_builtin_value_t LP_CheckBuiltinType (lua_State *L, int index, qboolean allow_void)
 {
-	G_INT (OFS_PARM0 + parm * 3) = EDICT_TO_PROG (entity);
+	const char		  *original = luaL_checkstring (L, index);
+	const char		  *name = original;
+	lp_builtin_value_t value = {ev_bad, false, false};
+
+	if (name[0] == '.')
+	{
+		value.field = true;
+		name++;
+	}
+	if (allow_void && !value.field && !strcmp (name, "void"))
+		value.type = ev_void;
+	else if (!value.field && !strcmp (name, "bool"))
+	{
+		value.type = ev_float;
+		value.boolean = true;
+	}
+	else if (!strcmp (name, "float"))
+		value.type = ev_float;
+	else if (!strcmp (name, "string"))
+		value.type = ev_string;
+	else if (!strcmp (name, "vector"))
+		value.type = ev_vector;
+	else if (!strcmp (name, "entity"))
+		value.type = ev_entity;
+	else if (!strcmp (name, "function"))
+		value.type = ev_function;
+	else
+		luaL_error (L, "unknown builtin type '%s'", original);
+	return value;
 }
-static void LP_SetParmFloat (int parm, float value)
+
+// Copies the Lua value at index into its corresponding QuakeC parameter.
+// [-0, +0]
+static void LP_SetBuiltinParm (lua_State *L, int index, lp_builtin_value_t value)
 {
-	G_FLOAT (OFS_PARM0 + parm * 3) = value;
+	eval_t *destination = (eval_t *)&qcvm->globals[OFS_PARM0 + (index - 1) * 3];
+
+	if (value.field)
+	{
+		const char *name = luaL_checkstring (L, index);
+		ddef_t	   *field = ED_FindField (name);
+		if (!field)
+			luaL_error (L, "unknown entity field '%s'", name);
+		if ((field->type & ~DEF_SAVEGLOBAL) != value.type)
+			luaL_error (L, "entity field '%s' has the wrong type", name);
+		destination->_int = field->ofs;
+		return;
+	}
+	LP_SetValue (L, index, value.type, destination, value.boolean);
 }
-static void LP_SetParmString (lua_State *L, int parm, int index)
+
+// Pushes the typed QuakeC return value, unless the builtin returns void.
+// [-0, +(0|1)]
+static int LP_PushBuiltinResult (lua_State *L, lp_builtin_value_t result)
 {
-	G_INT (OFS_PARM0 + parm * 3) = LP_CopyString (L, index);
+	eval_t *value = (eval_t *)&qcvm->globals[OFS_RETURN];
+
+	if (result.type == ev_void)
+		return 0;
+	if (result.boolean)
+		lua_pushboolean (L, value->_float != 0);
+	else
+	{
+		switch (result.type)
+		{
+		case ev_float:
+			lua_pushnumber (L, value->_float);
+			break;
+		case ev_string:
+			lua_pushstring (L, PR_GetString (value->string));
+			break;
+		case ev_vector:
+			LP_PushOwnedVector (L, value->vector[0], value->vector[1], value->vector[2]);
+			break;
+		case ev_entity:
+			LP_PushEntity (L, PROG_TO_EDICT (value->edict), false);
+			break;
+		case ev_function:
+			LP_PushFunction (L, value->function);
+			break;
+		default:
+			return luaL_error (L, "unsupported builtin result type %d", result.type);
+		}
+	}
+	return 1;
 }
-static void LP_SetParmVector (lua_State *L, int parm, int index)
+
+// Copies the Lua arguments into QuakeC parameters and calls the bound builtin.
+// [-0, +(0|1)]
+static int LP_CallBuiltin (lua_State *L)
 {
-	LP_CopyVector (L, index, G_VECTOR (OFS_PARM0 + parm * 3));
-}
-static void LP_RunBuiltin (int number, int argc)
-{
-	const int previous_argc = qcvm->argc;
-	if (number >= qcvm->numbuiltins || !qcvm->builtins[number])
-		Host_Error ("Lua progs: builtin #%d is unavailable", number);
-	qcvm->argc = argc;
-	qcvm->builtins[number]();
+	lp_builtin_t *builtin = lua_touserdata (L, lua_upvalueindex (1));
+	const int	  previous_argc = qcvm->argc;
+	int			  i;
+
+	if (lua_gettop (L) != builtin->argc)
+		return luaL_error (L, "builtin #%d expects %d arguments, got %d", builtin->number, builtin->argc, lua_gettop (L));
+
+	for (i = 1; i <= builtin->argc; ++i)
+		LP_SetBuiltinParm (L, i, builtin->parameters[i - 1]);
+
+	qcvm->argc = builtin->argc;
+	qcvm->builtins[builtin->number]();
 	qcvm->argc = previous_argc;
+
+	return LP_PushBuiltinResult (L, builtin->result);
+}
+
+// Binds a QuakeC builtin to a typed Lua closure.
+// [-0, +1]
+static int LP_BindBuiltin (lua_State *L)
+{
+	const int	  number = luaL_checkinteger (L, 1);
+	int			  argc;
+	lp_builtin_t *builtin;
+	int			  i;
+
+	luaL_checktype (L, 2, LUA_TTABLE);
+	argc = luaL_len (L, 2);
+	if (number < 0 || number >= qcvm->numbuiltins || !qcvm->builtins[number])
+		return luaL_error (L, "builtin #%d is unavailable", number);
+	if (argc > MAX_PARMS)
+		return luaL_error (L, "builtin #%d has too many parameters", number);
+	builtin = lua_newuserdatauv (L, sizeof (*builtin), 0);
+	builtin->number = number;
+	builtin->argc = argc;
+	for (i = 0; i < argc; ++i)
+	{
+		lua_rawgeti (L, 2, i + 1);
+		builtin->parameters[i] = LP_CheckBuiltinType (L, -1, false);
+		lua_pop (L, 1);
+	}
+	builtin->result = LP_CheckBuiltinType (L, 3, true);
+	if (builtin->result.field)
+		return luaL_error (L, "a builtin cannot return a field reference");
+	lua_pushcclosure (L, LP_CallBuiltin, 1);
+	return 1;
 }
 
 static int LP_Time (lua_State *L)
@@ -634,413 +766,10 @@ static int LP_Time (lua_State *L)
 	lua_pushnumber (L, qcvm->time);
 	return 1;
 }
-static int LP_Random (lua_State *L)
-{
-	LP_RunBuiltin (7, 0);
-	lua_pushnumber (L, G_FLOAT (OFS_RETURN));
-	return 1;
-}
-static int LP_CRandom (lua_State *L)
-{
-	LP_RunBuiltin (7, 0);
-	lua_pushnumber (L, G_FLOAT (OFS_RETURN) * 2 - 1);
-	return 1;
-}
 
 static int LP_Vec3 (lua_State *L)
 {
 	LP_PushOwnedVector (L, luaL_checknumber (L, 1), luaL_checknumber (L, 2), luaL_checknumber (L, 3));
-	return 1;
-}
-
-static int LP_SetOrigin (lua_State *L)
-{
-	LP_SetParmEntity (0, LP_CheckEntity (L, 1));
-	LP_SetParmVector (L, 1, 2);
-	LP_RunBuiltin (2, 2);
-	return 0;
-}
-static int LP_SetModel (lua_State *L)
-{
-	LP_SetParmEntity (0, LP_CheckEntity (L, 1));
-	LP_SetParmString (L, 1, 2);
-	LP_RunBuiltin (3, 2);
-	return 0;
-}
-static int LP_SetSize (lua_State *L)
-{
-	LP_SetParmEntity (0, LP_CheckEntity (L, 1));
-	LP_SetParmVector (L, 1, 2);
-	LP_SetParmVector (L, 2, 3);
-	LP_RunBuiltin (4, 3);
-	return 0;
-}
-
-static int LP_Sound (lua_State *L)
-{
-	LP_SetParmEntity (0, LP_CheckEntity (L, 1));
-	LP_SetParmFloat (1, luaL_checknumber (L, 2));
-	LP_SetParmString (L, 2, 3);
-	LP_SetParmFloat (3, luaL_checknumber (L, 4));
-	LP_SetParmFloat (4, luaL_checknumber (L, 5));
-	LP_RunBuiltin (8, 5);
-	return 0;
-}
-
-static int LP_Spawn (lua_State *L)
-{
-	LP_RunBuiltin (14, 0);
-	LP_PushEntity (L, G_EDICT (OFS_RETURN), false);
-	return 1;
-}
-static int LP_Remove (lua_State *L)
-{
-	edict_t *entity = LP_CheckEntity (L, 1);
-	if (entity->free)
-		return 0;
-	LP_SetParmEntity (0, entity);
-	LP_RunBuiltin (15, 1);
-	return 0;
-}
-static int LP_CheckClient (lua_State *L)
-{
-	LP_RunBuiltin (17, 0);
-	LP_PushEntity (L, G_EDICT (OFS_RETURN), false);
-	return 1;
-}
-
-// Traces a line, pushes a table of trace results.
-// [-0, +1]
-static int LP_TraceLine (lua_State *L)
-{
-	LP_SetParmVector (L, 0, 1);
-	LP_SetParmVector (L, 1, 2);
-	LP_SetParmFloat (2, lua_toboolean (L, 3));
-	LP_SetParmEntity (3, LP_CheckEntity (L, 4));
-	LP_RunBuiltin (16, 4);
-	lua_createtable (L, 0, 9);
-	lua_pushboolean (L, pr_global_struct->trace_allsolid);
-	lua_setfield (L, -2, "all_solid");
-	lua_pushboolean (L, pr_global_struct->trace_startsolid);
-	lua_setfield (L, -2, "start_solid");
-	lua_pushnumber (L, pr_global_struct->trace_fraction);
-	lua_setfield (L, -2, "fraction");
-	lua_pushboolean (L, pr_global_struct->trace_inopen);
-	lua_setfield (L, -2, "in_open");
-	lua_pushboolean (L, pr_global_struct->trace_inwater);
-	lua_setfield (L, -2, "in_water");
-	LP_PushEntity (L, PROG_TO_EDICT (pr_global_struct->trace_ent), true);
-	lua_setfield (L, -2, "entity");
-	LP_PushVector (L, pr_global_struct->trace_endpos);
-	lua_setfield (L, -2, "endpos");
-	LP_PushVector (L, pr_global_struct->trace_plane_normal);
-	lua_setfield (L, -2, "plane_normal");
-	lua_pushnumber (L, pr_global_struct->trace_plane_dist);
-	lua_setfield (L, -2, "plane_dist");
-	return 1;
-}
-
-// Finds and pushes the next matching entity.
-// [-0, +1]
-static int LP_Find (lua_State *L)
-{
-	ddef_t	*field;
-	edict_t *cursor = lua_isnil (L, 1) ? qcvm->edicts : LP_CheckEntity (L, 1);
-
-	/* QuakeC permits find() to continue from an entity removed in the loop body. */
-	G_INT (OFS_PARM0) = (int)((byte *)cursor - (byte *)qcvm->edicts);
-	field = ED_FindField (luaL_checkstring (L, 2));
-	if (!field)
-		return luaL_error (L, "unknown find field");
-	G_INT (OFS_PARM1) = field->ofs;
-	LP_SetParmString (L, 2, 3);
-	LP_RunBuiltin (18, 3);
-	LP_PushEntity (L, G_EDICT (OFS_RETURN), false);
-	return 1;
-}
-
-// Runs a string builtin, pushes its string result.
-// [-0, +1]
-static int LP_StringBuiltin (lua_State *L, int number)
-{
-	LP_SetParmString (L, 0, 1);
-	LP_RunBuiltin (number, 1);
-	lua_pushstring (L, G_STRING (OFS_RETURN));
-	return 1;
-}
-static int LP_PrecacheSound (lua_State *L)
-{
-	return LP_StringBuiltin (L, 19);
-}
-static int LP_PrecacheModel (lua_State *L)
-{
-	return LP_StringBuiltin (L, 20);
-}
-static int LP_PrecacheFile (lua_State *L)
-{
-	return LP_StringBuiltin (L, 68);
-}
-static int LP_PrecacheModel2 (lua_State *L)
-{
-	return LP_StringBuiltin (L, 75);
-}
-static int LP_PrecacheSound2 (lua_State *L)
-{
-	return LP_StringBuiltin (L, 76);
-}
-static int LP_PrecacheFile2 (lua_State *L)
-{
-	return LP_StringBuiltin (L, 77);
-}
-
-static int LP_EntityStringBuiltin (lua_State *L, int number)
-{
-	LP_SetParmEntity (0, LP_CheckEntity (L, 1));
-	LP_SetParmString (L, 1, 2);
-	LP_RunBuiltin (number, 2);
-	return 0;
-}
-static int LP_StuffCmd (lua_State *L)
-{
-	return LP_EntityStringBuiltin (L, 21);
-}
-static int LP_SPrint (lua_State *L)
-{
-	return LP_EntityStringBuiltin (L, 24);
-}
-static int LP_CenterPrint (lua_State *L)
-{
-	return LP_EntityStringBuiltin (L, 73);
-}
-
-// Stringifies and prints all arguments, discarding temporary strings.
-// [-0, +0]
-static int LP_PrintBuiltin (lua_State *L, int number)
-{
-	int i;
-	for (i = 1; i <= lua_gettop (L); ++i)
-	{
-		luaL_tolstring (L, i, NULL);
-		LP_SetParmString (L, 0, -1);
-		LP_RunBuiltin (number, 1);
-		lua_pop (L, 1);
-	}
-	return 0;
-}
-static int LP_BPrint (lua_State *L)
-{
-	return LP_PrintBuiltin (L, 23);
-}
-static int LP_DPrint (lua_State *L)
-{
-	return LP_PrintBuiltin (L, 25);
-}
-
-static int LP_FindRadius (lua_State *L)
-{
-	LP_SetParmVector (L, 0, 1);
-	LP_SetParmFloat (1, luaL_checknumber (L, 2));
-	LP_RunBuiltin (22, 2);
-	LP_PushEntity (L, G_EDICT (OFS_RETURN), false);
-	return 1;
-}
-static int LP_FloatToString (lua_State *L)
-{
-	LP_SetParmFloat (0, luaL_checknumber (L, 1));
-	LP_RunBuiltin (26, 1);
-	lua_pushstring (L, G_STRING (OFS_RETURN));
-	return 1;
-}
-static int LP_VectorToStringBuiltin (lua_State *L)
-{
-	LP_SetParmVector (L, 0, 1);
-	LP_RunBuiltin (27, 1);
-	lua_pushstring (L, G_STRING (OFS_RETURN));
-	return 1;
-}
-
-// Runs a builtin with a temporary self entity, pushes nothing.
-// [-0, +0]
-static int LP_SelfBuiltin (lua_State *L, int number, int has_float)
-{
-	int previous = pr_global_struct->self;
-	pr_global_struct->self = EDICT_TO_PROG (LP_CheckEntity (L, 1));
-	if (has_float)
-		LP_SetParmFloat (0, luaL_checknumber (L, 2));
-	LP_RunBuiltin (number, has_float);
-	pr_global_struct->self = previous;
-	return 0;
-}
-static int LP_ChangeYaw (lua_State *L)
-{
-	return LP_SelfBuiltin (L, 49, 0);
-}
-static int LP_MoveToGoal (lua_State *L)
-{
-	return LP_SelfBuiltin (L, 67, 1);
-}
-static int LP_DropToFloor (lua_State *L)
-{
-	LP_SelfBuiltin (L, 34, 0);
-	lua_pushboolean (L, G_FLOAT (OFS_RETURN));
-	return 1;
-}
-static int LP_WalkMove (lua_State *L)
-{
-	int old = pr_global_struct->self;
-	pr_global_struct->self = EDICT_TO_PROG (LP_CheckEntity (L, 1));
-	LP_SetParmFloat (0, luaL_checknumber (L, 2));
-	LP_SetParmFloat (1, luaL_checknumber (L, 3));
-	LP_RunBuiltin (32, 2);
-	pr_global_struct->self = old;
-	lua_pushboolean (L, G_FLOAT (OFS_RETURN));
-	return 1;
-}
-
-static int LP_CheckBottom (lua_State *L)
-{
-	LP_SetParmEntity (0, LP_CheckEntity (L, 1));
-	LP_RunBuiltin (40, 1);
-	lua_pushboolean (L, G_FLOAT (OFS_RETURN));
-	return 1;
-}
-static int LP_PointContents (lua_State *L)
-{
-	LP_SetParmVector (L, 0, 1);
-	LP_RunBuiltin (41, 1);
-	lua_pushnumber (L, G_FLOAT (OFS_RETURN));
-	return 1;
-}
-static int LP_Aim (lua_State *L)
-{
-	LP_SetParmEntity (0, LP_CheckEntity (L, 1));
-	LP_SetParmFloat (1, luaL_checknumber (L, 2));
-	LP_RunBuiltin (44, 2);
-	LP_PushOwnedVector (L, G_VECTOR (OFS_RETURN)[0], G_VECTOR (OFS_RETURN)[1], G_VECTOR (OFS_RETURN)[2]);
-	return 1;
-}
-static int LP_Cvar (lua_State *L)
-{
-	LP_SetParmString (L, 0, 1);
-	LP_RunBuiltin (45, 1);
-	lua_pushnumber (L, G_FLOAT (OFS_RETURN));
-	return 1;
-}
-static int LP_LocalCmd (lua_State *L)
-{
-	LP_SetParmString (L, 0, 1);
-	LP_RunBuiltin (46, 1);
-	return 0;
-}
-
-static int LP_Particle (lua_State *L)
-{
-	LP_SetParmVector (L, 0, 1);
-	LP_SetParmVector (L, 1, 2);
-	LP_SetParmFloat (2, luaL_checknumber (L, 3));
-	LP_SetParmFloat (3, luaL_checknumber (L, 4));
-	LP_RunBuiltin (48, 4);
-	return 0;
-}
-static int LP_VectorToAngles (lua_State *L)
-{
-	LP_SetParmVector (L, 0, 1);
-	LP_RunBuiltin (51, 1);
-	LP_PushOwnedVector (L, G_VECTOR (OFS_RETURN)[0], G_VECTOR (OFS_RETURN)[1], G_VECTOR (OFS_RETURN)[2]);
-	return 1;
-}
-static int LP_VectorToYaw (lua_State *L)
-{
-	LP_SetParmVector (L, 0, 1);
-	LP_RunBuiltin (13, 1);
-	lua_pushnumber (L, G_FLOAT (OFS_RETURN));
-	return 1;
-}
-
-static int LP_WriteFloatBuiltin (lua_State *L, int number)
-{
-	LP_SetParmFloat (0, luaL_checknumber (L, 1));
-	LP_SetParmFloat (1, luaL_checknumber (L, 2));
-	LP_RunBuiltin (number, 2);
-	return 0;
-}
-static int LP_WriteByte (lua_State *L)
-{
-	return LP_WriteFloatBuiltin (L, 52);
-}
-static int LP_WriteCoord (lua_State *L)
-{
-	return LP_WriteFloatBuiltin (L, 56);
-}
-static int LP_WriteString (lua_State *L)
-{
-	LP_SetParmFloat (0, luaL_checknumber (L, 1));
-	LP_SetParmString (L, 1, 2);
-	LP_RunBuiltin (58, 2);
-	return 0;
-}
-static int LP_WriteEntity (lua_State *L)
-{
-	LP_SetParmFloat (0, luaL_checknumber (L, 1));
-	LP_SetParmEntity (1, LP_CheckEntity (L, 2));
-	LP_RunBuiltin (59, 2);
-	return 0;
-}
-static int LP_MakeStatic (lua_State *L)
-{
-	LP_SetParmEntity (0, LP_CheckEntity (L, 1));
-	LP_RunBuiltin (69, 1);
-	return 0;
-}
-static int LP_ChangeLevel (lua_State *L)
-{
-	LP_SetParmString (L, 0, 1);
-	LP_RunBuiltin (70, 1);
-	return 0;
-}
-static int LP_CvarSet (lua_State *L)
-{
-	LP_SetParmString (L, 0, 1);
-	LP_SetParmString (L, 1, 2);
-	LP_RunBuiltin (72, 2);
-	return 0;
-}
-static int LP_SetSpawnParms (lua_State *L)
-{
-	LP_SetParmEntity (0, LP_CheckEntity (L, 1));
-	LP_RunBuiltin (78, 1);
-	return 0;
-}
-static int LP_LightStyle (lua_State *L)
-{
-	LP_SetParmFloat (0, luaL_checknumber (L, 1));
-	LP_SetParmString (L, 1, 2);
-	LP_RunBuiltin (35, 2);
-	return 0;
-}
-static int LP_AmbientSound (lua_State *L)
-{
-	LP_SetParmVector (L, 0, 1);
-	LP_SetParmString (L, 1, 2);
-	LP_SetParmFloat (2, luaL_checknumber (L, 3));
-	LP_SetParmFloat (3, luaL_checknumber (L, 4));
-	LP_RunBuiltin (74, 4);
-	return 0;
-}
-
-// Computes direction vectors, pushes them in a table.
-// [-0, +1]
-static int LP_MakeVectors (lua_State *L)
-{
-	LP_SetParmVector (L, 0, 1);
-	LP_RunBuiltin (1, 1);
-	lua_createtable (L, 0, 3);
-	LP_PushVector (L, pr_global_struct->v_forward);
-	lua_setfield (L, -2, "forward");
-	LP_PushVector (L, pr_global_struct->v_right);
-	lua_setfield (L, -2, "right");
-	LP_PushVector (L, pr_global_struct->v_up);
-	lua_setfield (L, -2, "up");
 	return 1;
 }
 
@@ -1071,59 +800,12 @@ static int LP_ObjectError (lua_State *L)
 }
 
 static const luaL_Reg lp_quake_functions[] = {
-	{"aim", LP_Aim},
-	{"ambient_sound", LP_AmbientSound},
-	{"bprint", LP_BPrint},
-	{"center_print", LP_CenterPrint},
-	{"change_level", LP_ChangeLevel},
-	{"change_yaw", LP_ChangeYaw},
-	{"check_bottom", LP_CheckBottom},
-	{"check_client", LP_CheckClient},
-	{"crandom", LP_CRandom},
-	{"cvar", LP_Cvar},
-	{"cvar_set", LP_CvarSet},
-	{"dprint", LP_DPrint},
-	{"drop_to_floor", LP_DropToFloor},
-	{"find", LP_Find},
-	{"find_radius", LP_FindRadius},
-	{"float_to_string", LP_FloatToString},
-	{"light_style", LP_LightStyle},
-	{"local_cmd", LP_LocalCmd},
-	{"make_static", LP_MakeStatic},
-	{"make_vectors", LP_MakeVectors},
-	{"move_to_goal", LP_MoveToGoal},
+	{"bind_builtin", LP_BindBuiltin},
 	{"object_error", LP_ObjectError},
-	{"particle", LP_Particle},
-	{"point_contents", LP_PointContents},
-	{"precache_file", LP_PrecacheFile},
-	{"precache_file2", LP_PrecacheFile2},
-	{"precache_model", LP_PrecacheModel},
-	{"precache_model2", LP_PrecacheModel2},
-	{"precache_sound", LP_PrecacheSound},
-	{"precache_sound2", LP_PrecacheSound2},
-	{"random", LP_Random},
 	{"register_function", LP_RegisterFunction},
 	{"register_entity", LP_RegisterEntity},
-	{"remove", LP_Remove},
-	{"set_model", LP_SetModel},
-	{"set_origin", LP_SetOrigin},
-	{"set_size", LP_SetSize},
-	{"set_spawn_parms", LP_SetSpawnParms},
-	{"sound", LP_Sound},
-	{"spawn", LP_Spawn},
-	{"sprint", LP_SPrint},
-	{"stuff_cmd", LP_StuffCmd},
 	{"time", LP_Time},
-	{"trace_line", LP_TraceLine},
 	{"vec3", LP_Vec3},
-	{"vector_to_angles", LP_VectorToAngles},
-	{"vector_to_string", LP_VectorToStringBuiltin},
-	{"vector_to_yaw", LP_VectorToYaw},
-	{"walk_move", LP_WalkMove},
-	{"write_byte", LP_WriteByte},
-	{"write_coord", LP_WriteCoord},
-	{"write_entity", LP_WriteEntity},
-	{"write_string", LP_WriteString},
 	{NULL, NULL}};
 
 // Creates and pushes the quake module.

@@ -13,6 +13,7 @@ The `quake` module provides:
 - QuakeC-style zero or empty defaults for unset numeric, vector, and string fields
 - Vector userdata with arithmetic, `length()`, `normalized()`, and `dot()`
 - `quake.time()`, `quake.cvar(name)`, `quake.globals`, and `quake.world`
+- `quake.bind_builtin()` for typed bindings to QuakeC VM builtins
 - Entity, model, sound, movement, tracing, precache, and network-message builtins
 - `quake.register_function(identifier, callback)` for callbacks stored in function-typed globals and entity fields
 - `quake.register_entity(classname, spawn_function)` for map entity dispatch
@@ -29,6 +30,7 @@ A Lua callback must be passed through `quake.register_function()` before it can 
 
 - `game/defs.lua` – serialized global and entity field schema loaded by the engine before edict allocation
 - `game/init.lua` – loader in the original `progs.src` order
+- `game/builtins.lua` – typed bindings to the engine's QuakeC builtins
 - `game/animation.lua` – Lua expansion of QuakeC frame-function declarations
 - `game/constants.lua` – constants shared by the initial supporting modules
 - `game/*.lua` – one complete port for every module listed by `progs.src`

@@ -82,11 +82,6 @@ function M.precache()
     quake.precache_sound("weapons/shotgn2.wav") -- super shotgun
 end
 
----@return number
-local function crandom()
-    return 2 * (quake.random() - 0.5)
-end
-
 ---@param self entity
 ---@return nil
 function M.fire_axe(self)
@@ -235,7 +230,7 @@ BULLETS
 ---@param accumulator multi_damage_accumulator
 ---@return multi_damage_accumulator
 local function trace_attack(self, trace, damage, dir, vectors, accumulator)
-    local vel = (dir + vectors.up * crandom() + vectors.right * crandom()):normalized()
+    local vel = (dir + vectors.up * quake.crandom() + vectors.right * quake.crandom()):normalized()
     vel = vel + trace.plane_normal * 2
     vel = vel * 200
 
@@ -269,7 +264,7 @@ function M.fire_bullets(self, shotcount, dir, spread)
 
     local accumulator = clear_multi_damage()
     while shotcount > 0 do
-        local direction = dir + vectors.right * (crandom() * spread.x) + vectors.up * (crandom() * spread.y)
+        local direction = dir + vectors.right * (quake.crandom() * spread.x) + vectors.up * (quake.crandom() * spread.y)
 
         local trace = quake.trace_line(src, src + direction * 2048, false, self)
         if trace.fraction ~= 1.0 then
@@ -564,7 +559,7 @@ local function fire_grenade(self)
 
     if self.v_angle.x ~= 0 then
         missile.velocity = vectors.forward * 600 + vectors.up * 200
-            + vectors.right * (crandom() * 10) + vectors.up * (crandom() * 10)
+            + vectors.right * (quake.crandom() * 10) + vectors.up * (quake.crandom() * 10)
     else
         missile.velocity = quake.aim(self, 10000)
         missile.velocity = missile.velocity * 600

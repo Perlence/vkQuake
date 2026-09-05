@@ -2,12 +2,31 @@
 
 -- Lua Language Server definitions for the engine-provided C module.
 
+---@alias quake_value_type
+---| "bool"
+---| "entity"
+---| "float"
+---| "function"
+---| "string"
+---| "vector"
+
+---@alias quake_field_type
+---| ".entity"
+---| ".float"
+---| ".function"
+---| ".string"
+---| ".vector"
+
+---@alias quake_builtin_type quake_value_type | quake_field_type
+---@alias quake_builtin_result_type "void" | quake_value_type
+
+---@alias quake_defs { [string]: quake_value_type }
+
 ---@alias think_callback fun(self: entity)
 ---@alias touch_callback fun(self: entity, other: entity)
 ---@alias use_callback fun(self: entity, activator: entity)
 ---@alias pain_callback fun(self: entity, attacker: entity, damage: number)
 ---@alias die_callback fun(self: entity)
----@alias quake_defs { [string]: "bool" | "float" | "string" | "vector" | "entity" | "function" }
 
 ---@class vec3
 ---@field x number
@@ -163,6 +182,7 @@ local direction_vectors = {}
 ---@field parm14 number
 ---@field parm15 number
 ---@field parm16 number
+---@field self entity?
 ---@field serverflags number
 ---@field teamplay number
 ---@field total_monsters number
@@ -186,48 +206,14 @@ local quake_globals = {}
 ---@field world entity
 quake = {}
 
----@param ent entity
-function quake.change_yaw(ent) end
-
----@return entity?
-function quake.check_client() end
-
----@param target entity
----@param attacker entity
-function quake.client_obituary(target, attacker) end
-
----@return number
-function quake.crandom() end
-
----@param name string
----@return number
-function quake.cvar(name) end
+---@param number integer
+---@param parameters quake_builtin_type[]
+---@param result quake_builtin_result_type
+---@return function
+function quake.bind_builtin(number, parameters, result) end
 
 ---@param ... unknown
-function quake.dprint(...) end
-
----@param start entity?
----@param field string
----@param value string
----@return entity?
-function quake.find(start, field, value) end
-
----@param angles vec3
----@return direction_vectors
-function quake.make_vectors(angles) end
-
----@param ent entity
----@param distance number
-function quake.move_to_goal(ent, distance) end
-
----@param path string
-function quake.precache_model(path) end
-
----@param path string
-function quake.precache_sound(path) end
-
----@return number
-function quake.random() end
+function quake.object_error(...) end
 
 ---@generic T: function
 ---@param identifier string
@@ -239,172 +225,13 @@ function quake.register_function(identifier, func) end
 ---@param spawn_function fun(self: entity)
 function quake.register_entity(classname, spawn_function) end
 
----@param ent entity
-function quake.remove(ent) end
-
----@param ent entity
----@param model string
-function quake.set_model(ent, model) end
-
----@param ent entity
----@param mins vec3
----@param maxs vec3
-function quake.set_size(ent, mins, maxs) end
-
----@param ent entity
----@param channel integer
----@param sample string
----@param volume number
----@param attenuation number
-function quake.sound(ent, channel, sample, volume, attenuation) end
-
----@return entity
-function quake.spawn() end
-
 ---@return number
 function quake.time() end
-
----@param start vec3
----@param destination vec3
----@param ignore_monsters boolean
----@param ignore entity
----@return trace_result
-function quake.trace_line(start, destination, ignore_monsters, ignore) end
-
----@param ent entity
----@param activator entity?
-function quake.use_targets(ent, activator) end
 
 ---@param x number
 ---@param y number
 ---@param z number
 ---@return vec3
 function quake.vec3(x, y, z) end
-
----@param vector vec3
----@return number
-function quake.vector_to_yaw(vector) end
-
----@param ent entity
----@param yaw number
----@param distance number
----@return boolean
-function quake.walk_move(ent, yaw, distance) end
-
----@param ent entity
----@param speed number
----@return vec3
-function quake.aim(ent, speed) end
-
----@param origin vec3
----@param sample string
----@param volume number
----@param attenuation number
-function quake.ambient_sound(origin, sample, volume, attenuation) end
-
----@param text string
-function quake.bprint(text) end
-
----@param ent entity
----@param text string
-function quake.center_print(ent, text) end
-
----@param map string
-function quake.change_level(map) end
-
----@param ent entity
----@return boolean
-function quake.check_bottom(ent) end
-
----@param name string
----@param value string
-function quake.cvar_set(name, value) end
-
----@param ent entity
----@return boolean
-function quake.drop_to_floor(ent) end
-
----@param origin vec3
----@param radius number
----@return entity?
-function quake.find_radius(origin, radius) end
-
----@param value number
----@return string
-function quake.float_to_string(value) end
-
----@param style integer
----@param value string
-function quake.light_style(style, value) end
-
----@param command string
-function quake.local_cmd(command) end
-
----@param ent entity
-function quake.make_static(ent) end
-
----@param ... unknown
-function quake.object_error(...) end
-
----@param origin vec3
----@param direction vec3
----@param color integer
----@param count number
-function quake.particle(origin, direction, color, count) end
-
----@param origin vec3
----@return integer
-function quake.point_contents(origin) end
-
----@param path string
-function quake.precache_file(path) end
-
----@param path string
-function quake.precache_file2(path) end
-
----@param path string
-function quake.precache_model2(path) end
-
----@param path string
-function quake.precache_sound2(path) end
-
----@param ent entity
----@param origin vec3
-function quake.set_origin(ent, origin) end
-
----@param ent entity
-function quake.set_spawn_parms(ent) end
-
----@param ent entity
----@param text string
-function quake.sprint(ent, text) end
-
----@param ent entity
----@param command string
-function quake.stuff_cmd(ent, command) end
-
----@param vector vec3
----@return vec3
-function quake.vector_to_angles(vector) end
-
----@param vector vec3
----@return string
-function quake.vector_to_string(vector) end
-
----@param destination integer
----@param value integer
-function quake.write_byte(destination, value) end
-
----@param destination integer
----@param value number
-function quake.write_coord(destination, value) end
-
----@param destination integer
----@param ent entity
-function quake.write_entity(destination, ent) end
-
----@param destination integer
----@param value string
-function quake.write_string(destination, value) end
 
 return quake
