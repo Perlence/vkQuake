@@ -189,7 +189,7 @@ local player_nail = animation.loop("player.player_nail", {
         local weapons = require("game.weapons")
 
         self.effects = self.effects | EF_MUZZLEFLASH
-        if self.button0 == 0 then
+        if not self.button0 then
             player_run1(self); return
         end
         self.weaponframe = self.weaponframe + 1
@@ -202,7 +202,7 @@ local player_nail = animation.loop("player.player_nail", {
         local weapons = require("game.weapons")
 
         self.effects = self.effects | EF_MUZZLEFLASH
-        if self.button0 == 0 then
+        if not self.button0 then
             player_run1(self); return
         end
         self.weaponframe = self.weaponframe + 1
@@ -220,7 +220,7 @@ local player_light = animation.loop("player.player_light", {
         local weapons = require("game.weapons")
 
         self.effects = self.effects | EF_MUZZLEFLASH
-        if self.button0 == 0 then
+        if not self.button0 then
             player_run1(self); return
         end
         self.weaponframe = self.weaponframe + 1
@@ -233,7 +233,7 @@ local player_light = animation.loop("player.player_light", {
         local weapons = require("game.weapons")
 
         self.effects = self.effects | EF_MUZZLEFLASH
-        if self.button0 == 0 then
+        if not self.button0 then
             player_run1(self); return
         end
         self.weaponframe = self.weaponframe + 1
@@ -514,7 +514,7 @@ M.player_die = quake.register_function("player.player_die", function(self)
     self.radsuit_finished = 0
     -- don't use eyes
     self.modelindex = g.modelindex_player
-    if g.deathmatch ~= 0 or g.coop ~= 0 then items.drop_backpack(self) end
+    if g.deathmatch ~= 0 or g.coop then items.drop_backpack(self) end
     self.weaponmodel = ""
     self.view_ofs = quake.vec3(0, 0, -8)
     self.deadflag = DEAD_DYING

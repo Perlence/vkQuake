@@ -247,7 +247,7 @@ function M.soldier_check_attack(self, enemy_range)
         self.th_missile(self)
         subs.attack_finished(self, 1 + quake.random())
         if quake.random() < 0.3 then
-            self.lefty = 1 - self.lefty
+            self.lefty = not self.lefty
         end
 
         return true

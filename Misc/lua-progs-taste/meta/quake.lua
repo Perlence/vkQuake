@@ -90,9 +90,9 @@ function vec3:dot(other) end
 ---@field chain entity?
 ---@field deadflag number
 ---@field view_ofs vec3
----@field button0 number
----@field button1 number
----@field button2 number
+---@field button0 boolean
+---@field button1 boolean
+---@field button2 boolean
 ---@field impulse number
 ---@field fixangle number
 ---@field v_angle vec3
@@ -157,7 +157,7 @@ local direction_vectors = {}
 ---@field ClientDisconnect fun(self: entity)
 ---@field SetNewParms fun()
 ---@field SetChangeParms fun(self: entity)
----@field coop number
+---@field coop boolean
 ---@field deathmatch number
 ---@field force_retouch number
 ---@field found_secrets number
@@ -187,15 +187,15 @@ local direction_vectors = {}
 ---@field teamplay number
 ---@field total_monsters number
 ---@field total_secrets number
----@field trace_allsolid number
+---@field trace_allsolid boolean
 ---@field trace_endpos vec3
 ---@field trace_ent entity?
 ---@field trace_fraction number
----@field trace_inopen number
----@field trace_inwater number
+---@field trace_inopen boolean
+---@field trace_inwater boolean
 ---@field trace_plane_dist number
 ---@field trace_plane_normal vec3
----@field trace_startsolid number
+---@field trace_startsolid boolean
 ---@field v_forward vec3
 ---@field v_right vec3
 ---@field v_up vec3

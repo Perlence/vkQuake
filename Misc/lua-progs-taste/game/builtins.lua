@@ -70,11 +70,11 @@ function quake.trace_line(start, destination, ignore_monsters, ignore)
     local endpos = globals.trace_endpos
     local plane_normal = globals.trace_plane_normal
     return {
-        all_solid = globals.trace_allsolid ~= 0,
-        start_solid = globals.trace_startsolid ~= 0,
+        all_solid = globals.trace_allsolid,
+        start_solid = globals.trace_startsolid,
         fraction = globals.trace_fraction,
-        in_open = globals.trace_inopen ~= 0,
-        in_water = globals.trace_inwater ~= 0,
+        in_open = globals.trace_inopen,
+        in_water = globals.trace_inwater,
         entity = globals.trace_ent or quake.world,
         endpos = quake.vec3(endpos.x, endpos.y, endpos.z),
         plane_normal = quake.vec3(plane_normal.x, plane_normal.y, plane_normal.z),

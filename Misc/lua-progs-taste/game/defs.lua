@@ -3,7 +3,7 @@
 
 ---@class quake_globals
 ---@field movedist number
----@field gameover number
+---@field gameover boolean
 ---@field string_null string
 ---@field activator entity?
 ---@field damage_attacker entity?
@@ -32,7 +32,7 @@
 ---@type quake_defs
 local globals = {
     movedist = "float",
-    gameover = "float",
+    gameover = "bool",
     string_null = "string",
     activator = "entity",
     damage_attacker = "entity",
@@ -89,7 +89,7 @@ local globals = {
 ---@field th_die die_callback?
 ---@field oldenemy entity?
 ---@field speed number
----@field lefty number
+---@field lefty boolean
 ---@field search_time number
 ---@field attack_state number
 ---@field walkframe number
@@ -165,7 +165,7 @@ local entity_fields = {
     th_die = "function",
     oldenemy = "entity",
     speed = "float",
-    lefty = "float",
+    lefty = "bool",
     search_time = "float",
     attack_state = "float",
     walkframe = "float",

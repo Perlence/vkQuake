@@ -1141,7 +1141,7 @@ function M.weapon_frame(self)
     impulse_commands(self)
 
     -- check for attack
-    if self.button0 ~= 0 then
+    if self.button0 then
         M.super_damage_sound(self)
         attack(self)
     end

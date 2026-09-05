@@ -15,6 +15,16 @@ modify it under the terms of the GNU General Public License.
 #define LP_ENTITY_META "vkquake.entity"
 #define LP_VECTOR_META "vkquake.vec3"
 
+static const char *const lp_boolean_globals[] = {
+	"coop", "trace_allsolid", "trace_inopen", "trace_inwater", "trace_startsolid",
+};
+
+static const char *const lp_boolean_fields[] = {
+	"button0",
+	"button1",
+	"button2",
+};
+
 typedef struct
 {
 	float  owned[3];
@@ -1014,6 +1024,24 @@ static void LP_ResolveBooleanDefs (lua_State *L)
 {
 	size_t i;
 	lua_newtable (L);
+	for (i = 0; i < countof (lp_boolean_globals); ++i)
+	{
+		ddef_t *definition = ED_FindGlobal (lp_boolean_globals[i]);
+		if (!definition || (definition->type & ~DEF_SAVEGLOBAL) != ev_float)
+			Host_Error ("Lua progs global '%s' is not a float", lp_boolean_globals[i]);
+		lua_pushlightuserdata (L, definition);
+		lua_pushboolean (L, true);
+		lua_rawset (L, -3);
+	}
+	for (i = 0; i < countof (lp_boolean_fields); ++i)
+	{
+		ddef_t *definition = ED_FindField (lp_boolean_fields[i]);
+		if (!definition || (definition->type & ~DEF_SAVEGLOBAL) != ev_float)
+			Host_Error ("Lua progs entity field '%s' is not a float", lp_boolean_fields[i]);
+		lua_pushlightuserdata (L, definition);
+		lua_pushboolean (L, true);
+		lua_rawset (L, -3);
+	}
 	for (i = 0; i < lp_num_global_defs; ++i)
 	{
 		ddef_t *definition;

@@ -507,7 +507,7 @@ local function run_slide(self, enemy_yaw, movedist)
     self.ideal_yaw = enemy_yaw
     quake.change_yaw(self)
     local ofs
-    if self.lefty ~= 0 then
+    if self.lefty then
         ofs = 90
     else
         ofs = -90
@@ -517,7 +517,7 @@ local function run_slide(self, enemy_yaw, movedist)
         return
     end
 
-    self.lefty = 1 - self.lefty
+    self.lefty = not self.lefty
 
     quake.walk_move(self, self.ideal_yaw - ofs, movedist)
 end

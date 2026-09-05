@@ -415,52 +415,45 @@ end
 ---@param other entity
 ---@return nil
 local weapon_touch = quake.register_function("items.weapon_touch", function(self, other)
-    local leave
-
     if (other.flags & C.FL_CLIENT) == 0 then
         return
     end
 
     local new = 0
-
-    if quake.cvar("deathmatch") == 2 or quake.cvar("coop") ~= 0 then
-        leave = 1
-    else
-        leave = 0
-    end
+    local leave = quake.cvar("deathmatch") == 2 or quake.cvar("coop") ~= 0
 
     if self.classname == "weapon_nailgun" then
-        if leave ~= 0 and (other.items & 4) ~= 0 then
+        if leave and (other.items & 4) ~= 0 then
             return
         end
         new = 4
         other.ammo_nails = other.ammo_nails + 30
     elseif self.classname == "weapon_supernailgun" then
-        if leave ~= 0 and (other.items & 8) ~= 0 then
+        if leave and (other.items & 8) ~= 0 then
             return
         end
         new = 8
         other.ammo_nails = other.ammo_nails + 30
     elseif self.classname == "weapon_supershotgun" then
-        if leave ~= 0 and (other.items & 2) ~= 0 then
+        if leave and (other.items & 2) ~= 0 then
             return
         end
         new = 2
         other.ammo_shells = other.ammo_shells + 5
     elseif self.classname == "weapon_rocketlauncher" then
-        if leave ~= 0 and (other.items & 32) ~= 0 then
+        if leave and (other.items & 32) ~= 0 then
             return
         end
         new = 32
         other.ammo_rockets = other.ammo_rockets + 5
     elseif self.classname == "weapon_grenadelauncher" then
-        if leave ~= 0 and (other.items & 16) ~= 0 then
+        if leave and (other.items & 16) ~= 0 then
             return
         end
         new = 16
         other.ammo_rockets = other.ammo_rockets + 5
     elseif self.classname == "weapon_lightning" then
-        if leave ~= 0 and (other.items & 64) ~= 0 then
+        if leave and (other.items & 64) ~= 0 then
             return
         end
         new = 64
@@ -490,7 +483,7 @@ local weapon_touch = quake.register_function("items.weapon_touch", function(self
 
     weapons.set_current_ammo(other)
 
-    if leave ~= 0 then
+    if leave then
         return
     end
 

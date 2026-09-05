@@ -210,7 +210,7 @@ end
 ---@return nil
 local function intermission_think(self)
     if quake.time() < g.intermission_exittime then return end
-    if self.button0 == 0 and self.button1 == 0 and self.button2 == 0 then return end
+    if not self.button0 and not self.button1 and not self.button2 then return end
     exit_intermission()
 end
 
@@ -253,7 +253,7 @@ local changelevel_touch = quake.register_function("client.changelevel_touch", fu
         return
     end
     -- don't print the messages in singleplayer
-    if g.coop ~= 0 or g.deathmatch ~= 0 then
+    if g.coop or g.deathmatch ~= 0 then
         quake.bprint(other.netname); quake.bprint(" exited the level\n")
     end
     g.nextmap = self.map
@@ -291,7 +291,7 @@ end
 ---@param self entity
 ---@return nil
 local function respawn(self)
-    if g.coop ~= 0 then
+    if g.coop then
         -- make a copy of the dead body for appearances sake
         world.copy_to_body_que(self)
         -- get the spawn parms as they were at level start
@@ -329,7 +329,7 @@ local function select_spawn_point()
     local spot = quake.find(quake.world, "classname", "testplayerstart")
     if spot then return spot end
     -- choose a info_player_deathmatch point
-    if g.coop ~= 0 then
+    if g.coop then
         g.lastspawn = quake.find(g.lastspawn, "classname", "info_player_coop")
         if not g.lastspawn then g.lastspawn = quake.find(g.lastspawn, "classname", "info_player_start") end
         if g.lastspawn then return g.lastspawn end
@@ -407,7 +407,7 @@ M.put_client_in_server = quake.register_function("client.put_client_in_server", 
     quake.set_size(self, quake.vec3(-16, -16, -24), quake.vec3(16, 16, 32))
     self.view_ofs = quake.vec3(0, 0, 22)
     player.player_stand1(self)
-    if g.deathmatch ~= 0 or g.coop ~= 0 then
+    if g.deathmatch ~= 0 or g.coop then
         local vectors = quake.make_vectors(self.angles)
         triggers.spawn_tfog(self.origin + vectors.forward * 20)
     end
@@ -481,7 +481,7 @@ local function next_level()
         end
     end
     g.nextmap = o.map
-    g.gameover = 1
+    g.gameover = true
     if o.nextthink < quake.time() then
         o.think = execute_changelevel; o.nextthink = quake.time() + 0.1
     end
@@ -491,7 +491,7 @@ end
 ---@param self entity
 ---@return nil
 local function check_rules(self)
-    if g.gameover ~= 0 then return end -- someone else quit the game already
+    if g.gameover then return end -- someone else quit the game already
     local timelimit = quake.cvar("timelimit") * 60
     local fraglimit = quake.cvar("fraglimit")
     if timelimit ~= 0 and quake.time() >= timelimit then
@@ -516,13 +516,13 @@ local function player_death_think(self)
     end
     -- wait for all buttons released
     if self.deadflag == DEAD_DEAD then
-        if self.button2 ~= 0 or self.button1 ~= 0 or self.button0 ~= 0 then return end
+        if self.button2 or self.button1 or self.button0 then return end
         self.deadflag = DEAD_RESPAWNABLE
         return
     end
     -- wait for any button down
-    if self.button2 == 0 and self.button1 == 0 and self.button0 == 0 then return end
-    self.button0, self.button1, self.button2 = 0, 0, 0
+    if not self.button2 and not self.button1 and not self.button0 then return end
+    self.button0, self.button1, self.button2 = false, false, false
     respawn(self)
 end
 
@@ -553,7 +553,7 @@ local function player_jump(self)
     if (self.flags & FL_JUMPRELEASED) == 0 then return end -- don't pogo stick
     self.flags = self.flags - (self.flags & FL_JUMPRELEASED)
     self.flags = self.flags - FL_ONGROUND -- don't stairwalk
-    self.button2 = 0
+    self.button2 = false
     -- player jumping sound
     quake.sound(self, CHAN_BODY, "player/plyrjmp8.wav", 1, ATTN_NORM)
     self.velocity = quake.vec3(self.velocity.x, self.velocity.y, self.velocity.z + 270)
@@ -667,7 +667,7 @@ M.player_pre_think = quake.register_function("client.player_pre_think", function
     end
     -- dying, so do nothing
     if self.deadflag == DEAD_DYING then return end
-    if self.button2 ~= 0 then player_jump(self) else self.flags = self.flags | FL_JUMPRELEASED end
+    if self.button2 then player_jump(self) else self.flags = self.flags | FL_JUMPRELEASED end
     -- teleporters can force a non-moving pause time
     if quake.time() < self.pausetime then self.velocity = quake.vec3(0, 0, 0) end
     if quake.time() > self.attack_finished and self.currentammo == 0 and self.weapon ~= IT_AXE then
@@ -824,7 +824,7 @@ end)
 ---@param self entity
 ---@return nil
 M.client_disconnect = quake.register_function("client.client_disconnect", function(self)
-    if g.gameover ~= 0 then return end
+    if g.gameover then return end
     -- if the level end trigger has been activated, just return
     -- since they aren't *really* leaving
     -- let everyone else know
