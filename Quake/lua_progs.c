@@ -49,23 +49,15 @@ static size_t	  lp_num_global_defs;
 static lp_def_t	 *lp_field_defs;
 static size_t	  lp_num_field_defs;
 
-static int		LP_EntityIndex (lua_State *L);
-static int		LP_EntityNewIndex (lua_State *L);
 static int		LP_CallQC (lua_State *L);
-static int		LP_GlobalsIndex (lua_State *L);
-static int		LP_GlobalsNewIndex (lua_State *L);
 static void		LP_ClearDefs (void);
 static int		LP_CompareDefs (const void *left, const void *right);
 static qboolean LP_IsBooleanDef (lua_State *L, const ddef_t *definition);
 static void		LP_ReadDefsTable (lua_State *L, int index, const char *description, lp_def_t **defs, size_t *numdefs);
 static etype_t	LP_ReadDefType (const char *name, const char *type, qboolean *boolean);
-static void		LP_ResolveBooleanDefs (lua_State *L);
 static ddef_t  *LP_FindFileDef (dprograms_t *progs, int lumpofs, int count, const char *name);
 static qboolean LP_HasDef (const lp_def_t *definitions, size_t count, const char *name);
 static int		LP_AppendString (dprograms_t *progs, const char *name);
-static void		LP_SetParmFloat (int parm, float value);
-static void		LP_SetParmString (lua_State *L, int parm, int index);
-static void		LP_RunBuiltin (int number, int argc);
 
 // Reports the Lua error at the top of the global state and does not return.
 static void LP_Error (const char *context)
