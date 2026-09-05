@@ -842,19 +842,26 @@ static int LP_OpenQuake (lua_State *L)
 static int LP_ModuleSearcher (lua_State *L)
 {
 	const char *module = luaL_checkstring (L, 1);
+	char		modulepath[MAX_OSPATH];
 	char		path[MAX_OSPATH];
 	byte	   *source;
 	int			status;
 	size_t		i;
 
-	q_snprintf (path, sizeof (path), "lua/%s.lua", module);
-	for (i = 4; i < strlen (path) - 4; ++i)
-		if (path[i] == '.')
-			path[i] = '/';
+	q_snprintf (modulepath, sizeof (modulepath), "lua/%s", module);
+	for (i = 4; modulepath[i]; ++i)
+		if (modulepath[i] == '.')
+			modulepath[i] = '/';
+	q_snprintf (path, sizeof (path), "%s.lua", modulepath);
 	source = COM_LoadFile (path, NULL);
 	if (!source)
 	{
-		lua_pushfstring (L, "\n\tno game module '%s'", path);
+		q_snprintf (path, sizeof (path), "%s/init.lua", modulepath);
+		source = COM_LoadFile (path, NULL);
+	}
+	if (!source)
+	{
+		lua_pushfstring (L, "\n\tno game module '%s.lua' or '%s/init.lua'", modulepath, modulepath);
 		return 1;
 	}
 	status = luaL_loadbuffer (L, (const char *)source, com_filesize, path);
