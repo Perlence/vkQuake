@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 See file, 'COPYING', for details.
 ]]
 
-local C = require("game.constants")
+local C = require("constants")
 
 local SOLID_TRIGGER = 1
 
@@ -229,7 +229,7 @@ end
 ---@param thinkst think_callback
 ---@return nil
 function M.check_refire(self, thinkst)
-    local ai = require("game.ai")
+    local ai = require("ai")
 
     if quake.cvar("skill") ~= 3 then
         return

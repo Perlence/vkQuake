@@ -845,9 +845,9 @@ static int LP_ModuleSearcher (lua_State *L)
 	char		path[MAX_OSPATH];
 	byte	   *source;
 	int			status;
-	size_t		i, prefix = !strncmp (module, "game.", 5) ? 5 : 0;
+	size_t		i;
 
-	q_snprintf (path, sizeof (path), "lua/%s.lua", module + prefix);
+	q_snprintf (path, sizeof (path), "lua/%s.lua", module);
 	for (i = 4; i < strlen (path) - 4; ++i)
 		if (path[i] == '.')
 			path[i] = '/';
@@ -1251,9 +1251,9 @@ qboolean LP_Init (void)
 	lua_newtable (lp_state);
 	lp_function_names_ref = luaL_ref (lp_state, LUA_REGISTRYINDEX);
 	lua_getglobal (lp_state, "require");
-	lua_pushstring (lp_state, "game.init");
+	lua_pushstring (lp_state, "init");
 	if (LP_PCall (lp_state, 1, 1) != LUA_OK)
-		LP_Error ("loading game.init");
+		LP_Error ("loading init");
 
 	lua_pop (lp_state, 1);
 	lp_active = true;

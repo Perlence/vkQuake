@@ -20,12 +20,12 @@
     See file, 'COPYING', for details.
 ]]
 
-local combat = require("game.combat")
-local player = require("game.player")
-local subs = require("game.subs")
-local triggers = require("game.triggers")
-local weapons = require("game.weapons")
-local world = require("game.world")
+local combat = require("combat")
+local player = require("player")
+local subs = require("subs")
+local triggers = require("triggers")
+local weapons = require("weapons")
+local world = require("world")
 
 ---@class game_client
 local M = {}

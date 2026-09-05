@@ -20,12 +20,12 @@
     See file, 'COPYING', for details.
 ]]
 
-local C = require("game.constants")
-local animation = require("game.animation")
-local fight = require("game.fight")
-local subs = require("game.subs")
-local weapons = require("game.weapons")
-local doors = require("game.doors")
+local C = require("constants")
+local animation = require("animation")
+local fight = require("fight")
+local subs = require("subs")
+local weapons = require("weapons")
+local doors = require("doors")
 
 local count = animation.counter()
 local f = {}

@@ -20,8 +20,8 @@
     See file, 'COPYING', for details.
 ]]
 
-local animation = require("game.animation")
-local subs = require("game.subs")
+local animation = require("animation")
+local subs = require("subs")
 
 local M = {}
 local g = quake.globals
@@ -138,7 +138,7 @@ local player_axe = animation.sequence("player.player_axe", {
     { f.axatt1, function(self) self.weaponframe = 1 end },
     { f.axatt2, function(self) self.weaponframe = 2 end },
     { f.axatt3, function(self)
-        local weapons = require("game.weapons")
+        local weapons = require("weapons")
 
         self.weaponframe = 3
         weapons.fire_axe(self)
@@ -150,7 +150,7 @@ local player_axeb = animation.sequence("player.player_axeb", {
     { f.axattb1, function(self) self.weaponframe = 5 end },
     { f.axattb2, function(self) self.weaponframe = 6 end },
     { f.axattb3, function(self)
-        local weapons = require("game.weapons")
+        local weapons = require("weapons")
 
         self.weaponframe = 7
         weapons.fire_axe(self)
@@ -162,7 +162,7 @@ local player_axec = animation.sequence("player.player_axec", {
     { f.axattc1, function(self) self.weaponframe = 1 end },
     { f.axattc2, function(self) self.weaponframe = 2 end },
     { f.axattc3, function(self)
-        local weapons = require("game.weapons")
+        local weapons = require("weapons")
 
         self.weaponframe = 3
         weapons.fire_axe(self)
@@ -174,7 +174,7 @@ local player_axed = animation.sequence("player.player_axed", {
     { f.axattd1, function(self) self.weaponframe = 5 end },
     { f.axattd2, function(self) self.weaponframe = 6 end },
     { f.axattd3, function(self)
-        local weapons = require("game.weapons")
+        local weapons = require("weapons")
 
         self.weaponframe = 7
         weapons.fire_axe(self)
@@ -186,7 +186,7 @@ local player_axed = animation.sequence("player.player_axed", {
 
 local player_nail = animation.loop("player.player_nail", {
     { f.nailatt1, function(self)
-        local weapons = require("game.weapons")
+        local weapons = require("weapons")
 
         self.effects = self.effects | EF_MUZZLEFLASH
         if not self.button0 then
@@ -199,7 +199,7 @@ local player_nail = animation.loop("player.player_nail", {
         self.attack_finished = quake.time() + 0.2
     end },
     { f.nailatt2, function(self)
-        local weapons = require("game.weapons")
+        local weapons = require("weapons")
 
         self.effects = self.effects | EF_MUZZLEFLASH
         if not self.button0 then
@@ -217,7 +217,7 @@ local player_nail = animation.loop("player.player_nail", {
 
 local player_light = animation.loop("player.player_light", {
     { f.light1, function(self)
-        local weapons = require("game.weapons")
+        local weapons = require("weapons")
 
         self.effects = self.effects | EF_MUZZLEFLASH
         if not self.button0 then
@@ -230,7 +230,7 @@ local player_light = animation.loop("player.player_light", {
         self.attack_finished = quake.time() + 0.2
     end },
     { f.light2, function(self)
-        local weapons = require("game.weapons")
+        local weapons = require("weapons")
 
         self.effects = self.effects | EF_MUZZLEFLASH
         if not self.button0 then
@@ -357,7 +357,7 @@ end)
 ---@param self entity
 ---@return nil
 local function death_bubbles_spawn(self)
-    local misc = require("game.misc")
+    local misc = require("misc")
 
     if self.owner.waterlevel ~= 3 then return end
     local bubble = quake.spawn()
@@ -504,7 +504,7 @@ local player_diea, player_dieb, player_diec, player_died, player_diee, player_di
 ---@param self entity
 ---@return nil
 M.player_die = quake.register_function("player.player_die", function(self)
-    local items = require("game.items")
+    local items = require("items")
 
     self.items = self.items - (self.items & IT_INVISIBILITY)
     -- don't die as eyes

@@ -1,8 +1,8 @@
 -- Derived from GPL-licensed Quake game code in CleanFixedQuakeC.
 -- SPDX-License-Identifier: GPL-2.0-or-later
 
-local C = require("game.constants")
-local subs = require("game.subs")
+local C = require("constants")
+local subs = require("subs")
 
 local M = {}
 local velocity_for_damage

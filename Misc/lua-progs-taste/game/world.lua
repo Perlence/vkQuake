@@ -20,7 +20,7 @@
     See file, 'COPYING', for details.
 ]]
 
-local weapons = require("game.weapons")
+local weapons = require("weapons")
 
 ---@class game_world
 local M = {}

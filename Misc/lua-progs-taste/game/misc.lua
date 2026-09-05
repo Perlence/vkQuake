@@ -19,10 +19,10 @@ See file, 'COPYING', for details.
 -- Port of misc.qc from GPL-licensed CleanFixedQuakeC.
 -- SPDX-License-Identifier: GPL-2.0-or-later
 
-local combat = require("game.combat")
-local enforcer = require("game.enforcer")
-local subs = require("game.subs")
-local weapons = require("game.weapons")
+local combat = require("combat")
+local enforcer = require("enforcer")
+local subs = require("subs")
+local weapons = require("weapons")
 
 local M = {}
 

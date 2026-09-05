@@ -20,9 +20,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 See file, 'COPYING', for details.
 ]]
 
-local C = require("game.constants")
-local fight = require("game.fight")
-local subs = require("game.subs")
+local C = require("constants")
+local fight = require("fight")
+local subs = require("subs")
 
 local ATTN_IDLE = 2
 local SOLID_TRIGGER = 1
@@ -460,13 +460,13 @@ local function check_any_attack(self, enemy_vis, enemy_range)
         return fight.sham_check_attack(self, enemy_range, enemy_vis)
     end
     if self.classname == "monster_demon1" then
-        return require("game.demon").check_attack(self)
+        return require("demon").check_attack(self)
     end
     if self.classname == "monster_dog" then
-        return require("game.dog").check_attack(self)
+        return require("dog").check_attack(self)
     end
     if self.classname == "monster_wizard" then
-        return require("game.wizard").check_attack(self)
+        return require("wizard").check_attack(self)
     end
     return fight.check_attack(self, enemy_range)
 end

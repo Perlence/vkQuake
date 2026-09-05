@@ -20,8 +20,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 See file, 'COPYING', for details.
 ]]
 
-local C = require("game.constants")
-local subs = require("game.subs")
+local C = require("constants")
+local subs = require("subs")
 
 local M = {}
 
@@ -35,7 +35,7 @@ When it decides it can't attack, it goes into hunt mode.
 ---@param self entity
 ---@return nil
 local function knight_attack(self)
-    local knight = require("game.knight")
+    local knight = require("knight")
 
     -- decide if now is a good swing time
     local len = (self.enemy.origin + self.enemy.view_ofs - (self.origin + self.view_ofs)):length()
@@ -160,7 +160,7 @@ end
 ---@param self entity
 ---@return nil
 function M.melee(self)
-    local combat = require("game.combat")
+    local combat = require("combat")
 
     if not self.enemy then
         -- removed before stroke
@@ -191,7 +191,7 @@ function M.melee_side(self)
     if delta:length() > 60 then
         return
     end
-    local combat = require("game.combat")
+    local combat = require("combat")
     if not combat.can_damage(self.enemy, self) then
         return
     end
@@ -265,7 +265,7 @@ end
 ---@param enemy_vis boolean
 ---@return boolean
 function M.sham_check_attack(self, enemy_range, enemy_vis)
-    local combat = require("game.combat")
+    local combat = require("combat")
     if enemy_range == C.RANGE_MELEE then
         if combat.can_damage(self.enemy, self) then
             self.attack_state = C.AS_MELEE
@@ -320,7 +320,7 @@ end
 ---@param enemy_vis boolean
 ---@return boolean
 function M.ogre_check_attack(self, enemy_range, enemy_vis)
-    local combat = require("game.combat")
+    local combat = require("combat")
     if enemy_range == C.RANGE_MELEE then
         if combat.can_damage(self.enemy, self) then
             self.attack_state = C.AS_MELEE

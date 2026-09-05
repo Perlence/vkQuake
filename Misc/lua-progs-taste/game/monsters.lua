@@ -20,9 +20,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 See file, 'COPYING', for details.
 ]]
 
-local C = require("game.constants")
-local ai = require("game.ai")
-local subs = require("game.subs")
+local C = require("constants")
+local ai = require("ai")
+local subs = require("subs")
 
 local M = {}
 

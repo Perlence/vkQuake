@@ -19,12 +19,12 @@ See file, 'COPYING', for details.
 -- Port of knight.qc from GPL-licensed CleanFixedQuakeC.
 -- SPDX-License-Identifier: GPL-2.0-or-later
 
-local C = require("game.constants")
-local ai = require("game.ai")
-local animation = require("game.animation")
-local fight = require("game.fight")
-local gibs = require("game.gibs")
-local monsters = require("game.monsters")
+local C = require("constants")
+local ai = require("ai")
+local animation = require("animation")
+local fight = require("fight")
+local gibs = require("gibs")
+local monsters = require("monsters")
 
 local M = {}
 

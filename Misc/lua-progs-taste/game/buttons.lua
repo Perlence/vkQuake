@@ -21,7 +21,7 @@ See file, 'COPYING', for details.
 
 -- button and multiple button
 
-local subs = require("game.subs")
+local subs = require("subs")
 
 local STATE_TOP, STATE_BOTTOM, STATE_UP, STATE_DOWN = 0, 1, 2, 3
 local MOVETYPE_PUSH, SOLID_BSP = 7, 4

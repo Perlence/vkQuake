@@ -20,9 +20,9 @@
     See file, 'COPYING', for details.
 ]]
 
-local C = require("game.constants")
-local subs = require("game.subs")
-local weapons = require("game.weapons")
+local C = require("constants")
+local subs = require("subs")
+local weapons = require("weapons")
 
 local M = {}
 

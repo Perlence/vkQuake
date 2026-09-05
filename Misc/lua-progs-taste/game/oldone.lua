@@ -20,9 +20,9 @@
     See file, 'COPYING', for details.
 ]]
 
-local C = require("game.constants")
-local animation = require("game.animation")
-local gibs = require("game.gibs")
+local C = require("constants")
+local animation = require("animation")
+local gibs = require("gibs")
 
 local count = animation.counter()
 local f = {}

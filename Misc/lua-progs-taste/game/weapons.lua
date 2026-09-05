@@ -20,10 +20,10 @@
     See file, 'COPYING', for details.
 ]]
 
-local animation = require("game.animation")
-local combat = require("game.combat")
-local subs = require("game.subs")
-local player = require("game.player")
+local animation = require("animation")
+local combat = require("combat")
+local subs = require("subs")
+local player = require("player")
 
 local M = {}
 
