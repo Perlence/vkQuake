@@ -103,8 +103,11 @@ local function worldspawn(self)
     init_body_que()
 
     -- custom map attributes
-    if self.model == "maps/e1m8.bsp" then quake.cvar_set("sv_gravity", "100")
-    else quake.cvar_set("sv_gravity", "800") end
+    if self.model == "maps/e1m8.bsp" then
+        quake.cvar_set("sv_gravity", "100")
+    else
+        quake.cvar_set("sv_gravity", "800")
+    end
 
     -- the area based ambient sounds MUST be the first precache_sounds
     -- player precaches
@@ -141,7 +144,10 @@ local function worldspawn(self)
     for _, sound in ipairs(sounds) do quake.precache_sound(sound) end
 
     -- player gib sounds
-    for _, sound in ipairs({"player/gib.wav", "player/udeath.wav", "player/tornoff2.wav"}) do quake.precache_sound(sound) end
+    for _, sound in ipairs({ "player/gib.wav", "player/udeath.wav", "player/tornoff2.wav" }) do
+        quake.precache_sound(
+            sound)
+    end
     -- player pain sounds
     for i = 1, 6 do quake.precache_sound("player/pain" .. i .. ".wav") end
     -- player death sounds

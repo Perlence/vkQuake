@@ -176,7 +176,6 @@ local item_megahealth_rot
 ---@param other entity
 ---@return nil
 health_touch = quake.register_function("items.health_touch", function(self, other)
-
     if other.classname ~= "player" then
         return
     end

@@ -228,10 +228,15 @@ local counter_use = quake.register_function("triggers.counter_use", function(sel
 
     if self.count ~= 0 then
         if activator.classname == "player" and (self.spawnflags & SPAWNFLAG_NOMESSAGE) == 0 then
-            if self.count >= 4 then quake.center_print(activator, "There are more to go...")
-            elseif self.count == 3 then quake.center_print(activator, "Only 3 more to go...")
-            elseif self.count == 2 then quake.center_print(activator, "Only 2 more to go...")
-            else quake.center_print(activator, "Only 1 more to go...") end
+            if self.count >= 4 then
+                quake.center_print(activator, "There are more to go...")
+            elseif self.count == 3 then
+                quake.center_print(activator, "Only 3 more to go...")
+            elseif self.count == 2 then
+                quake.center_print(activator, "Only 2 more to go...")
+            else
+                quake.center_print(activator, "Only 1 more to go...")
+            end
         end
         return
     end
@@ -272,11 +277,17 @@ local PLAYER_ONLY, SILENT = 1, 2
 local play_teleport = quake.register_function("triggers.play_teleport", function(self)
     local v = quake.random() * 5
     local tmpstr
-    if v < 1 then tmpstr = "misc/r_tele1.wav"
-    elseif v < 2 then tmpstr = "misc/r_tele2.wav"
-    elseif v < 3 then tmpstr = "misc/r_tele3.wav"
-    elseif v < 4 then tmpstr = "misc/r_tele4.wav"
-    else tmpstr = "misc/r_tele5.wav" end
+    if v < 1 then
+        tmpstr = "misc/r_tele1.wav"
+    elseif v < 2 then
+        tmpstr = "misc/r_tele2.wav"
+    elseif v < 3 then
+        tmpstr = "misc/r_tele3.wav"
+    elseif v < 4 then
+        tmpstr = "misc/r_tele4.wav"
+    else
+        tmpstr = "misc/r_tele5.wav"
+    end
     quake.sound(self, CHAN_VOICE, tmpstr, 1, ATTN_NORM)
     quake.remove(self)
 end)
@@ -458,23 +469,22 @@ ONLY REGISTERED TRIGGERS
 ==============================================================================
 ]]
 
----@param self entity
----@param other entity
----@return nil
-local trigger_onlyregistered_touch = quake.register_function("triggers.trigger_onlyregistered_touch", function(self, other)
-    if other.classname ~= "player" then return end
-    if self.attack_finished > quake.time() then return end
+---@type fun(self: entity, other: entity)
+local trigger_onlyregistered_touch = quake.register_function("triggers.trigger_onlyregistered_touch",
+    function(self, other)
+        if other.classname ~= "player" then return end
+        if self.attack_finished > quake.time() then return end
 
-    self.attack_finished = quake.time() + 2
-    if quake.cvar("registered") ~= 0 then
-        self.message = ""
-        subs.use_targets(self, other)
-        quake.remove(self)
-    elseif self.message ~= "" then
-        quake.center_print(other, self.message)
-        quake.sound(other, CHAN_BODY, "misc/talk.wav", 1, ATTN_NORM)
-    end
-end)
+        self.attack_finished = quake.time() + 2
+        if quake.cvar("registered") ~= 0 then
+            self.message = ""
+            subs.use_targets(self, other)
+            quake.remove(self)
+        elseif self.message ~= "" then
+            quake.center_print(other, self.message)
+            quake.sound(other, CHAN_BODY, "misc/talk.wav", 1, ATTN_NORM)
+        end
+    end)
 
 ---QUAKED trigger_onlyregistered (.5 .5 .5) ?
 ---Only fires if playing the registered version, otherwise prints the message

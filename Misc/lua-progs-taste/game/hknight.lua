@@ -33,51 +33,51 @@ local count = animation.counter()
 local f = {}
 
 f.stand1, f.stand2, f.stand3, f.stand4, f.stand5, f.stand6,
-    f.stand7, f.stand8, f.stand9 = count(9)
+f.stand7, f.stand8, f.stand9 = count(9)
 
 f.walk1, f.walk2, f.walk3, f.walk4, f.walk5, f.walk6,
-    f.walk7, f.walk8, f.walk9, f.walk10, f.walk11, f.walk12,
-    f.walk13, f.walk14, f.walk15, f.walk16, f.walk17, f.walk18,
-    f.walk19, f.walk20 = count(20)
+f.walk7, f.walk8, f.walk9, f.walk10, f.walk11, f.walk12,
+f.walk13, f.walk14, f.walk15, f.walk16, f.walk17, f.walk18,
+f.walk19, f.walk20 = count(20)
 
 f.run1, f.run2, f.run3, f.run4, f.run5, f.run6,
-    f.run7, f.run8 = count(8)
+f.run7, f.run8 = count(8)
 
 f.pain1, f.pain2, f.pain3, f.pain4, f.pain5 = count(5)
 
 f.death1, f.death2, f.death3, f.death4, f.death5, f.death6,
-    f.death7, f.death8, f.death9, f.death10, f.death11, f.death12 = count(12)
+f.death7, f.death8, f.death9, f.death10, f.death11, f.death12 = count(12)
 
 f.deathb1, f.deathb2, f.deathb3, f.deathb4, f.deathb5, f.deathb6,
-    f.deathb7, f.deathb8, f.deathb9 = count(9)
+f.deathb7, f.deathb8, f.deathb9 = count(9)
 
 f.char_a1, f.char_a2, f.char_a3, f.char_a4, f.char_a5, f.char_a6,
-    f.char_a7, f.char_a8, f.char_a9, f.char_a10, f.char_a11, f.char_a12,
-    f.char_a13, f.char_a14, f.char_a15, f.char_a16 = count(16)
+f.char_a7, f.char_a8, f.char_a9, f.char_a10, f.char_a11, f.char_a12,
+f.char_a13, f.char_a14, f.char_a15, f.char_a16 = count(16)
 
 f.magica1, f.magica2, f.magica3, f.magica4, f.magica5, f.magica6,
-    f.magica7, f.magica8, f.magica9, f.magica10, f.magica11, f.magica12,
-    f.magica13, f.magica14 = count(14)
+f.magica7, f.magica8, f.magica9, f.magica10, f.magica11, f.magica12,
+f.magica13, f.magica14 = count(14)
 
 f.magicb1, f.magicb2, f.magicb3, f.magicb4, f.magicb5, f.magicb6,
-    f.magicb7, f.magicb8, f.magicb9, f.magicb10, f.magicb11, f.magicb12,
-    f.magicb13 = count(13)
+f.magicb7, f.magicb8, f.magicb9, f.magicb10, f.magicb11, f.magicb12,
+f.magicb13 = count(13)
 
 f.char_b1, f.char_b2, f.char_b3, f.char_b4, f.char_b5, f.char_b6 = count(6)
 
 f.slice1, f.slice2, f.slice3, f.slice4, f.slice5, f.slice6,
-    f.slice7, f.slice8, f.slice9, f.slice10 = count(10)
+f.slice7, f.slice8, f.slice9, f.slice10 = count(10)
 
 f.smash1, f.smash2, f.smash3, f.smash4, f.smash5, f.smash6,
-    f.smash7, f.smash8, f.smash9, f.smash10, f.smash11 = count(11)
+f.smash7, f.smash8, f.smash9, f.smash10, f.smash11 = count(11)
 
 f.w_attack1, f.w_attack2, f.w_attack3, f.w_attack4, f.w_attack5, f.w_attack6,
-    f.w_attack7, f.w_attack8, f.w_attack9, f.w_attack10, f.w_attack11, f.w_attack12,
-    f.w_attack13, f.w_attack14, f.w_attack15, f.w_attack16, f.w_attack17, f.w_attack18,
-    f.w_attack19, f.w_attack20, f.w_attack21, f.w_attack22 = count(22)
+f.w_attack7, f.w_attack8, f.w_attack9, f.w_attack10, f.w_attack11, f.w_attack12,
+f.w_attack13, f.w_attack14, f.w_attack15, f.w_attack16, f.w_attack17, f.w_attack18,
+f.w_attack19, f.w_attack20, f.w_attack21, f.w_attack22 = count(22)
 
 f.magicc1, f.magicc2, f.magicc3, f.magicc4, f.magicc5, f.magicc6,
-    f.magicc7, f.magicc8, f.magicc9, f.magicc10, f.magicc11 = count(11)
+f.magicc7, f.magicc8, f.magicc9, f.magicc10, f.magicc11 = count(11)
 
 local CHAN_WEAPON = 1
 
@@ -340,12 +340,24 @@ hknight_char_a = animation.sequence("hknight.hknight_char_a", {
     { f.char_a3, function(self) fight.charge(self, 18) end },
     { f.char_a4, function(self) fight.charge(self, 16) end },
     { f.char_a5, function(self) fight.charge(self, 14) end },
-    { f.char_a6, function(self) fight.charge(self, 20); fight.melee(self) end },
-    { f.char_a7, function(self) fight.charge(self, 21); fight.melee(self) end },
-    { f.char_a8, function(self) fight.charge(self, 13); fight.melee(self) end },
-    { f.char_a9, function(self) fight.charge(self, 20); fight.melee(self) end },
-    { f.char_a10, function(self) fight.charge(self, 20); fight.melee(self) end },
-    { f.char_a11, function(self) fight.charge(self, 18); fight.melee(self) end },
+    { f.char_a6, function(self)
+        fight.charge(self, 20); fight.melee(self)
+    end },
+    { f.char_a7, function(self)
+        fight.charge(self, 21); fight.melee(self)
+    end },
+    { f.char_a8, function(self)
+        fight.charge(self, 13); fight.melee(self)
+    end },
+    { f.char_a9, function(self)
+        fight.charge(self, 20); fight.melee(self)
+    end },
+    { f.char_a10, function(self)
+        fight.charge(self, 20); fight.melee(self)
+    end },
+    { f.char_a11, function(self)
+        fight.charge(self, 18); fight.melee(self)
+    end },
     { f.char_a12, function(self) fight.charge(self, 16) end },
     { f.char_a13, function(self) fight.charge(self, 14) end },
     { f.char_a14, function(self) fight.charge(self, 25) end },
@@ -361,11 +373,21 @@ animation.loop("hknight.hknight_char_b", {
         fight.charge(self, 23)
         fight.melee(self)
     end },
-    { f.char_b2, function(self) fight.charge(self, 17); fight.melee(self) end },
-    { f.char_b3, function(self) fight.charge(self, 12); fight.melee(self) end },
-    { f.char_b4, function(self) fight.charge(self, 22); fight.melee(self) end },
-    { f.char_b5, function(self) fight.charge(self, 18); fight.melee(self) end },
-    { f.char_b6, function(self) fight.charge(self, 8); fight.melee(self) end },
+    { f.char_b2, function(self)
+        fight.charge(self, 17); fight.melee(self)
+    end },
+    { f.char_b3, function(self)
+        fight.charge(self, 12); fight.melee(self)
+    end },
+    { f.char_b4, function(self)
+        fight.charge(self, 22); fight.melee(self)
+    end },
+    { f.char_b5, function(self)
+        fight.charge(self, 18); fight.melee(self)
+    end },
+    { f.char_b6, function(self)
+        fight.charge(self, 8); fight.melee(self)
+    end },
 })
 
 --===========================================================================
@@ -375,10 +397,18 @@ local hknight_slice = animation.sequence("hknight.hknight_slice", {
     { f.slice2, function(self) fight.charge(self, 6) end },
     { f.slice3, function(self) fight.charge(self, 13) end },
     { f.slice4, function(self) fight.charge(self, 4) end },
-    { f.slice5, function(self) fight.charge(self, 7); fight.melee(self) end },
-    { f.slice6, function(self) fight.charge(self, 15); fight.melee(self) end },
-    { f.slice7, function(self) fight.charge(self, 8); fight.melee(self) end },
-    { f.slice8, function(self) fight.charge(self, 2); fight.melee(self) end },
+    { f.slice5, function(self)
+        fight.charge(self, 7); fight.melee(self)
+    end },
+    { f.slice6, function(self)
+        fight.charge(self, 15); fight.melee(self)
+    end },
+    { f.slice7, function(self)
+        fight.charge(self, 8); fight.melee(self)
+    end },
+    { f.slice8, function(self)
+        fight.charge(self, 2); fight.melee(self)
+    end },
     { f.slice9, function(self) fight.melee(self) end },
     { f.slice10, function(self) fight.charge(self, 3) end },
 }, function() return hknight_run end)
@@ -390,11 +420,21 @@ local hknight_smash = animation.sequence("hknight.hknight_smash", {
     { f.smash2, function(self) fight.charge(self, 13) end },
     { f.smash3, function(self) fight.charge(self, 9) end },
     { f.smash4, function(self) fight.charge(self, 11) end },
-    { f.smash5, function(self) fight.charge(self, 10); fight.melee(self) end },
-    { f.smash6, function(self) fight.charge(self, 7); fight.melee(self) end },
-    { f.smash7, function(self) fight.charge(self, 12); fight.melee(self) end },
-    { f.smash8, function(self) fight.charge(self, 2); fight.melee(self) end },
-    { f.smash9, function(self) fight.charge(self, 3); fight.melee(self) end },
+    { f.smash5, function(self)
+        fight.charge(self, 10); fight.melee(self)
+    end },
+    { f.smash6, function(self)
+        fight.charge(self, 7); fight.melee(self)
+    end },
+    { f.smash7, function(self)
+        fight.charge(self, 12); fight.melee(self)
+    end },
+    { f.smash8, function(self)
+        fight.charge(self, 2); fight.melee(self)
+    end },
+    { f.smash9, function(self)
+        fight.charge(self, 3); fight.melee(self)
+    end },
     { f.smash10, function(self) fight.charge(self, 0) end },
     { f.smash11, function(self) fight.charge(self, 0) end },
 }, function() return hknight_run end)
@@ -411,16 +451,28 @@ local hknight_watk = animation.sequence("hknight.hknight_watk", {
     { f.w_attack7, function(self) fight.charge(self, 1) end },
     { f.w_attack8, function(self) fight.charge(self, 4) end },
     { f.w_attack9, function(self) fight.charge(self, 5) end },
-    { f.w_attack10, function(self) fight.charge(self, 3); fight.melee(self) end },
-    { f.w_attack11, function(self) fight.charge(self, 2); fight.melee(self) end },
-    { f.w_attack12, function(self) fight.charge(self, 2); fight.melee(self) end },
+    { f.w_attack10, function(self)
+        fight.charge(self, 3); fight.melee(self)
+    end },
+    { f.w_attack11, function(self)
+        fight.charge(self, 2); fight.melee(self)
+    end },
+    { f.w_attack12, function(self)
+        fight.charge(self, 2); fight.melee(self)
+    end },
     { f.w_attack13, function(self) fight.charge(self, 0) end },
     { f.w_attack14, function(self) fight.charge(self, 0) end },
     { f.w_attack15, function(self) fight.charge(self, 0) end },
     { f.w_attack16, function(self) fight.charge(self, 1) end },
-    { f.w_attack17, function(self) fight.charge(self, 1); fight.melee(self) end },
-    { f.w_attack18, function(self) fight.charge(self, 3); fight.melee(self) end },
-    { f.w_attack19, function(self) fight.charge(self, 4); fight.melee(self) end },
+    { f.w_attack17, function(self)
+        fight.charge(self, 1); fight.melee(self)
+    end },
+    { f.w_attack18, function(self)
+        fight.charge(self, 3); fight.melee(self)
+    end },
+    { f.w_attack19, function(self)
+        fight.charge(self, 4); fight.melee(self)
+    end },
     { f.w_attack20, function(self) fight.charge(self, 6) end },
     { f.w_attack21, function(self) fight.charge(self, 7) end },
     { f.w_attack22, function(self) fight.charge(self, 3) end },

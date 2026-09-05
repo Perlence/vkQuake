@@ -34,22 +34,22 @@ local count = animation.counter()
 local f = {}
 
 f.stand1, f.stand2, f.stand3, f.stand4, f.stand5, f.stand6,
-    f.stand7, f.stand8, f.stand9 = count(9)
+f.stand7, f.stand8, f.stand9 = count(9)
 
 f.walk1, f.walk2, f.walk3, f.walk4, f.walk5, f.walk6,
-    f.walk7, f.walk8, f.walk9, f.walk10, f.walk11, f.walk12,
-    f.walk13, f.walk14, f.walk15, f.walk16 = count(16)
+f.walk7, f.walk8, f.walk9, f.walk10, f.walk11, f.walk12,
+f.walk13, f.walk14, f.walk15, f.walk16 = count(16)
 
 f.run1, f.run2, f.run3, f.run4, f.run5, f.run6,
-    f.run7, f.run8 = count(8)
+f.run7, f.run8 = count(8)
 
 f.swing1, f.swing2, f.swing3, f.swing4, f.swing5, f.swing6,
-    f.swing7, f.swing8, f.swing9, f.swing10, f.swing11, f.swing12,
-    f.swing13, f.swing14 = count(14)
+f.swing7, f.swing8, f.swing9, f.swing10, f.swing11, f.swing12,
+f.swing13, f.swing14 = count(14)
 
 f.smash1, f.smash2, f.smash3, f.smash4, f.smash5, f.smash6,
-    f.smash7, f.smash8, f.smash9, f.smash10, f.smash11, f.smash12,
-    f.smash13, f.smash14 = count(14)
+f.smash7, f.smash8, f.smash9, f.smash10, f.smash11, f.smash12,
+f.smash13, f.smash14 = count(14)
 
 f.shoot1, f.shoot2, f.shoot3, f.shoot4, f.shoot5, f.shoot6 = count(6)
 
@@ -60,22 +60,22 @@ f.painb1, f.painb2, f.painb3 = count(3)
 f.painc1, f.painc2, f.painc3, f.painc4, f.painc5, f.painc6 = count(6)
 
 f.paind1, f.paind2, f.paind3, f.paind4, f.paind5, f.paind6,
-    f.paind7, f.paind8, f.paind9, f.paind10, f.paind11, f.paind12,
-    f.paind13, f.paind14, f.paind15, f.paind16 = count(16)
+f.paind7, f.paind8, f.paind9, f.paind10, f.paind11, f.paind12,
+f.paind13, f.paind14, f.paind15, f.paind16 = count(16)
 
 f.paine1, f.paine2, f.paine3, f.paine4, f.paine5, f.paine6,
-    f.paine7, f.paine8, f.paine9, f.paine10, f.paine11, f.paine12,
-    f.paine13, f.paine14, f.paine15 = count(15)
+f.paine7, f.paine8, f.paine9, f.paine10, f.paine11, f.paine12,
+f.paine13, f.paine14, f.paine15 = count(15)
 
 f.death1, f.death2, f.death3, f.death4, f.death5, f.death6,
-    f.death7, f.death8, f.death9, f.death10, f.death11, f.death12,
-    f.death13, f.death14 = count(14)
+f.death7, f.death8, f.death9, f.death10, f.death11, f.death12,
+f.death13, f.death14 = count(14)
 
 f.bdeath1, f.bdeath2, f.bdeath3, f.bdeath4, f.bdeath5, f.bdeath6,
-    f.bdeath7, f.bdeath8, f.bdeath9, f.bdeath10 = count(10)
+f.bdeath7, f.bdeath8, f.bdeath9, f.bdeath10 = count(10)
 
 f.pull1, f.pull2, f.pull3, f.pull4, f.pull5, f.pull6,
-    f.pull7, f.pull8, f.pull9, f.pull10, f.pull11 = count(11)
+f.pull7, f.pull8, f.pull9, f.pull10, f.pull11 = count(11)
 
 --[[
 ==============================================================================
@@ -109,7 +109,9 @@ end)
 ---@return nil
 local ogre_grenade_touch = quake.register_function("ogre.ogre_grenade_touch", function(self, other)
     if other == self.owner then return end -- don't explode on owner
-    if other.takedamage == C.DAMAGE_AIM then ogre_grenade_explode(self); return end
+    if other.takedamage == C.DAMAGE_AIM then
+        ogre_grenade_explode(self); return
+    end
     -- bounce sound
     quake.sound(self, C.CHAN_VOICE, "weapons/bounce.wav", 1, C.ATTN_NORM)
     if self.velocity == quake.vec3(0, 0, 0) then self.avelocity = quake.vec3(0, 0, 0) end
@@ -156,8 +158,11 @@ local function chainsaw(self, side)
     combat.damage(self.enemy, self, self, ldmg)
     if side ~= 0 then
         local vectors = quake.make_vectors(self.angles)
-        if side == 1 then weapons.spawn_meat_spray(self, self.origin + vectors.forward * 16, quake.crandom() * 100 * vectors.right)
-        else weapons.spawn_meat_spray(self, self.origin + vectors.forward * 16, side * vectors.right) end
+        if side == 1 then
+            weapons.spawn_meat_spray(self, self.origin + vectors.forward * 16, quake.crandom() * 100 * vectors.right)
+        else
+            weapons.spawn_meat_spray(self, self.origin + vectors.forward * 16, side * vectors.right)
+        end
     end
 end
 
@@ -166,7 +171,10 @@ local ogre_stand = animation.loop("ogre.ogre_stand", {
     { f.stand2, function(self) ai.stand(self) end },
     { f.stand3, function(self) ai.stand(self) end },
     { f.stand4, function(self) ai.stand(self) end },
-    { f.stand5, function(self) if quake.random() < 0.2 then quake.sound(self, C.CHAN_VOICE, "ogre/ogidle.wav", 1, C.ATTN_IDLE) end; ai.stand(self) end },
+    { f.stand5, function(self)
+        if quake.random() < 0.2 then quake.sound(self, C.CHAN_VOICE, "ogre/ogidle.wav", 1, C.ATTN_IDLE) end; ai.stand(
+            self)
+    end },
     { f.stand6, function(self) ai.stand(self) end },
     { f.stand7, function(self) ai.stand(self) end },
     { f.stand8, function(self) ai.stand(self) end },
@@ -176,10 +184,14 @@ local ogre_stand = animation.loop("ogre.ogre_stand", {
 local ogre_walk = animation.loop("ogre.ogre_walk", {
     { f.walk1, function(self) ai.walk(self, 3) end },
     { f.walk2, function(self) ai.walk(self, 2) end },
-    { f.walk3, function(self) ai.walk(self, 2); if quake.random() < 0.2 then quake.sound(self, C.CHAN_VOICE, "ogre/ogidle.wav", 1, C.ATTN_IDLE) end end },
+    { f.walk3, function(self)
+        ai.walk(self, 2); if quake.random() < 0.2 then quake.sound(self, C.CHAN_VOICE, "ogre/ogidle.wav", 1, C.ATTN_IDLE) end
+    end },
     { f.walk4, function(self) ai.walk(self, 2) end },
     { f.walk5, function(self) ai.walk(self, 2) end },
-    { f.walk6, function(self) ai.walk(self, 5); if quake.random() < 0.1 then quake.sound(self, C.CHAN_VOICE, "ogre/ogdrag.wav", 1, C.ATTN_IDLE) end end },
+    { f.walk6, function(self)
+        ai.walk(self, 5); if quake.random() < 0.1 then quake.sound(self, C.CHAN_VOICE, "ogre/ogdrag.wav", 1, C.ATTN_IDLE) end
+    end },
     { f.walk7, function(self) ai.walk(self, 3) end },
     { f.walk8, function(self) ai.walk(self, 2) end },
     { f.walk9, function(self) ai.walk(self, 3) end },
@@ -193,7 +205,9 @@ local ogre_walk = animation.loop("ogre.ogre_walk", {
 })
 
 local ogre_run = animation.loop("ogre.ogre_run", {
-    { f.run1, function(self) ai.run(self, 9); if quake.random() < 0.2 then quake.sound(self, C.CHAN_VOICE, "ogre/ogidle2.wav", 1, C.ATTN_IDLE) end end },
+    { f.run1, function(self)
+        ai.run(self, 9); if quake.random() < 0.2 then quake.sound(self, C.CHAN_VOICE, "ogre/ogidle2.wav", 1, C.ATTN_IDLE) end
+    end },
     { f.run2, function(self) ai.run(self, 12) end },
     { f.run3, function(self) ai.run(self, 8) end },
     { f.run4, function(self) ai.run(self, 22) end },
@@ -204,35 +218,64 @@ local ogre_run = animation.loop("ogre.ogre_run", {
 })
 
 local ogre_swing = animation.sequence("ogre.ogre_swing", {
-    { f.swing1, function(self) fight.charge(self, 11); quake.sound(self, C.CHAN_WEAPON, "ogre/ogsawatk.wav", 1, C.ATTN_NORM) end },
+    { f.swing1, function(self)
+        fight.charge(self, 11); quake.sound(self, C.CHAN_WEAPON, "ogre/ogsawatk.wav", 1, C.ATTN_NORM)
+    end },
     { f.swing2, function(self) fight.charge(self, 1) end },
     { f.swing3, function(self) fight.charge(self, 4) end },
     { f.swing4, function(self) fight.charge(self, 13) end },
-    { f.swing5, function(self) fight.charge(self, 9); chainsaw(self, 0); self.angles = quake.vec3(self.angles.x, self.angles.y + quake.random() * 25, self.angles.z) end },
-    { f.swing6, function(self) chainsaw(self, 200); self.angles = quake.vec3(self.angles.x, self.angles.y + quake.random() * 25, self.angles.z) end },
-    { f.swing7, function(self) chainsaw(self, 0); self.angles = quake.vec3(self.angles.x, self.angles.y + quake.random() * 25, self.angles.z) end },
-    { f.swing8, function(self) chainsaw(self, 0); self.angles = quake.vec3(self.angles.x, self.angles.y + quake.random() * 25, self.angles.z) end },
-    { f.swing9, function(self) chainsaw(self, 0); self.angles = quake.vec3(self.angles.x, self.angles.y + quake.random() * 25, self.angles.z) end },
-    { f.swing10, function(self) chainsaw(self, -200); self.angles = quake.vec3(self.angles.x, self.angles.y + quake.random() * 25, self.angles.z) end },
-    { f.swing11, function(self) chainsaw(self, 0); self.angles = quake.vec3(self.angles.x, self.angles.y + quake.random() * 25, self.angles.z) end },
+    { f.swing5, function(self)
+        fight.charge(self, 9); chainsaw(self, 0); self.angles = quake.vec3(self.angles.x,
+            self.angles.y + quake.random() * 25, self.angles.z)
+    end },
+    { f.swing6, function(self)
+        chainsaw(self, 200); self.angles = quake.vec3(self.angles.x, self.angles.y + quake.random() * 25, self.angles.z)
+    end },
+    { f.swing7, function(self)
+        chainsaw(self, 0); self.angles = quake.vec3(self.angles.x, self.angles.y + quake.random() * 25, self.angles.z)
+    end },
+    { f.swing8, function(self)
+        chainsaw(self, 0); self.angles = quake.vec3(self.angles.x, self.angles.y + quake.random() * 25, self.angles.z)
+    end },
+    { f.swing9, function(self)
+        chainsaw(self, 0); self.angles = quake.vec3(self.angles.x, self.angles.y + quake.random() * 25, self.angles.z)
+    end },
+    { f.swing10, function(self)
+        chainsaw(self, -200); self.angles = quake.vec3(self.angles.x, self.angles.y + quake.random() * 25, self.angles.z)
+    end },
+    { f.swing11, function(self)
+        chainsaw(self, 0); self.angles = quake.vec3(self.angles.x, self.angles.y + quake.random() * 25, self.angles.z)
+    end },
     { f.swing12, function(self) fight.charge(self, 3) end },
     { f.swing13, function(self) fight.charge(self, 8) end },
     { f.swing14, function(self) fight.charge(self, 9) end },
 }, function() return ogre_run end)
 
 local ogre_smash = animation.sequence("ogre.ogre_smash", {
-    { f.smash1, function(self) fight.charge(self, 6); quake.sound(self, C.CHAN_WEAPON, "ogre/ogsawatk.wav", 1, C.ATTN_NORM) end },
+    { f.smash1, function(self)
+        fight.charge(self, 6); quake.sound(self, C.CHAN_WEAPON, "ogre/ogsawatk.wav", 1, C.ATTN_NORM)
+    end },
     { f.smash2, function(self) fight.charge(self, 0) end },
     { f.smash3, function(self) fight.charge(self, 0) end },
     { f.smash4, function(self) fight.charge(self, 1) end },
     { f.smash5, function(self) fight.charge(self, 4) end },
-    { f.smash6, function(self) fight.charge(self, 4); chainsaw(self, 0) end },
-    { f.smash7, function(self) fight.charge(self, 4); chainsaw(self, 0) end },
-    { f.smash8, function(self) fight.charge(self, 10); chainsaw(self, 0) end },
-    { f.smash9, function(self) fight.charge(self, 13); chainsaw(self, 0) end },
+    { f.smash6, function(self)
+        fight.charge(self, 4); chainsaw(self, 0)
+    end },
+    { f.smash7, function(self)
+        fight.charge(self, 4); chainsaw(self, 0)
+    end },
+    { f.smash8, function(self)
+        fight.charge(self, 10); chainsaw(self, 0)
+    end },
+    { f.smash9, function(self)
+        fight.charge(self, 13); chainsaw(self, 0)
+    end },
     { f.smash10, function(self) chainsaw(self, 1) end },
-    { f.smash11, function(self) fight.charge(self, 2); chainsaw(self, 0); -- slight variation
-        self.nextthink = self.nextthink + quake.random() * 0.2 end },
+    { f.smash11, function(self)
+        fight.charge(self, 2); chainsaw(self, 0); -- slight variation
+        self.nextthink = self.nextthink + quake.random() * 0.2
+    end },
     { f.smash12, function(self) fight.charge(self, 0) end },
     { f.smash13, function(self) fight.charge(self, 4) end },
     { f.smash14, function(self) fight.charge(self, 12) end },
@@ -242,7 +285,9 @@ local ogre_nail = animation.sequence("ogre.ogre_nail", {
     { f.shoot1, function(self) fight.face(self) end },
     { f.shoot2, function(self) fight.face(self) end },
     { f.shoot2, function(self) fight.face(self) end },
-    { f.shoot3, function(self) fight.face(self); ogre_fire_grenade(self) end },
+    { f.shoot3, function(self)
+        fight.face(self); ogre_fire_grenade(self)
+    end },
     { f.shoot4, function(self) fight.face(self) end },
     { f.shoot5, function(self) fight.face(self) end },
     { f.shoot6, function(self) fight.face(self) end },
@@ -317,17 +362,25 @@ local ogre_pain_callback = quake.register_function("ogre.ogre_pain_callback", fu
     if self.pain_finished > quake.time() then return end
     quake.sound(self, C.CHAN_VOICE, "ogre/ogpain1.wav", 1, C.ATTN_NORM)
     local r = quake.random()
-    if r < 0.25 then ogre_pain(self); self.pain_finished = quake.time() + 1
-    elseif r < 0.5 then ogre_painb(self); self.pain_finished = quake.time() + 1
-    elseif r < 0.75 then ogre_painc(self); self.pain_finished = quake.time() + 1
-    elseif r < 0.88 then ogre_paind(self); self.pain_finished = quake.time() + 2
-    else ogre_paine(self); self.pain_finished = quake.time() + 2 end
+    if r < 0.25 then
+        ogre_pain(self); self.pain_finished = quake.time() + 1
+    elseif r < 0.5 then
+        ogre_painb(self); self.pain_finished = quake.time() + 1
+    elseif r < 0.75 then
+        ogre_painc(self); self.pain_finished = quake.time() + 1
+    elseif r < 0.88 then
+        ogre_paind(self); self.pain_finished = quake.time() + 2
+    else
+        ogre_paine(self); self.pain_finished = quake.time() + 2
+    end
 end)
 
 local ogre_die = animation.hold("ogre.ogre_die", {
     { f.death1 },
     { f.death2 },
-    { f.death3, function(self) self.solid = C.SOLID_NOT; self.ammo_rockets = 2; items.drop_backpack(self) end },
+    { f.death3, function(self)
+        self.solid = C.SOLID_NOT; self.ammo_rockets = 2; items.drop_backpack(self)
+    end },
     { f.death4 },
     { f.death5 },
     { f.death6 },
@@ -344,7 +397,9 @@ local ogre_die = animation.hold("ogre.ogre_die", {
 local ogre_bdie = animation.hold("ogre.ogre_bdie", {
     { f.bdeath1 },
     { f.bdeath2, function(self) ai.forward(self, 5) end },
-    { f.bdeath3, function(self) self.solid = C.SOLID_NOT; self.ammo_rockets = 2; items.drop_backpack(self) end },
+    { f.bdeath3, function(self)
+        self.solid = C.SOLID_NOT; self.ammo_rockets = 2; items.drop_backpack(self)
+    end },
     { f.bdeath4, function(self) ai.forward(self, 1) end },
     { f.bdeath5, function(self) ai.forward(self, 3) end },
     { f.bdeath6, function(self) ai.forward(self, 7) end },
@@ -380,7 +435,9 @@ end)
 ---@param self entity
 ---@return nil
 local function spawn(self)
-    if quake.cvar("deathmatch") ~= 0 then quake.remove(self); return end
+    if quake.cvar("deathmatch") ~= 0 then
+        quake.remove(self); return
+    end
     quake.precache_model("progs/ogre.mdl")
     quake.precache_model("progs/h_ogre.mdl")
     quake.precache_model("progs/grenade.mdl")

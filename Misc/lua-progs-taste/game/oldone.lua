@@ -28,18 +28,18 @@ local count = animation.counter()
 local f = {}
 
 f.old1, f.old2, f.old3, f.old4, f.old5, f.old6,
-    f.old7, f.old8, f.old9, f.old10, f.old11, f.old12,
-    f.old13, f.old14, f.old15, f.old16, f.old17, f.old18,
-    f.old19, f.old20, f.old21, f.old22, f.old23, f.old24,
-    f.old25, f.old26, f.old27, f.old28, f.old29, f.old30,
-    f.old31, f.old32, f.old33, f.old34, f.old35, f.old36,
-    f.old37, f.old38, f.old39, f.old40, f.old41, f.old42,
-    f.old43, f.old44, f.old45, f.old46 = count(46)
+f.old7, f.old8, f.old9, f.old10, f.old11, f.old12,
+f.old13, f.old14, f.old15, f.old16, f.old17, f.old18,
+f.old19, f.old20, f.old21, f.old22, f.old23, f.old24,
+f.old25, f.old26, f.old27, f.old28, f.old29, f.old30,
+f.old31, f.old32, f.old33, f.old34, f.old35, f.old36,
+f.old37, f.old38, f.old39, f.old40, f.old41, f.old42,
+f.old43, f.old44, f.old45, f.old46 = count(46)
 
 f.shake1, f.shake2, f.shake3, f.shake4, f.shake5, f.shake6,
-    f.shake7, f.shake8, f.shake9, f.shake10, f.shake11, f.shake12,
-    f.shake13, f.shake14, f.shake15, f.shake16, f.shake17, f.shake18,
-    f.shake19, f.shake20, f.shake21 = count(21)
+f.shake7, f.shake8, f.shake9, f.shake10, f.shake11, f.shake12,
+f.shake13, f.shake14, f.shake15, f.shake16, f.shake17, f.shake18,
+f.shake19, f.shake20, f.shake21 = count(21)
 
 local CHAN_VOICE = 2
 local DAMAGE_YES = 1
@@ -245,7 +245,8 @@ function finale_4(self)
     end
     -- start the end text
     quake.write_byte(MSG_ALL, SVC_FINALE)
-    quake.write_string(MSG_ALL, "Congratulations and well done! You have\nbeaten the hideous Shub-Niggurath, and\nher hundreds of ugly changelings and\nmonsters. You have proven that your\nskill and your cunning are greater than\nall the powers of Quake. You are the\nmaster now. Id Software salutes you.")
+    quake.write_string(MSG_ALL,
+        "Congratulations and well done! You have\nbeaten the hideous Shub-Niggurath, and\nher hundreds of ugly changelings and\nmonsters. You have proven that your\nskill and your cunning are greater than\nall the powers of Quake. You are the\nmaster now. Id Software salutes you.")
 
     -- put a player model down
     local n = quake.spawn()

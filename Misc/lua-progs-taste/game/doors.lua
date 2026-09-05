@@ -458,7 +458,7 @@ local pain_empty = quake.register_function("doors.pain_empty", function(_self, _
 end)
 
 local fd_secret_move1, fd_secret_move2, fd_secret_move3, fd_secret_move4,
-    fd_secret_move5, fd_secret_move6, fd_secret_done
+fd_secret_move5, fd_secret_move6, fd_secret_done
 
 ---@param self entity
 ---@param _activator entity

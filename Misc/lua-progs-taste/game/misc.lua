@@ -79,8 +79,11 @@ local function light(self)
     end
     if self.style >= 32 then
         self.use = light_use
-        if (self.spawnflags & START_OFF) ~= 0 then quake.light_style(self.style, "a")
-        else quake.light_style(self.style, "m") end
+        if (self.spawnflags & START_OFF) ~= 0 then
+            quake.light_style(self.style, "a")
+        else
+            quake.light_style(self.style, "m")
+        end
     end
 end
 
@@ -95,8 +98,11 @@ end
 local function light_fluoro(self)
     if self.style >= 32 then
         self.use = light_use
-        if (self.spawnflags & START_OFF) ~= 0 then quake.light_style(self.style, "a")
-        else quake.light_style(self.style, "m") end
+        if (self.spawnflags & START_OFF) ~= 0 then
+            quake.light_style(self.style, "a")
+        else
+            quake.light_style(self.style, "m")
+        end
     end
     quake.precache_sound("ambience/fl_hum1.wav")
     quake.ambient_sound(self.origin, "ambience/fl_hum1.wav", 0.5, ATTN_STATIC)

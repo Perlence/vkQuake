@@ -35,25 +35,25 @@ local count = animation.counter()
 local f = {}
 
 f.stand1, f.stand2, f.stand3, f.stand4, f.stand5, f.stand6,
-    f.stand7, f.stand8, f.stand9, f.stand10, f.stand11, f.stand12,
-    f.stand13 = count(13)
+f.stand7, f.stand8, f.stand9, f.stand10, f.stand11, f.stand12,
+f.stand13 = count(13)
 
 f.walk1, f.walk2, f.walk3, f.walk4, f.walk5, f.walk6,
-    f.walk7, f.walk8 = count(8)
+f.walk7, f.walk8 = count(8)
 
 f.run1, f.run2, f.run3, f.run4, f.run5, f.run6 = count(6)
 
 f.leap1, f.leap2, f.leap3, f.leap4, f.leap5, f.leap6,
-    f.leap7, f.leap8, f.leap9, f.leap10, f.leap11, f.leap12 = count(12)
+f.leap7, f.leap8, f.leap9, f.leap10, f.leap11, f.leap12 = count(12)
 
 f.pain1, f.pain2, f.pain3, f.pain4, f.pain5, f.pain6 = count(6)
 
 f.death1, f.death2, f.death3, f.death4, f.death5, f.death6,
-    f.death7, f.death8, f.death9 = count(9)
+f.death7, f.death8, f.death9 = count(9)
 
 f.attacka1, f.attacka2, f.attacka3, f.attacka4, f.attacka5, f.attacka6,
-    f.attacka7, f.attacka8, f.attacka9, f.attacka10, f.attacka11, f.attacka12,
-    f.attacka13, f.attacka14, f.attacka15 = count(15)
+f.attacka7, f.attacka8, f.attacka9, f.attacka10, f.attacka11, f.attacka12,
+f.attacka13, f.attacka14, f.attacka15 = count(15)
 
 --[[
 ==============================================================================
@@ -80,7 +80,10 @@ local demon1_stand = animation.loop("demon.demon1_stand", {
 })
 
 local demon1_walk = animation.loop("demon.demon1_walk", {
-    { f.walk1, function(self) if quake.random() < 0.2 then quake.sound(self, C.CHAN_VOICE, "demon/idle1.wav", 1, C.ATTN_IDLE) end; ai.walk(self, 8) end },
+    { f.walk1, function(self)
+        if quake.random() < 0.2 then quake.sound(self, C.CHAN_VOICE, "demon/idle1.wav", 1, C.ATTN_IDLE) end; ai.walk(
+            self, 8)
+    end },
     { f.walk2, function(self) ai.walk(self, 6) end },
     { f.walk3, function(self) ai.walk(self, 6) end },
     { f.walk4, function(self) ai.walk(self, 7) end },
@@ -91,7 +94,10 @@ local demon1_walk = animation.loop("demon.demon1_walk", {
 })
 
 local demon1_run = animation.loop("demon.demon1_run", {
-    { f.run1, function(self) if quake.random() < 0.2 then quake.sound(self, C.CHAN_VOICE, "demon/idle1.wav", 1, C.ATTN_IDLE) end; ai.run(self, 20) end },
+    { f.run1, function(self)
+        if quake.random() < 0.2 then quake.sound(self, C.CHAN_VOICE, "demon/idle1.wav", 1, C.ATTN_IDLE) end; ai.run(self,
+            20)
+    end },
     { f.run2, function(self) ai.run(self, 15) end },
     { f.run3, function(self) ai.run(self, 36) end },
     { f.run4, function(self) ai.run(self, 20) end },
@@ -134,7 +140,9 @@ local demon1_atta = animation.sequence("demon.demon1_atta", {
     { f.attacka2, function(self) fight.charge(self, 0) end },
     { f.attacka3, function(self) fight.charge(self, 0) end },
     { f.attacka4, function(self) fight.charge(self, 1) end },
-    { f.attacka5, function(self) fight.charge(self, 2); demon_melee(self, 200) end },
+    { f.attacka5, function(self)
+        fight.charge(self, 2); demon_melee(self, 200)
+    end },
     { f.attacka6, function(self) fight.charge(self, 1) end },
     { f.attacka7, function(self) fight.charge(self, 6) end },
     { f.attacka8, function(self) fight.charge(self, 8) end },
@@ -201,7 +209,9 @@ end)
 ---@param self entity
 ---@return nil
 local function spawn(self)
-    if quake.cvar("deathmatch") ~= 0 then quake.remove(self); return end
+    if quake.cvar("deathmatch") ~= 0 then
+        quake.remove(self); return
+    end
     quake.precache_model("progs/demon.mdl")
     quake.precache_model("progs/h_demon.mdl")
     quake.precache_sound("demon/ddeath.wav")
@@ -262,7 +272,9 @@ end
 ---@return boolean
 function M.check_attack(self)
     -- if close enough for slashing, go for it
-    if check_demon_melee(self) then self.attack_state = C.AS_MELEE; return true end
+    if check_demon_melee(self) then
+        self.attack_state = C.AS_MELEE; return true
+    end
     if check_demon_jump(self) then
         self.attack_state = C.AS_MISSILE
         quake.sound(self, C.CHAN_VOICE, "demon/djump.wav", 1, C.ATTN_NORM)

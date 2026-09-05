@@ -68,9 +68,12 @@ local function info_intermission(_self) end
 ---@param self entity
 ---@return nil
 M.set_change_parms = quake.register_function("client.set_change_parms", function(self)
-    if self.health <= 0 then M.set_new_parms(); return end
+    if self.health <= 0 then
+        M.set_new_parms(); return
+    end
     -- remove items
-    self.items = self.items - (self.items & (IT_KEY1 | IT_KEY2 | IT_INVISIBILITY | IT_INVULNERABILITY | IT_SUIT | IT_QUAD))
+    self.items = self.items -
+        (self.items & (IT_KEY1 | IT_KEY2 | IT_INVISIBILITY | IT_INVULNERABILITY | IT_SUIT | IT_QUAD))
     -- cap super health
     if self.health > 100 then self.health = 100 end
     if self.health < 50 then self.health = 50 end
@@ -148,17 +151,25 @@ local function goto_next_map()
     end
 end
 
-local finale_e1_unregistered = "As the corpse of the monstrous entity\nChthon sinks back into the lava whence\nit rose, you grip the Rune of Earth\nMagic tightly. Now that you have\nconquered the Dimension of the Doomed,\nrealm of Earth Magic, you are ready to\ncomplete your task in the other three\nhaunted lands of Quake. Or are you? If\nyou don't register Quake, you'll never\nknow what awaits you in the Realm of\nBlack Magic, the Netherworld, and the\nElder World!"
-local finale_e1 = "As the corpse of the monstrous entity\nChthon sinks back into the lava whence\nit rose, you grip the Rune of Earth\nMagic tightly. Now that you have\nconquered the Dimension of the Doomed,\nrealm of Earth Magic, you are ready to\ncomplete your task. A Rune of magic\npower lies at the end of each haunted\nland of Quake. Go forth, seek the\ntotality of the four Runes!"
-local finale_e2 = "The Rune of Black Magic throbs evilly in\nyour hand and whispers dark thoughts\ninto your brain. You learn the inmost\nlore of the Hell-Mother; Shub-Niggurath!\nYou now know that she is behind all the\nterrible plotting which has led to so\nmuch death and horror. But she is not\ninviolate! Armed with this Rune, you\nrealize that once all four Runes are\ncombined, the gate to Shub-Niggurath's\nPit will open, and you can face the\nWitch-Goddess herself in her frightful\notherworld cathedral."
-local finale_e3 = "The charred viscera of diabolic horrors\nbubble viscously as you seize the Rune\nof Hell Magic. Its heat scorches your\nhand, and its terrible secrets blight\nyour mind. Gathering the shreds of your\ncourage, you shake the devil's shackles\nfrom your soul, and become ever more\nhard and determined to destroy the\nhideous creatures whose mere existence\nthreatens the souls and psyches of all\nthe population of Earth."
-local finale_e4 = "Despite the awful might of the Elder\nWorld, you have achieved the Rune of\nElder Magic, capstone of all types of\narcane wisdom. Beyond good and evil,\nbeyond life and death, the Rune\npulsates, heavy with import. Patient and\npotent, the Elder Being Shub-Niggurath\nweaves her dire plans to clear off all\nlife from the Earth, and bring her own\nfoul offspring to our world! For all the\ndwellers in these nightmare dimensions\nare her descendants! Once all Runes of\nmagic power are united, the energy\nbehind them will blast open the Gateway\nto Shub-Niggurath, and you can travel\nthere to foil the Hell-Mother's plots\nin person."
-local finale_all = "Now, you have all four Runes. You sense\ntremendous invisible forces moving to\nunseal ancient barriers. Shub-Niggurath\nhad hoped to use the Runes Herself to\nclear off the Earth, but now instead,\nyou will use them to enter her home and\nconfront her as an avatar of avenging\nEarth-life. If you defeat her, you will\nbe remembered forever as the savior of\nthe planet. If she conquers, it will be\nas if you had never been born."
+local finale_e1_unregistered =
+"As the corpse of the monstrous entity\nChthon sinks back into the lava whence\nit rose, you grip the Rune of Earth\nMagic tightly. Now that you have\nconquered the Dimension of the Doomed,\nrealm of Earth Magic, you are ready to\ncomplete your task in the other three\nhaunted lands of Quake. Or are you? If\nyou don't register Quake, you'll never\nknow what awaits you in the Realm of\nBlack Magic, the Netherworld, and the\nElder World!"
+local finale_e1 =
+"As the corpse of the monstrous entity\nChthon sinks back into the lava whence\nit rose, you grip the Rune of Earth\nMagic tightly. Now that you have\nconquered the Dimension of the Doomed,\nrealm of Earth Magic, you are ready to\ncomplete your task. A Rune of magic\npower lies at the end of each haunted\nland of Quake. Go forth, seek the\ntotality of the four Runes!"
+local finale_e2 =
+"The Rune of Black Magic throbs evilly in\nyour hand and whispers dark thoughts\ninto your brain. You learn the inmost\nlore of the Hell-Mother; Shub-Niggurath!\nYou now know that she is behind all the\nterrible plotting which has led to so\nmuch death and horror. But she is not\ninviolate! Armed with this Rune, you\nrealize that once all four Runes are\ncombined, the gate to Shub-Niggurath's\nPit will open, and you can face the\nWitch-Goddess herself in her frightful\notherworld cathedral."
+local finale_e3 =
+"The charred viscera of diabolic horrors\nbubble viscously as you seize the Rune\nof Hell Magic. Its heat scorches your\nhand, and its terrible secrets blight\nyour mind. Gathering the shreds of your\ncourage, you shake the devil's shackles\nfrom your soul, and become ever more\nhard and determined to destroy the\nhideous creatures whose mere existence\nthreatens the souls and psyches of all\nthe population of Earth."
+local finale_e4 =
+"Despite the awful might of the Elder\nWorld, you have achieved the Rune of\nElder Magic, capstone of all types of\narcane wisdom. Beyond good and evil,\nbeyond life and death, the Rune\npulsates, heavy with import. Patient and\npotent, the Elder Being Shub-Niggurath\nweaves her dire plans to clear off all\nlife from the Earth, and bring her own\nfoul offspring to our world! For all the\ndwellers in these nightmare dimensions\nare her descendants! Once all Runes of\nmagic power are united, the energy\nbehind them will blast open the Gateway\nto Shub-Niggurath, and you can travel\nthere to foil the Hell-Mother's plots\nin person."
+local finale_all =
+"Now, you have all four Runes. You sense\ntremendous invisible forces moving to\nunseal ancient barriers. Shub-Niggurath\nhad hoped to use the Runes Herself to\nclear off the Earth, but now instead,\nyou will use them to enter her home and\nconfront her as an avatar of avenging\nEarth-life. If you defeat her, you will\nbe remembered forever as the savior of\nthe planet. If she conquers, it will be\nas if you had never been born."
 
 ---@return nil
 local function exit_intermission()
     -- skip any text in deathmatch
-    if g.deathmatch ~= 0 then goto_next_map(); return end
+    if g.deathmatch ~= 0 then
+        goto_next_map(); return
+    end
     g.intermission_exittime = quake.time() + 1
     g.intermission_running = g.intermission_running + 1
     -- run some text if at the end of an episode
@@ -166,10 +177,15 @@ local function exit_intermission()
         local text
         if quake.world.model == "maps/e1m7.bsp" then
             text = quake.cvar("registered") == 0 and finale_e1_unregistered or finale_e1
-        elseif quake.world.model == "maps/e2m6.bsp" then text = finale_e2
-        elseif quake.world.model == "maps/e3m6.bsp" then text = finale_e3
-        elseif quake.world.model == "maps/e4m7.bsp" then text = finale_e4
-        else goto_next_map(); return end
+        elseif quake.world.model == "maps/e2m6.bsp" then
+            text = finale_e2
+        elseif quake.world.model == "maps/e3m6.bsp" then
+            text = finale_e3
+        elseif quake.world.model == "maps/e4m7.bsp" then
+            text = finale_e4
+        else
+            goto_next_map(); return
+        end
         quake.write_byte(MSG_ALL, SVC_CDTRACK); quake.write_byte(MSG_ALL, 2); quake.write_byte(MSG_ALL, 3)
         quake.write_byte(MSG_ALL, SVC_FINALE); quake.write_string(MSG_ALL, text)
         return
@@ -203,8 +219,11 @@ end
 local execute_changelevel = quake.register_function("client.execute_changelevel", function(_self)
     g.intermission_running = 1
     -- enforce a wait time before allowing changelevel
-    if g.deathmatch ~= 0 then g.intermission_exittime = quake.time() + 5
-    else g.intermission_exittime = quake.time() + 2 end
+    if g.deathmatch ~= 0 then
+        g.intermission_exittime = quake.time() + 5
+    else
+        g.intermission_exittime = quake.time() + 2
+    end
     quake.write_byte(MSG_ALL, SVC_CDTRACK); quake.write_byte(MSG_ALL, 3); quake.write_byte(MSG_ALL, 3)
     local pos = find_intermission()
     local other = quake.find(quake.world, "classname", "player")
@@ -234,7 +253,9 @@ local changelevel_touch = quake.register_function("client.changelevel_touch", fu
         return
     end
     -- don't print the messages in singleplayer
-    if g.coop ~= 0 or g.deathmatch ~= 0 then quake.bprint(other.netname); quake.bprint(" exited the level\n") end
+    if g.coop ~= 0 or g.deathmatch ~= 0 then
+        quake.bprint(other.netname); quake.bprint(" exited the level\n")
+    end
     g.nextmap = self.map
     subs.use_targets(self, self)
     if (self.spawnflags & 1) ~= 0 and g.deathmatch == 0 then
@@ -330,7 +351,9 @@ local function select_spawn_point()
                     thing = thing.chain
                 end
                 -- use spot if no players at spawn point
-                if pcount == 0 then g.lastspawn = spot; return spot end
+                if pcount == 0 then
+                    g.lastspawn = spot; return spot
+                end
             end
         end
     end
@@ -437,21 +460,31 @@ RULES
 local function next_level()
     local o
     if g.mapname == "start" then
-        if quake.cvar("registered") == 0 then g.mapname = "e1m1"
-        elseif (g.serverflags & 1) == 0 then g.mapname = "e1m1"; g.serverflags = g.serverflags | 1
-        elseif (g.serverflags & 2) == 0 then g.mapname = "e2m1"; g.serverflags = g.serverflags | 2
-        elseif (g.serverflags & 4) == 0 then g.mapname = "e3m1"; g.serverflags = g.serverflags | 4
-        elseif (g.serverflags & 8) == 0 then g.mapname = "e4m1"; g.serverflags = g.serverflags - 7 end
+        if quake.cvar("registered") == 0 then
+            g.mapname = "e1m1"
+        elseif (g.serverflags & 1) == 0 then
+            g.mapname = "e1m1"; g.serverflags = g.serverflags | 1
+        elseif (g.serverflags & 2) == 0 then
+            g.mapname = "e2m1"; g.serverflags = g.serverflags | 2
+        elseif (g.serverflags & 4) == 0 then
+            g.mapname = "e3m1"; g.serverflags = g.serverflags | 4
+        elseif (g.serverflags & 8) == 0 then
+            g.mapname = "e4m1"; g.serverflags = g.serverflags - 7
+        end
         o = quake.spawn(); o.map = g.mapname
     else
         -- find a trigger changelevel
         o = quake.find(quake.world, "classname", "trigger_changelevel")
         -- go back to start if no trigger for the next level
-        if not o then g.mapname = "start"; o = quake.spawn(); o.map = g.mapname end
+        if not o then
+            g.mapname = "start"; o = quake.spawn(); o.map = g.mapname
+        end
     end
     g.nextmap = o.map
     g.gameover = 1
-    if o.nextthink < quake.time() then o.think = execute_changelevel; o.nextthink = quake.time() + 0.1 end
+    if o.nextthink < quake.time() then
+        o.think = execute_changelevel; o.nextthink = quake.time() + 0.1
+    end
 end
 
 ---Exit deathmatch games upon conditions
@@ -461,8 +494,12 @@ local function check_rules(self)
     if g.gameover ~= 0 then return end -- someone else quit the game already
     local timelimit = quake.cvar("timelimit") * 60
     local fraglimit = quake.cvar("fraglimit")
-    if timelimit ~= 0 and quake.time() >= timelimit then next_level(); return end
-    if fraglimit ~= 0 and self.frags >= fraglimit then next_level(); return end
+    if timelimit ~= 0 and quake.time() >= timelimit then
+        next_level(); return
+    end
+    if fraglimit ~= 0 and self.frags >= fraglimit then
+        next_level(); return
+    end
 end
 
 --============================================================================
@@ -471,8 +508,11 @@ end
 local function player_death_think(self)
     if (self.flags & FL_ONGROUND) ~= 0 then
         local forward = self.velocity:length() - 20
-        if forward <= 0 then self.velocity = quake.vec3(0, 0, 0)
-        else self.velocity = self.velocity:normalized() * forward end
+        if forward <= 0 then
+            self.velocity = quake.vec3(0, 0, 0)
+        else
+            self.velocity = self.velocity:normalized() * forward
+        end
     end
     -- wait for all buttons released
     if self.deadflag == DEAD_DEAD then
@@ -491,14 +531,21 @@ end
 local function player_jump(self)
     if (self.flags & FL_WATERJUMP) ~= 0 then return end
     if self.waterlevel >= 2 then
-        if self.watertype == CONTENT_WATER then self.velocity = quake.vec3(self.velocity.x, self.velocity.y, 100)
-        elseif self.watertype == CONTENT_SLIME then self.velocity = quake.vec3(self.velocity.x, self.velocity.y, 80)
-        else self.velocity = quake.vec3(self.velocity.x, self.velocity.y, 50) end
+        if self.watertype == CONTENT_WATER then
+            self.velocity = quake.vec3(self.velocity.x, self.velocity.y, 100)
+        elseif self.watertype == CONTENT_SLIME then
+            self.velocity = quake.vec3(self.velocity.x, self.velocity.y, 80)
+        else
+            self.velocity = quake.vec3(self.velocity.x, self.velocity.y, 50)
+        end
         -- play swimming sound
         if self.swim_flag < quake.time() then
             self.swim_flag = quake.time() + 1
-            if quake.random() < 0.5 then quake.sound(self, CHAN_BODY, "misc/water1.wav", 1, ATTN_NORM)
-            else quake.sound(self, CHAN_BODY, "misc/water2.wav", 1, ATTN_NORM) end
+            if quake.random() < 0.5 then
+                quake.sound(self, CHAN_BODY, "misc/water1.wav", 1, ATTN_NORM)
+            else
+                quake.sound(self, CHAN_BODY, "misc/water2.wav", 1, ATTN_NORM)
+            end
         end
         return
     end
@@ -518,8 +565,11 @@ local function water_move(self)
     if self.movetype == MOVETYPE_NOCLIP then return end
     if self.health < 0 then return end
     if self.waterlevel ~= 3 then
-        if self.air_finished < quake.time() then quake.sound(self, CHAN_VOICE, "player/gasp2.wav", 1, ATTN_NORM)
-        elseif self.air_finished < quake.time() + 9 then quake.sound(self, CHAN_VOICE, "player/gasp1.wav", 1, ATTN_NORM) end
+        if self.air_finished < quake.time() then
+            quake.sound(self, CHAN_VOICE, "player/gasp2.wav", 1, ATTN_NORM)
+        elseif self.air_finished < quake.time() + 9 then
+            quake.sound(self, CHAN_VOICE, "player/gasp1.wav", 1, ATTN_NORM)
+        end
         self.air_finished = quake.time() + 12
         self.dmg = 2
     elseif self.air_finished < quake.time() then
@@ -542,8 +592,11 @@ local function water_move(self)
     if self.watertype == CONTENT_LAVA then
         -- do damage
         if self.dmgtime < quake.time() then
-            if self.radsuit_finished > quake.time() then self.dmgtime = quake.time() + 1
-            else self.dmgtime = quake.time() + 0.2 end
+            if self.radsuit_finished > quake.time() then
+                self.dmgtime = quake.time() + 1
+            else
+                self.dmgtime = quake.time() + 0.2
+            end
             combat.damage(self, quake.world, quake.world, 10 * self.waterlevel)
         end
     elseif self.watertype == CONTENT_SLIME then
@@ -561,7 +614,10 @@ local function water_move(self)
         self.flags = self.flags + FL_INWATER
         self.dmgtime = 0
     end
-    if (self.flags & FL_WATERJUMP) == 0 then self.velocity = self.velocity - self.velocity * (0.8 * self.waterlevel * g.frametime) end
+    if (self.flags & FL_WATERJUMP) == 0 then
+        self.velocity = self.velocity -
+            self.velocity * (0.8 * self.waterlevel * g.frametime)
+    end
 end
 
 ---@param self entity
@@ -606,7 +662,9 @@ M.player_pre_think = quake.register_function("client.player_pre_think", function
     check_rules(self)
     water_move(self)
     if self.waterlevel == 2 then check_water_jump(self) end
-    if self.deadflag >= DEAD_DEAD then player_death_think(self); return end
+    if self.deadflag >= DEAD_DEAD then
+        player_death_think(self); return
+    end
     -- dying, so do nothing
     if self.deadflag == DEAD_DYING then return end
     if self.button2 ~= 0 then player_jump(self) else self.flags = self.flags | FL_JUMPRELEASED end
@@ -641,8 +699,13 @@ local function check_powerups(self)
             self.invisible_sound = quake.time() + quake.random() * 3 + 1
         end
         if self.invisible_finished < quake.time() + 3 then
-            if self.invisible_time == 1 then flash(self, "Ring of Shadows magic is fading\n", "items/inv2.wav"); self.invisible_time = quake.time() + 1 end
-            if self.invisible_time < quake.time() then self.invisible_time = quake.time() + 1; quake.stuff_cmd(self, "bf\n") end
+            if self.invisible_time == 1 then
+                flash(self, "Ring of Shadows magic is fading\n", "items/inv2.wav"); self.invisible_time = quake.time() +
+                    1
+            end
+            if self.invisible_time < quake.time() then
+                self.invisible_time = quake.time() + 1; quake.stuff_cmd(self, "bf\n")
+            end
         end
         if self.invisible_finished < quake.time() then
             -- just stopped
@@ -660,31 +723,46 @@ local function check_powerups(self)
     if self.invincible_finished ~= 0 then
         -- sound and screen flash when items starts to run out
         if self.invincible_finished < quake.time() + 3 then
-            if self.invincible_time == 1 then flash(self, "Protection is almost burned out\n", "items/protect2.wav"); self.invincible_time = quake.time() + 1 end
-            if self.invincible_time < quake.time() then self.invincible_time = quake.time() + 1; quake.stuff_cmd(self, "bf\n") end
+            if self.invincible_time == 1 then
+                flash(self, "Protection is almost burned out\n", "items/protect2.wav"); self.invincible_time = quake
+                    .time() + 1
+            end
+            if self.invincible_time < quake.time() then
+                self.invincible_time = quake.time() + 1; quake.stuff_cmd(self, "bf\n")
+            end
         end
         if self.invincible_finished < quake.time() then
             -- just stopped
             self.items = self.items - IT_INVULNERABILITY
             self.invincible_time, self.invincible_finished = 0, 0
         end
-        if self.invincible_finished > quake.time() then self.effects = self.effects | EF_DIMLIGHT
-        else self.effects = self.effects - (self.effects & EF_DIMLIGHT) end
+        if self.invincible_finished > quake.time() then
+            self.effects = self.effects | EF_DIMLIGHT
+        else
+            self.effects = self.effects - (self.effects & EF_DIMLIGHT)
+        end
     end
     -- super damage
     if self.super_damage_finished ~= 0 then
         -- sound and screen flash when items starts to run out
         if self.super_damage_finished < quake.time() + 3 then
-            if self.super_time == 1 then flash(self, "Quad Damage is wearing off\n", "items/damage2.wav"); self.super_time = quake.time() + 1 end
-            if self.super_time < quake.time() then self.super_time = quake.time() + 1; quake.stuff_cmd(self, "bf\n") end
+            if self.super_time == 1 then
+                flash(self, "Quad Damage is wearing off\n", "items/damage2.wav"); self.super_time = quake.time() + 1
+            end
+            if self.super_time < quake.time() then
+                self.super_time = quake.time() + 1; quake.stuff_cmd(self, "bf\n")
+            end
         end
         if self.super_damage_finished < quake.time() then
             -- just stopped
             self.items = self.items - IT_QUAD
             self.super_damage_finished, self.super_time = 0, 0
         end
-        if self.super_damage_finished > quake.time() then self.effects = self.effects | EF_DIMLIGHT
-        else self.effects = self.effects - (self.effects & EF_DIMLIGHT) end
+        if self.super_damage_finished > quake.time() then
+            self.effects = self.effects | EF_DIMLIGHT
+        else
+            self.effects = self.effects - (self.effects & EF_DIMLIGHT)
+        end
     end
     -- suit
     if self.radsuit_finished ~= 0 then
@@ -692,8 +770,12 @@ local function check_powerups(self)
         self.air_finished = quake.time() + 12
         -- sound and screen flash when items starts to run out
         if self.radsuit_finished < quake.time() + 3 then
-            if self.rad_time == 1 then flash(self, "Air supply in Biosuit expiring\n", "items/suit2.wav"); self.rad_time = quake.time() + 1 end
-            if self.rad_time < quake.time() then self.rad_time = quake.time() + 1; quake.stuff_cmd(self, "bf\n") end
+            if self.rad_time == 1 then
+                flash(self, "Air supply in Biosuit expiring\n", "items/suit2.wav"); self.rad_time = quake.time() + 1
+            end
+            if self.rad_time < quake.time() then
+                self.rad_time = quake.time() + 1; quake.stuff_cmd(self, "bf\n")
+            end
         end
         if self.radsuit_finished < quake.time() then
             -- just stopped
@@ -714,12 +796,15 @@ M.player_post_think = quake.register_function("client.player_post_think", functi
     weapons.weapon_frame(self)
     -- check to see if player landed and play landing sound
     if self.jump_flag < -300 and (self.flags & FL_ONGROUND) ~= 0 and self.health > 0 then
-        if self.watertype == CONTENT_WATER then quake.sound(self, CHAN_BODY, "player/h2ojump.wav", 1, ATTN_NORM)
+        if self.watertype == CONTENT_WATER then
+            quake.sound(self, CHAN_BODY, "player/h2ojump.wav", 1, ATTN_NORM)
         elseif self.jump_flag < -650 then
             combat.damage(self, quake.world, quake.world, 5)
             quake.sound(self, CHAN_VOICE, "player/land2.wav", 1, ATTN_NORM)
             self.deathtype = "falling"
-        else quake.sound(self, CHAN_VOICE, "player/land.wav", 1, ATTN_NORM) end
+        else
+            quake.sound(self, CHAN_VOICE, "player/land.wav", 1, ATTN_NORM)
+        end
         self.jump_flag = 0
     end
     if (self.flags & FL_ONGROUND) == 0 then self.jump_flag = self.velocity.z end
@@ -743,7 +828,8 @@ M.client_disconnect = quake.register_function("client.client_disconnect", functi
     -- if the level end trigger has been activated, just return
     -- since they aren't *really* leaving
     -- let everyone else know
-    quake.bprint(self.netname); quake.bprint(" left the game with "); quake.bprint(tostring(self.frags)); quake.bprint(" frags\n")
+    quake.bprint(self.netname); quake.bprint(" left the game with "); quake.bprint(tostring(self.frags)); quake.bprint(
+        " frags\n")
     quake.sound(self, CHAN_BODY, "player/tornoff2.wav", 1, ATTN_NONE)
     player.set_suicide_frame(self)
 end)
@@ -757,7 +843,8 @@ function M.client_obituary(targ, attacker)
     local deathstring, deathstring2 = "", ""
     if targ.classname == "player" then
         if attacker.classname == "teledeath" then
-            quake.bprint(targ.netname); quake.bprint(" was telefragged by "); quake.bprint(attacker.owner.netname); quake.bprint("\n")
+            quake.bprint(targ.netname); quake.bprint(" was telefragged by "); quake.bprint(attacker.owner.netname); quake
+                .bprint("\n")
             attacker.owner.frags = attacker.owner.frags + 1
             return
         end
@@ -771,15 +858,25 @@ function M.client_obituary(targ, attacker)
                 -- killed self
                 attacker.frags = attacker.frags - 1
                 quake.bprint(targ.netname)
-                if targ.weapon == IT_LIGHTNING and targ.waterlevel > 1 then quake.bprint(" discharges into the water.\n"); return end
-                if targ.weapon == IT_GRENADE_LAUNCHER then quake.bprint(" tries to put the pin back in\n")
-                else quake.bprint(" becomes bored with life\n") end
+                if targ.weapon == IT_LIGHTNING and targ.waterlevel > 1 then
+                    quake.bprint(" discharges into the water.\n"); return
+                end
+                if targ.weapon == IT_GRENADE_LAUNCHER then
+                    quake.bprint(" tries to put the pin back in\n")
+                else
+                    quake.bprint(" becomes bored with life\n")
+                end
                 return
             elseif g.teamplay == 2 and targ.team > 0 and targ.team == attacker.team then
-                if rnum < 0.25 then deathstring = " mows down a teammate\n"
-                elseif rnum < 0.50 then deathstring = " checks his glasses\n"
-                elseif rnum < 0.75 then deathstring = " gets a frag for the other team\n"
-                else deathstring = " loses another friend\n" end
+                if rnum < 0.25 then
+                    deathstring = " mows down a teammate\n"
+                elseif rnum < 0.50 then
+                    deathstring = " checks his glasses\n"
+                elseif rnum < 0.75 then
+                    deathstring = " gets a frag for the other team\n"
+                else
+                    deathstring = " loses another friend\n"
+                end
                 quake.bprint(attacker.netname); quake.bprint(deathstring)
                 attacker.frags = attacker.frags - 1
                 return
@@ -803,7 +900,8 @@ function M.client_obituary(targ, attacker)
                     deathstring = " accepts "
                     if attacker.waterlevel > 1 then deathstring2 = "'s discharge\n" else deathstring2 = "'s shaft\n" end
                 end
-                quake.bprint(targ.netname); quake.bprint(deathstring); quake.bprint(attacker.netname); quake.bprint(deathstring2)
+                quake.bprint(targ.netname); quake.bprint(deathstring); quake.bprint(attacker.netname); quake.bprint(
+                    deathstring2)
             end
             return
         else
@@ -827,24 +925,53 @@ function M.client_obituary(targ, attacker)
                 if attacker.classname == "monster_zombie" then quake.bprint(" joins the Zombies\n") end
                 return
             end
-            if attacker.classname == "explo_box" then quake.bprint(" blew up\n"); return end
-            if attacker.solid == SOLID_BSP and attacker ~= quake.world then quake.bprint(" was squished\n"); return end
-            if attacker.classname == "trap_shooter" or attacker.classname == "trap_spikeshooter" then quake.bprint(" was spiked\n"); return end
-            if attacker.classname == "fireball" then quake.bprint(" ate a lavaball\n"); return end
-            if attacker.classname == "trigger_changelevel" then quake.bprint(" tried to leave\n"); return end
+            if attacker.classname == "explo_box" then
+                quake.bprint(" blew up\n"); return
+            end
+            if attacker.solid == SOLID_BSP and attacker ~= quake.world then
+                quake.bprint(" was squished\n"); return
+            end
+            if attacker.classname == "trap_shooter" or attacker.classname == "trap_spikeshooter" then
+                quake.bprint(" was spiked\n"); return
+            end
+            if attacker.classname == "fireball" then
+                quake.bprint(" ate a lavaball\n"); return
+            end
+            if attacker.classname == "trigger_changelevel" then
+                quake.bprint(" tried to leave\n"); return
+            end
             rnum = targ.watertype
             if rnum == -3 then
-                if quake.random() < 0.5 then quake.bprint(" sleeps with the fishes\n") else quake.bprint(" sucks it down\n") end
+                if quake.random() < 0.5 then
+                    quake.bprint(" sleeps with the fishes\n")
+                else
+                    quake.bprint(
+                        " sucks it down\n")
+                end
                 return
             elseif rnum == -4 then
-                if quake.random() < 0.5 then quake.bprint(" gulped a load of slime\n") else quake.bprint(" can't exist on slime alone\n") end
+                if quake.random() < 0.5 then
+                    quake.bprint(" gulped a load of slime\n")
+                else
+                    quake.bprint(
+                        " can't exist on slime alone\n")
+                end
                 return
             elseif rnum == -5 then
-                if targ.health < -15 then quake.bprint(" burst into flames\n"); return end
-                if quake.random() < 0.5 then quake.bprint(" turned into hot slag\n") else quake.bprint(" visits the Volcano God\n") end
+                if targ.health < -15 then
+                    quake.bprint(" burst into flames\n"); return
+                end
+                if quake.random() < 0.5 then
+                    quake.bprint(" turned into hot slag\n")
+                else
+                    quake.bprint(
+                        " visits the Volcano God\n")
+                end
                 return
             end
-            if targ.deathtype == "falling" then targ.deathtype = ""; quake.bprint(" fell to his death\n"); return end
+            if targ.deathtype == "falling" then
+                targ.deathtype = ""; quake.bprint(" fell to his death\n"); return
+            end
             quake.bprint(" died\n")
         end
     end

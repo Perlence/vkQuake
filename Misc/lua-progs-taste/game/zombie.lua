@@ -32,51 +32,51 @@ local count = animation.counter()
 local f = {}
 
 f.stand1, f.stand2, f.stand3, f.stand4, f.stand5, f.stand6,
-    f.stand7, f.stand8, f.stand9, f.stand10, f.stand11, f.stand12,
-    f.stand13, f.stand14, f.stand15 = count(15)
+f.stand7, f.stand8, f.stand9, f.stand10, f.stand11, f.stand12,
+f.stand13, f.stand14, f.stand15 = count(15)
 
 f.walk1, f.walk2, f.walk3, f.walk4, f.walk5, f.walk6,
-    f.walk7, f.walk8, f.walk9, f.walk10, f.walk11, f.walk12,
-    f.walk13, f.walk14, f.walk15, f.walk16, f.walk17, f.walk18,
-    f.walk19 = count(19)
+f.walk7, f.walk8, f.walk9, f.walk10, f.walk11, f.walk12,
+f.walk13, f.walk14, f.walk15, f.walk16, f.walk17, f.walk18,
+f.walk19 = count(19)
 
 f.run1, f.run2, f.run3, f.run4, f.run5, f.run6,
-    f.run7, f.run8, f.run9, f.run10, f.run11, f.run12,
-    f.run13, f.run14, f.run15, f.run16, f.run17, f.run18 = count(18)
+f.run7, f.run8, f.run9, f.run10, f.run11, f.run12,
+f.run13, f.run14, f.run15, f.run16, f.run17, f.run18 = count(18)
 
 f.atta1, f.atta2, f.atta3, f.atta4, f.atta5, f.atta6,
-    f.atta7, f.atta8, f.atta9, f.atta10, f.atta11, f.atta12,
-    f.atta13 = count(13)
+f.atta7, f.atta8, f.atta9, f.atta10, f.atta11, f.atta12,
+f.atta13 = count(13)
 
 f.attb1, f.attb2, f.attb3, f.attb4, f.attb5, f.attb6,
-    f.attb7, f.attb8, f.attb9, f.attb10, f.attb11, f.attb12,
-    f.attb13, f.attb14 = count(14)
+f.attb7, f.attb8, f.attb9, f.attb10, f.attb11, f.attb12,
+f.attb13, f.attb14 = count(14)
 
 f.attc1, f.attc2, f.attc3, f.attc4, f.attc5, f.attc6,
-    f.attc7, f.attc8, f.attc9, f.attc10, f.attc11, f.attc12 = count(12)
+f.attc7, f.attc8, f.attc9, f.attc10, f.attc11, f.attc12 = count(12)
 
 f.paina1, f.paina2, f.paina3, f.paina4, f.paina5, f.paina6,
-    f.paina7, f.paina8, f.paina9, f.paina10, f.paina11, f.paina12 = count(12)
+f.paina7, f.paina8, f.paina9, f.paina10, f.paina11, f.paina12 = count(12)
 
 f.painb1, f.painb2, f.painb3, f.painb4, f.painb5, f.painb6,
-    f.painb7, f.painb8, f.painb9, f.painb10, f.painb11, f.painb12,
-    f.painb13, f.painb14, f.painb15, f.painb16, f.painb17, f.painb18,
-    f.painb19, f.painb20, f.painb21, f.painb22, f.painb23, f.painb24,
-    f.painb25, f.painb26, f.painb27, f.painb28 = count(28)
+f.painb7, f.painb8, f.painb9, f.painb10, f.painb11, f.painb12,
+f.painb13, f.painb14, f.painb15, f.painb16, f.painb17, f.painb18,
+f.painb19, f.painb20, f.painb21, f.painb22, f.painb23, f.painb24,
+f.painb25, f.painb26, f.painb27, f.painb28 = count(28)
 
 f.painc1, f.painc2, f.painc3, f.painc4, f.painc5, f.painc6,
-    f.painc7, f.painc8, f.painc9, f.painc10, f.painc11, f.painc12,
-    f.painc13, f.painc14, f.painc15, f.painc16, f.painc17, f.painc18 = count(18)
+f.painc7, f.painc8, f.painc9, f.painc10, f.painc11, f.painc12,
+f.painc13, f.painc14, f.painc15, f.painc16, f.painc17, f.painc18 = count(18)
 
 f.paind1, f.paind2, f.paind3, f.paind4, f.paind5, f.paind6,
-    f.paind7, f.paind8, f.paind9, f.paind10, f.paind11, f.paind12,
-    f.paind13 = count(13)
+f.paind7, f.paind8, f.paind9, f.paind10, f.paind11, f.paind12,
+f.paind13 = count(13)
 
 f.paine1, f.paine2, f.paine3, f.paine4, f.paine5, f.paine6,
-    f.paine7, f.paine8, f.paine9, f.paine10, f.paine11, f.paine12,
-    f.paine13, f.paine14, f.paine15, f.paine16, f.paine17, f.paine18,
-    f.paine19, f.paine20, f.paine21, f.paine22, f.paine23, f.paine24,
-    f.paine25, f.paine26, f.paine27, f.paine28, f.paine29, f.paine30 = count(30)
+f.paine7, f.paine8, f.paine9, f.paine10, f.paine11, f.paine12,
+f.paine13, f.paine14, f.paine15, f.paine16, f.paine17, f.paine18,
+f.paine19, f.paine20, f.paine21, f.paine22, f.paine23, f.paine24,
+f.paine25, f.paine26, f.paine27, f.paine28, f.paine29, f.paine30 = count(30)
 
 f.cruc_1, f.cruc_2, f.cruc_3, f.cruc_4, f.cruc_5, f.cruc_6 = count(6)
 
@@ -111,7 +111,12 @@ local zombie_stand = animation.loop("zombie.zombie_stand", {
 })
 
 local zombie_cruc = animation.loop("zombie.zombie_cruc", {
-    { f.cruc_1, function(self) if quake.random() < 0.1 then quake.sound(self, C.CHAN_VOICE, "zombie/idle_w2.wav", 1, C.ATTN_STATIC) end end },
+    { f.cruc_1, function(self)
+        if quake.random() < 0.1 then
+            quake.sound(self, C.CHAN_VOICE, "zombie/idle_w2.wav", 1,
+                C.ATTN_STATIC)
+        end
+    end },
     { f.cruc_2, function(self) self.nextthink = quake.time() + 0.1 + quake.random() * 0.1 end },
     { f.cruc_3, function(self) self.nextthink = quake.time() + 0.1 + quake.random() * 0.1 end },
     { f.cruc_4, function(self) self.nextthink = quake.time() + 0.1 + quake.random() * 0.1 end },
@@ -138,11 +143,18 @@ local zombie_walk = animation.loop("zombie.zombie_walk", {
     { f.walk16, function(self) ai.walk(self, 0) end },
     { f.walk17, function(self) ai.walk(self, 0) end },
     { f.walk18, function(self) ai.walk(self, 0) end },
-    { f.walk19, function(self) ai.walk(self, 0); if quake.random() < 0.2 then quake.sound(self, C.CHAN_VOICE, "zombie/z_idle.wav", 1, C.ATTN_IDLE) end end },
+    { f.walk19, function(self)
+        ai.walk(self, 0); if quake.random() < 0.2 then
+            quake.sound(self, C.CHAN_VOICE, "zombie/z_idle.wav", 1,
+                C.ATTN_IDLE)
+        end
+    end },
 })
 
 local zombie_run = animation.loop("zombie.zombie_run", {
-    { f.run1, function(self) ai.run(self, 1); self.inpain = 0 end },
+    { f.run1, function(self)
+        ai.run(self, 1); self.inpain = 0
+    end },
     { f.run2, function(self) ai.run(self, 1) end },
     { f.run3, function(self) ai.run(self, 0) end },
     { f.run4, function(self) ai.run(self, 1) end },
@@ -159,7 +171,15 @@ local zombie_run = animation.loop("zombie.zombie_run", {
     { f.run15, function(self) ai.run(self, 6) end },
     { f.run16, function(self) ai.run(self, 7) end },
     { f.run17, function(self) ai.run(self, 3) end },
-    { f.run18, function(self) ai.run(self, 8); if quake.random() < 0.2 then quake.sound(self, C.CHAN_VOICE, "zombie/z_idle.wav", 1, C.ATTN_IDLE) end; if quake.random() > 0.8 then quake.sound(self, C.CHAN_VOICE, "zombie/z_idle1.wav", 1, C.ATTN_IDLE) end end },
+    { f.run18, function(self)
+        ai.run(self, 8); if quake.random() < 0.2 then
+            quake.sound(self, C.CHAN_VOICE, "zombie/z_idle.wav", 1, C
+                .ATTN_IDLE)
+        end; if quake.random() > 0.8 then
+            quake.sound(self, C.CHAN_VOICE, "zombie/z_idle1.wav", 1,
+                C.ATTN_IDLE)
+        end
+    end },
 })
 
 --[[
@@ -228,7 +248,9 @@ local zombie_atta = animation.sequence("zombie.zombie_atta", {
     { f.atta10, function(self) fight.face(self) end },
     { f.atta11, function(self) fight.face(self) end },
     { f.atta12, function(self) fight.face(self) end },
-    { f.atta13, function(self) fight.face(self); zombie_fire_grenade(self, quake.vec3(-10, -22, 30)) end },
+    { f.atta13, function(self)
+        fight.face(self); zombie_fire_grenade(self, quake.vec3(-10, -22, 30))
+    end },
 }, function() return zombie_run end)
 
 local zombie_attb = animation.sequence("zombie.zombie_attb", {
@@ -245,7 +267,9 @@ local zombie_attb = animation.sequence("zombie.zombie_attb", {
     { f.attb11, function(self) fight.face(self) end },
     { f.attb12, function(self) fight.face(self) end },
     { f.attb13, function(self) fight.face(self) end },
-    { f.attb13, function(self) fight.face(self); zombie_fire_grenade(self, quake.vec3(-10, -24, 29)) end },
+    { f.attb13, function(self)
+        fight.face(self); zombie_fire_grenade(self, quake.vec3(-10, -24, 29))
+    end },
 }, function() return zombie_run end)
 
 local zombie_attc = animation.sequence("zombie.zombie_attc", {
@@ -260,16 +284,22 @@ local zombie_attc = animation.sequence("zombie.zombie_attc", {
     { f.attc9, function(self) fight.face(self) end },
     { f.attc10, function(self) fight.face(self) end },
     { f.attc11, function(self) fight.face(self) end },
-    { f.attc12, function(self) fight.face(self); zombie_fire_grenade(self, quake.vec3(-12, -19, 29)) end },
+    { f.attc12, function(self)
+        fight.face(self); zombie_fire_grenade(self, quake.vec3(-12, -19, 29))
+    end },
 }, function() return zombie_run end)
 
 ---@param self entity
 ---@return nil
 local zombie_missile = quake.register_function("zombie.zombie_missile", function(self)
     local r = quake.random()
-    if r < 0.3 then zombie_atta(self)
-    elseif r < 0.6 then zombie_attb(self)
-    else zombie_attc(self) end
+    if r < 0.3 then
+        zombie_atta(self)
+    elseif r < 0.6 then
+        zombie_attb(self)
+    else
+        zombie_attc(self)
+    end
 end)
 
 --[[
@@ -408,7 +438,9 @@ zombie_paine_recover = animation.sequence("zombie.zombie_paine_recover", {
         self.health = 60
         quake.sound(self, C.CHAN_VOICE, "zombie/z_idle.wav", 1, C.ATTN_IDLE)
         self.solid = C.SOLID_SLIDEBOX
-        if not quake.walk_move(self, 0, 0) then self.think = zombie_paine_recover; self.solid = C.SOLID_NOT; return end
+        if not quake.walk_move(self, 0, 0) then
+            self.think = zombie_paine_recover; self.solid = C.SOLID_NOT; return
+        end
     end },
     { f.paine13 },
     { f.paine14 },
@@ -471,7 +503,9 @@ local zombie_pain = quake.register_function("zombie.zombie_pain", function(self,
     if take < 9 then return end -- totally ignore
     if self.inpain == 2 then return end -- down on ground, so don't reset any counters
     -- go down immediately if a big enough hit
-    if take >= 25 then self.inpain = 2; zombie_paine(self); return end
+    if take >= 25 then
+        self.inpain = 2; zombie_paine(self); return
+    end
     if self.inpain ~= 0 then
         -- if hit again in next gre seconds while not in pain frames, definitely drop
         self.pain_finished = quake.time() + 3
@@ -487,10 +521,15 @@ local zombie_pain = quake.register_function("zombie.zombie_pain", function(self,
     -- gp into one of the fast pain animations
     self.inpain = 1
     local r = quake.random()
-    if r < 0.25 then zombie_paina(self)
-    elseif r < 0.5 then zombie_painb(self)
-    elseif r < 0.75 then zombie_painc(self)
-    else zombie_paind(self) end
+    if r < 0.25 then
+        zombie_paina(self)
+    elseif r < 0.5 then
+        zombie_painb(self)
+    elseif r < 0.75 then
+        zombie_painc(self)
+    else
+        zombie_paind(self)
+    end
 end)
 
 --============================================================================
@@ -501,7 +540,9 @@ end)
 ---@param self entity
 ---@return nil
 local function spawn(self)
-    if quake.cvar("deathmatch") ~= 0 then quake.remove(self); return end
+    if quake.cvar("deathmatch") ~= 0 then
+        quake.remove(self); return
+    end
     quake.precache_model("progs/zombie.mdl")
     quake.precache_model("progs/h_zombie.mdl")
     quake.precache_model("progs/zom_gib.mdl")

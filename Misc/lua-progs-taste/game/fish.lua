@@ -32,20 +32,20 @@ local count = animation.counter()
 local f = {}
 
 f.attack1, f.attack2, f.attack3, f.attack4, f.attack5, f.attack6,
-    f.attack7, f.attack8, f.attack9, f.attack10, f.attack11, f.attack12,
-    f.attack13, f.attack14, f.attack15, f.attack16, f.attack17, f.attack18 = count(18)
+f.attack7, f.attack8, f.attack9, f.attack10, f.attack11, f.attack12,
+f.attack13, f.attack14, f.attack15, f.attack16, f.attack17, f.attack18 = count(18)
 
 f.death1, f.death2, f.death3, f.death4, f.death5, f.death6,
-    f.death7, f.death8, f.death9, f.death10, f.death11, f.death12,
-    f.death13, f.death14, f.death15, f.death16, f.death17, f.death18,
-    f.death19, f.death20, f.death21 = count(21)
+f.death7, f.death8, f.death9, f.death10, f.death11, f.death12,
+f.death13, f.death14, f.death15, f.death16, f.death17, f.death18,
+f.death19, f.death20, f.death21 = count(21)
 
 f.swim1, f.swim2, f.swim3, f.swim4, f.swim5, f.swim6,
-    f.swim7, f.swim8, f.swim9, f.swim10, f.swim11, f.swim12,
-    f.swim13, f.swim14, f.swim15, f.swim16, f.swim17, f.swim18 = count(18)
+f.swim7, f.swim8, f.swim9, f.swim10, f.swim11, f.swim12,
+f.swim13, f.swim14, f.swim15, f.swim16, f.swim17, f.swim18 = count(18)
 
 f.pain1, f.pain2, f.pain3, f.pain4, f.pain5, f.pain6,
-    f.pain7, f.pain8, f.pain9 = count(9)
+f.pain7, f.pain8, f.pain9 = count(9)
 
 --[[
 ==============================================================================

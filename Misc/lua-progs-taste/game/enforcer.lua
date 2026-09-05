@@ -37,36 +37,36 @@ local count = animation.counter()
 local f = {}
 
 f.stand1, f.stand2, f.stand3, f.stand4, f.stand5, f.stand6,
-    f.stand7 = count(7)
+f.stand7 = count(7)
 
 f.walk1, f.walk2, f.walk3, f.walk4, f.walk5, f.walk6,
-    f.walk7, f.walk8, f.walk9, f.walk10, f.walk11, f.walk12,
-    f.walk13, f.walk14, f.walk15, f.walk16 = count(16)
+f.walk7, f.walk8, f.walk9, f.walk10, f.walk11, f.walk12,
+f.walk13, f.walk14, f.walk15, f.walk16 = count(16)
 
 f.run1, f.run2, f.run3, f.run4, f.run5, f.run6,
-    f.run7, f.run8 = count(8)
+f.run7, f.run8 = count(8)
 
 f.attack1, f.attack2, f.attack3, f.attack4, f.attack5, f.attack6,
-    f.attack7, f.attack8, f.attack9, f.attack10 = count(10)
+f.attack7, f.attack8, f.attack9, f.attack10 = count(10)
 
 f.death1, f.death2, f.death3, f.death4, f.death5, f.death6,
-    f.death7, f.death8, f.death9, f.death10, f.death11, f.death12,
-    f.death13, f.death14 = count(14)
+f.death7, f.death8, f.death9, f.death10, f.death11, f.death12,
+f.death13, f.death14 = count(14)
 
 f.fdeath1, f.fdeath2, f.fdeath3, f.fdeath4, f.fdeath5, f.fdeath6,
-    f.fdeath7, f.fdeath8, f.fdeath9, f.fdeath10, f.fdeath11 = count(11)
+f.fdeath7, f.fdeath8, f.fdeath9, f.fdeath10, f.fdeath11 = count(11)
 
 f.paina1, f.paina2, f.paina3, f.paina4 = count(4)
 
 f.painb1, f.painb2, f.painb3, f.painb4, f.painb5 = count(5)
 
 f.painc1, f.painc2, f.painc3, f.painc4, f.painc5, f.painc6,
-    f.painc7, f.painc8 = count(8)
+f.painc7, f.painc8 = count(8)
 
 f.paind1, f.paind2, f.paind3, f.paind4, f.paind5, f.paind6,
-    f.paind7, f.paind8, f.paind9, f.paind10, f.paind11, f.paind12,
-    f.paind13, f.paind14, f.paind15, f.paind16, f.paind17, f.paind18,
-    f.paind19 = count(19)
+f.paind7, f.paind8, f.paind9, f.paind10, f.paind11, f.paind12,
+f.paind13, f.paind14, f.paind15, f.paind16, f.paind17, f.paind18,
+f.paind19 = count(19)
 
 local ATTN_IDLE = 2
 local ATTN_STATIC = 3

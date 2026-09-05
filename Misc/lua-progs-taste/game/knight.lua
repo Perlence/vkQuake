@@ -32,35 +32,35 @@ local count = animation.counter()
 local f = {}
 
 f.stand1, f.stand2, f.stand3, f.stand4, f.stand5, f.stand6,
-    f.stand7, f.stand8, f.stand9 = count(9)
+f.stand7, f.stand8, f.stand9 = count(9)
 
 f.runb1, f.runb2, f.runb3, f.runb4, f.runb5, f.runb6,
-    f.runb7, f.runb8 = count(8)
+f.runb7, f.runb8 = count(8)
 
 f.runattack1, f.runattack2, f.runattack3, f.runattack4, f.runattack5, f.runattack6,
-    f.runattack7, f.runattack8, f.runattack9, f.runattack10, f.runattack11 = count(11)
+f.runattack7, f.runattack8, f.runattack9, f.runattack10, f.runattack11 = count(11)
 
 f.pain1, f.pain2, f.pain3 = count(3)
 
 f.painb1, f.painb2, f.painb3, f.painb4, f.painb5, f.painb6,
-    f.painb7, f.painb8, f.painb9, f.painb10, f.painb11 = count(11)
+f.painb7, f.painb8, f.painb9, f.painb10, f.painb11 = count(11)
 
 f.attackb1, f.attackb2, f.attackb3, f.attackb4, f.attackb5, f.attackb6,
-    f.attackb7, f.attackb8, f.attackb9, f.attackb10, f.attackb11 = count(11)
+f.attackb7, f.attackb8, f.attackb9, f.attackb10, f.attackb11 = count(11)
 
 f.walk1, f.walk2, f.walk3, f.walk4, f.walk5, f.walk6,
-    f.walk7, f.walk8, f.walk9, f.walk10, f.walk11, f.walk12,
-    f.walk13, f.walk14 = count(14)
+f.walk7, f.walk8, f.walk9, f.walk10, f.walk11, f.walk12,
+f.walk13, f.walk14 = count(14)
 
 f.kneel1, f.kneel2, f.kneel3, f.kneel4, f.kneel5 = count(5)
 
 f.standing2, f.standing3, f.standing4, f.standing5 = count(4)
 
 f.death1, f.death2, f.death3, f.death4, f.death5, f.death6,
-    f.death7, f.death8, f.death9, f.death10 = count(10)
+f.death7, f.death8, f.death9, f.death10 = count(10)
 
 f.deathb1, f.deathb2, f.deathb3, f.deathb4, f.deathb5, f.deathb6,
-    f.deathb7, f.deathb8, f.deathb9, f.deathb10, f.deathb11 = count(11)
+f.deathb7, f.deathb8, f.deathb9, f.deathb10, f.deathb11 = count(11)
 
 --[[
 ==============================================================================
@@ -83,7 +83,10 @@ local knight_stand = animation.loop("knight.knight_stand", {
 })
 
 local knight_walk = animation.loop("knight.knight_walk", {
-    { f.walk1, function(self) if quake.random() < 0.2 then quake.sound(self, C.CHAN_VOICE, "knight/idle.wav", 1, C.ATTN_IDLE) end; ai.walk(self, 3) end },
+    { f.walk1, function(self)
+        if quake.random() < 0.2 then quake.sound(self, C.CHAN_VOICE, "knight/idle.wav", 1, C.ATTN_IDLE) end; ai.walk(
+            self, 3)
+    end },
     { f.walk2, function(self) ai.walk(self, 2) end },
     { f.walk3, function(self) ai.walk(self, 3) end },
     { f.walk4, function(self) ai.walk(self, 4) end },
@@ -100,7 +103,10 @@ local knight_walk = animation.loop("knight.knight_walk", {
 })
 
 local knight_run = animation.loop("knight.knight_run", {
-    { f.runb1, function(self) if quake.random() < 0.2 then quake.sound(self, C.CHAN_VOICE, "knight/idle.wav", 1, C.ATTN_IDLE) end; ai.run(self, 16) end },
+    { f.runb1, function(self)
+        if quake.random() < 0.2 then quake.sound(self, C.CHAN_VOICE, "knight/idle.wav", 1, C.ATTN_IDLE) end; ai.run(self,
+            16)
+    end },
     { f.runb2, function(self) ai.run(self, 20) end },
     { f.runb3, function(self) ai.run(self, 13) end },
     { f.runb4, function(self) ai.run(self, 7) end },
@@ -111,7 +117,14 @@ local knight_run = animation.loop("knight.knight_run", {
 })
 
 local knight_runatk = animation.sequence("knight.knight_runatk", {
-    { f.runattack1, function(self) if quake.random() > 0.5 then quake.sound(self, C.CHAN_WEAPON, "knight/sword2.wav", 1, C.ATTN_NORM) else quake.sound(self, C.CHAN_WEAPON, "knight/sword1.wav", 1, C.ATTN_NORM) end; fight.charge(self, 20) end },
+    { f.runattack1, function(self)
+        if quake.random() > 0.5 then
+            quake.sound(self, C.CHAN_WEAPON, "knight/sword2.wav", 1, C.ATTN_NORM)
+        else
+            quake
+                .sound(self, C.CHAN_WEAPON, "knight/sword1.wav", 1, C.ATTN_NORM)
+        end; fight.charge(self, 20)
+    end },
     { f.runattack2, function(self) fight.charge_side(self) end },
     { f.runattack3, function(self) fight.charge_side(self) end },
     { f.runattack4, function(self) fight.charge_side(self) end },
@@ -125,14 +138,22 @@ local knight_runatk = animation.sequence("knight.knight_runatk", {
 }, function() return knight_run end)
 
 local knight_atk = animation.sequence("knight.knight_atk", {
-    { f.attackb1, function(self) quake.sound(self, C.CHAN_WEAPON, "knight/sword1.wav", 1, C.ATTN_NORM); fight.charge(self, 0) end },
+    { f.attackb1, function(self)
+        quake.sound(self, C.CHAN_WEAPON, "knight/sword1.wav", 1, C.ATTN_NORM); fight.charge(self, 0)
+    end },
     { f.attackb2, function(self) fight.charge(self, 7) end },
     { f.attackb3, function(self) fight.charge(self, 4) end },
     { f.attackb4, function(self) fight.charge(self, 0) end },
     { f.attackb5, function(self) fight.charge(self, 3) end },
-    { f.attackb6, function(self) fight.charge(self, 4); fight.melee(self) end },
-    { f.attackb7, function(self) fight.charge(self, 1); fight.melee(self) end },
-    { f.attackb8, function(self) fight.charge(self, 3); fight.melee(self) end },
+    { f.attackb6, function(self)
+        fight.charge(self, 4); fight.melee(self)
+    end },
+    { f.attackb7, function(self)
+        fight.charge(self, 1); fight.melee(self)
+    end },
+    { f.attackb8, function(self)
+        fight.charge(self, 3); fight.melee(self)
+    end },
     { f.attackb9, function(self) fight.charge(self, 1) end },
     { f.attackb10, function(self) fight.charge(self, 5) end },
 }, function() return knight_run end)
@@ -243,7 +264,9 @@ end)
 ---@param self entity
 ---@return nil
 local function spawn(self)
-    if quake.cvar("deathmatch") ~= 0 then quake.remove(self); return end
+    if quake.cvar("deathmatch") ~= 0 then
+        quake.remove(self); return
+    end
     quake.precache_model("progs/knight.mdl")
     quake.precache_model("progs/h_knight.mdl")
     quake.precache_sound("knight/kdeath.wav")

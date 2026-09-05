@@ -31,31 +31,31 @@ local count = animation.counter()
 local f = {}
 
 f.rise1, f.rise2, f.rise3, f.rise4, f.rise5, f.rise6,
-    f.rise7, f.rise8, f.rise9, f.rise10, f.rise11, f.rise12,
-    f.rise13, f.rise14, f.rise15, f.rise16, f.rise17 = count(17)
+f.rise7, f.rise8, f.rise9, f.rise10, f.rise11, f.rise12,
+f.rise13, f.rise14, f.rise15, f.rise16, f.rise17 = count(17)
 
 f.walk1, f.walk2, f.walk3, f.walk4, f.walk5, f.walk6,
-    f.walk7, f.walk8, f.walk9, f.walk10, f.walk11, f.walk12,
-    f.walk13, f.walk14, f.walk15, f.walk16, f.walk17, f.walk18,
-    f.walk19, f.walk20, f.walk21, f.walk22, f.walk23, f.walk24,
-    f.walk25, f.walk26, f.walk27, f.walk28, f.walk29, f.walk30,
-    f.walk31 = count(31)
+f.walk7, f.walk8, f.walk9, f.walk10, f.walk11, f.walk12,
+f.walk13, f.walk14, f.walk15, f.walk16, f.walk17, f.walk18,
+f.walk19, f.walk20, f.walk21, f.walk22, f.walk23, f.walk24,
+f.walk25, f.walk26, f.walk27, f.walk28, f.walk29, f.walk30,
+f.walk31 = count(31)
 
 f.death1, f.death2, f.death3, f.death4, f.death5, f.death6,
-    f.death7, f.death8, f.death9 = count(9)
+f.death7, f.death8, f.death9 = count(9)
 
 f.attack1, f.attack2, f.attack3, f.attack4, f.attack5, f.attack6,
-    f.attack7, f.attack8, f.attack9, f.attack10, f.attack11, f.attack12,
-    f.attack13, f.attack14, f.attack15, f.attack16, f.attack17, f.attack18,
-    f.attack19, f.attack20, f.attack21, f.attack22, f.attack23 = count(23)
+f.attack7, f.attack8, f.attack9, f.attack10, f.attack11, f.attack12,
+f.attack13, f.attack14, f.attack15, f.attack16, f.attack17, f.attack18,
+f.attack19, f.attack20, f.attack21, f.attack22, f.attack23 = count(23)
 
 f.shocka1, f.shocka2, f.shocka3, f.shocka4, f.shocka5, f.shocka6,
-    f.shocka7, f.shocka8, f.shocka9, f.shocka10 = count(10)
+f.shocka7, f.shocka8, f.shocka9, f.shocka10 = count(10)
 
 f.shockb1, f.shockb2, f.shockb3, f.shockb4, f.shockb5, f.shockb6 = count(6)
 
 f.shockc1, f.shockc2, f.shockc3, f.shockc4, f.shockc5, f.shockc6,
-    f.shockc7, f.shockc8, f.shockc9, f.shockc10 = count(10)
+f.shockc7, f.shockc8, f.shockc9, f.shockc10 = count(10)
 
 local CHAN_WEAPON = 1
 local CHAN_BODY = 4

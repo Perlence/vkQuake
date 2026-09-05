@@ -255,6 +255,7 @@ function M.soldier_check_attack(self, enemy_range)
 
     return false
 end
+
 --=============================================================================
 
 ---The player is in view, so decide to move or launch an attack

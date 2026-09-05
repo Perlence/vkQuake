@@ -34,31 +34,31 @@ local count = animation.counter()
 local f = {}
 
 f.attack1, f.attack2, f.attack3, f.attack4, f.attack5, f.attack6,
-    f.attack7, f.attack8 = count(8)
+f.attack7, f.attack8 = count(8)
 
 f.death1, f.death2, f.death3, f.death4, f.death5, f.death6,
-    f.death7, f.death8, f.death9 = count(9)
+f.death7, f.death8, f.death9 = count(9)
 
 f.deathb1, f.deathb2, f.deathb3, f.deathb4, f.deathb5, f.deathb6,
-    f.deathb7, f.deathb8, f.deathb9 = count(9)
+f.deathb7, f.deathb8, f.deathb9 = count(9)
 
 f.pain1, f.pain2, f.pain3, f.pain4, f.pain5, f.pain6 = count(6)
 
 f.painb1, f.painb2, f.painb3, f.painb4, f.painb5, f.painb6,
-    f.painb7, f.painb8, f.painb9, f.painb10, f.painb11, f.painb12,
-    f.painb13, f.painb14, f.painb15, f.painb16 = count(16)
+f.painb7, f.painb8, f.painb9, f.painb10, f.painb11, f.painb12,
+f.painb13, f.painb14, f.painb15, f.painb16 = count(16)
 
 f.run1, f.run2, f.run3, f.run4, f.run5, f.run6,
-    f.run7, f.run8, f.run9, f.run10, f.run11, f.run12 = count(12)
+f.run7, f.run8, f.run9, f.run10, f.run11, f.run12 = count(12)
 
 f.leap1, f.leap2, f.leap3, f.leap4, f.leap5, f.leap6,
-    f.leap7, f.leap8, f.leap9 = count(9)
+f.leap7, f.leap8, f.leap9 = count(9)
 
 f.stand1, f.stand2, f.stand3, f.stand4, f.stand5, f.stand6,
-    f.stand7, f.stand8, f.stand9 = count(9)
+f.stand7, f.stand8, f.stand9 = count(9)
 
 f.walk1, f.walk2, f.walk3, f.walk4, f.walk5, f.walk6,
-    f.walk7, f.walk8 = count(8)
+f.walk7, f.walk8 = count(8)
 
 --[[
 ==============================================================================

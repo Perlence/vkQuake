@@ -34,15 +34,15 @@ local count = animation.counter()
 local f = {}
 
 f.attack1, f.attack2, f.attack3, f.attack4, f.attack5, f.attack6,
-    f.attack7, f.attack8, f.attack9, f.attack10, f.attack11 = count(11)
+f.attack7, f.attack8, f.attack9, f.attack10, f.attack11 = count(11)
 
 f.pain1, f.pain2, f.pain3, f.pain4, f.pain5 = count(5)
 
 f.death1, f.death2, f.death3, f.death4, f.death5, f.death6,
-    f.death7 = count(7)
+f.death7 = count(7)
 
 f.walk1, f.walk2, f.walk3, f.walk4, f.walk5, f.walk6,
-    f.walk7, f.walk8, f.walk9, f.walk10, f.walk11, f.walk12 = count(12)
+f.walk7, f.walk8, f.walk9, f.walk10, f.walk11, f.walk12 = count(12)
 
 local ATTN_IDLE = 2
 local CHAN_WEAPON = 1

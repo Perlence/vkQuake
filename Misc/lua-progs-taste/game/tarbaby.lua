@@ -33,16 +33,16 @@ local count = animation.counter()
 local f = {}
 
 f.walk1, f.walk2, f.walk3, f.walk4, f.walk5, f.walk6,
-    f.walk7, f.walk8, f.walk9, f.walk10, f.walk11, f.walk12,
-    f.walk13, f.walk14, f.walk15, f.walk16, f.walk17, f.walk18,
-    f.walk19, f.walk20, f.walk21, f.walk22, f.walk23, f.walk24,
-    f.walk25 = count(25)
+f.walk7, f.walk8, f.walk9, f.walk10, f.walk11, f.walk12,
+f.walk13, f.walk14, f.walk15, f.walk16, f.walk17, f.walk18,
+f.walk19, f.walk20, f.walk21, f.walk22, f.walk23, f.walk24,
+f.walk25 = count(25)
 
 f.run1, f.run2, f.run3, f.run4, f.run5, f.run6,
-    f.run7, f.run8, f.run9, f.run10, f.run11, f.run12,
-    f.run13, f.run14, f.run15, f.run16, f.run17, f.run18,
-    f.run19, f.run20, f.run21, f.run22, f.run23, f.run24,
-    f.run25 = count(25)
+f.run7, f.run8, f.run9, f.run10, f.run11, f.run12,
+f.run13, f.run14, f.run15, f.run16, f.run17, f.run18,
+f.run19, f.run20, f.run21, f.run22, f.run23, f.run24,
+f.run25 = count(25)
 
 f.jump1, f.jump2, f.jump3, f.jump4, f.jump5, f.jump6 = count(6)
 

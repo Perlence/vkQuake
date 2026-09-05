@@ -34,21 +34,21 @@ local count = animation.counter()
 local f = {}
 
 f.hover1, f.hover2, f.hover3, f.hover4, f.hover5, f.hover6,
-    f.hover7, f.hover8, f.hover9, f.hover10, f.hover11, f.hover12,
-    f.hover13, f.hover14, f.hover15 = count(15)
+f.hover7, f.hover8, f.hover9, f.hover10, f.hover11, f.hover12,
+f.hover13, f.hover14, f.hover15 = count(15)
 
 f.fly1, f.fly2, f.fly3, f.fly4, f.fly5, f.fly6,
-    f.fly7, f.fly8, f.fly9, f.fly10, f.fly11, f.fly12,
-    f.fly13, f.fly14 = count(14)
+f.fly7, f.fly8, f.fly9, f.fly10, f.fly11, f.fly12,
+f.fly13, f.fly14 = count(14)
 
 f.magatt1, f.magatt2, f.magatt3, f.magatt4, f.magatt5, f.magatt6,
-    f.magatt7, f.magatt8, f.magatt9, f.magatt10, f.magatt11, f.magatt12,
-    f.magatt13 = count(13)
+f.magatt7, f.magatt8, f.magatt9, f.magatt10, f.magatt11, f.magatt12,
+f.magatt13 = count(13)
 
 f.pain1, f.pain2, f.pain3, f.pain4 = count(4)
 
 f.death1, f.death2, f.death3, f.death4, f.death5, f.death6,
-    f.death7, f.death8 = count(8)
+f.death7, f.death8 = count(8)
 
 --[[
 ==============================================================================
@@ -79,7 +79,9 @@ function M.check_attack(self)
     if quake.time() < self.attack_finished then return false end
     if not quake.globals.enemy_vis then return false end
     if enemy_range == C.RANGE_FAR then
-        if self.attack_state ~= C.AS_STRAIGHT then self.attack_state = C.AS_STRAIGHT; wiz_run(self) end
+        if self.attack_state ~= C.AS_STRAIGHT then
+            self.attack_state = C.AS_STRAIGHT; wiz_run(self)
+        end
         return false
     end
     local targ = assert(self.enemy, "monster has no enemy")
@@ -89,19 +91,32 @@ function M.check_attack(self)
     local trace = quake.trace_line(spot1, spot2, false, self)
     if trace.entity ~= targ then
         -- don't have a clear shot, so move to a side
-        if self.attack_state ~= C.AS_STRAIGHT then self.attack_state = C.AS_STRAIGHT; wiz_run(self) end
+        if self.attack_state ~= C.AS_STRAIGHT then
+            self.attack_state = C.AS_STRAIGHT; wiz_run(self)
+        end
         return false
     end
     local chance
-    if enemy_range == C.RANGE_MELEE then chance = 0.9
-    elseif enemy_range == C.RANGE_NEAR then chance = 0.6
-    elseif enemy_range == C.RANGE_MID then chance = 0.2
-    else chance = 0 end
-    if quake.random() < chance then self.attack_state = C.AS_MISSILE; return true end
-    if enemy_range == C.RANGE_MID then
-        if self.attack_state ~= C.AS_STRAIGHT then self.attack_state = C.AS_STRAIGHT; wiz_run(self) end
+    if enemy_range == C.RANGE_MELEE then
+        chance = 0.9
+    elseif enemy_range == C.RANGE_NEAR then
+        chance = 0.6
+    elseif enemy_range == C.RANGE_MID then
+        chance = 0.2
     else
-        if self.attack_state ~= C.AS_SLIDING then self.attack_state = C.AS_SLIDING; wiz_side(self) end
+        chance = 0
+    end
+    if quake.random() < chance then
+        self.attack_state = C.AS_MISSILE; return true
+    end
+    if enemy_range == C.RANGE_MID then
+        if self.attack_state ~= C.AS_STRAIGHT then
+            self.attack_state = C.AS_STRAIGHT; wiz_run(self)
+        end
+    else
+        if self.attack_state ~= C.AS_SLIDING then
+            self.attack_state = C.AS_SLIDING; wiz_side(self)
+        end
     end
     return false
 end
@@ -194,7 +209,9 @@ local wiz_stand = animation.loop("wizard.wiz_stand", {
 })
 
 local wiz_walk = animation.loop("wizard.wiz_walk", {
-    { f.hover1, function(self) ai.walk(self, 8); wiz_idle_sound(self) end },
+    { f.hover1, function(self)
+        ai.walk(self, 8); wiz_idle_sound(self)
+    end },
     { f.hover2, function(self) ai.walk(self, 8) end },
     { f.hover3, function(self) ai.walk(self, 8) end },
     { f.hover4, function(self) ai.walk(self, 8) end },
@@ -205,7 +222,9 @@ local wiz_walk = animation.loop("wizard.wiz_walk", {
 })
 
 wiz_side = animation.loop("wizard.wiz_side", {
-    { f.hover1, function(self) ai.run(self, 8); wiz_idle_sound(self) end },
+    { f.hover1, function(self)
+        ai.run(self, 8); wiz_idle_sound(self)
+    end },
     { f.hover2, function(self) ai.run(self, 8) end },
     { f.hover3, function(self) ai.run(self, 8) end },
     { f.hover4, function(self) ai.run(self, 8) end },
@@ -216,7 +235,9 @@ wiz_side = animation.loop("wizard.wiz_side", {
 })
 
 wiz_run = animation.loop("wizard.wiz_run", {
-    { f.fly1, function(self) ai.run(self, 16); wiz_idle_sound(self) end },
+    { f.fly1, function(self)
+        ai.run(self, 16); wiz_idle_sound(self)
+    end },
     { f.fly2, function(self) ai.run(self, 16) end },
     { f.fly3, function(self) ai.run(self, 16) end },
     { f.fly4, function(self) ai.run(self, 16) end },
@@ -233,7 +254,9 @@ wiz_run = animation.loop("wizard.wiz_run", {
 })
 
 local wiz_fast = animation.sequence("wizard.wiz_fast", {
-    { f.magatt1, function(self) fight.face(self); wiz_start_fast(self) end },
+    { f.magatt1, function(self)
+        fight.face(self); wiz_start_fast(self)
+    end },
     { f.magatt2, function(self) fight.face(self) end },
     { f.magatt3, function(self) fight.face(self) end },
     { f.magatt4, function(self) fight.face(self) end },
@@ -242,7 +265,9 @@ local wiz_fast = animation.sequence("wizard.wiz_fast", {
     { f.magatt5, function(self) fight.face(self) end },
     { f.magatt4, function(self) fight.face(self) end },
     { f.magatt3, function(self) fight.face(self) end },
-    { f.magatt2, function(self) fight.face(self); subs.attack_finished(self, 2); wizard_attack_finished(self) end },
+    { f.magatt2, function(self)
+        fight.face(self); subs.attack_finished(self, 2); wizard_attack_finished(self)
+    end },
 }, function() return wiz_run end)
 
 local wiz_pain = animation.sequence("wizard.wiz_pain", {
@@ -253,7 +278,11 @@ local wiz_pain = animation.sequence("wizard.wiz_pain", {
 }, function() return wiz_run end)
 
 local wiz_death = animation.hold("wizard.wiz_death", {
-    { f.death1, function(self) self.velocity = quake.vec3(-200 + 400 * quake.random(), -200 + 400 * quake.random(), 100 + 100 * quake.random()); self.flags = self.flags - (self.flags & C.FL_ONGROUND); quake.sound(self, C.CHAN_VOICE, "wizard/wdeath.wav", 1, C.ATTN_NORM) end },
+    { f.death1, function(self)
+        self.velocity = quake.vec3(-200 + 400 * quake.random(), -200 + 400 * quake.random(), 100 + 100 * quake.random()); self.flags =
+            self.flags - (self.flags & C.FL_ONGROUND); quake.sound(self, C.CHAN_VOICE, "wizard/wdeath.wav", 1,
+            C.ATTN_NORM)
+    end },
     { f.death2 },
     { f.death3, function(self) self.solid = C.SOLID_NOT end },
     { f.death4 },
@@ -296,7 +325,9 @@ local wiz_missile = quake.register_function("wizard.wiz_missile", function(self)
 ---@param self entity
 ---@return nil
 local function spawn(self)
-    if quake.cvar("deathmatch") ~= 0 then quake.remove(self); return end
+    if quake.cvar("deathmatch") ~= 0 then
+        quake.remove(self); return
+    end
     quake.precache_model("progs/wizard.mdl")
     quake.precache_model("progs/h_wizard.mdl")
     quake.precache_model("progs/w_spike.mdl")
