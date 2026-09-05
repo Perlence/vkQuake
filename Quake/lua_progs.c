@@ -518,24 +518,23 @@ static void LP_SetValue (lua_State *L, int index, int type, eval_t *value, qbool
 		break;
 	case ev_function:
 		if (lua_isnil (L, index))
-			value->function = 0;
-		else
 		{
-			luaL_checktype (L, index, LUA_TFUNCTION);
-			if (lua_iscfunction (L, index) && lua_tocfunction (L, index) == LP_CallQC)
-			{
-				lua_getupvalue (L, index, 1);
-				value->function = lua_tointeger (L, -1);
-				lua_pop (L, 1);
-			}
-			else
-			{
-				const func_t function = LP_GetRegisteredFunctionRef (L, index);
-				if (!function)
-					luaL_error (L, "cannot store an unregistered Lua function");
-				value->function = function;
-			}
+			value->function = 0;
+			break;
 		}
+
+		luaL_checktype (L, index, LUA_TFUNCTION);
+		if (lua_iscfunction (L, index) && lua_tocfunction (L, index) == LP_CallQC)
+		{
+			lua_getupvalue (L, index, 1);
+			value->function = lua_tointeger (L, -1);
+			lua_pop (L, 1);
+			break;
+		}
+
+		value->function = LP_GetRegisteredFunctionRef (L, index);
+		if (!value->function)
+			luaL_error (L, "cannot store an unregistered Lua function");
 		break;
 	default:
 		luaL_error (L, "unsupported QuakeC value type %d", type);
