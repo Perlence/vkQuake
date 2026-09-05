@@ -3,6 +3,10 @@
     "game/?.lua",
     "game/?/init.lua"
   ],
+  "runtime.builtin": {
+    "io": "disable",
+    "os": "disable"
+  },
   "workspace.library": [
     "./meta"
   ],

@@ -1227,10 +1227,50 @@ static int LP_AppendString (dprograms_t *progs, const char *name)
 	return ofs;
 }
 
+// Opens the standard libraries that do not provide direct host filesystem or
+// process access.
+//
+// Particularly, the io and os modules are removed. As are the following
+// functions:
+//
+// - loadfile
+// - dofile
+// - package.loadlib
+// - package.searchpath
+static void LP_OpenLibraries (lua_State *L)
+{
+#if LUA_VERSION_NUM >= 505
+	luaL_openselectedlibs (L, LUA_GLIBK | LUA_LOADLIBK | LUA_COLIBK | LUA_DBLIBK | LUA_MATHLIBK | LUA_STRLIBK | LUA_TABLIBK | LUA_UTF8LIBK, 0);
+#else
+	static const luaL_Reg libraries[] = {
+		{LUA_GNAME, luaopen_base},		 {LUA_LOADLIBNAME, luaopen_package}, {LUA_COLIBNAME, luaopen_coroutine},
+		{LUA_DBLIBNAME, luaopen_debug},	 {LUA_MATHLIBNAME, luaopen_math},	 {LUA_STRLIBNAME, luaopen_string},
+		{LUA_TABLIBNAME, luaopen_table}, {LUA_UTF8LIBNAME, luaopen_utf8},	 {NULL, NULL},
+	};
+	const luaL_Reg *library;
+
+	for (library = libraries; library->func; ++library)
+	{
+		luaL_requiref (L, library->name, library->func, 1);
+		lua_pop (L, 1);
+	}
+#endif
+
+	lua_pushnil (L);
+	lua_setglobal (L, "loadfile");
+	lua_pushnil (L);
+	lua_setglobal (L, "dofile");
+	lua_getglobal (L, "package");
+	lua_pushnil (L);
+	lua_setfield (L, -2, "loadlib");
+	lua_pushnil (L);
+	lua_setfield (L, -2, "searchpath");
+	lua_pop (L, 1);
+}
+
 // Creates and initializes the global Lua state, returning success with its stack unchanged.
 qboolean LP_Init (void)
 {
-	int searchers;
 	if (lp_state)
 		LP_Shutdown ();
 	if (!COM_FileExists ("lua/init.lua", NULL))
@@ -1238,17 +1278,22 @@ qboolean LP_Init (void)
 	lp_state = luaL_newstate ();
 	if (!lp_state)
 		Host_Error ("Could not create Lua state");
-	luaL_openlibs (lp_state);
+	LP_OpenLibraries (lp_state);
 	LP_CreateMetatables (lp_state);
 	LP_ResolveBooleanDefs (lp_state);
 	luaL_requiref (lp_state, "quake", LP_OpenQuake, 1);
 	lua_pop (lp_state, 1);
 
+	// Restrict package.searchers to Lua's preload searcher followed by the
+	// Quake filesystem searcher.
 	lua_getglobal (lp_state, "package");
 	lua_getfield (lp_state, -1, "searchers");
-	searchers = lua_gettop (lp_state);
+	lua_createtable (lp_state, 2, 0);
+	lua_rawgeti (lp_state, -2, 1); // the preload searcher
+	lua_rawseti (lp_state, -2, 1);
 	lua_pushcfunction (lp_state, LP_ModuleSearcher);
-	lua_rawseti (lp_state, searchers, (lua_Integer)lua_rawlen (lp_state, searchers) + 1);
+	lua_rawseti (lp_state, -2, 2);
+	lua_setfield (lp_state, -3, "searchers");
 	lua_pop (lp_state, 2);
 
 	lua_newtable (lp_state);
