@@ -1239,22 +1239,7 @@ static int LP_AppendString (dprograms_t *progs, const char *name)
 // - package.searchpath
 static void LP_OpenLibraries (lua_State *L)
 {
-#if LUA_VERSION_NUM >= 505
 	luaL_openselectedlibs (L, LUA_GLIBK | LUA_LOADLIBK | LUA_COLIBK | LUA_DBLIBK | LUA_MATHLIBK | LUA_STRLIBK | LUA_TABLIBK | LUA_UTF8LIBK, 0);
-#else
-	static const luaL_Reg libraries[] = {
-		{LUA_GNAME, luaopen_base},		 {LUA_LOADLIBNAME, luaopen_package}, {LUA_COLIBNAME, luaopen_coroutine},
-		{LUA_DBLIBNAME, luaopen_debug},	 {LUA_MATHLIBNAME, luaopen_math},	 {LUA_STRLIBNAME, luaopen_string},
-		{LUA_TABLIBNAME, luaopen_table}, {LUA_UTF8LIBNAME, luaopen_utf8},	 {NULL, NULL},
-	};
-	const luaL_Reg *library;
-
-	for (library = libraries; library->func; ++library)
-	{
-		luaL_requiref (L, library->name, library->func, 1);
-		lua_pop (L, 1);
-	}
-#endif
 
 	lua_pushnil (L);
 	lua_setglobal (L, "loadfile");

@@ -229,6 +229,12 @@
     <ClCompile Include="..\..\Quake\json.c">
       <Filter>Main</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Quake\lua_progs.c">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Quake\lua_all.c">
+      <Filter>Main</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Quake\steam.c">
       <Filter>Main</Filter>
     </ClCompile>

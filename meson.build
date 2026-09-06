@@ -334,7 +334,6 @@ deps = [
     cc.find_library('m', required : false),
     cc.find_library('dl', required : false),
     dependency('threads'),
-    dependency('lua', version : '>=5.4'),
     sdl_dep,
 ]
 
@@ -457,12 +456,21 @@ endif
 
 incdirs = [
     'Quake/mimalloc',
+    'Quake/lua',
 ]
+
+# Vendored Lua is built separately so that upstream code is not subject to our
+# warning flags.
+lua_lib = static_library(
+    'lua',
+    'Quake/lua_all.c',
+    override_options : ['warning_level=0', 'werror=false'])
 
 executable(
     'vkquake',
     [srcs, shaders_c],
     dependencies : deps,
+    link_with : lua_lib,
     include_directories : incdirs,
     c_args : cflags,
     c_pch : 'Quake/quakedef.h',
