@@ -143,7 +143,7 @@ static func_t LP_GetRegisteredFunctionRef (lua_State *L, int index)
 	lua_rawgeti (L, LUA_REGISTRYINDEX, lp_functions_ref);
 	lua_getfield (L, -1, name);
 	if (lua_isinteger (L, -1))
-		function = lua_tointeger (L, -1);
+		function = (func_t)lua_tointeger (L, -1);
 	lua_pop (L, 2);
 	return function;
 }
@@ -205,7 +205,7 @@ func_t LP_FindFunction (const char *name)
 	lua_rawgeti (lp_state, LUA_REGISTRYINDEX, lp_functions_ref);
 	lua_getfield (lp_state, -1, name);
 	if (lua_isinteger (lp_state, -1))
-		function = lua_tointeger (lp_state, -1);
+		function = (func_t)lua_tointeger (lp_state, -1);
 	lua_pop (lp_state, 2);
 	return function;
 }
@@ -537,7 +537,7 @@ static void LP_SetValue (lua_State *L, int index, int type, eval_t *value, qbool
 		if (lua_iscfunction (L, index) && lua_tocfunction (L, index) == LP_CallQC)
 		{
 			lua_getupvalue (L, index, 1);
-			value->function = lua_tointeger (L, -1);
+			value->function = (func_t)lua_tointeger (L, -1);
 			lua_pop (L, 1);
 			break;
 		}
@@ -556,7 +556,7 @@ static void LP_SetValue (lua_State *L, int index, int type, eval_t *value, qbool
 // [-0, +0]
 static int LP_CallQC (lua_State *L)
 {
-	const func_t function = lua_tointeger (L, lua_upvalueindex (1));
+	const func_t function = (func_t)lua_tointeger (L, lua_upvalueindex (1));
 	const int	 count = q_min (lua_gettop (L), MAX_PARMS);
 	int			 i;
 
@@ -743,20 +743,20 @@ static int LP_CallBuiltin (lua_State *L)
 // [-0, +1]
 static int LP_BindBuiltin (lua_State *L)
 {
-	const int	  number = luaL_checkinteger (L, 1);
-	int			  argc;
-	lp_builtin_t *builtin;
-	int			  i;
+	const lua_Integer number = luaL_checkinteger (L, 1);
+	lua_Integer		  argc;
+	lp_builtin_t	 *builtin;
+	int				  i;
 
 	luaL_checktype (L, 2, LUA_TTABLE);
 	argc = luaL_len (L, 2);
 	if (number < 0 || number >= qcvm->numbuiltins || !qcvm->builtins[number])
-		return luaL_error (L, "builtin #%d is unavailable", number);
+		return luaL_error (L, "builtin #%I is unavailable", number);
 	if (argc > MAX_PARMS)
-		return luaL_error (L, "builtin #%d has too many parameters", number);
+		return luaL_error (L, "builtin #%I has too many parameters", number);
 	builtin = lua_newuserdatauv (L, sizeof (*builtin), 0);
-	builtin->number = number;
-	builtin->argc = argc;
+	builtin->number = (int)number;
+	builtin->argc = (int)argc;
 	for (i = 0; i < argc; ++i)
 	{
 		lua_rawgeti (L, 2, i + 1);
@@ -1221,7 +1221,7 @@ static qboolean LP_HasDef (const lp_def_t *definitions, size_t count, const char
 static int LP_AppendString (dprograms_t *progs, const char *name)
 {
 	const int ofs = progs->numstrings;
-	const int length = strlen (name) + 1;
+	const int length = (int)strlen (name) + 1;
 	memcpy ((byte *)progs + progs->ofs_strings + ofs, name, length);
 	progs->numstrings += length;
 	return ofs;
