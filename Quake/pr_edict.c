@@ -2091,7 +2091,7 @@ qboolean PR_LoadProgs (const char *filename, qboolean fatal, unsigned int needcr
 
 	qcvm->functions = (dfunction_t *)((byte *)qcvm->progs + qcvm->progs->ofs_functions);
 	qcvm->strings = (char *)qcvm->progs + qcvm->progs->ofs_strings;
-	if (qcvm->progs->ofs_strings + qcvm->progs->numstrings >= qcvm->progssize)
+	if ((unsigned)qcvm->progs->ofs_strings + (unsigned)qcvm->progs->numstrings >= qcvm->progssize)
 		Host_Error ("%s strings go past end of file\n", filename);
 
 	qcvm->globaldefs = (ddef_t *)((byte *)qcvm->progs + qcvm->progs->ofs_globaldefs);
