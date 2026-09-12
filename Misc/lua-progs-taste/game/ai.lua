@@ -100,7 +100,8 @@ local t_movetarget
 ---@return nil
 local function movetarget_f(self)
     if self.targetname == "" then
-        quake.object_error("monster_movetarget: no targetname")
+        quake.object_error(self, "monster_movetarget: no targetname")
+        return
     end
 
     self.solid = SOLID_TRIGGER

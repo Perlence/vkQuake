@@ -137,6 +137,7 @@ local plat_crush = quake.register_function("plats.plat_crush", function(self, ot
         plat_go_up(self)
     else
         quake.object_error(self, "plat_crush: bad self.state\n")
+        return
     end
 end)
 
@@ -147,6 +148,7 @@ local plat_use = quake.register_function("plats.plat_use", function(self, _activ
     self.use = subs.null
     if self.state ~= STATE_UP then
         quake.object_error(self, "plat_use: not in up state")
+        return
     end
     plat_go_down(self)
 end)
@@ -274,11 +276,12 @@ train_next = quake.register_function("plats.train_next", function(self)
     local targ = quake.find(quake.world, "targetname", self.target)
     if not targ then
         quake.object_error(self, "train_next: no next target")
-        error("quake.object_error unexpectedly returned")
+        return
     end
     self.target = targ.target
     if self.target == "" then
         quake.object_error(self, "train_next: no next target")
+        return
     end
     if targ.wait ~= 0 then
         self.wait = targ.wait
@@ -315,7 +318,10 @@ end)
 ---@return nil
 local function func_train(self)
     if self.speed == 0 then self.speed = 100 end
-    if self.target == "" then quake.object_error(self, "func_train without a target") end
+    if self.target == "" then
+        quake.object_error(self, "func_train without a target")
+        return
+    end
     if self.dmg == 0 then self.dmg = 2 end
 
     if self.sounds == 0 then
@@ -355,7 +361,10 @@ end
 ---@return nil
 local function misc_teleporttrain(self)
     if self.speed == 0 then self.speed = 100 end
-    if self.target == "" then quake.object_error(self, "func_train without a target") end
+    if self.target == "" then
+        quake.object_error(self, "func_train without a target")
+        return
+    end
 
     self.cnt = 1
     self.solid = SOLID_NOT

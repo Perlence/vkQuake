@@ -460,6 +460,7 @@ local weapon_touch = quake.register_function("items.weapon_touch", function(self
         other.ammo_cells = other.ammo_cells + 15
     else
         quake.object_error(self, "weapon_touch: unknown classname")
+        return
     end
 
     quake.sprint(other, "You got the ")
@@ -965,6 +966,7 @@ end)
 local function item_sigil(self)
     if self.spawnflags == 0 then
         quake.object_error(self, "no spawnflags")
+        return
     end
 
     quake.precache_sound("misc/runekey.wav")

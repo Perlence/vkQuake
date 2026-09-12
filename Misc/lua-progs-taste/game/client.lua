@@ -114,8 +114,9 @@ local function decode_level_parms(self)
 end
 
 ---Returns the entity to view from
+---@param self entity
 ---@return entity
-local function find_intermission()
+local function find_intermission(self)
     -- look for info_intermission first
     local spot = quake.find(quake.world, "classname", "info_intermission")
     if spot then
@@ -137,7 +138,7 @@ local function find_intermission()
     -- testinfo_player_start is only found in regioned levels
     spot = quake.find(quake.world, "classname", "testplayerstart")
     if spot then return spot end
-    quake.object_error("FindIntermission: no spot")
+    quake.object_error(self, "FindIntermission: no spot")
     -- avoid compiler warning
     return quake.world
 end
@@ -214,9 +215,9 @@ local function intermission_think(self)
     exit_intermission()
 end
 
----@param _self entity
+---@param self entity
 ---@return nil
-local execute_changelevel = quake.register_function("client.execute_changelevel", function(_self)
+local execute_changelevel = quake.register_function("client.execute_changelevel", function(self)
     g.intermission_running = 1
     -- enforce a wait time before allowing changelevel
     if g.deathmatch ~= 0 then
@@ -225,7 +226,7 @@ local execute_changelevel = quake.register_function("client.execute_changelevel"
         g.intermission_exittime = quake.time() + 2
     end
     quake.write_byte(MSG_ALL, SVC_CDTRACK); quake.write_byte(MSG_ALL, 3); quake.write_byte(MSG_ALL, 3)
-    local pos = find_intermission()
+    local pos = find_intermission(self)
     local other = quake.find(quake.world, "classname", "player")
     while other do
         other.view_ofs = quake.vec3(0, 0, 0)
@@ -275,7 +276,10 @@ end)
 ---@param self entity
 ---@return nil
 local function trigger_changelevel(self)
-    if self.map == "" then quake.object_error("changelevel trigger doesn't have map") end
+    if self.map == "" then
+        quake.object_error(self, "changelevel trigger doesn't have map")
+        return
+    end
     subs.init_trigger(self)
     self.touch = changelevel_touch
 end

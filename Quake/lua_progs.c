@@ -800,12 +800,18 @@ static int LP_RegisterEntity (lua_State *L)
 	return 0;
 }
 
-// Raises an object error without returning or changing the stack first.
+// Reports an object error, frees the offending entity, and returns to Lua.
 // [-0, +0]
 static int LP_ObjectError (lua_State *L)
 {
-	const char *message = luaL_checkstring (L, -1);
-	return luaL_error (L, "%s", message);
+	edict_t	   *entity = LP_CheckEntity (L, 1);
+	const char *message = luaL_checkstring (L, 2);
+
+	lua_settop (L, 2);
+	Con_Printf ("======OBJECT ERROR in Lua:\n%s\n", message);
+	ED_Print (entity);
+	ED_Free (entity);
+	return 0;
 }
 
 static const luaL_Reg lp_quake_functions[] = {

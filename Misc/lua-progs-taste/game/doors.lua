@@ -129,7 +129,10 @@ ACTIVATION FUNCTIONS
 ---@param activator entity
 ---@return nil
 local function door_fire(self, activator)
-    if self.owner ~= self then quake.object_error(self, "door_fire: self.owner != self") end
+    if self.owner ~= self then
+        quake.object_error(self, "door_fire: self.owner != self")
+        return
+    end
 
     -- play use key sound
     if self.items ~= 0 then quake.sound(self, CHAN_ITEM, self.noise4, 1, ATTN_NORM) end
@@ -314,7 +317,10 @@ local link_doors = quake.register_function("doors.link_doors", function(self)
         end
 
         if entities_touching(self, t) then
-            if t.enemy then quake.object_error(self, "cross connected doors") end
+            if t.enemy then
+                quake.object_error(self, "cross connected doors")
+                return
+            end
             self.enemy = t
             self = t
             cmins = quake.vec3(math.min(t.mins.x, cmins.x), math.min(t.mins.y, cmins.y), math.min(t.mins.z, cmins.z))

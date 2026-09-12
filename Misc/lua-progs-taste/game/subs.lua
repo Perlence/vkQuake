@@ -86,7 +86,8 @@ local calc_move_done
 ---@return nil
 function M.calc_move(self, tdest, tspeed, func)
     if tspeed == 0 then
-        quake.object_error("No speed is defined!")
+        quake.object_error(self, "No speed is defined!")
+        return
     end
 
     self.think1 = func

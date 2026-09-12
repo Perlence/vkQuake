@@ -212,8 +212,10 @@ quake = {}
 ---@return function
 function quake.bind_builtin(number, parameters, result) end
 
----@param ... unknown
-function quake.object_error(...) end
+---@param self entity
+---@param message string
+---@return nil
+function quake.object_error(self, message) end
 
 ---@generic T: function
 ---@param identifier string

@@ -150,6 +150,7 @@ local function trigger_multiple(self)
     if self.health ~= 0 then
         if (self.spawnflags & SPAWNFLAG_NOTOUCH) ~= 0 then
             quake.object_error(self, "health and notouch don't make sense\n")
+            return
         end
         self.max_health = self.health
         self.th_die = multi_killed
@@ -364,7 +365,7 @@ local teleport_touch = quake.register_function("triggers.teleport_touch", functi
     local t = quake.find(quake.world, "targetname", self.target)
     if not t then
         quake.object_error(self, "couldn't find target")
-        error("quake.object_error unexpectedly returned")
+        return
     end
 
     -- spawn a tfog flash in front of the destination
@@ -402,7 +403,10 @@ local function info_teleport_destination(self)
     self.angles = quake.vec3(0, 0, 0)
     self.model = ""
     self.origin = self.origin + quake.vec3(0, 0, 27)
-    if self.targetname == "" then quake.object_error(self, "no targetname") end
+    if self.targetname == "" then
+        quake.object_error(self, "no targetname")
+        return
+    end
 end
 
 ---@param self entity
@@ -424,7 +428,10 @@ local function trigger_teleport(self)
     subs.init_trigger(self)
     self.touch = teleport_touch
     -- find the destination
-    if self.target == "" then quake.object_error(self, "no target") end
+    if self.target == "" then
+        quake.object_error(self, "no target")
+        return
+    end
     self.use = teleport_use
 
     if (self.spawnflags & SILENT) == 0 then
